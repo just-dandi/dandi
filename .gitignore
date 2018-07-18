@@ -1,0 +1,11 @@
+.idea
+node_modules
+.DS_Store
+out
+reports
+coverage
+.nyc_output
+.out
+dist
+.env
+.aws-docker

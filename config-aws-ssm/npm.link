@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+
+npm link @dandi/config
+npm link @dandi/core
+npm link @dandi/di-core

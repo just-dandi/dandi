@@ -1,0 +1,26 @@
+--watch-extensions ts
+--require tsconfig-paths/register
+--require ./test/ts-node.js
+--require ts-custom-error-shim
+--require ./test/mocha.config
+core/index.ts
+core/src/**/*.spec.ts
+di-core/index.ts
+di-core/src/**/*.spec.ts
+cache/index.ts
+cache/src/**/*.spec.ts
+data/index.ts
+data/src/**/*.spec.ts
+data-pg/index.ts
+data-pg/src/**/*.spec.ts
+model/index.ts
+model/src/**/*.spec.ts
+model-validation/index.ts
+model-validation/src/**/*.spec.ts
+mvc/index.ts
+mvc/src/**/*.spec.ts
+mvc-express/index.ts
+mvc-express/src/**/*.spec.ts
+mvc-auth-firebase/index.ts
+mvc-auth-firebase/src/**/*.spec.ts
+
