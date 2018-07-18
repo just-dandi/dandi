@@ -1,6 +1,6 @@
 {
   "name": "@dandi/data-pg",
-  "version": "1.0.0-alpha.10-4",
+  "version": "1.0.0-alpha.10",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -23,7 +23,7 @@
   },
   "peerDependencies": {
     "@dandi/core": "1.0.0-alpha.10",
-    "@dandi/data": "1.0.0-alpha.10-1",
+    "@dandi/data": "1.0.0-alpha.10",
     "@dandi/di-core": "1.0.0-alpha.10",
     "@dandi/model": "1.0.0-alpha.10",
     "@dandi/model-validation": "1.0.0-alpha.10"

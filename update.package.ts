@@ -19,18 +19,6 @@ function sortDependencies(deps: Dependencies) {
         }, {});
 }
 
-function getPeerDependencies(deps: Dependencies, result: Dependencies = {}): Dependencies {
-    return Object.keys(deps)
-        .reduce((result, dep) => {
-            if (!dep.startsWith('@dandi/')) {
-                return result;
-            }
-            const depPkg = require(`./${dep.substring('@dandi/'.length)}/package.json`);
-            Object.assign(result, depPkg.peerDependencies);
-            return result;
-        }, result)
-}
-
 const links = readFileSync(resolve(__dirname, pkgName, 'npm.link'), 'utf-8')
     .split('\n')
     .filter(line => line.startsWith('npm link'));
@@ -46,10 +34,7 @@ if (links.length) {
     links.forEach(link => {
         const linkedPkgName = link.substr('npm link '.length);
         pkg.peerDependencies[linkedPkgName] = masterPkg.version;
-        pkg.devDependencies[linkedPkgName] = masterPkg.version;
     });
-    const secondaryDeps = getPeerDependencies(pkg.peerDependencies);
-    pkg.devDependencies = sortDependencies(Object.assign(secondaryDeps, pkg.devDependencies));
     pkg.peerDependencies = sortDependencies(pkg.peerDependencies);
 }
 
