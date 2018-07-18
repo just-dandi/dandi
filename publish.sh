@@ -56,15 +56,15 @@ do
     cd dist >/dev/null
 
     echo ${bold}  Publishing from ${PWD}...
-#    npm publish --access public
-#
-#    result="$(npm info @dandi/${dir%*/}@${pkgVersion})"
-#    while [ ${#result} -eq 0 ]
-#    do
-#        echo "    Waiting for package on npm..."
-#        sleep 1
-#        result="$(npm info @dandi/${dir%*/}@${pkgVersion})"
-#    done
+    npm publish --access public
+
+    result="$(npm info @dandi/${dir%*/}@${pkgVersion})"
+    while [ ${#result} -eq 0 ]
+    do
+        echo "    Waiting for package on npm..."
+        sleep 1
+        result="$(npm info @dandi/${dir%*/}@${pkgVersion})"
+    done
 
     popd >/dev/null
 
