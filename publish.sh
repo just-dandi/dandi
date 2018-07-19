@@ -38,7 +38,7 @@ do
 
     echo ${bold}  Building...
     rm -rf dist
-    tsc --outDir dist
+    tsc -p tsconfig.build.json --outDir dist
     cp package.json dist
     if [ -e README.md ]
     then
