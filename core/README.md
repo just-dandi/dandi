@@ -3,6 +3,9 @@
 `@dandi/core` provides core types and utilities for the rest of the
 `@dandi` system.
 
+`@dandi/core` does not have any dependencies on NodeJS, and therefore
+can be used on classes shared with projects targeted for the web.
+
 ## Disposable
 
 The `Disposable` interface allows implementing classes to define
