@@ -21,6 +21,7 @@ describe('PgDbTransactionClient', () => {
         client = {
             query: stub().returns({ rows: [] }),
             release: stub(),
+            dispose: stub(),
         } as any;
         dataMapper = createStubInstance(PassThroughDataMapper);
         modelValidator = {
