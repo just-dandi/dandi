@@ -7,17 +7,17 @@ import { HttpResponseInterceptor } from './http.response.interceptor';
 import { LambdaResponder }         from './lambda.responder';
 
 @Injectable(LambdaResponder)
-export class HttpResponder implements LambdaResponder<any> {
+export class HttpResponder implements LambdaResponder<APIGatewayProxyResult> {
 
     constructor(
         @Inject(HttpResponseInterceptor) @Optional() private responseInterceptors: HttpResponseInterceptor[],
         @Inject(HttpEventOptions) @Optional() private options: HttpEventOptions,
     ) {}
 
-    public handleError(error: Error): Promise<any> {
+    public handleError(error: Error): Promise<APIGatewayProxyResult> {
 
         const result = {
-            statusCode: this.options && this.options.errorStatusCode || 500,
+            statusCode: (error as any).statusCode || this.options && this.options.errorStatusCode || 500,
             body: JSON.stringify({
                 message: error.message,
                 stack:   error.stack,
@@ -31,7 +31,7 @@ export class HttpResponder implements LambdaResponder<any> {
 
         const result: APIGatewayProxyResult = {
             statusCode: this.options && this.options.successStatusCode || 200,
-            body: JSON.stringify(response),
+            body: (response === undefined || response === null) ? undefined : JSON.stringify(response),
         };
 
         return this.postProcess(result);
