@@ -1,5 +1,5 @@
 import { Inject, Injectable, Optional } from '@dandi/di-core';
-import { ModelValidator } from '@dandi/model-validation';
+import { ModelValidator }               from '@dandi/model-validation';
 
 import { APIGatewayProxyEvent, APIGatewayEventRequestContext, Context } from 'aws-lambda';
 
