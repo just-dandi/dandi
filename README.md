@@ -34,6 +34,7 @@ allow developers to use only the features they require.
 * **[@dandi/mvc](./mvc)** - MVC decorators and base utilities (not specific to Express)
 
 # 3rd Party Integration Modules
+* **[@dandi/aws-lambda](./aws-lambda-wrap)** Helpers for using `@dandi/di-core` with AWS Lambda
 * **[@dandi/config-aws-ssm](./config-aws-ssm)** - `@dandi/config` client for AWS SSM Parameter Store
 * **[@dandi/data-pg](./data-pg)** - `@dandi/data` client implementations for Postgres
 * **[@dandi/mvc-auth-firebase](./mvc-auth-firebase)** - Google Firebase Authorization service implementation for `@dandi/mvc`

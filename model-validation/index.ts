@@ -1,4 +1,5 @@
 export * from './src/date.time.type.validator';
+export * from './src/decorator.model.validator';
 export * from './src/model.validator';
 export * from './src/one.of.type.validator';
 export * from './src/one.of.validation.error';
