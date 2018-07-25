@@ -25,10 +25,10 @@ echo ${bold} Publishing @dandi suite v${pkgVersion}...${normal}
 for dir in {'core','di-core','model','model-validation','config','config-aws-ssm','data','data-pg','cache','mvc','mvc-express','mvc-auth-firebase','aws-lambda-wrap'}
 do
 
-    # TODO: need to use package name from package.json
+    pkgName=$(node -p "require('./${dir%*/}/package.json').name")
 
     echo
-    echo ${bold}${dir%*/}${normal}
+    echo ${bold}${pkgName}${normal}
     echo ${bold}  Updating package version...${normal}
     ts-node ./update.package.ts ${dir%*/}
 
@@ -58,15 +58,15 @@ do
     cd dist >/dev/null
 
     echo ${bold}  Publishing from ${PWD}...
-    npm publish --access public
-
-    result="$(npm info @dandi/${dir%*/}@${pkgVersion})"
-    while [ ${#result} -eq 0 ]
-    do
-        echo "    Waiting for package on npm..."
-        sleep 1
-        result="$(npm info @dandi/${dir%*/}@${pkgVersion})"
-    done
+#    npm publish --access public
+#
+#    result="$(npm info @dandi/${pkgName}@${pkgVersion})"
+#    while [ ${#result} -eq 0 ]
+#    do
+#        echo "    Waiting for package on npm..."
+#        sleep 1
+#        result="$(npm info @dandi/${pkgName}@${pkgVersion})"
+#    done
 
     popd >/dev/null
 
