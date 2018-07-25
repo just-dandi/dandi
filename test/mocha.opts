@@ -23,4 +23,5 @@ mvc-express/index.ts
 mvc-express/src/**/*.spec.ts
 mvc-auth-firebase/index.ts
 mvc-auth-firebase/src/**/*.spec.ts
-
+aws-lambda-wrap/index.ts
+aws-lambda-wrap/src/**/*.spec.ts

@@ -22,8 +22,10 @@ errorHandler() {
 pkgVersion=$(node -p "require('./package.json').version")
 
 echo ${bold} Publishing @dandi suite v${pkgVersion}...${normal}
-for dir in {'core','di-core','model','model-validation','config','config-aws-ssm','data','data-pg','cache','mvc','mvc-express','mvc-auth-firebase'}
+for dir in {'core','di-core','model','model-validation','config','config-aws-ssm','data','data-pg','cache','mvc','mvc-express','mvc-auth-firebase','aws-lambda-wrap'}
 do
+
+    # TODO: need to use package name from package.json
 
     echo
     echo ${bold}${dir%*/}${normal}

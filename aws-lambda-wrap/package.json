@@ -1,0 +1,30 @@
+{
+  "name": "@dandi/aws-lambda",
+  "version": "1.0.0-alpha.11",
+  "scripts": {
+    "postbuild": "cp src/url.* dist/src"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dandi-mvc/dandi.git"
+  },
+  "author": "Daniel Schaffer <dan@dandoes.net>",
+  "bugs": {
+    "url": "https://github.com/dandi-mvc/dandi/issues"
+  },
+  "homepage": "https://github.com/dandi-mvc/dandi#readme",
+  "module": "index.js",
+  "peerDependencies": {
+    "@dandi/core": "^1.0.0-alpha.11",
+    "@dandi/di-core": "^1.0.0-alpha.11",
+    "@dandi/model": "^1.0.0-alpha.11",
+    "@dandi/model-validation": "^1.0.0-alpha.11"
+  },
+  "dependencies": {
+    "aws-lambda": "^0.1.2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.8",
+    "@types/node": "^9.6.17"
+  }
+}
