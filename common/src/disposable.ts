@@ -44,7 +44,7 @@ export class Disposable {
      * Returns {true} if the object implements {@see Disposable}; otherwise, {false}.
      */
     public static isDisposable(obj: any): obj is Disposable {
-        return obj && typeof(obj.dispose) === 'function';
+        return obj && typeof(obj.dispose) === 'function' || false;
     }
 
     /**
