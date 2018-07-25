@@ -1,4 +1,4 @@
-import { AppError, Constructor } from '@dandi/core';
+import { AppError, Constructor } from '@dandi/common';
 
 
 export interface OneOfValidationAttempt {

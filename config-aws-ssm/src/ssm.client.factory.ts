@@ -1,4 +1,4 @@
-import { InjectionToken, Provider } from '@dandi/di-core';
+import { InjectionToken, Provider } from '@dandi/core';
 import { SSM } from 'aws-sdk';
 
 import { localOpinionatedToken } from './local.token';

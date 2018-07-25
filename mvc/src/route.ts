@@ -1,5 +1,5 @@
-import { Constructor }              from '@dandi/core';
-import { InjectionToken, Provider } from '@dandi/di-core';
+import { Constructor }              from '@dandi/common';
+import { InjectionToken, Provider } from '@dandi/core';
 
 import { AuthorizationCondition } from './authorization.condition';
 import { CorsConfig }             from './cors.config';

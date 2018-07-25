@@ -1,4 +1,4 @@
-import { AppError } from '@dandi/core';
+import { AppError } from '@dandi/common';
 
 export class MetadataValidationError extends AppError {
     constructor(public readonly metadataKey, message?: string) {

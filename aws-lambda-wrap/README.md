@@ -68,7 +68,7 @@ Implementations of `HttpResponseInterceptor` can be used to modify
 
 ```typescript
 // my-interceptor.ts
-import { Injectable } from '@dandi/di-core';
+import { Injectable } from '@dandi/core';
 import { HttpResponseInterceptor } from '@dandi/aws-lambda';
 import { APIGatewayProxyResult } from 'aws-lambda';
 

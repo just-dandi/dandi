@@ -1,4 +1,4 @@
-import { InjectionToken, Provider } from '@dandi/di-core';
+import { InjectionToken, Provider } from '@dandi/core';
 
 import { localOpinionatedToken } from './local.token';
 

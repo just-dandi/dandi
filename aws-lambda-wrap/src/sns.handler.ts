@@ -1,4 +1,4 @@
-import { ErrorUtil } from '@dandi/core';
+import { ErrorUtil } from '@dandi/common';
 
 import { SNSEvent } from 'aws-lambda';
 

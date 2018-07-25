@@ -1,4 +1,4 @@
-import { InjectionToken } from '@dandi/di-core';
+import { InjectionToken } from '@dandi/core';
 
 import { localOpinionatedToken } from './local.token';
 import { Route }                 from './route';

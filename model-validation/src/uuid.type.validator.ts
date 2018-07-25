@@ -1,5 +1,5 @@
-import { Uuid }         from '@dandi/core';
-import { Injectable }   from '@dandi/di-core';
+import { Uuid }         from '@dandi/common';
+import { Injectable }   from '@dandi/core';
 import { UUID_PATTERN } from '@dandi/model';
 
 import { TypeValidationError, TypeValidator } from './type.validator';

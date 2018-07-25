@@ -1,5 +1,5 @@
-import { Constructor }                                        from '@dandi/core';
-import { Bootstrapper, Inject, Injectable, Logger, Provider } from '@dandi/di-core';
+import { Constructor }                                        from '@dandi/common';
+import { Bootstrapper, Inject, Injectable, Logger, Provider } from '@dandi/core';
 import { Validation }                                         from '@dandi/model-validation';
 import { RouteExecutor, RouteGenerator, RouteHandler, RouteInitializer, RouteMapper } from '@dandi/mvc';
 import * as bodyParser from 'body-parser';

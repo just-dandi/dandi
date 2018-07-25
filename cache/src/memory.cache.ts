@@ -1,5 +1,5 @@
-import { Duration }              from '@dandi/core';
-import { Injectable, Singleton } from '@dandi/di-core';
+import { Duration }              from '@dandi/common';
+import { Injectable, Singleton } from '@dandi/core';
 
 import { Cache, CacheProvider, CacheProviderType } from './cache.provider';
 import Timer = NodeJS.Timer;

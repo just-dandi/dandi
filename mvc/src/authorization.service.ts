@@ -1,4 +1,4 @@
-import { MappedInjectionToken } from '@dandi/di-core';
+import { MappedInjectionToken } from '@dandi/core';
 
 import { AuthorizedUser }        from './authorized.user';
 import { localOpinionatedToken } from './local.token';

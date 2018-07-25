@@ -1,4 +1,4 @@
-import { Repository } from '@dandi/di-core';
+import { Repository } from '@dandi/core';
 import { Controller, MissingControllerPathError } from '../';
 
 import { getControllerMetadata } from './controller.metadata';

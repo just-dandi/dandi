@@ -1,4 +1,4 @@
-import { Constructor, getMetadata }    from '@dandi/core';
+import { Constructor, getMetadata }    from '@dandi/common';
 
 import { AuthorizationMetadata }       from './authorization.metadata';
 import { CorsConfig }                  from './cors.config';

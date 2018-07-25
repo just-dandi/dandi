@@ -1,5 +1,5 @@
-import { Constructor, isPrimitiveType, Primitive } from '@dandi/core';
-import { Inject, Injectable }                      from '@dandi/di-core';
+import { Constructor, isPrimitiveType, Primitive } from '@dandi/common';
+import { Inject, Injectable }                      from '@dandi/core';
 import { getModelMetadata, MemberMetadata, getAllKeys, OneOf } from '@dandi/model';
 
 import { MetadataValidationError }            from './metadata.validation.error';

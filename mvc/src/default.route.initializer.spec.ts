@@ -1,5 +1,5 @@
-import { Uuid }                  from '@dandi/core';
-import { Container, NoopLogger } from '@dandi/di-core';
+import { Uuid }                  from '@dandi/common';
+import { Container, NoopLogger } from '@dandi/core';
 import {
     DefaultRouteInitializer, HttpRequestBody, MvcRequest, MvcResponse, RequestController,
     RequestPathParamMap,

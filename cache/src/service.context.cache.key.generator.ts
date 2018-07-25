@@ -1,4 +1,4 @@
-import { Inject, Injectable, InjectionContext, InjectionToken } from '@dandi/di-core';
+import { Inject, Injectable, InjectionContext, InjectionToken } from '@dandi/core';
 
 import { CacheKeyGenerator } from './cache.key.generator';
 

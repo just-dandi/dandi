@@ -1,5 +1,5 @@
-import { DateTime }       from '@dandi/core';
-import { Injectable }     from '@dandi/di-core';
+import { DateTime }       from '@dandi/common';
+import { Injectable }     from '@dandi/core';
 import { MemberMetadata } from '@dandi/model';
 
 import { TypeValidationError, TypeValidator } from './type.validator';

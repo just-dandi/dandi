@@ -1,4 +1,4 @@
-import { Constructor, Url, Uuid }          from '@dandi/core';
+import { Constructor, Url, Uuid }          from '@dandi/common';
 import { DataMapper, DbQueryable }         from '@dandi/data';
 import { DataPropertyMetadata, ModelUtil } from '@dandi/model';
 import { ModelValidator }                  from '@dandi/model-validation';

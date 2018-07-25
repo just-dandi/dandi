@@ -1,4 +1,4 @@
-import { InjectionToken, Provider } from '@dandi/di-core';
+import { InjectionToken, Provider } from '@dandi/core';
 import { MemberMetadata }           from '@dandi/model';
 import { ValidatedType }            from '@dandi/model-validation';
 

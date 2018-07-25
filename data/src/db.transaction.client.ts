@@ -1,5 +1,5 @@
-import { Disposable } from '@dandi/core';
-import { InjectionToken } from '@dandi/di-core';
+import { Disposable } from '@dandi/common';
+import { InjectionToken } from '@dandi/core';
 
 import { DbQueryable }           from './db.queryable';
 import { localOpinionatedToken } from './local.token';

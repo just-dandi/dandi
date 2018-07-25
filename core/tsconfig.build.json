@@ -1,7 +1,6 @@
 {
   "extends": "../tsconfig.build.json",
   "files": [
-    "index.ts",
-    "src/url.d.ts"
+    "index.ts"
   ]
 }

@@ -1,4 +1,4 @@
-import { Constructor } from '@dandi/core';
+import { Constructor } from '@dandi/common';
 
 export interface MemberMetadata {
     type?: Constructor<any>;

@@ -1,4 +1,4 @@
-import { InjectionToken, Repository } from '@dandi/di-core';
+import { InjectionToken, Repository } from '@dandi/core';
 
 import { localOpinionatedToken } from './local.token';
 import { MvcRequest }            from './mvc.request';

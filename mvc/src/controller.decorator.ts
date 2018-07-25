@@ -1,5 +1,5 @@
-import { AppError, Constructor }           from '@dandi/core';
-import { injectableDecorator, Repository } from '@dandi/di-core';
+import { AppError, Constructor }           from '@dandi/common';
+import { injectableDecorator, Repository } from '@dandi/core';
 
 import { getControllerMetadata } from './controller.metadata';
 

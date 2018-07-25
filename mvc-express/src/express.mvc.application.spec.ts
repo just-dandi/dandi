@@ -1,4 +1,4 @@
-import { Repository }                        from '@dandi/di-core';
+import { Repository }                        from '@dandi/core';
 import { RouteGenerator, RouteInitializer }  from '@dandi/mvc';
 import { ExpressInstance, ExpressMvcConfig } from '../';
 

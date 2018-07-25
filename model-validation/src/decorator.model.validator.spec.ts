@@ -1,4 +1,4 @@
-import { Primitive } from '@dandi/core';
+import { Primitive } from '@dandi/common';
 import { MemberMetadata } from '@dandi/model';
 
 import { expect } from 'chai';

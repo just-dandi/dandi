@@ -1,5 +1,5 @@
-import { Disposable }               from '@dandi/core';
-import { InjectionToken, Provider } from '@dandi/di-core';
+import { Disposable }               from '@dandi/common';
+import { InjectionToken, Provider } from '@dandi/core';
 
 import { PoolClient } from 'pg';
 

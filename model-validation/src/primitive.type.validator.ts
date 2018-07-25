@@ -1,5 +1,5 @@
-import { AppError, Constructor, DateTime, Primitive, Url, Uuid } from '@dandi/core';
-import { Inject, Injectable } from '@dandi/di-core';
+import { AppError, Constructor, DateTime, Primitive, Url, Uuid } from '@dandi/common';
+import { Inject, Injectable } from '@dandi/core';
 import { MemberMetadata }     from '@dandi/model';
 
 import { TypeValidationError, TypeValidator } from './type.validator';

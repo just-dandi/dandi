@@ -1,4 +1,4 @@
-import { Constructor, DateTime, Url } from '@dandi/core';
+import { Constructor, DateTime, Url } from '@dandi/common';
 
 import { getMemberMetadata, MemberMetadata } from './member.metadata';
 import { EMAIL_PATTERN, URL_PATTERN }        from './pattern';
@@ -65,7 +65,7 @@ export function UrlArray() {
     });
 }
 
-// TODO: move this into @dandi/core or @dandi/di-core - this could be used for injection too
+// TODO: move this into @dandi/common or @dandi/di-common - this could be used for injection too
 export function OneOf(...oneOf: Constructor<any>[]) {
     return modelDecorator.bind(null, {
         type: OneOf,

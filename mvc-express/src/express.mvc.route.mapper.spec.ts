@@ -1,4 +1,4 @@
-import { Container, NoopLogger }            from '@dandi/di-core';
+import { Container, NoopLogger }            from '@dandi/core';
 import { HttpMethod, Route, RouteExecutor } from '@dandi/mvc';
 
 import { ExpressMvcRouteMapper } from '../';

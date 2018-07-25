@@ -1,5 +1,5 @@
-import { Url }        from '@dandi/core';
-import { Injectable } from '@dandi/di-core';
+import { Url }        from '@dandi/common';
+import { Injectable } from '@dandi/core';
 
 import { TypeValidator } from './type.validator';
 

@@ -1,4 +1,4 @@
-import { stubProvider, testHarness } from '@dandi/di-core-testing';
+import { stubProvider, testHarness } from '@dandi/core-testing';
 import { DecoratorModelValidator, ModelValidator } from '@dandi/model-validation';
 
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';

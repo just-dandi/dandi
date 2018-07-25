@@ -1,5 +1,5 @@
 // tslint:disable no-unused-expression
-import { Url, DateTime, Uuid } from '@dandi/core';
+import { Url, DateTime, Uuid } from '@dandi/common';
 
 import { expect } from 'chai';
 

@@ -1,5 +1,5 @@
-import { Constructor }    from '@dandi/core';
-import { InjectionToken } from '@dandi/di-core';
+import { Constructor }    from '@dandi/common';
+import { InjectionToken } from '@dandi/core';
 import { MemberMetadata } from '@dandi/model';
 
 import { localOpinionatedToken } from './local.token';

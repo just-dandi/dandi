@@ -1,5 +1,5 @@
-import { isPrimitiveType }    from '@dandi/core';
-import { Inject, Injectable } from '@dandi/di-core';
+import { isPrimitiveType }    from '@dandi/common';
+import { Inject, Injectable } from '@dandi/core';
 import { ModelValidator }     from '@dandi/model-validation';
 
 import { ConfigClient, isAsyncConfigClient } from './config.client';

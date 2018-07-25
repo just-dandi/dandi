@@ -1,4 +1,4 @@
-import { Constructor } from '@dandi/core';
+import { Constructor } from '@dandi/common';
 
 export interface DbQueryable {
     query(cmd: string, ...args: any[]): Promise<any[]>;

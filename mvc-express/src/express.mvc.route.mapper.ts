@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger, Resolver } from '@dandi/di-core';
+import { Inject, Injectable, Logger, Resolver } from '@dandi/core';
 import { CorsConfig, HttpMethod, Route, RouteExecutor, RouteMapper } from '@dandi/mvc';
 
 import * as cors             from 'cors';

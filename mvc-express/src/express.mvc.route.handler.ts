@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger, Resolver, ResolverContext } from '@dandi/di-core';
+import { Inject, Injectable, Logger, Resolver, ResolverContext } from '@dandi/core';
 import {
     ControllerResult, isControllerResult, JsonControllerResult, MvcRequest, MvcResponse,
     RequestController, RequestInfo, Route, RouteHandler,

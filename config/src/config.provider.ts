@@ -1,5 +1,5 @@
-import { Constructor } from '@dandi/core';
-import { Provider }    from '@dandi/di-core';
+import { Constructor } from '@dandi/common';
+import { Provider }    from '@dandi/core';
 
 import { ConfigClient }   from './config.client';
 import { ConfigResolver } from './config.resolver';

@@ -1,6 +1,6 @@
 // /* eslint no-magic-numbers: ['error', { 'ignore': [200,500] }] */
 //
-// import { ErrorUtil } from '@dandi/core';
+// import { ErrorUtil } from '@dandi/common';
 //
 // import {
 //     APIGatewayEventRequestContext,

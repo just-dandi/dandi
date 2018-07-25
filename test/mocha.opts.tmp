@@ -4,8 +4,8 @@
 --require ./test/mocha.config
 core/index.ts
 core/src/**/*.spec.ts
-di-core/index.ts
-di-core/src/**/*.spec.ts
+core/index.ts
+core/src/**/*.spec.ts
 model/index.ts
 model/src/**/*.spec.ts
 model-validation/index.ts

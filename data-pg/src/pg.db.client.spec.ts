@@ -1,5 +1,5 @@
-import { AppError }                          from '@dandi/core'
-import { Container, Logger, NoopLogger, Resolver } from '@dandi/di-core';
+import { AppError }                          from '@dandi/common'
+import { Container, Logger, NoopLogger, Resolver } from '@dandi/core';
 import { DataMapper, PassThroughDataMapper } from '@dandi/data';
 import { ModelValidator }                    from '@dandi/model-validation';
 import { DecoratorModelValidator } from '@dandi/model-validation/src/decorator.model.validator';

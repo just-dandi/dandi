@@ -1,4 +1,4 @@
-import { FactoryProvider, getInjectableParamMetadata, methodTarget, SymbolToken } from '@dandi/di-core';
+import { FactoryProvider, getInjectableParamMetadata, methodTarget, SymbolToken } from '@dandi/core';
 import { TypeValidator } from '@dandi/model-validation';
 
 import { PathParam, QueryParam, RequestPathParamMap, RequestQueryParamMap } from '../';

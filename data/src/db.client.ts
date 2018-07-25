@@ -1,4 +1,4 @@
-import { InjectionToken } from '@dandi/di-core';
+import { InjectionToken } from '@dandi/core';
 
 import { DbQueryable }           from './db.queryable';
 import { DbTransactionClient }   from './db.transaction.client';

@@ -1,4 +1,4 @@
-import { InjectionToken, Provider } from '@dandi/di-core';
+import { InjectionToken, Provider } from '@dandi/core';
 
 import { EnvConfigClient }       from './env.config.client';
 import { localOpinionatedToken } from './local.token';

@@ -1,5 +1,5 @@
-import { Primitive }             from '@dandi/core';
-import { Inject, Injectable }    from '@dandi/di-core';
+import { Primitive }             from '@dandi/common';
+import { Inject, Injectable }    from '@dandi/core';
 import { MemberMetadata, OneOf } from '@dandi/model';
 
 import { OneOfValidationAttempt, OneOfValidationError } from './one.of.validation.error';

@@ -1,4 +1,4 @@
-import { Uuid } from '@dandi/core';
+import { Uuid } from '@dandi/common';
 
 // tslint:disable no-unused-expression
 import { expect } from 'chai';

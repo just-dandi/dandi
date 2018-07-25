@@ -1,4 +1,4 @@
-import { Provider } from '@dandi/di-core';
+import { Provider } from '@dandi/core';
 
 import { AwsSsmClientProvider } from './ssm.client.factory';
 

@@ -1,4 +1,4 @@
-import { Injectable } from '@dandi/di-core';
+import { Injectable } from '@dandi/core';
 
 import { DataMapper } from './data.mapper';
 

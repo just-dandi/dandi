@@ -1,5 +1,5 @@
-import { AppError, Uuid }                           from '@dandi/core';
-import { Logger, NoopLogger, Repository, Resolver } from '@dandi/di-core';
+import { AppError, Uuid }                           from '@dandi/common';
+import { Logger, NoopLogger, Repository, Resolver } from '@dandi/core';
 import { HttpMethod, RequestInfo, Route, RouteHandler, RouteInitializer } from '@dandi/mvc';
 
 import { expect } from 'chai';

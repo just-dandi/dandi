@@ -1,5 +1,5 @@
-import { Disposable }                        from '@dandi/core';
-import { Logger, NoopLogger }                from '@dandi/di-core';
+import { Disposable }                        from '@dandi/common';
+import { Logger, NoopLogger }                from '@dandi/core';
 import { DataMapper, PassThroughDataMapper } from '@dandi/data';
 import { ModelValidator }                    from '@dandi/model-validation';
 import { PoolClient } from 'pg';

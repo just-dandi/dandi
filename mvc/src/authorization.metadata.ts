@@ -1,4 +1,4 @@
-import { Provider } from '@dandi/di-core';
+import { Provider } from '@dandi/core';
 
 import { AuthorizationCondition } from './authorization.condition';
 

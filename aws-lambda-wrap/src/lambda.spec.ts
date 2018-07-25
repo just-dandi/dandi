@@ -1,6 +1,6 @@
 import { LambdaErrorHandler }        from '@dandi/aws-lambda-wrap';
-import { AmbientInjectableScanner }  from '@dandi/di-core';
-import { stubProvider, testHarness } from '@dandi/di-core-testing';
+import { AmbientInjectableScanner }  from '@dandi/core';
+import { stubProvider, testHarness } from '@dandi/core-testing';
 
 import { Context } from 'aws-lambda';
 

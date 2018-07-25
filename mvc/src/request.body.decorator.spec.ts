@@ -1,4 +1,4 @@
-import { getInjectableParamMetadata, MethodTarget } from '@dandi/di-core';
+import { getInjectableParamMetadata, MethodTarget } from '@dandi/core';
 
 import { HttpRequestBody, RequestBody } from '../';
 

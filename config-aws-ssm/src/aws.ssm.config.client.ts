@@ -1,5 +1,5 @@
 import { AsyncConfigClient, configProvider, ConfigToken } from '@dandi/config';
-import { Inject, Injectable, Provider } from '@dandi/di-core';
+import { Inject, Injectable, Provider } from '@dandi/core';
 
 import { SsmClient } from './ssm.client';
 

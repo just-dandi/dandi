@@ -1,5 +1,5 @@
-import { Uuid }           from '@dandi/core';
-import { InjectionToken } from '@dandi/di-core';
+import { Uuid }           from '@dandi/common';
+import { InjectionToken } from '@dandi/core';
 
 import { localOpinionatedToken, localSymbolToken } from './local.token';
 

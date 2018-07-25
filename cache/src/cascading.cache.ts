@@ -1,5 +1,5 @@
-import { Duration }                     from '@dandi/core';
-import { Inject, Injectable, Optional } from '@dandi/di-core';
+import { Duration }                     from '@dandi/common';
+import { Inject, Injectable, Optional } from '@dandi/core';
 
 import { Cache, CacheProvider, CacheProviderType } from './cache.provider';
 

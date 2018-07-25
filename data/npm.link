@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
 npm link @dandi/config
+npm link @dandi/common
 npm link @dandi/core
-npm link @dandi/di-core
 npm link @dandi/model

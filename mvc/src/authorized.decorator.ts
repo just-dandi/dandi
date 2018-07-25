@@ -1,5 +1,5 @@
-import { isConstructor } from '@dandi/core';
-import { Provider }      from '@dandi/di-core';
+import { isConstructor } from '@dandi/common';
+import { Provider }      from '@dandi/core';
 
 import { AuthorizationCondition } from './authorization.condition';
 import { getControllerMetadata }  from './controller.metadata';

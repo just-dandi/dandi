@@ -1,5 +1,5 @@
-import { Duration } from '@dandi/core';
-import { MappedInjectionToken } from '@dandi/di-core';
+import { Duration } from '@dandi/common';
+import { MappedInjectionToken } from '@dandi/core';
 
 import { localOpinionatedToken } from './local.token';
 

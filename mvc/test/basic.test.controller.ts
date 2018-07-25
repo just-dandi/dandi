@@ -1,4 +1,4 @@
-import { Controller, HttpGet } from '@dandi/core/mvc';
+import { Controller, HttpGet } from '@dandi/common/mvc';
 
 @Controller('/test/basic')
 class BasicTestController {

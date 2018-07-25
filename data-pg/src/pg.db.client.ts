@@ -1,5 +1,5 @@
-import { AppError, Disposable }                 from '@dandi/core';
-import { Inject, Injectable, Logger, Resolver } from '@dandi/di-core';
+import { AppError, Disposable }                 from '@dandi/common';
+import { Inject, Injectable, Logger, Resolver } from '@dandi/core';
 import { DataMapper, DbClient, DbTransactionClient, TransactionFn } from '@dandi/data';
 import { ModelValidator }                       from '@dandi/model-validation';
 

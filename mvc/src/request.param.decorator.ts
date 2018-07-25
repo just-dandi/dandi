@@ -1,4 +1,4 @@
-import { getInjectableParamMetadata, InjectionToken, MethodTarget, Provider } from '@dandi/di-core';
+import { getInjectableParamMetadata, InjectionToken, MethodTarget, Provider } from '@dandi/core';
 import { getMemberMetadata, MemberMetadata } from '@dandi/model';
 import { TypeValidator, ValidatedType }      from '@dandi/model-validation';
 

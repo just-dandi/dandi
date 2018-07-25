@@ -25,16 +25,16 @@ allow developers to use only the features they require.
 
 # Core Modules
 
-* **[@dandi/core](./core)** 🕸 - Core types and utilities
+* **[@dandi/common](./common)** 🕸 - Common types and utilities
+* **[@dandi/core](./core)** - Dependency Injection
 * **[@dandi/data](./data)** - Base types and utilities for working with data services
 * **[@dandi/config](./config)** - Configuration services
-* **[@dandi/di-core](./di-core)** - Dependency Injection
 * **[@dandi/model](./model)** 🕸 - Model decorators
 * **[@dandi/model-validation](./model-validation)** - Model validation utilities
 * **[@dandi/mvc](./mvc)** - MVC decorators and base utilities (not specific to Express)
 
 # 3rd Party Integration Modules
-* **[@dandi/aws-lambda](./aws-lambda-wrap)** Helpers for using `@dandi/di-core` with AWS Lambda
+* **[@dandi/aws-lambda](./aws-lambda-wrap)** Helpers for using `@dandi/di-common` with AWS Lambda
 * **[@dandi/config-aws-ssm](./config-aws-ssm)** - `@dandi/config` client for AWS SSM Parameter Store
 * **[@dandi/data-pg](./data-pg)** - `@dandi/data` client implementations for Postgres
 * **[@dandi/mvc-auth-firebase](./mvc-auth-firebase)** - Google Firebase Authorization service implementation for `@dandi/mvc`

@@ -1,5 +1,5 @@
-import { AppError, Constructor } from '@dandi/core';
-import { MappedInjectionToken }  from '@dandi/di-core';
+import { AppError, Constructor } from '@dandi/common';
+import { MappedInjectionToken }  from '@dandi/core';
 import { MemberMetadata }        from '@dandi/model';
 
 import { localOpinionatedToken } from './local.token';

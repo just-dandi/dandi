@@ -1,4 +1,4 @@
-import { Provider } from '@dandi/di-core';
+import { Provider } from '@dandi/core';
 
 import { SyncConfigClient } from './config.client';
 import { configProvider }   from './config.provider';

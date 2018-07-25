@@ -1,4 +1,4 @@
-import { ClassProvider, Inject, Injectable, Logger, Repository } from '@dandi/di-core';
+import { ClassProvider, Inject, Injectable, Logger, Repository } from '@dandi/core';
 
 import { mergeAuthorization }    from './authorization.metadata';
 import { Controller }            from './controller.decorator';

@@ -1,4 +1,4 @@
-import { stubProvider, testHarness } from '@dandi/di-core-testing';
+import { stubProvider, testHarness } from '@dandi/core-testing';
 import { APIGatewayProxyResult } from 'aws-lambda';
 
 import { expect } from 'chai';

@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@dandi/di-core';
+import { Inject, Injectable } from '@dandi/core';
 
 import { AwsSsmClient } from './ssm.client.factory';
 

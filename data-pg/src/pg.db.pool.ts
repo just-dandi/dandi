@@ -1,5 +1,5 @@
-import { Inject, Injectable, Resolver, Singleton } from '@dandi/di-core';
-import { Disposable }                              from '@dandi/core';
+import { Inject, Injectable, Resolver, Singleton } from '@dandi/core';
+import { Disposable }                              from '@dandi/common';
 
 import { Pool, PoolClient, PoolConfig, QueryResult } from 'pg';
 

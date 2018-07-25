@@ -1,4 +1,4 @@
-import { Constructor } from '@dandi/core';
+import { Constructor } from '@dandi/common';
 import {
     AmbientInjectableScanner,
     Container,
@@ -7,7 +7,7 @@ import {
     InjectionToken,
     Optional,
     Repository,
-} from '@dandi/di-core';
+} from '@dandi/core';
 
 import { Context } from 'aws-lambda';
 

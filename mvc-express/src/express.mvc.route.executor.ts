@@ -1,5 +1,5 @@
-import { AppError, Disposable, Uuid }                                       from '@dandi/core';
-import { Inject, Injectable, Logger, Repository, Resolver }                 from '@dandi/di-core';
+import { AppError, Disposable, Uuid }                                       from '@dandi/common';
+import { Inject, Injectable, Logger, Repository, Resolver }                 from '@dandi/core';
 import { MvcRequest, MvcResponse, PerfRecord, Route, RouteExecutor, RouteHandler, RouteInitializer } from '@dandi/mvc';
 
 @Injectable(RouteExecutor)

@@ -1,9 +1,7 @@
 {
   "name": "@dandi/core",
-  "version": "1.0.0-alpha.12",
-  "scripts": {
-    "postbuild": "cp src/url.* dist/src"
-  },
+  "version": "1.0.0-alpha.13",
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/dandi-mvc/dandi.git"
@@ -13,15 +11,16 @@
     "url": "https://github.com/dandi-mvc/dandi/issues"
   },
   "homepage": "https://github.com/dandi-mvc/dandi#readme",
-  "module": "index.js",
-  "peerDependencies": {
-    "luxon": "^1.3.0",
-    "uuid": "^3.2.1"
+  "dependencies": {
+    "fs-extra": "^5.0.0"
   },
   "devDependencies": {
-    "@types/luxon": "^1.2.0",
+    "@types/fs-extra": "^5.0.2",
     "@types/node": "^9.6.17",
-    "luxon": "^1.3.0",
+    "luxon": "^1.2.1",
     "uuid": "^3.2.1"
+  },
+  "peerDependencies": {
+    "@dandi/common": "1.0.0-alpha.13"
   }
 }

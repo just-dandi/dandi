@@ -3,10 +3,10 @@
 --require ./test/ts-node.js
 --require ts-custom-error-shim
 --require ./test/mocha.config
+common/index.ts
+common/src/**/*.spec.ts
 core/index.ts
 core/src/**/*.spec.ts
-di-core/index.ts
-di-core/src/**/*.spec.ts
 cache/index.ts
 cache/src/**/*.spec.ts
 data/index.ts

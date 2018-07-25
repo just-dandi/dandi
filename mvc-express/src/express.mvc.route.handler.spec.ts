@@ -1,5 +1,5 @@
-import { Uuid }                                                 from '@dandi/core';
-import { Container, NoopLogger, ResolverContext }               from '@dandi/di-core';
+import { Uuid }                                                 from '@dandi/common';
+import { Container, NoopLogger, ResolverContext }               from '@dandi/core';
 import { HttpMethod, JsonControllerResult, RequestInfo, Route } from '@dandi/mvc';
 
 import { ExpressMvcRouteHandler } from '../';

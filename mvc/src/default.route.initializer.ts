@@ -1,6 +1,6 @@
 import {
     getInjectableMetadata, Inject, Injectable, Logger, Optional, Provider, Repository, Resolver,
-} from '@dandi/di-core';
+} from '@dandi/core';
 
 import { AuthorizationCondition, DeniedAuthorization } from './authorization.condition';
 import { AuthorizationService }        from './authorization.service';

@@ -1,6 +1,6 @@
-import { Constructor }          from '@dandi/core';
+import { Constructor }          from '@dandi/common';
 import { CamelSnakeDataMapper } from '@dandi/data';
-import { Provider }             from '@dandi/di-core';
+import { Provider }             from '@dandi/core';
 
 import {
     PgDbClient, PgDbPool, PgDbPoolConfig, PgDbTransactionClient, POOL_CLIENT_PROVIDER,

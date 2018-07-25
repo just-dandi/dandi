@@ -1,4 +1,4 @@
-import { InjectionOptions, InjectionToken, OpinionatedToken, SymbolToken } from '@dandi/di-core';
+import { InjectionOptions, InjectionToken, OpinionatedToken, SymbolToken } from '@dandi/core';
 
 const PKG = '@dandi/data';
 

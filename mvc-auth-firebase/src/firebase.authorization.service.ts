@@ -1,6 +1,6 @@
 import { Cache, CacheKeyGenerator }             from '@dandi/cache';
-import { DateTime }                             from '@dandi/core';
-import { Inject, Injectable, Singleton }        from '@dandi/di-core';
+import { DateTime }                             from '@dandi/common';
+import { Inject, Injectable, Singleton }        from '@dandi/core';
 import { AuthorizationService, AuthorizedUser } from '@dandi/mvc';
 
 import * as admin from 'firebase-admin';
