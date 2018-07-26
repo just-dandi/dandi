@@ -50,6 +50,13 @@ export class DecoratorModelValidator implements ModelValidator {
             return value;
         }
 
+        const result = this.validateMemberByType(metadata, key, value);
+
+        return this.validateMetadata(metadata, result);
+    }
+
+    private validateMemberByType(metadata: MemberMetadata, key: string, value: any): any {
+
         if (metadata.type as any === Array) {
             return this.validateArrayMember(metadata, key, value);
         }
@@ -64,19 +71,22 @@ export class DecoratorModelValidator implements ModelValidator {
         return this.validateModel(metadata.type, value, key);
     }
 
-    private validateMetadata<T>(metadata: MemberMetadata, value: T): T {
+    private validateMetadata(metadata: MemberMetadata, value: any): any {
 
         if (metadata.pattern && !metadata.pattern.test(value.toString())) {
             throw new MetadataValidationError('pattern');
         }
-        if (metadata.minLength && value.toString().length < metadata.minLength) {
+        if ((!isNaN(metadata.minLength) || !isNaN(metadata.maxLength)) && value.length === undefined) {
+            throw new MetadataValidationError('minLength or maxLength', 'value does not have a length property');
+        }
+        if (!isNaN(metadata.minLength) && value.length < metadata.minLength) {
             throw new MetadataValidationError('minLength');
         }
-        if (!isNaN(metadata.maxLength) && value.toString().length > metadata.maxLength) {
+        if (!isNaN(metadata.maxLength) && value.length > metadata.maxLength) {
             throw new MetadataValidationError('maxLength');
         }
         if ((!isNaN(metadata.minValue) || !isNaN(metadata.maxValue)) && isNaN(value as any)) {
-            throw new MetadataValidationError('minValue or maxValue', 'min/max value and not number');
+            throw new MetadataValidationError('minValue or maxValue', 'value is not numeric');
         }
         if (!isNaN(metadata.minValue) && value as any < metadata.minValue) {
             throw new MetadataValidationError('minValue');
@@ -89,10 +99,7 @@ export class DecoratorModelValidator implements ModelValidator {
     }
 
     private validatePrimitive(metadata: MemberMetadata, value: any): any {
-
-        const result = this.primitive.validate(value, metadata);
-
-        return this.validateMetadata(metadata, result);
+        return this.primitive.validate(value, metadata);
     }
 
     private getKey(parentKey: string, key: string): string {
