@@ -1,8 +1,9 @@
-import { MemberMetadata, ModelBase, Property } from '@dandi/model';
+import { AppError, DateTime, Url, Uuid } from '@dandi/common';
+
+import { SinonStubbedInstance, createStubInstance } from 'sinon';
 import { expect } from 'chai';
 
 import { DateTimeTypeValidator } from './date.time.type.validator';
-import { ModelValidationError } from './model.validation.error';
 import {
     BooleanTypeValidator,
     NumberTypeValidator,
@@ -11,8 +12,8 @@ import {
 } from './primitive.type.validator';
 
 import { TypeValidationError, TypeValidator } from './type.validator';
-import { UrlTypeValidator } from './url.type.validator';
-import { UuidTypeValidator } from './uuid.type.validator';
+import { UrlTypeValidator }                   from './url.type.validator';
+import { UuidTypeValidator }                  from './uuid.type.validator';
 
 describe('StringTypeValidator', () => {
 
@@ -71,6 +72,18 @@ describe('BooleanTypeValidator', () => {
 
     describe('validate', () => {
 
+        it('passes through boolean values', () => {
+            expect(validator.validate(true)).to.be.true;
+            expect(validator.validate(false)).to.be.false;
+        });
+
+        it('converts the value 0 to false', () => {
+            expect(validator.validate(0)).to.be.false;
+        });
+
+        it ('converts the value 1 to true', () => {
+            expect(validator.validate(1)).to.be.true;
+        });
 
         it('converts boolean values to booleans', () => {
             expect(validator.validate('true')).to.be.true;
@@ -83,6 +96,7 @@ describe('BooleanTypeValidator', () => {
 
         it('throws an error if the value is not a valid boolean', () => {
             expect(() => validator.validate('flalse')).to.throw(TypeValidationError);
+            expect(() => validator.validate({ foo: 'bar' })).to.throw(TypeValidationError);
         });
 
     });
@@ -93,21 +107,79 @@ describe('BooleanTypeValidator', () => {
 describe('PrimitiveTypeValidator', () => {
 
     let validator: PrimitiveTypeValidator;
+    let bool: SinonStubbedInstance<BooleanTypeValidator>;
+    let dt: SinonStubbedInstance<DateTimeTypeValidator>;
+    let num: SinonStubbedInstance<NumberTypeValidator>;
+    let str: SinonStubbedInstance<StringTypeValidator>;
+    let url: SinonStubbedInstance<UrlTypeValidator>;
+    let uuid: SinonStubbedInstance<UuidTypeValidator>;
 
     beforeEach(() => {
-        validator = new PrimitiveTypeValidator(
-            new BooleanTypeValidator(),
-            new DateTimeTypeValidator(),
-            new NumberTypeValidator(),
-            new StringTypeValidator(),
-            new UrlTypeValidator(),
-            new UuidTypeValidator(),
-        );
+        bool = createStubInstance(BooleanTypeValidator);
+        dt = createStubInstance(DateTimeTypeValidator);
+        num = createStubInstance(NumberTypeValidator);
+        str = createStubInstance(StringTypeValidator);
+        url = createStubInstance(UrlTypeValidator);
+        uuid = createStubInstance(UuidTypeValidator);
+        validator = new PrimitiveTypeValidator(bool, dt, num, str, url, uuid);
     });
     afterEach(() => {
+        bool = undefined;
+        dt = undefined;
+        num = undefined;
+        str = undefined;
+        url = undefined;
+        uuid = undefined;
         validator = undefined;
     });
 
+    it('validates boolean values', () => {
+        validator.validate('foo', { type: Boolean });
+        expect(bool.validate).to.have.been
+            .calledOnce
+            .calledWithExactly('foo', { type: Boolean });
+    });
 
+    it('validates DateTime values', () => {
+        validator.validate('foo', { type: DateTime });
+        expect(dt.validate).to.have.been
+            .calledOnce
+            .calledWithExactly('foo', { type: DateTime });
+    });
+
+    it('validates numeric values', () => {
+        validator.validate('foo', { type: Number });
+        expect(num.validate).to.have.been
+            .calledOnce
+            .calledWithExactly('foo', { type: Number });
+    });
+
+    it('validates string values', () => {
+        validator.validate('foo', { type: String });
+        expect(str.validate).to.have.been
+            .calledOnce
+            .calledWithExactly('foo', { type: String });
+    });
+
+    it('validates url values', () => {
+        validator.validate('foo', { type: Url });
+        expect(url.validate).to.have.been
+            .calledOnce
+            .calledWithExactly('foo', { type: Url });
+    });
+
+    it('validates uuid values', () => {
+        validator.validate('foo', { type: Uuid });
+        expect(uuid.validate).to.have.been
+            .calledOnce
+            .calledWithExactly('foo', { type: Uuid });
+    });
+
+    it('throws an AppError if it does not have a validator for the specified type', () => {
+
+        expect(() => validator.validate('foo', { type: Date }))
+            .to.throw(AppError);
+
+    });
 
 });

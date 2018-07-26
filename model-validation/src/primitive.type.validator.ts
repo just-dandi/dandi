@@ -38,14 +38,13 @@ export class BooleanTypeValidator implements TypeValidator<boolean> {
         if (obj === 1) {
             return true;
         }
-        if (typeof(obj) !== 'string') {
-            obj = obj.toString();
-        }
-        if (obj.toLocaleLowerCase() === 'true') {
-            return true;
-        }
-        if (obj.toLocaleLowerCase() === 'false') {
-            return false;
+        if (typeof (obj) === 'string') {
+            if (obj.toLocaleLowerCase() === 'true') {
+                return true;
+            }
+            if (obj.toLocaleLowerCase() === 'false') {
+                return false;
+            }
         }
         throw new TypeValidationError(obj, Boolean);
     }
