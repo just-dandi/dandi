@@ -2,11 +2,11 @@
 import { expect } from 'chai';
 
 import { DataPropertyMetadata } from './data.property.metadata';
-import { Json } from './json.decorator';
-import { Property } from './model.decorator';
+import { Json }                 from './json.decorator';
+import { Property }             from './model.decorator';
+import { ModelUtil }            from './model.util';
 
-import { ModelUtil } from './model.util';
-
+// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('ModelUtil', () => {
 
     describe('generatePathList', () => {
@@ -22,7 +22,7 @@ describe('ModelUtil', () => {
                 public bar: string;
 
                 @Property(TestChildClass)
-                public child: TestChildClass
+                public child: TestChildClass;
             }
 
             const pathList = ModelUtil.generatePathList(TestClass);
@@ -46,10 +46,10 @@ describe('ModelUtil', () => {
 
                 @Property(TestChildClass)
                 @Json()
-                public child: TestChildClass
+                public child: TestChildClass;
             }
             const pathList = ModelUtil.generatePathList(TestClass, {
-                recursionFilter: (meta: DataPropertyMetadata) => !meta.json
+                recursionFilter: (meta: DataPropertyMetadata) => !meta.json,
             });
 
             expect(pathList).to.deep.equal([
@@ -70,7 +70,7 @@ describe('ModelUtil', () => {
                 public bar: string;
 
                 @Property(TestChildClass)
-                public child: TestChildClass
+                public child: TestChildClass;
             }
 
             const pathList = ModelUtil.generatePathList(TestClass, {

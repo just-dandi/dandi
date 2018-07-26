@@ -3,7 +3,7 @@ import { Constructor }     from '@dandi/common';
 import { ProviderOptions } from './provider';
 import { Repository }      from './repository';
 
-import { InjectionToken, isInjectionToken, InjectionTokenTypeError } from './injection.token';
+import { InjectionToken, InjectionTokenTypeError, isInjectionToken } from './injection.token';
 
 export interface InjectableDecorator<T> {
     (options?: InjectionToken<T>): ClassDecorator;
@@ -14,14 +14,14 @@ export function injectableDecorator<T>(injectable: InjectionToken<T>, injectable
     if (injectable && !isInjectionToken(injectable)) {
         throw new InjectionTokenTypeError(injectable);
     }
-    let providerOptions: ProviderOptions<T> = {
+    const providerOptions: ProviderOptions<T> = {
     };
     if (injectable) {
         providerOptions.provide = injectable;
     }
     injectableOptions.forEach(option => option.setOptions(providerOptions));
     Repository.global.register(target, providerOptions);
-    Reflect.set(target, ProviderOptions.valueOf() as symbol, providerOptions)
+    Reflect.set(target, ProviderOptions.valueOf() as symbol, providerOptions);
 }
 
 export function Injectable<T>(injectableOrOption: (InjectionToken<T> | InjectableOption) = null, ...options: InjectableOption[]): ClassDecorator {
@@ -46,4 +46,3 @@ export class InjectableOption {
 
 export const Singleton = new InjectableOption((options: ProviderOptions<any>) => options.singleton = true);
 export const Multi = new InjectableOption((options: ProviderOptions<any>) => options.multi = true);
-

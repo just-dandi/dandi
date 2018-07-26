@@ -10,9 +10,7 @@ export interface HttpMethodOptions {
     cors?: CorsConfig | boolean;
 }
 
-export interface HttpMethodDecorator {
-    (path?: string): MethodDecorator;
-}
+export type HttpMethodDecorator = (path?: string) => MethodDecorator;
 
 export type ControllerMethod = string;
 export type RoutePath = string;

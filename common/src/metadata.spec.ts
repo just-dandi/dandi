@@ -1,7 +1,7 @@
-import { getMetadata } from '../index';
-
 import { expect } from 'chai';
 import { stub }   from 'sinon';
+
+import { getMetadata } from '../index';
 
 describe('getMetadata', () => {
 

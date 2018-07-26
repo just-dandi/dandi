@@ -79,7 +79,7 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler<TEventDat
         @Inject(LambdaEventTransformer) private transformer: LambdaEventTransformer<any, any>,
         @Inject(LambdaHandler) private handler: LambdaHandler<TEventData>,
         @Inject(LambdaResponder) private responder: LambdaResponder<any>,
-        @Inject(LambdaErrorHandler) @Optional() private errorHandlers: LambdaErrorHandler<TEvent>[],
+        @Inject(LambdaErrorHandler) @Optional() private errorHandlers: Array<LambdaErrorHandler<TEvent>>,
     ) {}
 
     public async handleEvent(event: TEvent, context: Context): Promise<any> {

@@ -1,6 +1,6 @@
 import { Constructor, isPrimitiveType, Primitive } from '@dandi/common';
 import { Inject, Injectable }                      from '@dandi/core';
-import { getModelMetadata, MemberMetadata, getAllKeys, OneOf } from '@dandi/model';
+import { getAllKeys, getModelMetadata, MemberMetadata, OneOf } from '@dandi/model';
 
 import { MetadataValidationError }            from './metadata.validation.error';
 import { ModelValidationError }               from './model.validation.error';
@@ -65,7 +65,7 @@ export class DecoratorModelValidator implements ModelValidator {
             return this.validateOneOf(metadata, key, value);
         }
 
-        if (isPrimitiveType(metadata.type)){
+        if (isPrimitiveType(metadata.type)) {
             return this.validatePrimitive(metadata, value);
         }
         return this.validateModel(metadata.type, value, key);

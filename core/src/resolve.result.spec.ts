@@ -1,10 +1,8 @@
 import { Disposable } from '@dandi/common';
-
-import { ResolveResult, ResolverContext } from '../';
-
+import { expect } from 'chai';
 import { createStubInstance, SinonStubbedInstance } from 'sinon';
 
-import { expect } from 'chai';
+import { ResolverContext, ResolveResult } from '../';
 
 describe('ResolveResult', () => {
 

@@ -13,10 +13,6 @@ export class FirebaseServiceAccount extends ModelBase implements admin.ServiceAc
         };
     }
 
-    constructor(source?: any) {
-        super(source);
-    }
-
     @Property(String)
     public projectId?: string;
 
@@ -25,5 +21,9 @@ export class FirebaseServiceAccount extends ModelBase implements admin.ServiceAc
 
     @Property(String)
     public privateKey?: string;
+
+    constructor(source?: any) {
+        super(source);
+    }
 
 }

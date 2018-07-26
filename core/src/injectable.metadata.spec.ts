@@ -1,11 +1,12 @@
-import { getInjectableMetadata, getInjectableParamMetadata, methodTarget, MethodTarget } from '../';
 import { expect } from 'chai';
+
+import { getInjectableMetadata, getInjectableParamMetadata, methodTarget, MethodTarget } from '../';
 
 class TestClass {
     constructor(param1: any, param2: any) {
     }
 
-    method(param1: any, param2: any) {
+    public method(param1: any, param2: any) {
 
     }
 }

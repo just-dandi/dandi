@@ -13,7 +13,7 @@ export interface Route {
     path: string;
     controllerCtr: Constructor<any>;
     controllerMethod: string;
-    authorization: false | Provider<AuthorizationCondition>[];
+    authorization: false | Array<Provider<AuthorizationCondition>>;
 }
 
 export const Route: InjectionToken<Route> = localSymbolToken<Route>('Route');

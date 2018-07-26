@@ -25,8 +25,8 @@ export class CascadingCache implements Cache {
     }
 
     public async get<T>(key: Symbol): Promise<T> {
-        for (let cache of this.caches) {
-            let result = await cache.get(key);
+        for (const cache of this.caches) {
+            const result = await cache.get(key);
             if (result) {
                 return result as T;
             }

@@ -1,5 +1,6 @@
-import { AmbientInjectableScanner, Container, Injectable, Repository } from '../';
 import { expect } from 'chai';
+
+import { AmbientInjectableScanner, Container, Injectable, Repository } from '../';
 
 describe('AmbientInjectableScanner', () => {
 
@@ -24,7 +25,6 @@ describe('AmbientInjectableScanner', () => {
         await container.start();
 
         expect((await container.resolve(TestInjectable)).value).to.be.instanceOf(TestInjectable);
-
 
     });
 

@@ -2,6 +2,6 @@ import { Provider } from '@dandi/core';
 
 import { AwsSsmClientProvider } from './ssm.client.factory';
 
-export const AwsSsmConfigModule: Provider<any>[] = [
+export const AwsSsmConfigModule: Array<Provider<any>> = [
     AwsSsmClientProvider,
 ];

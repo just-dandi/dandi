@@ -70,11 +70,9 @@ export class Disposable {
         const ogDispose = obj.dispose;
         obj.dispose = (reason: string) => {
             let ogError: Error;
-            try { ogDispose(reason); }
-            catch (err) {
+            try { ogDispose(reason); } catch (err) {
                 ogError = err;
-            }
-            finally { dispose(reason); }
+            } finally { dispose(reason); }
 
             if (ogError) {
                 throw ogError;
@@ -91,11 +89,9 @@ export class Disposable {
         let error: Error;
         try {
             return use(obj);
-        }
-        catch (err) {
+        } catch (err) {
             error = err;
-        }
-        finally {
+        } finally {
             if (Disposable.isDisposable(obj)) {
                 obj.dispose('after Disposable.use()');
             }
@@ -108,11 +104,9 @@ export class Disposable {
 
         try {
             return await use(obj);
-        }
-        catch (err) {
+        } catch (err) {
             throw err;
-        }
-        finally {
+        } finally {
             if (Disposable.isDisposable(obj)) {
                 await obj.dispose('after Disposable.useAsync()');
             }

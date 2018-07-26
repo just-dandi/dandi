@@ -1,11 +1,13 @@
+import { expect } from 'chai';
+
 import {
     isClassProvider, isFactoryProvider, isGeneratingProvider, isProvider,
     isValueProvider,
 } from './provider.util';
-import { expect } from 'chai';
 
 class TestClass {}
 
+// tslint:disable no-unused-expression no-empty max-line-length
 describe('isClassProvider', () => {
 
     it('returns true when useClass is a class', () => {
@@ -13,7 +15,8 @@ describe('isClassProvider', () => {
     });
 
     it('returns true when useClass is a constructable function', () => {
-        expect(isClassProvider({ provide: TestClass, useClass: function() {} })).to.be.true;
+        // tslint:disable-next-line
+        expect(isClassProvider({ provide: TestClass, useClass: function () {} })).to.be.true;
     });
 
     it('returns false when useClass is a non-constructable function', () => {
@@ -42,7 +45,7 @@ describe('isFactoryProvider', () => {
 
     it('returns true when useFactory is a function', () => {
         expect(isFactoryProvider({ provide: TestClass, useFactory: TestClass })).to.be.true;
-        expect(isFactoryProvider({ provide: TestClass, useFactory: function() {} })).to.be.true;
+        expect(isFactoryProvider({ provide: TestClass, useFactory() {} })).to.be.true;
         expect(isFactoryProvider({ provide: TestClass, useFactory: () => {}})).to.be.true;
     });
 

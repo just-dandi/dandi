@@ -11,4 +11,3 @@ export function localSymbolToken<T>(target: string): InjectionToken<T> {
 export function localOpinionatedToken<T>(target: string, options: InjectionOptions): InjectionToken<T> {
     return OpinionatedToken.local<T>(PKG, target, options);
 }
-

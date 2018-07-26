@@ -49,8 +49,8 @@ export function getParamNames<T>(target: Function, memberName?: string): string[
     if (typeof target !== 'function') {
         throw new Error('Target is not a function');
     }
-    let cacheKey = getCacheKey(target, memberName);
-    let cachedResult = CACHE.get(cacheKey);
+    const cacheKey = getCacheKey(target, memberName);
+    const cachedResult = CACHE.get(cacheKey);
     if (cachedResult) {
         return cachedResult;
     }

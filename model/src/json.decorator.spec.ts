@@ -5,7 +5,6 @@ import { DataPropertyMetadata } from './data.property.metadata';
 import { Json }                 from './json.decorator';
 import { getMemberMetadata }    from './member.metadata';
 
-
 describe('@Json()', () => {
 
     it('sets the json property on a member\'s metadata', () => {

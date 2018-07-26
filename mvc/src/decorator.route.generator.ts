@@ -14,17 +14,6 @@ export class DecoratorRouteGenerator implements RouteGenerator {
         @Inject(Logger) private logger: Logger,
     ) {}
 
-    private getCorsConfig(controllerCors: CorsConfig | boolean, methodCors: CorsConfig | boolean): CorsConfig | boolean {
-        if (!controllerCors) {
-            return methodCors;
-        }
-        if (controllerCors === true && methodCors === true) {
-            return true;
-        }
-        return Object.assign({}, controllerCors, methodCors);
-    }
-
-
     public generateRoutes(): Route[] {
 
         this.logger.debug('generating routes...');
@@ -40,20 +29,21 @@ export class DecoratorRouteGenerator implements RouteGenerator {
 
             this.logger.debug('found controller', controllerCtr.name);
 
-            for (const [controllerMethod, controllerMethodMetadata] of meta.routeMap.entries()) {
+            for (const [ controllerMethod, controllerMethodMetadata ] of meta.routeMap.entries()) {
 
                 const authorizationMeta = mergeAuthorization(meta, controllerMethodMetadata);
                 const authorization = authorizationMeta && authorizationMeta.authorization;
                 const methodCors = controllerMethodMetadata.cors;
                 const cors = this.getCorsConfig(controllerCors, methodCors);
 
-                for (const [methodPath, httpMethods] of controllerMethodMetadata.routePaths.entries()) {
+                for (const [ methodPath, httpMethods ] of controllerMethodMetadata.routePaths.entries()) {
 
                     const path = `${meta.path}${(methodPath && !methodPath.startsWith('/')) ? '/' : ''}${methodPath}`;
 
                     httpMethods.forEach(httpMethod => {
 
-                        this.logger.debug(`generated route for ${controllerCtr.name}.${controllerMethod}:`, httpMethod.toUpperCase(), path);
+                        this.logger.debug(`generated route for ${controllerCtr.name}.${controllerMethod}:`,
+                            httpMethod.toUpperCase(), path);
 
                         routes.push({
                             httpMethod,
@@ -73,5 +63,18 @@ export class DecoratorRouteGenerator implements RouteGenerator {
         }
 
         return routes;
+    }
+
+    private getCorsConfig(
+        controllerCors: CorsConfig | boolean,
+        methodCors: CorsConfig | boolean,
+    ): CorsConfig | boolean {
+        if (!controllerCors) {
+            return methodCors;
+        }
+        if (controllerCors === true && methodCors === true) {
+            return true;
+        }
+        return Object.assign({}, controllerCors, methodCors);
     }
 }

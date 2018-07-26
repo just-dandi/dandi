@@ -1,22 +1,21 @@
 import { FactoryProvider, getInjectableParamMetadata, methodTarget, SymbolToken } from '@dandi/core';
 import { TypeValidator } from '@dandi/model-validation';
+import { expect } from 'chai';
 
 import { PathParam, QueryParam, RequestPathParamMap, RequestQueryParamMap } from '../';
 
-import { expect } from 'chai';
-
+// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('@RequestParam', () => {
 
     it('sets a token for the decorated parameter', () => {
 
         class TestController {
-            method(@PathParam(String) foo: string, @QueryParam(String) bar: string): void {
+            public method(@PathParam(String) foo: string, @QueryParam(String) bar: string): void {
             }
         }
 
         const pathMeta = getInjectableParamMetadata(methodTarget(TestController), 'method', 0);
         const queryMeta = getInjectableParamMetadata(methodTarget(TestController), 'method', 1);
-
 
         expect(pathMeta).to.exist;
         expect(pathMeta.token).to.exist;
@@ -33,7 +32,7 @@ describe('@RequestParam', () => {
     it('creates a provider to handle validating the param value', () => {
 
         class TestController {
-            method(@PathParam(String) foo: string, @QueryParam(String) bar: string): void {
+            public method(@PathParam(String) foo: string, @QueryParam(String) bar: string): void {
             }
         }
 
@@ -43,12 +42,14 @@ describe('@RequestParam', () => {
         expect(pathMeta.providers).to.exist;
         expect(pathMeta.providers).not.to.be.empty;
         expect(pathMeta.providers[0].provide).to.equal(pathMeta.token);
-        expect((pathMeta.providers[0] as FactoryProvider<any>).deps).to.include.members([TypeValidator(String), RequestPathParamMap]);
+        expect((pathMeta.providers[0] as FactoryProvider<any>).deps)
+            .to.include.members([ TypeValidator(String), RequestPathParamMap ]);
 
         expect(queryMeta.providers).to.exist;
         expect(queryMeta.providers).not.to.be.empty;
         expect(queryMeta.providers[0].provide).to.equal(queryMeta.token);
-        expect((queryMeta.providers[0] as FactoryProvider<any>).deps).to.include.members([TypeValidator(String), RequestQueryParamMap]);
+        expect((queryMeta.providers[0] as FactoryProvider<any>).deps)
+            .to.include.members([ TypeValidator(String), RequestQueryParamMap ]);
 
     });
 

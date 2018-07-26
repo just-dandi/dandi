@@ -1,7 +1,7 @@
-import { Injectable, InjectionTokenTypeError, Multi, Repository, Singleton } from '../';
-
 import { expect } from 'chai';
 import { SinonSpy, spy } from 'sinon';
+
+import { Injectable, InjectionTokenTypeError, Multi, Repository, Singleton } from '../';
 
 describe('@Injectable', () => {
 
@@ -28,7 +28,7 @@ describe('@Injectable', () => {
     it('registers the decorated class for the specified token', () => {
 
         class FooClass {
-            bar: string;
+            public bar: string;
         }
         class TestClass {}
 

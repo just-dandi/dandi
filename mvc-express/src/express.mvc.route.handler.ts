@@ -26,12 +26,13 @@ export class ExpressMvcRouteHandler implements RouteHandler {
         this.logger.debug(`begin handleRouteRequest ${route.controllerCtr.name}.${route.controllerMethod}:`,
             route.httpMethod.toUpperCase(), route.path);
 
-
         requestInfo.performance.mark('ExpressMvcRouteHandler.handleRouteRequest', 'beforeInvokeController');
-        const result = await this.resolver.invokeInContext(resolverContext, controller, controller[route.controllerMethod]);
+        const result =
+            await this.resolver.invokeInContext(resolverContext, controller, controller[route.controllerMethod]);
         requestInfo.performance.mark('ExpressMvcRouteHandler.handleRouteRequest', 'afterInvokeController');
 
-        const controllerResult: ControllerResult = isControllerResult(result) ? result : new JsonControllerResult(result);
+        const controllerResult: ControllerResult =
+            isControllerResult(result) ? result : new JsonControllerResult(result);
 
         if (controllerResult.headers) {
             Object.keys(controllerResult.headers)

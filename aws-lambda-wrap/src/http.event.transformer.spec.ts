@@ -14,7 +14,7 @@ import { HttpEventTransformer, HttpHandlerRequest } from './http.event.transform
 import { LambdaEventTransformer }                   from './lambda.event.transformer';
 
 class TestBody {
-    foo: string;
+    public foo: string;
 }
 
 // tslint:disable no-unused-expression
@@ -117,7 +117,6 @@ describe('HttpEventTransformer', () => {
             transformer = undefined;
         });
 
-
         it('creates a HttpHandlerRequest object using the event values and deserialized body', () => {
 
             const eventWithoutBody = Object.assign({}, event);
@@ -148,7 +147,6 @@ describe('HttpEventTransformer', () => {
         afterEach(() => {
             transformer = undefined;
         });
-
 
         it('throws a DandiAwsLambdaError', () => {
 

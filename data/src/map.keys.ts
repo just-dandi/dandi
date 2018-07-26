@@ -12,21 +12,21 @@ function walkCaseEntry(caseKeysFn: (str: string) => string, obj: any): any {
         if (!obj.length) {
             return obj;
         }
-        return mapKeys(caseKeysFn, obj)
+        return mapKeys(caseKeysFn, obj);
     }
 
     return caseKeysFn(obj);
 }
 
 export function mapKeys(caseFn: (str: string) => string, obj: any) {
-    let caseKeysFn = mapKeys.bind(null, caseFn);
+    const caseKeysFn = mapKeys.bind(null, caseFn);
     if (Array.isArray(obj)) {
         return obj.map(caseKeysFn);
     }
     if (obj === null || !isObject(obj) || obj.constructor !== Object) {
         return obj;
     }
-    let result: any = {};
+    const result: any = {};
     Object.keys(obj).forEach((key: string) => {
         let value = obj[key];
         value = walkCaseEntry(caseKeysFn, value);

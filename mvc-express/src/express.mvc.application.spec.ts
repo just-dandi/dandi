@@ -1,29 +1,31 @@
 import { Repository }                        from '@dandi/core';
 import { RouteGenerator, RouteInitializer }  from '@dandi/mvc';
-import { ExpressInstance, ExpressMvcConfig } from '../';
-
 import { stub } from 'sinon';
 
+import { ExpressInstance, ExpressMvcConfig } from '../';
+
+// tslint:disable no-unused-expression no-empty max-classes-per-file
+
 const TEST_EXPRESS_RESOLVER: any = {
-    provide: ExpressInstance,
+    provide:  ExpressInstance,
     useValue: {
-        use(){},
-        listen(){}
+        use() {},
+        listen() {},
     },
 };
 
 Repository.global.register(TEST_EXPRESS_RESOLVER);
 Repository.global.register({
-    provide: ExpressMvcConfig,
-    useValue: {}
+    provide:  ExpressMvcConfig,
+    useValue: {},
 });
 Repository.global.register({
-    provide: RouteGenerator,
+    provide:  RouteGenerator,
     useValue: {
         generateRoutes: stub().returns([]),
-    }
+    },
 });
 Repository.global.register({
-    provide: RouteInitializer,
+    provide:  RouteInitializer,
     useValue: {},
 });

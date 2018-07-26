@@ -5,6 +5,7 @@ import { SinonStubbedInstance, stub } from 'sinon';
 
 import { requestParamValidatorFactory } from './request.param.validator';
 
+// tslint:disable unused-expression no-empty
 describe('requestParamValidatorFactory', () => {
 
     let paramMap: { [key: string]: string };

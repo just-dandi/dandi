@@ -1,13 +1,12 @@
-import { AppError }                          from '@dandi/common'
+import { AppError }                          from '@dandi/common';
 import { Container, Logger, NoopLogger, Resolver } from '@dandi/core';
 import { DataMapper, PassThroughDataMapper } from '@dandi/data';
 import { ModelValidator }                    from '@dandi/model-validation';
 import { DecoratorModelValidator } from '@dandi/model-validation/src/decorator.model.validator';
 
-
-import { createStubInstance, SinonStub, SinonStubbedInstance, stub } from 'sinon';
 import { expect } from 'chai';
 import { Pool, PoolClient } from 'pg';
+import { createStubInstance, SinonStub, SinonStubbedInstance, stub } from 'sinon';
 
 import { PgDbClient, TransactionAlreadyInProgressError } from './pg.db.client';
 import { PgDbPool } from './pg.db.pool';
@@ -73,7 +72,7 @@ describe('PgDbClient', () => {
         it('rethrows errors', async () => {
 
             const err = new AppError();
-            await expect(dbClient.transaction(() => { throw err })).to.be.rejectedWith(err);
+            await expect(dbClient.transaction(() => { throw err; })).to.be.rejectedWith(err);
 
         });
 
@@ -82,7 +81,7 @@ describe('PgDbClient', () => {
             const err = new AppError();
             const second = stub();
 
-            await expect(dbClient.transaction(() => { throw err })).to.be.rejectedWith(err);
+            await expect(dbClient.transaction(() => { throw err; })).to.be.rejectedWith(err);
             await dbClient.transaction(second);
 
             expect(second).to.have.been.called;
@@ -109,7 +108,6 @@ describe('PgDbClient', () => {
             expect(transactionDispose).not.to.have.been.called;
             dbClient.dispose('');
             expect(transactionDispose).to.have.been.called;
-
 
         });
 

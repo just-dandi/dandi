@@ -36,13 +36,13 @@ describe('ConsoleLogger', () => {
 
         it('returns the name of a class or function surrounded by brackets', () => {
 
-            expect((logger as any).getContextTag(function foo(){} as any)).to.equal('[foo]');
+            expect((logger as any).getContextTag(function foo() {} as any)).to.equal('[foo]');
 
         });
 
         it('returns the toString output of a non-class and non-function object surrounded by brackets', () => {
 
-            const context = { toString() { return 'yeah man' } };
+            const context = { toString() { return 'yeah man'; } };
             expect((logger as any).getContextTag(context as any)).to.equal('[yeah man]');
 
         });

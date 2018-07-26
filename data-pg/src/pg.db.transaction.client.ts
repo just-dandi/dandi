@@ -1,6 +1,6 @@
 import { AppError, Constructor, Disposable } from '@dandi/common';
-import { DataMapper, DbTransactionClient }   from '@dandi/data';
 import { Inject, Injectable, Logger }        from '@dandi/core';
+import { DataMapper, DbTransactionClient }   from '@dandi/data';
 import { ModelValidator }                    from '@dandi/model-validation';
 
 import { PgDbPoolClient }    from './pg.db.pool.client';

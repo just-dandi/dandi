@@ -13,7 +13,7 @@ export type ClassMethods<T> = {
 
 export type MethodTarget<T> = ClassMethods<T> & {
     constructor: Constructor<T>;
-}
+};
 
 export function methodTarget<T>(target: Constructor<T>): MethodTarget<T> {
     return target.prototype as MethodTarget<T>;
@@ -22,17 +22,17 @@ export function methodTarget<T>(target: Constructor<T>): MethodTarget<T> {
 export interface ParamMetadata<T> {
     name: string;
     token?: InjectionToken<T>;
-    providers?: Provider<any>[];
+    providers?: Array<Provider<any>>;
     optional?: boolean;
 }
 
 export interface InjectableMetadata {
     paramNames?: string[];
-    params: ParamMetadata<any>[];
+    params: Array<ParamMetadata<any>>;
 }
 
 export const getInjectableMetadata: MetadataAccessor<InjectableMetadata> =
-    getMetadata.bind(null, META_KEY, () => ({ params: [] as ParamMetadata<any>[] }));
+    getMetadata.bind(null, META_KEY, () => ({ params: [] as Array<ParamMetadata<any>> }));
 
 export function getInjectableParamMetadata<TTarget, TMetadata extends ParamMetadata<TTarget> = ParamMetadata<TTarget>>(
     target: MethodTarget<TTarget>,

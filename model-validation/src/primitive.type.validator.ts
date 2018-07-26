@@ -84,5 +84,4 @@ export class PrimitiveTypeValidator {
         return primitiveValidator.validate(value, metadata);
     }
 
-
 }

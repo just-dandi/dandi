@@ -34,4 +34,3 @@ export function CacheProvider(type: CacheProviderType) {
     }
     return token;
 }
-

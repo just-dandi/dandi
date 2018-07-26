@@ -2,7 +2,7 @@ import { Primitive } from '@dandi/common';
 import { MemberMetadata, OneOf, Property } from '@dandi/model';
 
 import { expect } from 'chai';
-import { createStubInstance, SinonStubbedInstance, SinonSpy, spy, stub } from 'sinon';
+import { createStubInstance, SinonSpy, SinonStubbedInstance, spy, stub } from 'sinon';
 
 import { DecoratorModelValidator } from './decorator.model.validator';
 import { MetadataValidationError } from './metadata.validation.error';
@@ -80,7 +80,6 @@ describe('DecoratorModelValidator', () => {
 
             const firstCallValue = validateMember.firstCall.args[2];
             expect(firstCallValue).to.equal('foo');
-
 
             const secondCallMeta: MemberMetadata = validateMember.secondCall.args[0];
             expect(secondCallMeta.type).to.equal(Number);

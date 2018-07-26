@@ -1,12 +1,12 @@
 import { InvalidDisposeTargetError } from '@dandi/common';
+import { expect } from 'chai';
+import { spy }    from 'sinon';
+
 import {
     ConflictingRegistrationOptionsError, InvalidRegistrationTargetError,
     InvalidRepositoryContextError, OpinionatedProviderOptionsConflictError, OpinionatedToken, Provider,
     ProviderTypeError, Repository, SymbolToken,
 } from '../';
-
-import { expect } from 'chai';
-import { spy }    from 'sinon';
 
 class TestClass { }
 
@@ -271,7 +271,7 @@ describe('Repository', () => {
 
         it('throws an error if a context is not specified', () => {
             expect(() => Repository.for(null)).to.throw(InvalidRepositoryContextError);
-        })
+        });
 
     });
 

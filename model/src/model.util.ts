@@ -2,7 +2,7 @@ import { Constructor, DateTime, Url, Uuid } from '@dandi/common';
 
 import { getAllKeys, getModelMetadata, MemberMetadata } from './member.metadata';
 
-export const NO_RECURSION: Constructor<any>[] = [
+export const NO_RECURSION: Array<Constructor<any>> = [
     Array,
     Boolean,
     DateTime,
@@ -40,7 +40,7 @@ export class ModelUtil {
                 const canRecurse = !options.recursionFilter || options.recursionFilter(memberMeta);
                 const isNonRecursive = NO_RECURSION.includes(memberMeta.type);
                 if (!canRecurse || !memberMeta.type || isNonRecursive || depth === options.maxDepth) {
-                    result.push(path)
+                    result.push(path);
                 } else {
                     result.push(...ModelUtil.walkModel(memberMeta.type, path, options, depth + 1));
                 }

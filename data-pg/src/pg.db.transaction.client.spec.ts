@@ -5,7 +5,7 @@ import { ModelValidator }                    from '@dandi/model-validation';
 import { PoolClient } from 'pg';
 
 import { expect } from 'chai';
-import { SinonStubbedInstance, stub, createStubInstance, SinonStub } from 'sinon';
+import { createStubInstance, SinonStub, SinonStubbedInstance, stub } from 'sinon';
 
 import { PgDbTransactionClient, TransactionRollbackError } from './pg.db.transaction.client';
 
@@ -147,7 +147,7 @@ describe('PgDbTransactionClient', () => {
         xit('throws a TransactionRollbackError if an error occurs during the rollback', async () => {
 
             const rollbackError = new Error();
-            client.query.callsFake(() => { throw rollbackError });
+            client.query.callsFake(() => { throw rollbackError; });
 
             const rollbackResultError = await expect(transactionClient.rollback()).to.be.rejectedWith(TransactionRollbackError);
             expect(rollbackResultError.innerError).to.equal(rollbackError);
@@ -158,7 +158,7 @@ describe('PgDbTransactionClient', () => {
 
             const rollbackError = new Error();
             const originalError = new Error();
-            client.query.callsFake(() => { throw rollbackError });
+            client.query.callsFake(() => { throw rollbackError; });
 
             const rollbackResultError = await expect(transactionClient.rollback(originalError)).to.be.rejectedWith(TransactionRollbackError);
             expect(rollbackResultError.originalError).to.equal(originalError);
@@ -213,6 +213,5 @@ describe('PgDbTransactionClient', () => {
         });
 
     });
-
 
 });

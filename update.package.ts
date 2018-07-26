@@ -1,3 +1,5 @@
+// tslint:disable no-var-requires
+
 import { readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 
@@ -8,7 +10,7 @@ const pkg = require(`./${pkgName}/package.json`);
 
 pkg.version = masterPkg.version;
 
-type Dependencies = { [pkg: string]: string };
+interface Dependencies { [pkg: string]: string; }
 
 function sortDependencies(deps: Dependencies) {
     return Object.keys(deps)

@@ -4,7 +4,7 @@ import { SymbolTokenBase } from './symbol.token';
 
 export interface MappedInjectionToken<TKey, TService> {
     provide: InjectionToken<TService>;
-    key: TKey,
+    key: TKey;
 }
 
 export type InjectionToken<T> = SymbolTokenBase<T> | Constructor<T> | MappedInjectionToken<any, T>;

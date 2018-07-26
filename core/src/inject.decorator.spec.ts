@@ -1,5 +1,6 @@
-import { getInjectableParamMetadata, Inject, InjectionTokenTypeError, methodTarget, SymbolToken } from '../';
 import { expect } from 'chai';
+
+import { getInjectableParamMetadata, Inject, InjectionTokenTypeError, methodTarget, SymbolToken } from '../';
 
 describe('@Inject', () => {
 

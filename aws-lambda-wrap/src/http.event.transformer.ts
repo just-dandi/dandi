@@ -1,7 +1,7 @@
 import { Inject, Injectable, Optional } from '@dandi/core';
 import { ModelValidator }               from '@dandi/model-validation';
 
-import { APIGatewayProxyEvent, APIGatewayEventRequestContext, Context } from 'aws-lambda';
+import { APIGatewayEventRequestContext, APIGatewayProxyEvent, Context } from 'aws-lambda';
 
 import { DandiAwsLambdaError }    from './dandi.aws.lambda.error';
 import { HttpEventOptions }       from './http.event.options';

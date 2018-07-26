@@ -6,7 +6,7 @@ import { OneOfValidationAttempt, OneOfValidationError } from './one.of.validatio
 import { TypeValidator }          from './type.validator';
 
 @Injectable(TypeValidator(OneOf))
-export class OneOfTypeValidator implements TypeValidator<any>{
+export class OneOfTypeValidator implements TypeValidator<any> {
 
     constructor(
         @Inject(TypeValidator(Primitive)) private validator: TypeValidator<any>,

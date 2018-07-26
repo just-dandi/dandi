@@ -1,12 +1,12 @@
 import { Uuid }                                                 from '@dandi/common';
 import { Container, NoopLogger, ResolverContext }               from '@dandi/core';
 import { HttpMethod, JsonControllerResult, RequestInfo, Route } from '@dandi/mvc';
-
-import { ExpressMvcRouteHandler } from '../';
-
 import { expect } from 'chai';
 import { stub } from 'sinon';
 
+import { ExpressMvcRouteHandler } from '../';
+
+// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('ExpressMvcRouteHandler', () => {
 
     let container: Container;
@@ -25,13 +25,13 @@ describe('ExpressMvcRouteHandler', () => {
         resolverContext = ResolverContext.create(null);
         handler = new ExpressMvcRouteHandler(container, new NoopLogger());
         route = {
-            controllerCtr: class TestClass {},
+            controllerCtr:    class TestClass {},
             controllerMethod: 'method',
-            httpMethod: HttpMethod.get,
-            siblingMethods: new Set([HttpMethod.get]),
-            cors: false,
-            path: '/',
-            authorization: false,
+            httpMethod:       HttpMethod.get,
+            siblingMethods:   new Set([ HttpMethod.get ]),
+            cors:             false,
+            path:             '/',
+            authorization:    false,
         };
         req = {
             params: {},
@@ -39,11 +39,11 @@ describe('ExpressMvcRouteHandler', () => {
         };
         res = {
             contentType: stub().returnsThis(),
-            json: stub().returnsThis(),
-            send: stub().returnsThis(),
-            setHeader: stub().returnsThis(),
-            status: stub().returnsThis(),
-            end: stub().returnsThis(),
+            json:        stub().returnsThis(),
+            send:        stub().returnsThis(),
+            setHeader:   stub().returnsThis(),
+            status:      stub().returnsThis(),
+            end:         stub().returnsThis(),
         };
         requestInfo = {
             requestId: new Uuid(),
@@ -67,7 +67,7 @@ describe('ExpressMvcRouteHandler', () => {
 
             const spy = stub();
             class TestController {
-                async method(): Promise<any> {
+                public async method(): Promise<any> {
                     spy();
                 }
             }
@@ -83,12 +83,12 @@ describe('ExpressMvcRouteHandler', () => {
 
             const spy = stub();
             class TestController {
-                async method(): Promise<any> {
+                public async method(): Promise<any> {
                     spy();
                     return { foo: 'yeah!' };
                 }
             }
-            const controller = new TestController();
+            controller = new TestController();
             await handler.handleRouteRequest(resolverContext, controller, route, req, res, requestInfo);
 
             expect(spy).to.have.been.called;
@@ -101,11 +101,11 @@ describe('ExpressMvcRouteHandler', () => {
 
             const result = new JsonControllerResult({ foo: 'yeah!' }, { 'x-fizzle-bizzle': 'okay' });
             class TestController {
-                async method(): Promise<any> {
+                public async method(): Promise<any> {
                     return result;
                 }
             }
-            const controller = new TestController();
+            controller = new TestController();
             await handler.handleRouteRequest(resolverContext, controller, route, req, res, requestInfo);
 
             expect(res.setHeader).to.have.been.calledWith('x-fizzle-bizzle', 'okay');
@@ -113,8 +113,5 @@ describe('ExpressMvcRouteHandler', () => {
         });
 
     });
-
-
-
 
 });

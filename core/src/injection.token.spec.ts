@@ -1,5 +1,6 @@
-import { isInjectionToken, SymbolToken } from '../';
 import { expect } from 'chai';
+
+import { isInjectionToken, SymbolToken } from '../';
 
 class TestClass {}
 
@@ -12,7 +13,7 @@ describe('SymbolToken', () => {
             const s1 = new SymbolToken('test');
             const s2 = new SymbolToken('test');
 
-            expect(s1).not.to.equal(s2)
+            expect(s1).not.to.equal(s2);
             expect(s1.valueOf()).not.to.equal(s2.valueOf());
 
         });
@@ -52,7 +53,7 @@ describe('isInjectionToken', () => {
     });
 
     it('returns true for constructable functions', () => {
-        expect(isInjectionToken(function () {})).to.be.true;
+        expect(isInjectionToken(function() {})).to.be.true;
     });
 
     it('returns true for SymbolToken instances', () => {

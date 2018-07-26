@@ -12,6 +12,7 @@ export * from './src/decorator.route.generator';
 export * from './src/default.route.initializer';
 export * from './src/http.method';
 export { HttpGet, HttpDelete, HttpOptions, HttpPatch, HttpPost, HttpPut} from './src/http.method.decorator';
+export * from './src/http.status.code';
 export * from './src/json.controller.result';
 export * from './src/path.param.decorator';
 export * from './src/perf.record';

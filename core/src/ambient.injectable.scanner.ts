@@ -1,5 +1,5 @@
 import { Injectable } from './injectable.decorator';
-import { Repository } from './repository'
+import { Repository } from './repository';
 import { Scanner }    from './scanner';
 
 @Injectable(Scanner)

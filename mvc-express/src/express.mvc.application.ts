@@ -16,22 +16,44 @@ export interface ExpressMvcApplicationConfig {
     routeHandler: Constructor<RouteHandler>;
     routeInitializer: Constructor<RouteInitializer>;
     routeMapper: Constructor<RouteMapper>;
-    bootstrap: Constructor<Bootstrapper>,
-    config: Provider<ExpressMvcConfig>
+    bootstrap: Constructor<Bootstrapper>;
+    config: Provider<ExpressMvcConfig>;
 }
-export type ExpressMvcApplicationOptions = { [P in keyof ExpressMvcApplicationConfig]?: ExpressMvcApplicationConfig[P] };
+export type ExpressMvcApplicationOptions = {
+    [P in keyof ExpressMvcApplicationConfig]?: ExpressMvcApplicationConfig[P]
+};
 
 @Injectable(Bootstrapper)
 export class ExpressMvcApplication implements Bootstrapper {
 
+    public static config(options: ExpressMvcApplicationOptions): Array<Provider<any>> {
+        const config: ExpressMvcApplicationConfig = {
+            expressInstanceProvider:
+                options.expressInstanceProvider || require('./default.express.provider').DEFAULT_EXPRESS_PROVIDER,
+            routeExecutor:    options.routeExecutor || require('./express.mvc.route.executor').ExpressMvcRouteExecutor,
+            routeGenerator:   options.routeGenerator || require('@dandi/mvc').DecoratorRouteGenerator,
+            routeHandler:     options.routeHandler || require('./express.mvc.route.handler').ExpressMvcRouteHandler,
+            routeInitializer: options.routeInitializer || require('@dandi/mvc').DefaultRouteInitializer,
+            routeMapper:      options.routeMapper || require('./express.mvc.route.mapper').ExpressMvcRouteMapper,
+            bootstrap:        ExpressMvcApplication,
+            config:           options.config,
+        };
+        return Object.values(config).concat(Validation);
+    }
+
+    public static defaults(mvcConfig: ExpressMvcConfig): Array<Provider<any>> {
+        return ExpressMvcApplication.config({
+            config: { provide: ExpressMvcConfig, useValue: mvcConfig },
+        });
+    }
 
     /**
      * defaults
      * {
-            express: DEFAULT_EXPRESS_PROVIDER,
-            port: 8000,
-            routeHandler: ExpressMvcRouteHandler,
-        }
+     *      express: DEFAULT_EXPRESS_PROVIDER,
+     *      port: 8000,
+     *      routeHandler: ExpressMvcRouteHandler,
+     *  }
      */
 
     constructor(
@@ -48,32 +70,12 @@ export class ExpressMvcApplication implements Bootstrapper {
         // see https://github.com/expressjs/body-parser#reviver
         this.app.use(bodyParser.json());
 
-        for(const route of this.routeGenerator.generateRoutes()) {
+        for (const route of this.routeGenerator.generateRoutes()) {
             this.routeMapper.mapRoute(route);
         }
 
         this.logger.debug('starting on port', this.config.port);
         this.app.listen(this.config.port, '0.0.0.0');
-    }
-
-    public static config(options: ExpressMvcApplicationOptions): Provider<any>[] {
-        const config: ExpressMvcApplicationConfig = {
-            expressInstanceProvider: options.expressInstanceProvider || require('./default.express.provider').DEFAULT_EXPRESS_PROVIDER,
-            routeExecutor: options.routeExecutor || require('./express.mvc.route.executor').ExpressMvcRouteExecutor,
-            routeGenerator: options.routeGenerator || require('@dandi/mvc').DecoratorRouteGenerator,
-            routeHandler: options.routeHandler || require('./express.mvc.route.handler').ExpressMvcRouteHandler,
-            routeInitializer: options.routeInitializer || require('@dandi/mvc').DefaultRouteInitializer,
-            routeMapper: options.routeMapper || require('./express.mvc.route.mapper').ExpressMvcRouteMapper,
-            bootstrap: ExpressMvcApplication,
-            config: options.config,
-        };
-        return Object.values(config).concat(Validation);
-    };
-
-    public static defaults(mvcConfig: ExpressMvcConfig): Provider<any>[] {
-        return ExpressMvcApplication.config({
-            config: { provide: ExpressMvcConfig, useValue: mvcConfig },
-        });
     }
 
 }

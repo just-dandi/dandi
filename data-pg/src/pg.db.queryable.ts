@@ -67,7 +67,7 @@ export class PgDbQueryableBase<TClient extends PgDbQueryableClient> implements D
             return null;
         }
         if (result.length > 1) {
-            throw new PgDbMultipleResultsError(cmd)
+            throw new PgDbMultipleResultsError(cmd);
         }
         return result[0];
     }

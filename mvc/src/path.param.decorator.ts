@@ -13,6 +13,11 @@ export function pathParamToken<T>(paramName: string, requestParamName: string): 
     return requestParamToken(RequestPathParamMap, paramName, requestParamName);
 }
 
-export function pathParamProvider<T>(paramToken: InjectionToken<T>, type: ValidatedType, paramName: string, memberMetadata: MemberMetadata): Provider<T> {
+export function pathParamProvider<T>(
+    paramToken: InjectionToken<T>,
+    type: ValidatedType,
+    paramName: string,
+    memberMetadata: MemberMetadata,
+): Provider<T> {
     return requestParamProvider(RequestPathParamMap, paramToken, type, paramName, memberMetadata);
 }

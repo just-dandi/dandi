@@ -3,10 +3,11 @@ import { Logger, NoopLogger, Repository, Resolver } from '@dandi/core';
 import { HttpMethod, RequestInfo, Route, RouteHandler, RouteInitializer } from '@dandi/mvc';
 
 import { expect } from 'chai';
-import { stub, createStubInstance, SinonStubbedInstance } from 'sinon';
+import { createStubInstance, SinonStubbedInstance, stub } from 'sinon';
 
 import { ExpressMvcRouteExecutor } from './express.mvc.route.executor';
 
+// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('ExpressMvcRouteExecutor', () => {
 
     let routeExec: ExpressMvcRouteExecutor;
@@ -22,29 +23,30 @@ describe('ExpressMvcRouteExecutor', () => {
 
     beforeEach(() => {
         route = {
-            controllerCtr: class TestClass { method = stub() },
+            // eslint-disable-next-line brace-style
+            controllerCtr:    class TestClass { public method = stub(); },
             controllerMethod: 'method',
-            httpMethod: HttpMethod.get,
-            siblingMethods: new Set([HttpMethod.get]),
-            cors: false,
-            path: '/',
-            authorization: false,
+            httpMethod:       HttpMethod.get,
+            siblingMethods:   new Set([ HttpMethod.get ]),
+            cors:             false,
+            path:             '/',
+            authorization:    false,
         };
         req = {
             params: {},
-            query: {},
+            query:  {},
         };
         res = {
             contentType: stub().returnsThis(),
-            json: stub().returnsThis(),
-            send: stub().returnsThis(),
-            setHeader: stub().returnsThis(),
-            status: stub().returnsThis(),
-            end: stub().returnsThis(),
+            json:        stub().returnsThis(),
+            send:        stub().returnsThis(),
+            setHeader:   stub().returnsThis(),
+            status:      stub().returnsThis(),
+            end:         stub().returnsThis(),
         };
         resolver = {
-            resolve: stub(),
-            invoke: stub(),
+            resolve:         stub(),
+            invoke:          stub(),
             invokeInContext: stub(),
         };
         routeInit = {
@@ -54,7 +56,7 @@ describe('ExpressMvcRouteExecutor', () => {
             handleRouteRequest: stub(),
         };
         requestInfo = {
-            requestId: new Uuid(),
+            requestId:   new Uuid(),
             performance: {
                 mark: stub(),
             },
@@ -71,7 +73,6 @@ describe('ExpressMvcRouteExecutor', () => {
         res = undefined;
         requestInfo = undefined;
     });
-
 
     describe('execRoute', () => {
 
@@ -111,11 +112,13 @@ describe('ExpressMvcRouteExecutor', () => {
         it('uses the status code from thrown errors if present', async () => {
 
             class SomeKindOfError extends AppError {
+
+                public statusCode = 418;
+
                 constructor() {
                     super('oh no');
                 }
 
-                statusCode = 418;
             }
 
             resolver.invoke.throws(new SomeKindOfError());

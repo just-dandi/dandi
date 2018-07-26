@@ -1,7 +1,7 @@
 import { AppError, DateTime, Url, Uuid } from '@dandi/common';
 
-import { SinonStubbedInstance, createStubInstance } from 'sinon';
 import { expect } from 'chai';
+import { createStubInstance, SinonStubbedInstance } from 'sinon';
 
 import { DateTimeTypeValidator } from './date.time.type.validator';
 import {
@@ -102,7 +102,6 @@ describe('BooleanTypeValidator', () => {
     });
 
 });
-
 
 describe('PrimitiveTypeValidator', () => {
 

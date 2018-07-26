@@ -1,7 +1,6 @@
 import { Injectable }   from '@dandi/core';
 import { camel, param } from 'change-case';
 
-
 import { DataMapper } from './data.mapper';
 import { mapKeys }    from './map.keys';
 
@@ -24,12 +23,11 @@ export class CamelSnakeDataMapper implements DataMapper {
             entry.add(segment);
         }
         if (parent[segment] && value) {
-            let entry = emptySegments.get(parent);
+            const entry = emptySegments.get(parent);
             if (entry) {
                 entry.delete(segment);
             }
         }
-
 
         const obj = parent[segment] || {};
         parent[segment] = obj;

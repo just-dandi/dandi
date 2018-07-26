@@ -7,7 +7,6 @@ describe('MemberMetadata', () => {
 
     describe('getAllKeys', () => {
 
-
         it('discovers all keys of an object', () => {
 
             const meta = {

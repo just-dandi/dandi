@@ -5,6 +5,7 @@ import { Controller, HttpGet } from '../index';
 import { getControllerMetadata } from './controller.metadata';
 import { Cors }                  from './cors.decorator';
 
+// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('@Cors', () => {
 
     describe('as a class decorator', () => {
@@ -15,7 +16,7 @@ describe('@Cors', () => {
             @Cors()
             class TestController {
                 @HttpGet()
-                testMethod() {
+                public testMethod() {
 
                 }
             }
@@ -35,7 +36,7 @@ describe('@Cors', () => {
             class TestController {
                 @HttpGet()
                 @Cors()
-                testMethod() {
+                public testMethod() {
 
                 }
             }

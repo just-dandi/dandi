@@ -1,6 +1,5 @@
 import { AppError, Constructor } from '@dandi/common';
 
-
 export interface OneOfValidationAttempt {
     type: Constructor<any>;
     error: Error;

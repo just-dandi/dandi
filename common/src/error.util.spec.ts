@@ -41,7 +41,7 @@ describe('ErrorUtil', () => {
             expect(ErrorUtil.getLoggableError(error)).to.include({
                 someCustomProp: 'foo',
                 anotherCustomProp: 'bar',
-            })
+            });
 
         });
 

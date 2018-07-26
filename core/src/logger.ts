@@ -2,9 +2,7 @@ import { InjectionToken }        from './injection.token';
 import { localOpinionatedToken } from './local.token';
 import { LogLevel }              from './log.level';
 
-export interface LoggerMethod {
-    (...args: any[]): void;
-}
+export type LoggerMethod = (...args: any[]) => void;
 
 export interface Logger {
     log(level: LogLevel, ...args: any[]): void;

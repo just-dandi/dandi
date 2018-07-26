@@ -5,7 +5,7 @@ import { localOpinionatedToken } from './local.token';
 import { PerfRecorder }          from './perf.recorder';
 
 export interface RequestInfo {
-    requestId: Uuid,
+    requestId: Uuid;
     performance: PerfRecorder;
 }
 

@@ -9,7 +9,7 @@ export function modelDecorator(decoratorMetadata: MemberMetadata, target: any, p
 }
 
 export function Property(type?: Constructor<any>) {
-    return modelDecorator.bind(null, { type })
+    return modelDecorator.bind(null, { type });
 }
 export function Required() {
     return modelDecorator.bind(null, { required: true });
@@ -66,7 +66,7 @@ export function UrlArray() {
 }
 
 // TODO: move this into @dandi/common or @dandi/di-common - this could be used for injection too
-export function OneOf(...oneOf: Constructor<any>[]) {
+export function OneOf(...oneOf: Array<Constructor<any>>) {
     return modelDecorator.bind(null, {
         type: OneOf,
         oneOf,

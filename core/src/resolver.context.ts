@@ -18,7 +18,7 @@ export interface FindCacheEntry<T> {
 
 export class ResolverContext<T> implements Disposable {
 
-    private readonly children: ResolverContext<any>[] = [];
+    private readonly children: Array<ResolverContext<any>> = [];
     private readonly instances: any[] = [];
     private readonly findCache = new Map<InjectionToken<any>, FindCacheEntry<any>>();
     private readonly contextRepository: Repository;
@@ -38,7 +38,7 @@ export class ResolverContext<T> implements Disposable {
 
     public get injectionContext(): InjectionContext {
         if (!this.parent) {
-            return function RootInjectionContext() {}
+            return function RootInjectionContext() {};
         }
 
         return this.parent.context || getInjectionContext(this.parent.match as any) || this.context;
@@ -49,7 +49,7 @@ export class ResolverContext<T> implements Disposable {
         private readonly repositories: Repository[],
         public readonly parent: ResolverContext<T>,
         public readonly context: InjectionContext,
-        providers: Provider<any>[] = [],
+        providers: Array<Provider<any>> = [],
     ) {
         this.contextRepository = Repository.for(this);
         this.contextRepository.register({
@@ -143,7 +143,7 @@ export class ResolverContext<T> implements Disposable {
         this.instances.length = 0;
         this.children.forEach(child => {
             if (!(child as Disposable).disposed) {
-                child.dispose(`Disposing parent ResolverContext: ${reason}`)
+                child.dispose(`Disposing parent ResolverContext: ${reason}`);
             }
         });
         this.children.length = 0;
@@ -156,7 +156,7 @@ export class ResolverContext<T> implements Disposable {
     public childContext(
         token: InjectionToken<T>,
         context: InjectionContext,
-        ...providersOrRepositories: (Provider<any> | Repository)[]): ResolverContext<T> {
+        ...providersOrRepositories: Array<Provider<any> | Repository>): ResolverContext<T> {
 
         const providers = providersOrRepositories.filter(isProvider);
         const repositories = providersOrRepositories.filter(entry => entry instanceof Repository) as Repository[];
@@ -175,7 +175,7 @@ export class ResolverContext<T> implements Disposable {
         return new ResolverContext(token, repositories, null, context);
     }
 
-    [util.inspect.custom](): string {
+    public [util.inspect.custom](): string {
         const thisContext = this.context || getInjectionContext(this.match as any);
         const parts = [
             thisContext && thisContext.name || getTokenString(this.target),

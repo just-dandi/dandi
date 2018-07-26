@@ -19,7 +19,7 @@ export interface FileSystemScannerConfig {
 export class FileSystemScanner implements Scanner {
 
     public static withConfig(config: FileSystemScannerConfig[]): Provider<Scanner> {
-        return scannerProvider(FileSystemScanner, config)
+        return scannerProvider(FileSystemScanner, config);
     }
 
     constructor(@Inject(ScannerConfig) private config: FileSystemScannerConfig[]) {

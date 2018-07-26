@@ -1,5 +1,5 @@
 // tslint:disable no-unused-expression
-import { Url, DateTime, Uuid } from '@dandi/common';
+import { DateTime, Url, Uuid } from '@dandi/common';
 
 import { expect } from 'chai';
 
@@ -19,6 +19,7 @@ import {
 } from './model.decorator';
 import { EMAIL_PATTERN, URL_PATTERN } from './pattern';
 
+// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('ModelDecorator', () => {
 
     describe('@Property', () => {
@@ -313,7 +314,7 @@ describe('ModelDecorator', () => {
 
         class TestClass {
             @OneOf(Uuid, String)
-            public oneOf: Uuid | String;
+            public oneOf: Uuid | string;
         }
 
         let meta: MemberMetadata;
@@ -333,7 +334,7 @@ describe('ModelDecorator', () => {
 
         it('sets the "oneOf" property of the member\'s metadata to the array of types passed to the decorator', () => {
 
-            expect(meta.oneOf).to.deep.equal([Uuid, String]);
+            expect(meta.oneOf).to.deep.equal([ Uuid, String ]);
 
         });
 
@@ -344,7 +345,7 @@ describe('ModelDecorator', () => {
             }
 
             expect(getMemberMetadata(TestClassMethod, 'testMethod', 0).oneOf)
-                .to.deep.equal([Uuid, String]);
+                .to.deep.equal([ Uuid, String ]);
 
         });
 

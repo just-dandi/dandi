@@ -13,6 +13,11 @@ export function queryParamToken<T>(paramName: string, requestParamName: string):
     return requestParamToken(RequestQueryParamMap, paramName, requestParamName);
 }
 
-export function queryParamProvider<T>(paramToken: InjectionToken<T>, type: ValidatedType, paramName: string, memberMetadata: MemberMetadata): Provider<T> {
+export function queryParamProvider<T>(
+    paramToken: InjectionToken<T>,
+    type: ValidatedType,
+    paramName: string,
+    memberMetadata: MemberMetadata,
+): Provider<T> {
     return requestParamProvider(RequestQueryParamMap, paramToken, type, paramName, memberMetadata);
 }

@@ -22,7 +22,7 @@ export class ExpressMvcRouteMapper implements RouteMapper {
         @Inject(RouteExecutor) private routeExecutor: RouteExecutor,
         @Inject(Logger) private logger: Logger,
     ) {
-        this.app.use((req: Request, res: Response, next: Function) => {
+        this.app.use((req: Request, res: Response, next: () => void) => {
             this.logger.debug('received request', req.method.toUpperCase(), req.path);
             next();
         });
@@ -34,9 +34,17 @@ export class ExpressMvcRouteMapper implements RouteMapper {
 
         if (route.cors && !this.corsRoutes.has(route.path)) {
             const corsConfig = hasCorsConfig(route.cors) ? route.cors : undefined;
-            if (!hasCorsConfig(route.cors) || route.cors.disablePreflight !== true && route.httpMethod !== HttpMethod.options) {
-                this.logger.debug('mapping route', HttpMethod.options.toUpperCase(), route.path, 'to cors', corsConfig || '(default)');
-                this.app[HttpMethod.options](route.path, cors(Object.assign({}, corsConfig)), (req, res) => {
+            if (
+                !hasCorsConfig(route.cors) || route.cors.disablePreflight !== true &&
+                route.httpMethod !== HttpMethod.options
+            ) {
+                this.logger.debug('mapping route',
+                    HttpMethod.options.toUpperCase(),
+                    route.path,
+                    'to cors',
+                    corsConfig || '(default)',
+                );
+                this.app[HttpMethod.options](route.path, cors(Object.assign({}, corsConfig)), () => {
                     console.log('OPTIONS!');
                 });
             }
@@ -44,6 +52,6 @@ export class ExpressMvcRouteMapper implements RouteMapper {
             this.corsRoutes.add(route.path);
         }
 
-        this.app[route.httpMethod](route.path,  this.routeExecutor.execRoute.bind(this.routeExecutor, route));
+        this.app[route.httpMethod](route.path, this.routeExecutor.execRoute.bind(this.routeExecutor, route));
     }
 }

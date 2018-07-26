@@ -4,7 +4,10 @@ import { Provider }      from '@dandi/core';
 import { AuthorizationCondition } from './authorization.condition';
 import { getControllerMetadata }  from './controller.metadata';
 
-export function authorizedDecorator(conditions: Provider<AuthorizationCondition>[], target: any, propertyKey: string) {
+export function authorizedDecorator(
+    conditions: Array<Provider<AuthorizationCondition>>,
+    target: any, propertyKey: string,
+) {
     const metaTarget = isConstructor(target) ? target : target.constructor;
     const meta = getControllerMetadata(metaTarget);
 
@@ -21,6 +24,6 @@ export function authorizedDecorator(conditions: Provider<AuthorizationCondition>
     }
 }
 
-export function Authorized(...conditions: Provider<AuthorizationCondition>[]) {
+export function Authorized(...conditions: Array<Provider<AuthorizationCondition>>) {
     return authorizedDecorator.bind(null, conditions);
 }

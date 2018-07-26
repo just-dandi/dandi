@@ -19,7 +19,7 @@ export class PerfRecord implements PerfRecorder {
 
     private _entries: PerfRecordEntry[] = [];
     public get entries(): PerfRecordEntry[] {
-        return this._entries
+        return this._entries;
     }
 
     private start: [number, number];

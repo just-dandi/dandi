@@ -5,14 +5,14 @@ import { stubProvider, testHarness } from '@dandi/core-testing';
 import { Context } from 'aws-lambda';
 
 import { expect } from 'chai';
-import { SinonStubbedInstance, stub, createStubInstance, spy } from 'sinon';
+import { createStubInstance, SinonStubbedInstance, spy, stub } from 'sinon';
 
 import { MockContext } from '../test/mock.context';
 
+import { HandlerFn, Lambda }      from './lambda';
 import { LambdaEventTransformer } from './lambda.event.transformer';
 import { LambdaHandler }          from './lambda.handler';
 import { LambdaResponder }        from './lambda.responder';
-import { HandlerFn, Lambda }      from './lambda';
 
 interface TestEvent {
 }

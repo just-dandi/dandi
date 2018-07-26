@@ -1,16 +1,17 @@
-import {
-    Bootstrapper, Container, Inject, Injectable,
-    MissingProviderError, Optional, Provider, Scanner, SymbolToken,
-} from '../';
-
 import { expect }    from 'chai';
 import { spy, stub } from 'sinon';
-import { ContainerError, ContainerNotInitializedError, MissingTokenError } from './container.error';
 
+import {
+    Bootstrapper, Container, Inject, Injectable, Optional, Provider, Scanner, SymbolToken,
+} from '../';
+
+import { ContainerError, ContainerNotInitializedError, MissingTokenError } from './container.error';
 import { InjectionContext }     from './injection.context';
+import { MissingProviderError } from './missing.provider.error';
 import { AsyncFactoryProvider } from './provider';
 import { Repository }           from './repository';
 
+// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('Container', () => {
 
     describe('ctr', () => {
@@ -39,15 +40,15 @@ describe('Container', () => {
             const token1 = new SymbolToken('test-1');
             const token2 = new SymbolToken('test-2');
             const provider1 = {
-                provide: token1,
+                provide:  token1,
                 useValue: {},
             };
             const provider2 = {
-                provide: token2,
+                provide:  token2,
                 useValue: {},
             };
             const container = new Container({
-                providers: [provider1, provider2],
+                providers: [ provider1, provider2 ],
             });
 
             await (container as any).init();
@@ -62,19 +63,19 @@ describe('Container', () => {
             const repository2 = Repository.for('scanner-2');
             const scanner1 = { scan: stub().returns(repository1) };
             const provider1 = {
-                provide: Scanner,
+                provide:  Scanner,
                 useValue: scanner1,
-                multi: true,
+                multi:    true,
             };
             const scanner2 = { scan: stub().returns(repository2) };
             const provider2 = {
-                provide: Scanner,
+                provide:  Scanner,
                 useValue: scanner2,
-                multi: true,
+                multi:    true,
             };
 
             const container = new Container({
-                providers: [provider1, provider2],
+                providers: [ provider1, provider2 ],
             });
 
             await (container as any).init();
@@ -85,7 +86,7 @@ describe('Container', () => {
             expect(scanner1.scan).to.have.been.calledOnce;
             expect(scanner2.scan).to.have.been.calledOnce;
 
-            expect((container as any).repositories).to.include.members([repository1, repository2]);
+            expect((container as any).repositories).to.include.members([ repository1, repository2 ]);
 
         });
 
@@ -118,7 +119,7 @@ describe('Container', () => {
                 start: stub(),
             };
             const provider = {
-                provide: Bootstrapper,
+                provide:    Bootstrapper,
                 useFactory: stub().returns(value),
             };
             const container = new Container({ providers: [provider] });
@@ -136,6 +137,7 @@ describe('Container', () => {
         @Injectable()
         class TestInjectable {
         }
+
         @Injectable()
         class TestWithDependency {
             constructor(
@@ -158,7 +160,7 @@ describe('Container', () => {
 
         it('can instantiate an injectable class with dependencies', async () => {
 
-            const container = new Container({ providers: [TestInjectable, TestWithDependency] });
+            const container = new Container({ providers: [ TestInjectable, TestWithDependency ] });
             await container.start();
 
             const test = (await container.resolve(TestWithDependency)).singleValue;
@@ -174,15 +176,17 @@ describe('Container', () => {
 
             @Injectable()
             class ContextTester {
-                constructor(@Inject(InjectionContext) public context: any) {}
+                constructor(@Inject(InjectionContext) public context: any) {
+                }
             }
 
             @Injectable()
             class TestInjectable {
-                constructor(@Inject(ContextTester) public tester: any) {}
+                constructor(@Inject(ContextTester) public tester: any) {
+                }
             }
 
-            const container = new Container({ providers: [ContextTester, TestInjectable]});
+            const container = new Container({ providers: [ContextTester, TestInjectable] });
             await container.start();
 
             const injectable = (await container.resolve(TestInjectable)).singleValue;
@@ -197,7 +201,10 @@ describe('Container', () => {
             const token = new SymbolToken('test');
             const provider = {
                 provide: token,
-                useFactory: stub().callsFake(() => { id++; return id; }),
+                useFactory: stub().callsFake(() => {
+                    id++;
+                    return id;
+                }),
                 singleton: true,
             };
             const container = new Container({ providers: [provider] });
@@ -249,7 +256,10 @@ describe('Container', () => {
             const token = new SymbolToken('test');
             const provider = {
                 provide: token,
-                useFactory: stub().callsFake(() => { id++; return id; }),
+                useFactory: stub().callsFake(() => {
+                    id++;
+                    return id;
+                }),
             };
             const container = new Container({ providers: [provider] });
             await container.start();
@@ -272,7 +282,7 @@ describe('Container', () => {
                 useFactory: stub().callsFake(() => Promise.resolve(value)),
                 async: true,
             };
-            const container = new Container({ providers: [provider]});
+            const container = new Container({ providers: [provider] });
             await container.start();
 
             expect((await container.resolve(token)).value).to.equal(value);
@@ -283,11 +293,13 @@ describe('Container', () => {
         it('can resolve constructor parameters', async () => {
 
             @Injectable()
-            class TestParam {}
+            class TestParam {
+            }
 
             @Injectable()
             class TestConstructorParams {
-                constructor(@Inject(TestParam) public param: TestParam) {}
+                constructor(@Inject(TestParam) public param: TestParam) {
+                }
             }
 
             const container = new Container({ providers: [TestConstructorParams, TestParam] });
@@ -302,11 +314,13 @@ describe('Container', () => {
 
         it('can passes null values for optional parameters with no providers', async () => {
 
-            class TestParam {}
+            class TestParam {
+            }
 
             @Injectable()
             class TestConstructorParams {
-                constructor(@Inject(TestParam) @Optional() public param: TestParam) {}
+                constructor(@Inject(TestParam) @Optional() public param: TestParam) {
+                }
             }
 
             const container = new Container({ providers: [TestConstructorParams] });
@@ -333,28 +347,30 @@ describe('Container', () => {
             };
             const provider = {
                 provide: token,
-                useFactory: stub().callsFake((a, b) => new TestParam([ a, b ])),
+                useFactory: stub().callsFake((a, b) => new TestParam([a, b])),
                 deps: [dep1, dep2],
                 providers: [depProvider1, depProvider2]
             };
 
             class TestParam {
-                constructor(public args: number[]){}
+                constructor(public args: number[]) {
+                }
             }
 
             @Injectable()
             class TestConstructorParams {
-                constructor(@Inject(token) public param: any) {}
+                constructor(@Inject(token) public param: any) {
+                }
             }
 
-            const container = new Container({ providers: [provider, TestConstructorParams] as Provider<any>[] });
+            const container = new Container({ providers: [provider, TestConstructorParams] as Array<Provider<any>> });
             await container.start();
 
             const result = await container.resolve(TestConstructorParams);
             expect(result.value).to.be.instanceOf(TestConstructorParams);
             expect(result.singleValue.param).to.exist;
             expect(result.singleValue.param).to.be.instanceOf(TestParam);
-            expect(result.singleValue.param.args).to.deep.equal([1, 2])
+            expect(result.singleValue.param.args).to.deep.equal([1, 2]);
 
         });
 
@@ -393,8 +409,12 @@ describe('Container', () => {
 
         it('can resolve singletons from class providers', async () => {
 
-            class TestToken {}
-            class TestClass {}
+            class TestToken {
+            }
+
+            class TestClass {
+            }
+
             const provider = {
                 provide: TestToken,
                 useClass: TestClass,
@@ -414,7 +434,9 @@ describe('Container', () => {
 
         it('throws a ContainerNotInitializedError if called before being initialized', async () => {
 
-            class TestToken {}
+            class TestToken {
+            }
+
             const container = new Container();
             await expect(container.resolve(TestToken)).to.be.rejectedWith(ContainerNotInitializedError);
 
@@ -435,8 +457,10 @@ describe('Container', () => {
         it('throws a ContainerNotInitializedError if called before init', async () => {
 
             class TestClass {
-                method() {}
+                public method() {
+                }
             }
+
             const container = new Container();
             const instance = new TestClass();
             await expect(container.invoke(instance, instance.method)).to.be.rejectedWith(ContainerNotInitializedError);
@@ -455,19 +479,21 @@ describe('Container', () => {
                 provide: token2,
                 useValue: 'bar',
             };
-            const spy = stub();
+            const method = stub();
+
             class TestClass {
-                method(@Inject(token1) a: any, @Inject(token2) b: any) {
+                public method(@Inject(token1) a: any, @Inject(token2) b: any) {
                     // trying to spy on this mucks up Reflection, so just do it manually
-                    spy(a, b);
+                    method(a, b);
                 }
             }
-            const container = new Container({ providers: [provider1, provider2]});
+
+            const container = new Container({ providers: [provider1, provider2] });
             await container.start();
             const instance = new TestClass();
             await container.invoke(instance, instance.method);
-            expect(spy).to.have.been.called;
-            expect(spy).to.have.been.calledWith('foo', 'bar');
+            expect(method).to.have.been.called;
+            expect(method).to.have.been.calledWith('foo', 'bar');
 
         });
 
@@ -479,19 +505,21 @@ describe('Container', () => {
                 provide: token1,
                 useValue: 'foo',
             };
-            const spy = stub();
+            const method = stub();
+
             class TestClass {
-                method(@Inject(token1) a: any, @Optional() @Inject(token2) b: any) {
+                public method(@Inject(token1) a: any, @Optional() @Inject(token2) b: any) {
                     // trying to spy on this mucks up Reflection, so just do it manually
-                    spy(a, b);
+                    method(a, b);
                 }
             }
+
             const container = new Container({ providers: [provider1] });
             await container.start();
             const instance = new TestClass();
             await container.invoke(instance, instance.method);
-            expect(spy).to.have.been.called;
-            expect(spy).to.have.been.calledWith('foo', null);
+            expect(method).to.have.been.called;
+            expect(method).to.have.been.calledWith('foo', null);
 
         });
 

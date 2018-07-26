@@ -20,8 +20,8 @@ export function requestParamProvider(
     return {
         provide: token,
         useFactory: requestParamValidatorFactory.bind(null, type, paramName, memberMetadata),
-        deps: [mapToken, TypeValidator(type)],
-    }
+        deps: [ mapToken, TypeValidator(type) ],
+    };
 }
 
 export function requestParamDecorator<T>(
@@ -36,5 +36,5 @@ export function requestParamDecorator<T>(
     const memberMetadata = getMemberMetadata(target.constructor, memberName, paramIndex);
     const token = requestParamToken<T>(mapToken, memberName, name || meta.name);
     meta.token = token;
-    meta.providers = [requestParamProvider(mapToken, token, type, name || meta.name, memberMetadata)];
+    meta.providers = [ requestParamProvider(mapToken, token, type, name || meta.name, memberMetadata) ];
 }

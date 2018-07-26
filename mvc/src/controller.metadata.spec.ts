@@ -1,6 +1,8 @@
-import { getControllerMetadata } from './controller.metadata';
 import { expect } from 'chai';
 
+import { getControllerMetadata } from './controller.metadata';
+
+// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('getControllerMetadata', () => {
 
     it('initializes the routeMap for the controller', () => {

@@ -6,7 +6,6 @@ import { Uuid } from './uuid';
 
 describe('Uuid', () => {
 
-
     beforeEach(() => {
     });
     afterEach(() => {
@@ -64,7 +63,7 @@ describe('Uuid', () => {
 
         });
 
-    })
+    });
 
     describe('valueOf', () => {
 

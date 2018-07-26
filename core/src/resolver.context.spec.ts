@@ -1,14 +1,15 @@
-import { InjectionToken, Provider, Repository, SymbolToken } from '../';
-import { ResolverContext } from './resolver.context';
-
 import { expect }    from 'chai';
 import { spy, stub } from 'sinon';
+
+import { InjectionToken, Provider, Repository, SymbolToken } from '../';
+
+import { ResolverContext } from './resolver.context';
 
 const chaiInspect = Symbol.for('chai/inspect');
 
 describe('ResolverContext', () => {
 
-    function provider<T, TProvider extends Provider<T>> (obj: TProvider): TProvider {
+    function provider<T, TProvider extends Provider<T>>(obj: TProvider): TProvider {
         obj[chaiInspect] = () => `Provider[provide: ${obj.provide}]`;
         return obj;
     }
@@ -288,6 +289,5 @@ describe('ResolverContext', () => {
         });
 
     });
-
 
 });

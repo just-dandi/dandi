@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+
 import { getParamNames, UnsupportedParamTypeError } from './params.util';
 
 describe('getParamNames', () => {
@@ -35,10 +36,10 @@ describe('getParamNames', () => {
     }
 
     class TestClass {
-        noParams(): void { console.log('noParams'); }
-        singleParam(param: any): void {}
-        doubleParam(param1: any, param2: any): void {}
-        multiParam(param1: any, param2: any, param3: any) {}
+        public noParams(): void { console.log('noParams'); }
+        public singleParam(param: any): void {}
+        public doubleParam(param1: any, param2: any): void {}
+        public multiParam(param1: any, param2: any, param3: any) {}
     }
 
     function parameterlessFunction(): void {}
@@ -52,10 +53,10 @@ describe('getParamNames', () => {
     const doubleParameterArrowFunction = (param1: any, param2: any) => {};
     const multiParameterArrowFunction = (param1: any, param2: any, param3: any) => {};
 
-    const parameterlessAnonFunction = function () {};
-    const singleParameterAnonFunction = function (param: any) {};
-    const doubleParameterAnonFunction = function (param1: any, param2: any) {};
-    const multiParameterAnonFunction = function (param1: any, param2: any, param3: any) {};
+    const parameterlessAnonFunction = function() {};
+    const singleParameterAnonFunction = function(param: any) {};
+    const doubleParameterAnonFunction = function(param1: any, param2: any) {};
+    const multiParameterAnonFunction = function(param1: any, param2: any, param3: any) {};
 
     it('throws an error if the specified target is not a function', () => {
         expect(() => getParamNames({} as any)).to.throw;

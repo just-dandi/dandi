@@ -1,11 +1,11 @@
 import { Container, NoopLogger }            from '@dandi/core';
 import { HttpMethod, Route, RouteExecutor } from '@dandi/mvc';
-
-import { ExpressMvcRouteMapper } from '../';
-
 import { expect } from 'chai';
 import { stub }   from 'sinon';
 
+import { ExpressMvcRouteMapper } from '../';
+
+// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('ExpressMvcRouteMapper', () => {
 
     let container: Container;
@@ -17,11 +17,11 @@ describe('ExpressMvcRouteMapper', () => {
 
     beforeEach(async () => {
         routeExec = { execRoute: stub() };
-        container = new Container({ providers: [{ provide: RouteExecutor, useValue: routeExec }] });
+        container = new Container({ providers: [ { provide: RouteExecutor, useValue: routeExec } ] });
         await container.start();
         app = {
-            use: stub(),
-            get: stub(),
+            use:  stub(),
+            get:  stub(),
             post: stub(),
         };
         req = {
@@ -30,10 +30,10 @@ describe('ExpressMvcRouteMapper', () => {
         };
         res = {
             contentType: stub().returnsThis(),
-            json: stub().returnsThis(),
-            send: stub().returnsThis(),
-            setHeader: stub().returnsThis(),
-            status: stub().returnsThis(),
+            json:        stub().returnsThis(),
+            send:        stub().returnsThis(),
+            setHeader:   stub().returnsThis(),
+            status:      stub().returnsThis(),
         };
         mapper = new ExpressMvcRouteMapper(container, app, routeExec, new NoopLogger());
     });
@@ -50,13 +50,13 @@ describe('ExpressMvcRouteMapper', () => {
         class TestController {}
 
         const route: Route = {
-            httpMethod: HttpMethod.get,
-            siblingMethods: new Set([HttpMethod.get]),
-            cors: false,
-            path: '/',
-            controllerCtr: TestController,
+            httpMethod:       HttpMethod.get,
+            siblingMethods:   new Set([ HttpMethod.get ]),
+            cors:             false,
+            path:             '/',
+            controllerCtr:    TestController,
             controllerMethod: 'method',
-            authorization: false,
+            authorization:    false,
         };
 
         mapper.mapRoute(route);
@@ -70,13 +70,13 @@ describe('ExpressMvcRouteMapper', () => {
         class TestController {}
 
         const route: Route = {
-            httpMethod: HttpMethod.get,
-            siblingMethods: new Set([HttpMethod.get]),
-            cors: false,
-            path: '/',
-            controllerCtr: TestController,
+            httpMethod:       HttpMethod.get,
+            siblingMethods:   new Set([ HttpMethod.get ]),
+            cors:             false,
+            path:             '/',
+            controllerCtr:    TestController,
             controllerMethod: 'method',
-            authorization: false,
+            authorization:    false,
         };
 
         mapper.mapRoute(route);
@@ -85,7 +85,6 @@ describe('ExpressMvcRouteMapper', () => {
         routeFn();
 
         expect(routeExec.execRoute).to.have.been.calledWith(route);
-
 
     });
 

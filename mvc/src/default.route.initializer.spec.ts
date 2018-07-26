@@ -1,17 +1,18 @@
 import { Uuid }                  from '@dandi/common';
 import { Container, NoopLogger } from '@dandi/core';
+import { expect } from 'chai';
+import { stub }   from 'sinon';
+
 import {
     DefaultRouteInitializer, HttpRequestBody, MvcRequest, MvcResponse, RequestController,
     RequestPathParamMap,
     RequestQueryParamMap, Route, RouteInitializer,
 } from '../';
 
-import { expect } from 'chai';
-import { stub }   from 'sinon';
-
 import { HttpMethod }  from './http.method';
 import { RequestInfo } from './request.info';
 
+// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('DefaultRouteInitialzer', () => {
 
     let container: Container;
@@ -22,7 +23,7 @@ describe('DefaultRouteInitialzer', () => {
     let res: any;
 
     class TestController {
-        method() {}
+        public method() {}
     }
 
     beforeEach(async () => {
@@ -30,32 +31,32 @@ describe('DefaultRouteInitialzer', () => {
         await container.start();
         initializer = new DefaultRouteInitializer(container, null, new NoopLogger());
         route = {
-            httpMethod: HttpMethod.get,
-            siblingMethods: new Set([HttpMethod.get]),
-            path: '/',
-            controllerCtr: TestController,
+            httpMethod:       HttpMethod.get,
+            siblingMethods:   new Set([ HttpMethod.get ]),
+            path:             '/',
+            controllerCtr:    TestController,
             controllerMethod: 'method',
-            authorization: false,
-            cors: null,
+            authorization:    false,
+            cors:             null,
         };
         req = {
-            get: stub(),
+            get:    stub(),
             params: {},
-            query: {},
+            query:  {},
         };
         requestInfo = {
-            requestId: new Uuid(),
+            requestId:   new Uuid(),
             performance: {
                 mark: stub(),
             },
         };
         res = {
             contentType: stub().returnsThis(),
-            json: stub().returnsThis(),
-            send: stub().returnsThis(),
-            setHeader: stub().returnsThis(),
-            status: stub().returnsThis(),
-        }
+            json:        stub().returnsThis(),
+            send:        stub().returnsThis(),
+            setHeader:   stub().returnsThis(),
+            status:      stub().returnsThis(),
+        };
     });
     afterEach(() => {
         initializer = undefined;

@@ -12,7 +12,7 @@ export interface RequestBody<TModel, TTarget> extends ParamMetadata<TTarget> {
 
 export function requestBodyProvider(model: Constructor<any>): Provider<any> {
     return {
-        provide: HttpRequestBody,
+        provide:    HttpRequestBody,
         useFactory: (req: MvcRequest, validator: ModelValidator) => {
             if (!req.body) {
                 return null;
@@ -24,19 +24,19 @@ export function requestBodyProvider(model: Constructor<any>): Provider<any> {
             }
         },
         singleton: true,
-        deps: [MvcRequest, ModelValidator]
-    }
+        deps:      [ MvcRequest, ModelValidator ],
+    };
 }
 
 export function requestBodyDecorator<TModel, TTarget>(
     requestBody: RequestBody<TModel, TTarget>,
     target: MethodTarget<TTarget>,
     propertyName: string,
-    paramIndex: number
+    paramIndex: number,
 ) {
     const meta = getInjectableParamMetadata<TTarget, RequestBody<TModel, TTarget>>(target, propertyName, paramIndex);
     meta.token = HttpRequestBody;
-    meta.providers = [requestBodyProvider(requestBody.model)];
+    meta.providers = [ requestBodyProvider(requestBody.model) ];
 }
 
 export function RequestBody<TModel, TTarget>(model?: Constructor<TModel>): ParameterDecorator {

@@ -1,5 +1,5 @@
 import { Constructor, Disposable } from '@dandi/common';
-import { Container, InjectionToken, Provider, Repository, ResolverContext, Resolver, ResolveResult } from '@dandi/core';
+import { Container, InjectionToken, Provider, Repository, Resolver, ResolverContext, ResolveResult } from '@dandi/core';
 
 import { createStubInstance, SinonStubbedInstance } from 'sinon';
 

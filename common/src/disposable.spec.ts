@@ -1,3 +1,6 @@
+import { expect } from 'chai';
+import { SinonStub, SinonStubbedInstance, stub } from 'sinon';
+
 import {
     AlreadyDisposedError,
     Disposable,
@@ -5,9 +8,6 @@ import {
     DisposableTypeError,
     InvalidDisposeTargetError,
 } from '../index';
-
-import { expect } from 'chai';
-import { SinonStubbedInstance, stub, SinonStub } from 'sinon';
 
 describe('Disposable', () => {
 
@@ -159,7 +159,7 @@ describe('Disposable', () => {
         it('does not attempt to call the dispose function if the object is not a Disposable', () => {
             Disposable.use({}, stubs.use);
             expect(stubs.use).to.have.been.called;
-        })
+        });
 
     });
 

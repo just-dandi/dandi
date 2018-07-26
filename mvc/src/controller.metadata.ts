@@ -7,6 +7,8 @@ import { ControllerMethod, RoutePath } from './http.method.decorator';
 import { mvcGlobalSymbol }             from './mvc.global.symbol';
 import { MvcMetadata }                 from './mvc.metadata';
 
+// tslint:disable max-classes-per-file
+
 export class RouteMap extends Map<ControllerMethod, ControllerMethodMetadata> {}
 export interface ControllerMethodMetadata extends AuthorizationMetadata {
     routePaths?: RouteMapEntry;

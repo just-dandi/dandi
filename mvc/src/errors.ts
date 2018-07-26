@@ -1,7 +1,15 @@
 import { AppError } from '@dandi/common';
 
+// tslint:disable max-classes-per-file
+/* eslint-disable no-magic-numbers */
+
 export class RequestError extends AppError {
-    constructor(public readonly statusCode: number, public readonly internalMessage: string, message?: string, innerError?: Error) {
+    constructor(
+        public readonly statusCode: number,
+        public readonly internalMessage: string,
+        message?: string,
+        innerError?: Error,
+    ) {
         super(message || 'Server Error', innerError);
     }
 }

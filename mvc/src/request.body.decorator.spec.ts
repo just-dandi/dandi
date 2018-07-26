@@ -1,9 +1,9 @@
 import { getInjectableParamMetadata, MethodTarget } from '@dandi/core';
+import { expect } from 'chai';
 
 import { HttpRequestBody, RequestBody } from '../';
 
-import { expect } from 'chai';
-
+// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('@HttpRequestBody', () => {
 
     it('sets the HttpRequestBody token for the decorated parameter', () => {
@@ -11,7 +11,7 @@ describe('@HttpRequestBody', () => {
         class TestModel {}
 
         class TestController {
-            method(@RequestBody(TestModel) body: any): void {}
+            public method(@RequestBody(TestModel) body: any): void {}
         }
 
         const meta = getInjectableParamMetadata(TestController.prototype as MethodTarget<TestController>, 'method', 0);
@@ -26,10 +26,11 @@ describe('@HttpRequestBody', () => {
         class TestModel {}
 
         class TestController {
-            method(@RequestBody(TestModel) body: any): void {}
+            public method(@RequestBody(TestModel) body: any): void {}
         }
 
-        const meta: RequestBody<TestModel, TestController> = getInjectableParamMetadata(TestController.prototype as MethodTarget<TestController>, 'method', 0);
+        const meta: RequestBody<TestModel, TestController> =
+            getInjectableParamMetadata(TestController.prototype as MethodTarget<TestController>, 'method', 0);
 
         expect(meta.providers).to.exist;
         expect(meta.providers[0].provide).to.equal(HttpRequestBody);

@@ -10,10 +10,10 @@ export interface MemberMetadata {
     maxValue?: number;
     pattern?: RegExp;
     format?: string;
-    oneOf?: Constructor<any>[];
+    oneOf?: Array<Constructor<any>>;
 }
 
-export type ModelMetadata = { [propertyName: string]: MemberMetadata };
+export interface ModelMetadata { [propertyName: string]: MemberMetadata; }
 
 const protoKeys = new Map<Function, Map<Symbol, any>>();
 
@@ -23,7 +23,7 @@ export function getModelMetadata(target: Function): ModelMetadata {
         protoKey = new Map<Symbol, any>();
         protoKeys.set(target, protoKey);
     }
-    let classKey = Symbol.for(target.name);
+    const classKey = Symbol.for(target.name);
     let classTarget = protoKey.get(classKey);
     if (!classTarget) {
         const superClass =  Object.getPrototypeOf(target);

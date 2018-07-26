@@ -1,8 +1,10 @@
-import { Controller, HttpGet, HttpMethod, HttpPost } from '../';
 import { expect } from 'chai';
+
+import { Controller, HttpGet, HttpMethod, HttpPost } from '../';
 
 import { getControllerMetadata } from './controller.metadata';
 
+// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('HttpMethodDecorator', () => {
 
     it('adds a route entry for the decorated method', () => {
@@ -10,7 +12,7 @@ describe('HttpMethodDecorator', () => {
         @Controller('/')
         class TestController {
             @HttpGet()
-            testMethod() {
+            public testMethod() {
 
             }
         }
@@ -31,7 +33,7 @@ describe('HttpMethodDecorator', () => {
             @HttpGet()
             @HttpPost()
             @HttpPost('foo')
-            testMethod() {
+            public testMethod() {
 
             }
         }
@@ -45,6 +47,6 @@ describe('HttpMethodDecorator', () => {
         expect(methodMeta.routePaths.get('')).to.include(HttpMethod.post);
         expect(methodMeta.routePaths.get('foo')).to.include(HttpMethod.post);
 
-    })
+    });
 
 });

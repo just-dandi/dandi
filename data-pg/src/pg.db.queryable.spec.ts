@@ -2,7 +2,7 @@ import { DataMapper, PassThroughDataMapper } from '@dandi/data';
 import { ModelValidator } from '@dandi/model-validation';
 
 import { expect } from 'chai';
-import { stub, createStubInstance, SinonStubbedInstance } from 'sinon';
+import { createStubInstance, SinonStubbedInstance, stub } from 'sinon';
 
 import { PgDbQueryableBase, PgDbQueryableClient } from './pg.db.queryable';
 
@@ -62,7 +62,5 @@ describe('PgDbQueryableBase', () => {
         });
 
     });
-
-
 
 });

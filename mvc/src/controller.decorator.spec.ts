@@ -1,11 +1,12 @@
 import { Repository } from '@dandi/core';
+import { expect } from 'chai';
+import { SinonSpy, spy } from 'sinon';
+
 import { Controller, MissingControllerPathError } from '../';
 
 import { getControllerMetadata } from './controller.metadata';
 
-import { expect } from 'chai';
-import { SinonSpy, spy } from 'sinon';
-
+// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('@Controller', () => {
 
     let injectableRegister: SinonSpy;

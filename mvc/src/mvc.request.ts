@@ -6,11 +6,11 @@ import { localOpinionatedToken } from './local.token';
 export interface MvcRequest {
 
     body: any;
-    get(key: string): string;
     params: any;
     path: string;
     query: any;
     method: HttpMethod;
+    get(key: string): string;
 
 }
 

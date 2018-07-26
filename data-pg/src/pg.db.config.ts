@@ -1,4 +1,4 @@
-import { Inject, Injectable, OpinionatedToken, InjectionToken } from '@dandi/core';
+import { Inject, Injectable, InjectionToken, OpinionatedToken } from '@dandi/core';
 import { DbConnectionInfo, DbUserCredentials } from '@dandi/data';
 import { PoolConfig } from 'pg';
 

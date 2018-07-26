@@ -1,4 +1,4 @@
-import { Disposable } from '@dandi/common'
+import { Disposable } from '@dandi/common';
 
 import { Bootstrapper }                         from './bootstrapper';
 import { ContainerError, ContainerNotInitializedError, MissingTokenError } from './container.error';
@@ -8,9 +8,9 @@ import { InjectionToken }                       from './injection.token';
 import { Logger }                               from './logger';
 import { NoopLogger }                           from './noop.logger';
 import { Repository }                           from './repository';
-import { ResolverContext }                      from './resolver.context';
 import { ResolveResult }                        from './resolve.result';
 import { Resolver }                             from './resolver';
+import { ResolverContext }                      from './resolver.context';
 import { Scanner }                              from './scanner';
 
 import { GeneratingProvider, MissingProviderError, Provider , ProviderTypeError} from './provider';
@@ -90,7 +90,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
         await this.onInit();
     }
 
-    private registerProviders(module: any) : void {
+    private registerProviders(module: any): void {
         if (Array.isArray(module)) {
             module.forEach(provider => this.registerProviders(provider));
             return;
@@ -133,7 +133,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
                 await Promise.all(provider.deps.map((paramToken, paramIndex) => {
                     const paramMeta = meta.params && meta.params[paramIndex];
                     const optional = paramMeta && paramMeta.optional === true;
-                    return this.resolveParam(null, paramToken, optional, context)
+                    return this.resolveParam(null, paramToken, optional, context);
                 })) : [];
             const instance: T = isAsyncFactoryProvider(provider) ? await provider.useFactory(...args) : provider.useFactory(...args);
             if (provider.singleton) {
@@ -144,7 +144,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
 
         if (isClassProvider(provider)) {
             const meta = getInjectableMetadata(provider.useClass);
-            const args = meta.params ? await Promise.all(meta.params.map(param => this.resolveParam(param, param.token, param.optional, context))): [];
+            const args = meta.params ? await Promise.all(meta.params.map(param => this.resolveParam(param, param.token, param.optional, context))) : [];
             const instance = new provider.useClass(...args);
             if (provider.singleton) {
                 return instance;

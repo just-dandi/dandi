@@ -5,24 +5,19 @@ import {
 import { AuthorizationCondition, DeniedAuthorization } from './authorization.condition';
 import { AuthorizationService }        from './authorization.service';
 import { AuthorizedUser, AuthorizedUserFactory } from './authorized.user';
-import { ForbiddenError, NotAuthorizedError, RequestError } from './errors';
+import { ForbiddenError, NotAuthorizedError } from './errors';
 import { MvcRequest }                  from './mvc.request';
 import { MvcResponse }                 from './mvc.response';
 import { RequestAuthorizationService } from './request.authorization.service';
 import { RequestInfo }                 from './request.info';
 import { RequestProviderRegistrar }    from './request.provider.registrar';
 import { Route }                       from './route';
+import { RouteInitializationError }    from './route.initialization.error';
 import { RouteInitializer }            from './route.initializer';
 
 import {
     HttpRequestBody, HttpRequestId, RequestController, RequestPathParamMap, RequestQueryParamMap,
 } from './tokens';
-
-export class RouteInitializationError extends RequestError {
-    constructor(innerError: Error, public readonly route: Route) {
-        super(innerError instanceof RequestError ? innerError.statusCode : 500, 'Error initializing route', innerError.message, innerError);
-    }
-}
 
 @Injectable(RouteInitializer)
 export class DefaultRouteInitializer implements RouteInitializer {
@@ -33,7 +28,41 @@ export class DefaultRouteInitializer implements RouteInitializer {
         @Inject(Logger) private logger: Logger,
     ) {}
 
-    private registerRequestProviders(repo: Repository, route: Route, req: MvcRequest, requestInfo: RequestInfo, res: MvcResponse): void {
+    public async initRouteRequest(
+        route: Route,
+        req: MvcRequest,
+        requestInfo: RequestInfo,
+        res: MvcResponse,
+    ): Promise<Repository> {
+
+        this.logger.debug(`begin initRouteRequest ${route.controllerCtr.name}.${route.controllerMethod}:`,
+            route.httpMethod.toUpperCase(), route.path);
+
+        const repo = Repository.for(req);
+
+        try {
+            this.registerRequestProviders(repo, route, req, requestInfo, res);
+            await this.registerAuthProviders(repo, route, req);
+            this.registerRequestBody(repo, route);
+            await this.registerRequestRegistrarProviders(repo);
+            await this.handleAuthorizationConditions(repo);
+
+            return repo;
+        } catch (err) {
+            throw new RouteInitializationError(err, route);
+        } finally {
+            this.logger.debug(`end initRouteRequest ${route.controllerCtr.name}.${route.controllerMethod}:`,
+                route.httpMethod.toUpperCase(), route.path);
+        }
+    }
+
+    private registerRequestProviders(
+        repo: Repository,
+        route: Route,
+        req: MvcRequest,
+        requestInfo: RequestInfo,
+        res: MvcResponse,
+    ): void {
         repo.register({ provide: MvcRequest, useValue: req });
         repo.register({ provide: MvcResponse, useValue: res });
         repo.register({ provide: RequestPathParamMap, useValue: req.params });
@@ -107,36 +136,13 @@ export class DefaultRouteInitializer implements RouteInitializer {
             return;
         }
         await Promise.all(this.registrars.map(async (registrar: RequestProviderRegistrar) => {
-            const providers = await this.resolver.invoke(registrar, registrar.provide, repo) as Provider<any>[];
+            const providers = await this.resolver.invoke(registrar, registrar.provide, repo) as Array<Provider<any>>;
             if (providers) {
                 providers.forEach(provider => {
                     repo.register(provider);
                 });
             }
         }));
-    }
-
-    public async initRouteRequest(route: Route, req: MvcRequest, requestInfo: RequestInfo, res: MvcResponse): Promise<Repository> {
-
-        this.logger.debug(`begin initRouteRequest ${route.controllerCtr.name}.${route.controllerMethod}:`,
-            route.httpMethod.toUpperCase(), route.path);
-
-        const repo = Repository.for(req);
-
-        try {
-            this.registerRequestProviders(repo, route, req, requestInfo, res);
-            await this.registerAuthProviders(repo, route, req);
-            this.registerRequestBody(repo, route);
-            await this.registerRequestRegistrarProviders(repo);
-            await this.handleAuthorizationConditions(repo);
-
-            return repo;
-        } catch (err) {
-            throw new RouteInitializationError(err, route);
-        } finally {
-            this.logger.debug(`end initRouteRequest ${route.controllerCtr.name}.${route.controllerMethod}:`,
-                route.httpMethod.toUpperCase(), route.path);
-        }
     }
 
 }
