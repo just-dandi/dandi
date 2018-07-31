@@ -3,16 +3,19 @@ import { expect } from 'chai';
 import { spy } from 'sinon';
 
 import {
-  ConflictingRegistrationOptionsError,
-  InvalidRegistrationTargetError,
-  InvalidRepositoryContextError,
   OpinionatedProviderOptionsConflictError,
   OpinionatedToken,
   Provider,
-  ProviderTypeError,
   Repository,
   SymbolToken,
 } from '../';
+
+import { ProviderTypeError } from './provider.type.error';
+import {
+  ConflictingRegistrationOptionsError,
+  InvalidRegistrationTargetError,
+  InvalidRepositoryContextError,
+} from './repository.errors';
 
 class TestClass {}
 
