@@ -1,393 +1,318 @@
-// tslint:disable no-unused-expression
 import { DateTime, Url, Uuid } from '@dandi/common';
 
 import { expect } from 'chai';
 
-import { getMemberMetadata, getModelMetadata, MemberMetadata } from './member.metadata';
 import {
-    ArrayOf,
-    DateTimeFormat,
-    Email,
-    MaxLength,
-    MaxValue,
-    MinLength,
-    MinValue, OneOf,
-    Pattern,
-    Property,
-    Required, UrlArray,
-    UrlProperty,
+  getMemberMetadata,
+  getModelMetadata,
+  MemberMetadata,
+} from './member.metadata';
+import {
+  ArrayOf,
+  DateTimeFormat,
+  Email,
+  MaxLength,
+  MaxValue,
+  MinLength,
+  MinValue,
+  OneOf,
+  Pattern,
+  Property,
+  Required,
+  UrlArray,
+  UrlProperty,
 } from './model.decorator';
 import { EMAIL_PATTERN, URL_PATTERN } from './pattern';
 
-// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('ModelDecorator', () => {
+  describe('@Property', () => {
+    it("sets the type of the property on the member's metadata", () => {
+      class TestClass {
+        @Property(String)
+        public property: string;
+      }
+      const meta = getMemberMetadata(TestClass, 'property');
+      expect(meta.type).to.equal(String);
+    });
+  });
 
-    describe('@Property', () => {
+  describe('@Required', () => {
+    it('sets the "required" property on the member\'s metadata', () => {
+      class TestClass {
+        @Required()
+        public requiredProperty: string;
+      }
+      const meta = getMemberMetadata(TestClass, 'requiredProperty');
+      expect(meta.required).to.be.true;
+    });
+  });
 
-        it('sets the type of the property on the member\'s metadata', () => {
+  describe('@MinLength', () => {
+    it("sets minLength property on the member's metadata", () => {
+      class TestClass {
+        @MinLength(2)
+        public property: string;
+      }
+      const meta = getMemberMetadata(TestClass, 'property');
+      expect(meta.minLength).to.equal(2);
+    });
+  });
 
-            class TestClass {
-                @Property(String)
-                public property: string;
-            }
-            const meta = getMemberMetadata(TestClass, 'property');
-            expect(meta.type).to.equal(String);
+  describe('@MaxLength', () => {
+    it("sets maxLength property on the member's metadata", () => {
+      class TestClass {
+        @MaxLength(3)
+        public property: string;
+      }
+      const meta = getMemberMetadata(TestClass, 'property');
+      expect(meta.maxLength).to.equal(3);
+    });
+  });
 
-        });
+  describe('@MinValue', () => {
+    it("sets minValue property on the member's metadata", () => {
+      class TestClass {
+        @MinValue(2)
+        public property: string;
+      }
+      const meta = getMemberMetadata(TestClass, 'property');
+      expect(meta.minValue).to.equal(2);
+    });
+  });
 
+  describe('@MaxValue', () => {
+    it("sets maxLength property on the member's metadata", () => {
+      class TestClass {
+        @MaxValue(3)
+        public property: string;
+      }
+      const meta = getMemberMetadata(TestClass, 'property');
+      expect(meta.maxValue).to.equal(3);
+    });
+  });
+
+  describe('@MinLength', () => {
+    it("sets minLength property on the member's metadata", () => {
+      class TestClass {
+        @MinLength(2)
+        public property: string;
+      }
+      const meta = getMemberMetadata(TestClass, 'property');
+      expect(meta.minLength).to.equal(2);
+    });
+  });
+
+  describe('@Pattern', () => {
+    it('sets the "pattern" property on the member\'s metadata', () => {
+      class TestClass {
+        @Pattern(/foo/)
+        public property: string;
+      }
+      const meta = getMemberMetadata(TestClass, 'property');
+      expect(meta.pattern).to.deep.equal(/foo/);
+    });
+  });
+
+  describe('@Email', () => {
+    class TestClass {
+      @Email()
+      public email: string;
+    }
+
+    let meta: MemberMetadata;
+
+    beforeEach(() => {
+      meta = getMemberMetadata(TestClass, 'email');
+    });
+    afterEach(() => {
+      meta = undefined;
     });
 
-    describe('@Required', () => {
-
-        it('sets the "required" property on the member\'s metadata', () => {
-
-            class TestClass {
-                @Required()
-                public requiredProperty: string;
-            }
-            const meta = getMemberMetadata(TestClass, 'requiredProperty');
-            expect(meta.required).to.be.true;
-
-        });
-
+    it('sets the "pattern" property on the member\'s metadata to EMAIL_PATTERN', () => {
+      expect(meta.pattern).to.equal(EMAIL_PATTERN);
     });
 
-    describe('@MinLength', () => {
-
-        it('sets minLength property on the member\'s metadata', () => {
-
-            class TestClass {
-                @MinLength(2)
-                public property: string;
-            }
-            const meta = getMemberMetadata(TestClass, 'property');
-            expect(meta.minLength).to.equal(2);
-
-        });
-
+    it('sets the "minLength" property on the member\'s metadata to 6', () => {
+      expect(meta.minLength).to.equal(6);
     });
 
-    describe('@MaxLength', () => {
-
-        it('sets maxLength property on the member\'s metadata', () => {
-
-            class TestClass {
-                @MaxLength(3)
-                public property: string;
-            }
-            const meta = getMemberMetadata(TestClass, 'property');
-            expect(meta.maxLength).to.equal(3);
-
-        });
-
+    it('sets the "maxLength" property on the member\'s metadata to 254', () => {
+      expect(meta.maxLength).to.equal(254);
     });
 
-    describe('@MinValue', () => {
+    it('sets the "type" property on the member\'s metadata to String', () => {
+      expect(meta.type).to.equal(String);
+    });
+  });
 
-        it('sets minValue property on the member\'s metadata', () => {
+  describe('@UrlProperty', () => {
+    class TestClass {
+      @UrlProperty()
+      public url: Url;
+    }
 
-            class TestClass {
-                @MinValue(2)
-                public property: string;
-            }
-            const meta = getMemberMetadata(TestClass, 'property');
-            expect(meta.minValue).to.equal(2);
+    let meta: MemberMetadata;
 
-        });
-
+    beforeEach(() => {
+      meta = getMemberMetadata(TestClass, 'url');
+    });
+    afterEach(() => {
+      meta = undefined;
     });
 
-    describe('@MaxValue', () => {
-
-        it('sets maxLength property on the member\'s metadata', () => {
-
-            class TestClass {
-                @MaxValue(3)
-                public property: string;
-            }
-            const meta = getMemberMetadata(TestClass, 'property');
-            expect(meta.maxValue).to.equal(3);
-
-        });
-
+    it('sets the "type" property on the member\'s metadata to Url', () => {
+      expect(meta.type).to.equal(Url);
     });
 
-    describe('@MinLength', () => {
+    it('sets the "pattern" property on the member\'s metadata to URL_PATTERN', () => {
+      expect(meta.pattern).to.equal(URL_PATTERN);
+    });
+  });
 
-        it('sets minLength property on the member\'s metadata', () => {
+  describe('@DateTimeFormat', () => {
+    class TestClass {
+      @DateTimeFormat('test-format')
+      public testOn: DateTime;
+    }
 
-            class TestClass {
-                @MinLength(2)
-                public property: string;
-            }
-            const meta = getMemberMetadata(TestClass, 'property');
-            expect(meta.minLength).to.equal(2);
+    let meta: MemberMetadata;
 
-        });
-
+    beforeEach(() => {
+      meta = getMemberMetadata(TestClass, 'testOn');
+    });
+    afterEach(() => {
+      meta = undefined;
     });
 
-    describe('@Pattern', () => {
-
-        it('sets the "pattern" property on the member\'s metadata', () => {
-
-            class TestClass {
-                @Pattern(/foo/)
-                public property: string;
-            }
-            const meta = getMemberMetadata(TestClass, 'property');
-            expect(meta.pattern).to.deep.equal(/foo/);
-
-        });
-
+    it('sets the "type" property on the member\'s metadata to DateTime', () => {
+      expect(meta.type).to.equal(DateTime);
     });
 
-    describe('@Email', () => {
+    it('sets the "format" property on the member\'s metadata to the specified format', () => {
+      expect(meta.format).to.equal('test-format');
+    });
+  });
 
-        class TestClass {
-            @Email()
-            public email: string;
-        }
+  describe('@ArrayOf', () => {
+    class TestClass {
+      @ArrayOf(String)
+      public strings: string[];
+    }
 
-        let meta: MemberMetadata;
+    let meta: MemberMetadata;
 
-        beforeEach(() => {
-            meta = getMemberMetadata(TestClass, 'email');
-        });
-        afterEach(() => {
-            meta = undefined;
-        });
-
-        it('sets the "pattern" property on the member\'s metadata to EMAIL_PATTERN', () => {
-
-            expect(meta.pattern).to.equal(EMAIL_PATTERN);
-
-        });
-
-        it('sets the "minLength" property on the member\'s metadata to 6', () => {
-
-            expect(meta.minLength).to.equal(6);
-
-        });
-
-        it('sets the "maxLength" property on the member\'s metadata to 254', () => {
-
-            expect(meta.maxLength).to.equal(254);
-
-        });
-
-        it('sets the "type" property on the member\'s metadata to String', () => {
-
-            expect(meta.type).to.equal(String);
-
-        });
-
+    beforeEach(() => {
+      meta = getMemberMetadata(TestClass, 'strings');
+    });
+    afterEach(() => {
+      meta = undefined;
     });
 
-    describe('@UrlProperty', () => {
-
-        class TestClass {
-            @UrlProperty()
-            public url: Url;
-        }
-
-        let meta: MemberMetadata;
-
-        beforeEach(() => {
-            meta = getMemberMetadata(TestClass, 'url');
-        });
-        afterEach(() => {
-            meta = undefined;
-        });
-
-        it('sets the "type" property on the member\'s metadata to Url', () => {
-
-            expect(meta.type).to.equal(Url);
-
-        });
-
-        it('sets the "pattern" property on the member\'s metadata to URL_PATTERN', () => {
-
-            expect(meta.pattern).to.equal(URL_PATTERN);
-
-        });
-
+    it('sets the "type" property on the member\'s metadata to Array', () => {
+      expect(meta.type).to.equal(Array);
     });
 
-    describe('@DateTimeFormat', () => {
+    it('sets the "subType" property on the member\'s metadata to the specified item type', () => {
+      expect(meta.subType).to.equal(String);
+    });
+  });
 
-        class TestClass {
-            @DateTimeFormat('test-format')
-            public testOn: DateTime;
-        }
+  describe('@UrlArray', () => {
+    class TestClass {
+      @UrlArray()
+      public urls: Url[];
+    }
 
-        let meta: MemberMetadata;
+    let meta: MemberMetadata;
 
-        beforeEach(() => {
-            meta = getMemberMetadata(TestClass, 'testOn');
-        });
-        afterEach(() => {
-            meta = undefined;
-        });
-
-        it('sets the "type" property on the member\'s metadata to DateTime', () => {
-
-            expect(meta.type).to.equal(DateTime);
-
-        });
-
-        it('sets the "format" property on the member\'s metadata to the specified format', () => {
-
-            expect(meta.format).to.equal('test-format');
-
-        });
-
+    beforeEach(() => {
+      meta = getMemberMetadata(TestClass, 'urls');
+    });
+    afterEach(() => {
+      meta = undefined;
     });
 
-    describe('@ArrayOf', () => {
-
-        class TestClass {
-            @ArrayOf(String)
-            public strings: string[];
-        }
-
-        let meta: MemberMetadata;
-
-        beforeEach(() => {
-            meta = getMemberMetadata(TestClass, 'strings');
-        });
-        afterEach(() => {
-            meta = undefined;
-        });
-
-        it('sets the "type" property on the member\'s metadata to Array', () => {
-
-            expect(meta.type).to.equal(Array);
-
-        });
-
-        it('sets the "subType" property on the member\'s metadata to the specified item type', () => {
-
-            expect(meta.subType).to.equal(String);
-
-        });
-
+    it('sets the "type" property on the member\'s metadata to Array', () => {
+      expect(meta.type).to.equal(Array);
     });
 
-    describe('@UrlArray', () => {
-
-        class TestClass {
-            @UrlArray()
-            public urls: Url[];
-        }
-
-        let meta: MemberMetadata;
-
-        beforeEach(() => {
-            meta = getMemberMetadata(TestClass, 'urls');
-        });
-        afterEach(() => {
-            meta = undefined;
-        });
-
-        it('sets the "type" property on the member\'s metadata to Array', () => {
-
-            expect(meta.type).to.equal(Array);
-
-        });
-
-        it('sets the "subType" property on the member\'s metadata to Url', () => {
-
-            expect(meta.subType).to.equal(Url);
-
-        });
-
-        it('sets the "pattern" property on the member\'s metadata to URL_PATTERN', () => {
-
-            expect(meta.pattern).to.equal(URL_PATTERN);
-
-        });
-
+    it('sets the "subType" property on the member\'s metadata to Url', () => {
+      expect(meta.subType).to.equal(Url);
     });
 
-    describe('@OneOf', () => {
+    it('sets the "pattern" property on the member\'s metadata to URL_PATTERN', () => {
+      expect(meta.pattern).to.equal(URL_PATTERN);
+    });
+  });
 
-        class TestClass {
-            @OneOf(Uuid, String)
-            public oneOf: Uuid | string;
-        }
+  describe('@OneOf', () => {
+    class TestClass {
+      @OneOf(Uuid, String)
+      public oneOf: Uuid | string;
+    }
 
-        let meta: MemberMetadata;
+    let meta: MemberMetadata;
 
-        beforeEach(() => {
-            meta = getMemberMetadata(TestClass, 'oneOf');
-        });
-        afterEach(() => {
-            meta = undefined;
-        });
-
-        it('sets the "type" property of the member\'s metadata to OneOf', () => {
-
-            expect(meta.type).to.equal(OneOf);
-
-        });
-
-        it('sets the "oneOf" property of the member\'s metadata to the array of types passed to the decorator', () => {
-
-            expect(meta.oneOf).to.deep.equal([ Uuid, String ]);
-
-        });
-
-        it('sets "oneOf" property on member\'s metadata when used on a method parameter', () => {
-
-            class TestClassMethod {
-                public testMethod(@OneOf(Uuid, String) testParam) {}
-            }
-
-            expect(getMemberMetadata(TestClassMethod, 'testMethod', 0).oneOf)
-                .to.deep.equal([ Uuid, String ]);
-
-        });
-
+    beforeEach(() => {
+      meta = getMemberMetadata(TestClass, 'oneOf');
+    });
+    afterEach(() => {
+      meta = undefined;
     });
 
-    describe('subclasses', () => {
-
-        class BaseClass {
-            @Property(String)
-            public baseProperty: string;
-        }
-
-        class SubClass extends BaseClass {
-            @Property(String)
-            public subProperty: string;
-        }
-
-        let baseMeta;
-        let subMeta;
-
-        beforeEach(() => {
-            baseMeta = getModelMetadata(BaseClass);
-            subMeta = getModelMetadata(SubClass);
-        });
-        afterEach(() => {
-            baseMeta = undefined;
-            subMeta = undefined;
-        });
-
-        it('includes properties of self', () => {
-            expect(baseMeta).to.have.property('baseProperty');
-            expect(subMeta).to.have.property('subProperty');
-        });
-
-        it('does not include properties of subclasses', () => {
-            expect(baseMeta).not.to.have.property('subProperty');
-        });
-
-        it('includes properties of base classes', () => {
-            expect(subMeta).to.have.property('baseProperty');
-        });
-
+    it('sets the "type" property of the member\'s metadata to OneOf', () => {
+      expect(meta.type).to.equal(OneOf);
     });
 
+    it('sets the "oneOf" property of the member\'s metadata to the array of types passed to the decorator', () => {
+      expect(meta.oneOf).to.deep.equal([Uuid, String]);
+    });
+
+    it('sets "oneOf" property on member\'s metadata when used on a method parameter', () => {
+      class TestClassMethod {
+        public testMethod(@OneOf(Uuid, String) testParam) {}
+      }
+
+      expect(
+        getMemberMetadata(TestClassMethod, 'testMethod', 0).oneOf,
+      ).to.deep.equal([Uuid, String]);
+    });
+  });
+
+  describe('subclasses', () => {
+    class BaseClass {
+      @Property(String)
+      public baseProperty: string;
+    }
+
+    class SubClass extends BaseClass {
+      @Property(String)
+      public subProperty: string;
+    }
+
+    let baseMeta;
+    let subMeta;
+
+    beforeEach(() => {
+      baseMeta = getModelMetadata(BaseClass);
+      subMeta = getModelMetadata(SubClass);
+    });
+    afterEach(() => {
+      baseMeta = undefined;
+      subMeta = undefined;
+    });
+
+    it('includes properties of self', () => {
+      expect(baseMeta).to.have.property('baseProperty');
+      expect(subMeta).to.have.property('subProperty');
+    });
+
+    it('does not include properties of subclasses', () => {
+      expect(baseMeta).not.to.have.property('subProperty');
+    });
+
+    it('includes properties of base classes', () => {
+      expect(subMeta).to.have.property('baseProperty');
+    });
+  });
 });

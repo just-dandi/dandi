@@ -3,38 +3,41 @@ import { expect } from 'chai';
 
 import { HttpRequestBody, RequestBody } from '../';
 
-// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('@HttpRequestBody', () => {
+  it('sets the HttpRequestBody token for the decorated parameter', () => {
+    class TestModel {}
 
-    it('sets the HttpRequestBody token for the decorated parameter', () => {
+    class TestController {
+      public method(@RequestBody(TestModel) body: any): void {}
+    }
 
-        class TestModel {}
+    const meta = getInjectableParamMetadata(
+      TestController.prototype as MethodTarget<TestController>,
+      'method',
+      0,
+    );
 
-        class TestController {
-            public method(@RequestBody(TestModel) body: any): void {}
-        }
+    expect(meta).to.exist;
+    expect(meta.token).to.equal(HttpRequestBody);
+  });
 
-        const meta = getInjectableParamMetadata(TestController.prototype as MethodTarget<TestController>, 'method', 0);
+  it('adds a request body provider for the decorated parameter', () => {
+    class TestModel {}
 
-        expect(meta).to.exist;
-        expect(meta.token).to.equal(HttpRequestBody);
+    class TestController {
+      public method(@RequestBody(TestModel) body: any): void {}
+    }
 
-    });
+    const meta: RequestBody<
+      TestModel,
+      TestController
+    > = getInjectableParamMetadata(
+      TestController.prototype as MethodTarget<TestController>,
+      'method',
+      0,
+    );
 
-    it('adds a request body provider for the decorated parameter', () => {
-
-        class TestModel {}
-
-        class TestController {
-            public method(@RequestBody(TestModel) body: any): void {}
-        }
-
-        const meta: RequestBody<TestModel, TestController> =
-            getInjectableParamMetadata(TestController.prototype as MethodTarget<TestController>, 'method', 0);
-
-        expect(meta.providers).to.exist;
-        expect(meta.providers[0].provide).to.equal(HttpRequestBody);
-
-    });
-
+    expect(meta.providers).to.exist;
+    expect(meta.providers[0].provide).to.equal(HttpRequestBody);
+  });
 });

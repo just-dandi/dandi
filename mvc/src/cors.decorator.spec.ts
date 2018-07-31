@@ -3,52 +3,37 @@ import { expect } from 'chai';
 import { Controller, HttpGet } from '../index';
 
 import { getControllerMetadata } from './controller.metadata';
-import { Cors }                  from './cors.decorator';
+import { Cors } from './cors.decorator';
 
-// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('@Cors', () => {
+  describe('as a class decorator', () => {
+    it('sets a cors config on the decorated class', () => {
+      @Controller('/')
+      @Cors()
+      class TestController {
+        @HttpGet()
+        public testMethod() {}
+      }
 
-    describe('as a class decorator', () => {
-
-        it('sets a cors config on the decorated class', () => {
-
-            @Controller('/')
-            @Cors()
-            class TestController {
-                @HttpGet()
-                public testMethod() {
-
-                }
-            }
-
-            const controllerMeta = getControllerMetadata(TestController);
-            expect(controllerMeta.cors).to.exist;
-
-        });
-
+      const controllerMeta = getControllerMetadata(TestController);
+      expect(controllerMeta.cors).to.exist;
     });
+  });
 
-    describe('as a method decorator', () => {
+  describe('as a method decorator', () => {
+    it('sets a cors config on the decorated method', () => {
+      @Controller('/')
+      class TestController {
+        @HttpGet()
+        @Cors()
+        public testMethod() {}
+      }
 
-        it('sets a cors config on the decorated method', () => {
+      const controllerMeta = getControllerMetadata(TestController);
+      const methodMeta = controllerMeta.routeMap.get('testMethod');
 
-            @Controller('/')
-            class TestController {
-                @HttpGet()
-                @Cors()
-                public testMethod() {
-
-                }
-            }
-
-            const controllerMeta = getControllerMetadata(TestController);
-            const methodMeta = controllerMeta.routeMap.get('testMethod');
-
-            expect(methodMeta).to.exist;
-            expect(methodMeta.cors).to.exist;
-
-        });
-
+      expect(methodMeta).to.exist;
+      expect(methodMeta.cors).to.exist;
     });
-
+  });
 });

@@ -1,13 +1,14 @@
-import { Constructor }    from '@dandi/common';
+import { Constructor } from '@dandi/common';
 import { InjectionToken } from '@dandi/core';
 
 import { localOpinionatedToken } from './local.token';
 
 export interface HttpEventOptions {
-    validateBody?: Constructor<any>;
-    successStatusCode?: number;
-    errorStatusCode?: number;
+  validateBody?: Constructor<any>;
+  successStatusCode?: number;
+  errorStatusCode?: number;
 }
 
-export const HttpEventOptions: InjectionToken<HttpEventOptions> =
-    localOpinionatedToken('HttpEventOptions', { multi: false });
+export const HttpEventOptions: InjectionToken<
+  HttpEventOptions
+> = localOpinionatedToken('HttpEventOptions', { multi: false });

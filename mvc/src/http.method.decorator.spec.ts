@@ -4,49 +4,38 @@ import { Controller, HttpGet, HttpMethod, HttpPost } from '../';
 
 import { getControllerMetadata } from './controller.metadata';
 
-// tslint:disable no-unused-expression no-empty max-classes-per-file
 describe('HttpMethodDecorator', () => {
+  it('adds a route entry for the decorated method', () => {
+    @Controller('/')
+    class TestController {
+      @HttpGet()
+      public testMethod() {}
+    }
 
-    it('adds a route entry for the decorated method', () => {
+    const controllerMeta = getControllerMetadata(TestController);
+    const methodMeta = controllerMeta.routeMap.get('testMethod');
 
-        @Controller('/')
-        class TestController {
-            @HttpGet()
-            public testMethod() {
+    expect(methodMeta).to.exist;
+    expect(methodMeta.routePaths).to.include.keys('');
+    expect(methodMeta.routePaths.get('')).to.include(HttpMethod.get);
+  });
 
-            }
-        }
+  it('adds route entries for multiple decorations', () => {
+    @Controller('/')
+    class TestController {
+      @HttpGet()
+      @HttpPost()
+      @HttpPost('foo')
+      public testMethod() {}
+    }
 
-        const controllerMeta = getControllerMetadata(TestController);
-        const methodMeta = controllerMeta.routeMap.get('testMethod');
+    const controllerMeta = getControllerMetadata(TestController);
+    const methodMeta = controllerMeta.routeMap.get('testMethod');
 
-        expect(methodMeta).to.exist;
-        expect(methodMeta.routePaths).to.include.keys('');
-        expect(methodMeta.routePaths.get('')).to.include(HttpMethod.get);
-
-    });
-
-    it('adds route entries for multiple decorations', () => {
-
-        @Controller('/')
-        class TestController {
-            @HttpGet()
-            @HttpPost()
-            @HttpPost('foo')
-            public testMethod() {
-
-            }
-        }
-
-        const controllerMeta = getControllerMetadata(TestController);
-        const methodMeta = controllerMeta.routeMap.get('testMethod');
-
-        expect(methodMeta).to.exist;
-        expect(methodMeta.routePaths).to.include.keys('', 'foo');
-        expect(methodMeta.routePaths.get('')).to.include(HttpMethod.get);
-        expect(methodMeta.routePaths.get('')).to.include(HttpMethod.post);
-        expect(methodMeta.routePaths.get('foo')).to.include(HttpMethod.post);
-
-    });
-
+    expect(methodMeta).to.exist;
+    expect(methodMeta.routePaths).to.include.keys('', 'foo');
+    expect(methodMeta.routePaths.get('')).to.include(HttpMethod.get);
+    expect(methodMeta.routePaths.get('')).to.include(HttpMethod.post);
+    expect(methodMeta.routePaths.get('foo')).to.include(HttpMethod.post);
+  });
 });

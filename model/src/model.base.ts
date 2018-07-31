@@ -1,5 +1,5 @@
 export abstract class ModelBase {
-    protected constructor(obj?: any) {
-        Object.assign(this, obj);
-    }
+  protected constructor(obj?: any) {
+    Object.assign(this, obj);
+  }
 }

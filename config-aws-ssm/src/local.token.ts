@@ -1,10 +1,18 @@
-import { InjectionOptions, InjectionToken, OpinionatedToken, SymbolToken } from '@dandi/core';
+import {
+  InjectionOptions,
+  InjectionToken,
+  OpinionatedToken,
+  SymbolToken,
+} from '@dandi/core';
 
 const PKG = '@dandi/config-aws-ssm';
 
 export function localSymbolToken<T>(target: string): InjectionToken<T> {
-    return SymbolToken.local<T>(PKG, target);
+  return SymbolToken.local<T>(PKG, target);
 }
-export function localOpinionatedToken<T>(target: string, options: InjectionOptions): InjectionToken<T> {
-    return OpinionatedToken.local<T>(PKG, target, options);
+export function localOpinionatedToken<T>(
+  target: string,
+  options: InjectionOptions,
+): InjectionToken<T> {
+  return OpinionatedToken.local<T>(PKG, target, options);
 }

@@ -1,9 +1,10 @@
-import { InjectionToken }        from './injection.token';
+import { InjectionToken } from './injection.token';
 import { localOpinionatedToken } from './local.token';
 
 export interface Bootstrapper {
-    start(): void;
+  start(): void;
 }
 
-export const Bootstrapper: InjectionToken<Bootstrapper> =
-    localOpinionatedToken<Bootstrapper>('Bootstrapper', { multi: false });
+export const Bootstrapper: InjectionToken<Bootstrapper> = localOpinionatedToken<
+  Bootstrapper
+>('Bootstrapper', { multi: false });

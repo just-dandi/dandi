@@ -5,7 +5,7 @@ import { modelDecorator } from './model.decorator';
  * Marks a member as being backed by JSON storage
  */
 export function Json() {
-    return modelDecorator.bind(null, {
-        json: true,
-    });
+  return modelDecorator.bind(null, {
+    json: true,
+  });
 }

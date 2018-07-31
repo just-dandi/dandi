@@ -1,5 +1,3 @@
-// tslint:disable no-var-requires
-
 import { readFileSync, writeFileSync } from 'fs';
 import { resolve } from 'path';
 

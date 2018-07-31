@@ -5,20 +5,16 @@ import { SsmClient } from './ssm.client';
 
 @Injectable()
 export class AwsSsmConfigClient implements AsyncConfigClient {
+  public static provider<T>(token: ConfigToken<T>): Provider<T> {
+    return configProvider(AwsSsmConfigClient, token);
+  }
 
-    public static provider<T>(token: ConfigToken<T>): Provider<T> {
-        return configProvider(AwsSsmConfigClient, token);
-    }
+  public readonly async: true = true;
+  public readonly allowsEncryption = true;
 
-    constructor(
-        @Inject(SsmClient) private ssm: SsmClient,
-    ) {}
+  constructor(@Inject(SsmClient) private ssm: SsmClient) {}
 
-    public readonly async: true = true;
-    public readonly allowsEncryption = true;
-
-    public get<T>(token: ConfigToken<T>): Promise<string> {
-        return this.ssm.getParameter(token.key, token.encrypted);
-    }
-
+  public get<T>(token: ConfigToken<T>): Promise<string> {
+    return this.ssm.getParameter(token.key, token.encrypted);
+  }
 }
