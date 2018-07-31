@@ -10,19 +10,16 @@ import { getInjectableMetadata, ParamMetadata } from './injectable.metadata';
 import { getInjectionContext } from './injection.context.util';
 import { InjectionToken } from './injection.token';
 import { Logger } from './logger';
+import { MissingProviderError } from './missing.provider.error';
 import { NoopLogger } from './noop.logger';
+import { ProviderTypeError } from './provider.type.error';
 import { Repository } from './repository';
 import { ResolveResult } from './resolve.result';
 import { Resolver } from './resolver';
 import { ResolverContext } from './resolver.context';
 import { Scanner } from './scanner';
 
-import {
-  GeneratingProvider,
-  MissingProviderError,
-  Provider,
-  ProviderTypeError,
-} from './provider';
+import { GeneratingProvider, Provider } from './provider';
 
 import {
   isAsyncFactoryProvider,
@@ -52,6 +49,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig>
 
   protected readonly config: TConfig;
 
+  // eslint-disable-next-line no-invalid-this
   protected readonly repository: Repository = Repository.for(this);
 
   private initialized: boolean = false;
