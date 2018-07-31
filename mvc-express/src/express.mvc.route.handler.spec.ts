@@ -32,9 +32,7 @@ describe('ExpressMvcRouteHandler', () => {
       controllerMethod: 'method',
       httpMethod: HttpMethod.get,
       siblingMethods: new Set([HttpMethod.get]),
-      cors: false,
       path: '/',
-      authorization: false,
     };
     req = {
       params: {},

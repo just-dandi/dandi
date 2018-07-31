@@ -44,8 +44,6 @@ describe('DefaultRouteInitialzer', () => {
       path: '/',
       controllerCtr: TestController,
       controllerMethod: 'method',
-      authorization: false,
-      cors: null,
     };
     req = {
       get: stub(),

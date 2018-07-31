@@ -24,3 +24,22 @@ export function Cors(
     }
   };
 }
+
+export function getCorsConfig(
+  controllerCors: CorsConfig | boolean,
+  methodCors: CorsConfig | boolean,
+): CorsConfig | boolean {
+  if (!controllerCors) {
+    return methodCors;
+  }
+  if (methodCors === false) {
+    return false;
+  }
+  if (methodCors === undefined) {
+    return controllerCors;
+  }
+  if (controllerCors === true && methodCors === true) {
+    return true;
+  }
+  return Object.assign({}, controllerCors, methodCors);
+}

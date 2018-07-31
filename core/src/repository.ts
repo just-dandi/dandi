@@ -54,6 +54,7 @@ export class Repository<TContext = any> implements Disposable {
     InjectionToken<any>,
     RepositoryEntry<any>
   >();
+
   private readonly singletons = new Map<Provider<any>, any>();
 
   private constructor(

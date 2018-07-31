@@ -9,9 +9,9 @@ import {
 import { mergeAuthorization } from './authorization.metadata';
 import { Controller } from './controller.decorator';
 import { getControllerMetadata } from './controller.metadata';
-import { CorsConfig } from './cors.config';
 import { Route } from './route';
 import { RouteGenerator } from './route.generator';
+import { getCorsConfig } from './cors.decorator';
 
 @Injectable(RouteGenerator)
 export class DecoratorRouteGenerator implements RouteGenerator {
@@ -41,15 +41,13 @@ export class DecoratorRouteGenerator implements RouteGenerator {
         const authorization =
           authorizationMeta && authorizationMeta.authorization;
         const methodCors = controllerMethodMetadata.cors;
-        const cors = this.getCorsConfig(controllerCors, methodCors);
+        const cors = getCorsConfig(controllerCors, methodCors);
 
         for (const [
           methodPath,
           httpMethods,
         ] of controllerMethodMetadata.routePaths.entries()) {
-          const path = `${meta.path}${
-            methodPath && !methodPath.startsWith('/') ? '/' : ''
-          }${methodPath}`;
+          const path = this.normalizePath(meta.path, methodPath);
 
           httpMethods.forEach((httpMethod) => {
             this.logger.debug(
@@ -75,16 +73,15 @@ export class DecoratorRouteGenerator implements RouteGenerator {
     return routes;
   }
 
-  private getCorsConfig(
-    controllerCors: CorsConfig | boolean,
-    methodCors: CorsConfig | boolean,
-  ): CorsConfig | boolean {
-    if (!controllerCors) {
-      return methodCors;
+  private normalizePath(a: string, b: string): string {
+    let result = a;
+    if (!a.startsWith('/')) {
+      result = `/${a}`;
     }
-    if (controllerCors === true && methodCors === true) {
-      return true;
+    if (!a.endsWith('/')) {
+      result += '/';
     }
-    return Object.assign({}, controllerCors, methodCors);
+    result += b.startsWith('/') ? b.substring(1) : b;
+    return result;
   }
 }

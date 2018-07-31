@@ -9,11 +9,11 @@ import { localSymbolToken } from './local.token';
 export interface Route {
   httpMethod: HttpMethod;
   siblingMethods: Set<HttpMethod>;
-  cors: boolean | CorsConfig;
   path: string;
   controllerCtr: Constructor<any>;
   controllerMethod: string;
-  authorization: false | Array<Provider<AuthorizationCondition>>;
+  cors?: CorsConfig;
+  authorization?: Array<Provider<AuthorizationCondition>>;
 }
 
 export const Route: InjectionToken<Route> = localSymbolToken<Route>('Route');

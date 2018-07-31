@@ -56,11 +56,9 @@ describe('ExpressMvcRouteMapper', () => {
     const route: Route = {
       httpMethod: HttpMethod.get,
       siblingMethods: new Set([HttpMethod.get]),
-      cors: false,
       path: '/',
       controllerCtr: TestController,
       controllerMethod: 'method',
-      authorization: false,
     };
 
     mapper.mapRoute(route);
@@ -74,11 +72,9 @@ describe('ExpressMvcRouteMapper', () => {
     const route: Route = {
       httpMethod: HttpMethod.get,
       siblingMethods: new Set([HttpMethod.get]),
-      cors: false,
       path: '/',
       controllerCtr: TestController,
       controllerMethod: 'method',
-      authorization: false,
     };
 
     mapper.mapRoute(route);
