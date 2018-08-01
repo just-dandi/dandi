@@ -22,9 +22,7 @@ export class CascadingCache implements Cache {
     @Optional()
     remote: Cache,
   ) {
-    this.caches = [localMem, localSvc, network, remote].filter(
-      (cache) => cache,
-    );
+    this.caches = [localMem, localSvc, network, remote].filter((cache) => cache);
     this.local = this.caches[0];
   }
 

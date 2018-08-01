@@ -30,27 +30,19 @@ describe('Disposable', () => {
 
   describe('makeDisposable', () => {
     it('throws an error if the object is null', () => {
-      expect(() => Disposable.makeDisposable(null, null)).to.throw(
-        DisposableTypeError,
-      );
+      expect(() => Disposable.makeDisposable(null, null)).to.throw(DisposableTypeError);
     });
 
     it('throws an error if the object is undefined', () => {
-      expect(() => Disposable.makeDisposable(undefined, null)).to.throw(
-        DisposableTypeError,
-      );
+      expect(() => Disposable.makeDisposable(undefined, null)).to.throw(DisposableTypeError);
     });
 
     it('throws an error if the object is not an object', () => {
-      expect(() => Disposable.makeDisposable('heyyy', null)).to.throw(
-        DisposableTypeError,
-      );
+      expect(() => Disposable.makeDisposable('heyyy', null)).to.throw(DisposableTypeError);
     });
 
     it('throws an error if the dispose function is not a function', () => {
-      expect(() => Disposable.makeDisposable({}, null)).to.throw(
-        DisposableFunctionError,
-      );
+      expect(() => Disposable.makeDisposable({}, null)).to.throw(DisposableFunctionError);
     });
 
     it('sets the dispose function on an object with no existing dispose function', () => {
@@ -87,9 +79,7 @@ describe('Disposable', () => {
 
       it('calls an existing dispose function before the new one', () => {
         Disposable.makeDisposable(obj, stubs.newDispose).dispose('');
-        expect(stubs.existingDispose).to.have.been.calledBefore(
-          stubs.newDispose,
-        );
+        expect(stubs.existingDispose).to.have.been.calledBefore(stubs.newDispose);
       });
 
       it('calls the new dispose function even if the existing one throws an error', () => {
@@ -105,9 +95,7 @@ describe('Disposable', () => {
         }
 
         expect(catchStub).to.have.been.called;
-        expect(stubs.newDispose).to.have.been.calledAfter(
-          stubs.existingDispose,
-        );
+        expect(stubs.newDispose).to.have.been.calledAfter(stubs.existingDispose);
       });
     });
   });
@@ -194,12 +182,7 @@ describe('Disposable', () => {
 
     it('returns the result of the use function', async () => {
       const expected = {};
-      stubs.use.callsFake(
-        () =>
-          new Promise((resolve) =>
-            setTimeout(resolve.bind(null, expected), 10),
-          ),
-      );
+      stubs.use.callsFake(() => new Promise((resolve) => setTimeout(resolve.bind(null, expected), 10)));
       const actual = await Disposable.useAsync(obj, stubs.use);
       expect(expected).to.equal(actual);
     });

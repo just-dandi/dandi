@@ -9,10 +9,7 @@ import { isProvider } from './provider.util';
 import { Repository, RepositoryEntry } from './repository';
 import { ResolveResult } from './resolve.result';
 
-export type FindExecFn<T, TResult> = (
-  repo: Repository,
-  entry: RepositoryEntry<T>,
-) => TResult;
+export type FindExecFn<T, TResult> = (repo: Repository, entry: RepositoryEntry<T>) => TResult;
 
 export interface FindCacheEntry<T> {
   repo: Repository;
@@ -35,11 +32,7 @@ export class ResolverContext<T> implements Disposable {
       return function RootInjectionContext() {};
     }
 
-    return (
-      this.parent.context ||
-      getInjectionContext(this.parent.match as any) ||
-      this.context
-    );
+    return this.parent.context || getInjectionContext(this.parent.match as any) || this.context;
   }
 
   public static create<T>(
@@ -53,10 +46,7 @@ export class ResolverContext<T> implements Disposable {
 
   private readonly children: Array<ResolverContext<any>> = [];
   private readonly instances: any[] = [];
-  private readonly findCache = new Map<
-    InjectionToken<any>,
-    FindCacheEntry<any>
-  >();
+  private readonly findCache = new Map<InjectionToken<any>, FindCacheEntry<any>>();
   private readonly contextRepository: Repository;
 
   private _match: RepositoryEntry<T>;
@@ -91,14 +81,8 @@ export class ResolverContext<T> implements Disposable {
   }
 
   public find<T>(token: InjectionToken<T>): RepositoryEntry<T>;
-  public find<T, TResult>(
-    token: InjectionToken<T>,
-    exec: FindExecFn<T, TResult>,
-  ): TResult;
-  public find<T, TResult>(
-    token: InjectionToken<T>,
-    exec?: FindExecFn<T, TResult>,
-  ): TResult | RepositoryEntry<T> {
+  public find<T, TResult>(token: InjectionToken<T>, exec: FindExecFn<T, TResult>): TResult;
+  public find<T, TResult>(token: InjectionToken<T>, exec?: FindExecFn<T, TResult>): TResult | RepositoryEntry<T> {
     const result = this.cachedFind(token);
     if (!result) {
       return null;
@@ -152,26 +136,16 @@ export class ResolverContext<T> implements Disposable {
     ...providersOrRepositories: Array<Provider<any> | Repository>
   ): ResolverContext<T> {
     const providers = providersOrRepositories.filter(isProvider);
-    const repositories = providersOrRepositories.filter(
-      (entry) => entry instanceof Repository,
-    ) as Repository[];
+    const repositories = providersOrRepositories.filter((entry) => entry instanceof Repository) as Repository[];
 
-    const cloned = new ResolverContext(
-      token,
-      repositories,
-      this,
-      context,
-      providers,
-    );
+    const cloned = new ResolverContext(token, repositories, this, context, providers);
     this.children.push(cloned);
     return cloned;
   }
 
   public [util.inspect.custom](): string {
     const thisContext = this.context || getInjectionContext(this.match as any);
-    const parts = [
-      (thisContext && thisContext.name) || getTokenString(this.target),
-    ];
+    const parts = [(thisContext && thisContext.name) || getTokenString(this.target)];
     if (this.parent) {
       parts.push(this.parent[util.inspect.custom]());
     }

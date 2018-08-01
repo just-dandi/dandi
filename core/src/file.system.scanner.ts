@@ -17,15 +17,11 @@ export interface FileSystemScannerConfig {
 
 @Injectable()
 export class FileSystemScanner implements Scanner {
-  public static withConfig(
-    config: FileSystemScannerConfig[],
-  ): Provider<Scanner> {
+  public static withConfig(config: FileSystemScannerConfig[]): Provider<Scanner> {
     return scannerProvider(FileSystemScanner, config);
   }
 
-  constructor(
-    @Inject(ScannerConfig) private config: FileSystemScannerConfig[],
-  ) {}
+  constructor(@Inject(ScannerConfig) private config: FileSystemScannerConfig[]) {}
 
   public async scan(): Promise<Repository> {
     const repo = Repository.for(this);
@@ -38,10 +34,7 @@ export class FileSystemScanner implements Scanner {
     return repo;
   }
 
-  private async scanDir(
-    config: FileSystemScannerConfig,
-    dirPath: string,
-  ): Promise<any[]> {
+  private async scanDir(config: FileSystemScannerConfig, dirPath: string): Promise<any[]> {
     const files = await readdir(dirPath);
     const modules = await Promise.all(
       files.map(async (file) => {

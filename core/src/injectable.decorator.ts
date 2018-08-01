@@ -3,11 +3,7 @@ import { Constructor } from '@dandi/common';
 import { ProviderOptions } from './provider';
 import { Repository } from './repository';
 
-import {
-  InjectionToken,
-  InjectionTokenTypeError,
-  isInjectionToken,
-} from './injection.token';
+import { InjectionToken, InjectionTokenTypeError, isInjectionToken } from './injection.token';
 
 export interface InjectableDecorator<T> {
   (options?: InjectionToken<T>): ClassDecorator;
@@ -35,9 +31,7 @@ export function Injectable<T>(
   injectableOrOption: InjectionToken<T> | InjectableOption = null,
   ...options: InjectableOption[]
 ): ClassDecorator {
-  const injectable: InjectionToken<T> = isInjectableOption(injectableOrOption)
-    ? null
-    : injectableOrOption;
+  const injectable: InjectionToken<T> = isInjectableOption(injectableOrOption) ? null : injectableOrOption;
   if (isInjectableOption(injectableOrOption)) {
     options.unshift(injectableOrOption);
   }
@@ -55,9 +49,5 @@ export class InjectableOption {
   }
 }
 
-export const Singleton = new InjectableOption(
-  (options: ProviderOptions<any>) => (options.singleton = true),
-);
-export const Multi = new InjectableOption(
-  (options: ProviderOptions<any>) => (options.multi = true),
-);
+export const Singleton = new InjectableOption((options: ProviderOptions<any>) => (options.singleton = true));
+export const Multi = new InjectableOption((options: ProviderOptions<any>) => (options.multi = true));

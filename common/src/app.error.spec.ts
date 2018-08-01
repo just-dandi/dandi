@@ -44,9 +44,7 @@ describe('AppError', () => {
       });
 
       it('includes the stack of an AppError innerError', () => {
-        expect(withInnerError.getStack()).to.equal(
-          'AppError with-inner-error-stack\n Inner AppError app-error-stack',
-        );
+        expect(withInnerError.getStack()).to.equal('AppError with-inner-error-stack\n Inner AppError app-error-stack');
       });
 
       it('includes the stack of a non-AppError innerError', () => {
@@ -55,9 +53,7 @@ describe('AppError', () => {
         } as any);
         withInnerError.stack = 'with-inner-error-stack';
 
-        expect(withInnerError.getStack()).to.equal(
-          'AppError with-inner-error-stack\n Inner non-app-error-stack',
-        );
+        expect(withInnerError.getStack()).to.equal('AppError with-inner-error-stack\n Inner non-app-error-stack');
       });
     });
   });

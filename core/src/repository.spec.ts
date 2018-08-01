@@ -2,13 +2,7 @@ import { InvalidDisposeTargetError } from '@dandi/common';
 import { expect } from 'chai';
 import { spy } from 'sinon';
 
-import {
-  OpinionatedProviderOptionsConflictError,
-  OpinionatedToken,
-  Provider,
-  Repository,
-  SymbolToken,
-} from '../';
+import { OpinionatedProviderOptionsConflictError, OpinionatedToken, Provider, Repository, SymbolToken } from '../';
 
 import { ProviderTypeError } from './provider.type.error';
 import {
@@ -60,9 +54,7 @@ describe('Repository', () => {
         useFactory: () => value,
         multi: false,
       };
-      expect(() => repo.register(provider)).to.throw(
-        OpinionatedProviderOptionsConflictError,
-      );
+      expect(() => repo.register(provider)).to.throw(OpinionatedProviderOptionsConflictError);
     });
 
     it('registers a provider by its injection token', () => {
@@ -104,12 +96,8 @@ describe('Repository', () => {
     });
 
     it('throws an error if the registration target is not a class or provider', () => {
-      expect(() => repo.register(null)).to.throw(
-        InvalidRegistrationTargetError,
-      );
-      expect(() => repo.register({} as any)).to.throw(
-        InvalidRegistrationTargetError,
-      );
+      expect(() => repo.register(null)).to.throw(InvalidRegistrationTargetError);
+      expect(() => repo.register({} as any)).to.throw(InvalidRegistrationTargetError);
     });
 
     it('overwrites registrations when the multi option is not set', () => {
@@ -121,9 +109,7 @@ describe('Repository', () => {
       repo.register(overwritingProvider);
 
       expect((repo as any).providers).to.contain.keys(provider.provide);
-      expect((repo as any).providers.get(provider.provide)).to.equal(
-        overwritingProvider,
-      );
+      expect((repo as any).providers.get(provider.provide)).to.equal(overwritingProvider);
     });
 
     it('registers an array of providers when the multi option is set', () => {
@@ -137,10 +123,7 @@ describe('Repository', () => {
       repo.register(additionalProvider);
 
       expect((repo as any).providers).to.contain.keys(provider.provide);
-      expect((repo as any).providers.get(provider.provide)).to.deep.equal([
-        provider,
-        additionalProvider,
-      ]);
+      expect((repo as any).providers.get(provider.provide)).to.deep.equal([provider, additionalProvider]);
     });
 
     it('throws an error when registering a multi provider if a non-multi provider already exists', () => {
@@ -150,9 +133,7 @@ describe('Repository', () => {
         useValue: {},
         multi: true,
       };
-      expect(() => repo.register(additionalProvider)).to.throw(
-        ConflictingRegistrationOptionsError,
-      );
+      expect(() => repo.register(additionalProvider)).to.throw(ConflictingRegistrationOptionsError);
     });
 
     it('throws an error when registering a non-multi provider if a multi provider already exists', () => {
@@ -162,9 +143,7 @@ describe('Repository', () => {
         multi: true,
       };
       repo.register(additionalProvider);
-      expect(() => repo.register(provider)).to.throw(
-        ConflictingRegistrationOptionsError,
-      );
+      expect(() => repo.register(provider)).to.throw(ConflictingRegistrationOptionsError);
     });
   });
 
@@ -189,10 +168,7 @@ describe('Repository', () => {
       };
       repo.register(anotherProvider);
 
-      expect([...repo.entries()]).to.include.members([
-        provider,
-        anotherProvider,
-      ]);
+      expect([...repo.entries()]).to.include.members([provider, anotherProvider]);
     });
   });
 
@@ -203,9 +179,7 @@ describe('Repository', () => {
     });
 
     it('throws an error if called without a valid provider', () => {
-      expect(() => repo.addSingleton({} as any, value)).to.throw(
-        ProviderTypeError,
-      );
+      expect(() => repo.addSingleton({} as any, value)).to.throw(ProviderTypeError);
     });
   });
 
@@ -218,9 +192,7 @@ describe('Repository', () => {
 
   describe('dispose', () => {
     it('throws an error if called on the global repository', () => {
-      expect(() => Repository.global.dispose('test')).to.throw(
-        InvalidDisposeTargetError,
-      );
+      expect(() => Repository.global.dispose('test')).to.throw(InvalidDisposeTargetError);
     });
 
     it('clears local maps', () => {
@@ -252,9 +224,7 @@ describe('Repository', () => {
     });
 
     it('throws an error if a context is not specified', () => {
-      expect(() => Repository.for(null)).to.throw(
-        InvalidRepositoryContextError,
-      );
+      expect(() => Repository.for(null)).to.throw(InvalidRepositoryContextError);
     });
   });
 });

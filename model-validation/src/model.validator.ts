@@ -9,6 +9,6 @@ export interface ModelValidator {
   validateMember(metadata: MemberMetadata, key: string, value: any): any;
 }
 
-export const ModelValidator: InjectionToken<
-  ModelValidator
-> = localOpinionatedToken<ModelValidator>('ModelValidator', { multi: false });
+export const ModelValidator: InjectionToken<ModelValidator> = localOpinionatedToken<ModelValidator>('ModelValidator', {
+  multi: false,
+});

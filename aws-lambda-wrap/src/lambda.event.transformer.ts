@@ -8,6 +8,7 @@ export interface LambdaEventTransformer<TEvent, TEventData> {
   transform(event: TEvent, context: Context): TEventData;
 }
 
-export const LambdaEventTransformer: InjectionToken<
-  LambdaEventTransformer<any, any>
-> = localOpinionatedToken('LambdaEventTransformer', { multi: false });
+export const LambdaEventTransformer: InjectionToken<LambdaEventTransformer<any, any>> = localOpinionatedToken(
+  'LambdaEventTransformer',
+  { multi: false },
+);

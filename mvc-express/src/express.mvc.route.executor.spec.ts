@@ -1,12 +1,6 @@
 import { AppError, Uuid } from '@dandi/common';
 import { Logger, NoopLogger, Repository, Resolver } from '@dandi/core';
-import {
-  HttpMethod,
-  RequestInfo,
-  Route,
-  RouteHandler,
-  RouteInitializer,
-} from '@dandi/mvc';
+import { HttpMethod, RequestInfo, Route, RouteHandler, RouteInitializer } from '@dandi/mvc';
 
 import { expect } from 'chai';
 import { createStubInstance, SinonStubbedInstance, stub } from 'sinon';
@@ -66,12 +60,7 @@ describe('ExpressMvcRouteExecutor', () => {
       },
     };
     logger = createStubInstance(NoopLogger);
-    routeExec = new ExpressMvcRouteExecutor(
-      resolver,
-      routeInit,
-      routeHandler,
-      logger,
-    );
+    routeExec = new ExpressMvcRouteExecutor(resolver, routeInit, routeHandler, logger);
   });
   afterEach(() => {
     routeInit = undefined;
@@ -95,11 +84,7 @@ describe('ExpressMvcRouteExecutor', () => {
 
       await routeExec.execRoute(route, req, res);
 
-      expect(resolver.invoke).to.have.been.calledWith(
-        routeHandler,
-        routeHandler.handleRouteRequest,
-        repo,
-      );
+      expect(resolver.invoke).to.have.been.calledWith(routeHandler, routeHandler.handleRouteRequest, repo);
     });
 
     it('catches errors and sends a JSON response with the message of the object', async () => {
@@ -150,9 +135,7 @@ describe('ExpressMvcRouteExecutor', () => {
     });
 
     it('calls the dispose() method on the repository', async () => {
-      const repo: SinonStubbedInstance<Repository> = createStubInstance(
-        Repository as any,
-      );
+      const repo: SinonStubbedInstance<Repository> = createStubInstance(Repository as any);
       routeInit.initRouteRequest.returns(repo);
 
       await routeExec.execRoute(route, req, res);

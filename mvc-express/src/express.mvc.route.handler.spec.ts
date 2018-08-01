@@ -1,11 +1,6 @@
 import { Uuid } from '@dandi/common';
 import { Container, NoopLogger, ResolverContext } from '@dandi/core';
-import {
-  HttpMethod,
-  JsonControllerResult,
-  RequestInfo,
-  Route,
-} from '@dandi/mvc';
+import { HttpMethod, JsonControllerResult, RequestInfo, Route } from '@dandi/mvc';
 import { expect } from 'chai';
 import { stub } from 'sinon';
 
@@ -72,14 +67,7 @@ describe('ExpressMvcRouteHandler', () => {
       }
       controller = new TestController();
       route.controllerCtr = TestController;
-      await handler.handleRouteRequest(
-        resolverContext,
-        controller,
-        route,
-        req,
-        res,
-        requestInfo,
-      );
+      await handler.handleRouteRequest(resolverContext, controller, route, req, res, requestInfo);
 
       expect(spy).to.have.been.called;
     });
@@ -93,41 +81,22 @@ describe('ExpressMvcRouteHandler', () => {
         }
       }
       controller = new TestController();
-      await handler.handleRouteRequest(
-        resolverContext,
-        controller,
-        route,
-        req,
-        res,
-        requestInfo,
-      );
+      await handler.handleRouteRequest(resolverContext, controller, route, req, res, requestInfo);
 
       expect(spy).to.have.been.called;
-      expect(res.send).to.have.been.calledWith(
-        JSON.stringify({ foo: 'yeah!' }),
-      );
+      expect(res.send).to.have.been.calledWith(JSON.stringify({ foo: 'yeah!' }));
       expect(res.contentType).to.have.been.calledWith('application/json');
     });
 
     it('adds any response headers specified by the controller result', async () => {
-      const result = new JsonControllerResult(
-        { foo: 'yeah!' },
-        { 'x-fizzle-bizzle': 'okay' },
-      );
+      const result = new JsonControllerResult({ foo: 'yeah!' }, { 'x-fizzle-bizzle': 'okay' });
       class TestController {
         public async method(): Promise<any> {
           return result;
         }
       }
       controller = new TestController();
-      await handler.handleRouteRequest(
-        resolverContext,
-        controller,
-        route,
-        req,
-        res,
-        requestInfo,
-      );
+      await handler.handleRouteRequest(resolverContext, controller, route, req, res, requestInfo);
 
       expect(res.setHeader).to.have.been.calledWith('x-fizzle-bizzle', 'okay');
     });

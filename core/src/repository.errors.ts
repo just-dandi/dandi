@@ -7,11 +7,7 @@ export class InvalidRegistrationTargetError extends AppError {
 }
 
 export class ConflictingRegistrationOptionsError extends AppError {
-  constructor(
-    message: string,
-    public readonly existing: any,
-    public target: any,
-  ) {
+  constructor(message: string, public readonly existing: any, public target: any) {
     super(message);
   }
 }

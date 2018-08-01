@@ -7,10 +7,7 @@ export type SnsHandlerMethod = (event: SNSEvent) => Promise<any>;
 /**
  * Provides basic handling functionality for interfacing between business logic and AWS Lambda
  */
-export async function snsHandler(
-  method: SnsHandlerMethod,
-  event: SNSEvent,
-): Promise<any> {
+export async function snsHandler(method: SnsHandlerMethod, event: SNSEvent): Promise<any> {
   try {
     await Promise.all(
       event.Records.map((record) => {
@@ -22,11 +19,6 @@ export async function snsHandler(
     );
   } catch (err) {
     /* eslint-disable-next-line no-invalid-this */
-    ErrorUtil.logEventError(
-      this.constructor.name,
-      'error handling APIGatewayProxyEvent',
-      event,
-      err,
-    );
+    ErrorUtil.logEventError(this.constructor.name, 'error handling APIGatewayProxyEvent', event, err);
   }
 }

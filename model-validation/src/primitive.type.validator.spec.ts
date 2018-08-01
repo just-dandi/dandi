@@ -90,9 +90,7 @@ describe('BooleanTypeValidator', () => {
 
     it('throws an error if the value is not a valid boolean', () => {
       expect(() => validator.validate('flalse')).to.throw(TypeValidationError);
-      expect(() => validator.validate({ foo: 'bar' })).to.throw(
-        TypeValidationError,
-      );
+      expect(() => validator.validate({ foo: 'bar' })).to.throw(TypeValidationError);
     });
   });
 });

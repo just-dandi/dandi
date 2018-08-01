@@ -8,9 +8,7 @@ export class ContainerError extends AppError {
 
 export class ContainerNotInitializedError extends ContainerError {
   constructor() {
-    super(
-      'Container is not initialized - start() must be called before attempting to resolve dependencies',
-    );
+    super('Container is not initialized - start() must be called before attempting to resolve dependencies');
   }
 }
 

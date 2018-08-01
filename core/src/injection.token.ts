@@ -7,14 +7,9 @@ export interface MappedInjectionToken<TKey, TService> {
   key: TKey;
 }
 
-export type InjectionToken<T> =
-  | SymbolTokenBase<T>
-  | Constructor<T>
-  | MappedInjectionToken<any, T>;
+export type InjectionToken<T> = SymbolTokenBase<T> | Constructor<T> | MappedInjectionToken<any, T>;
 
-export function isMappedInjectionToken(
-  obj: any,
-): obj is MappedInjectionToken<any, any> {
+export function isMappedInjectionToken(obj: any): obj is MappedInjectionToken<any, any> {
   return obj && isInjectionToken(obj.provide) && typeof obj.key !== undefined;
 }
 

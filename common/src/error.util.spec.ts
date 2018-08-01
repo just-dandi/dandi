@@ -72,16 +72,13 @@ describe('ErrorUtil', () => {
       const error: any = { message: 'message!' };
       ErrorUtil.logEventError('test', 'this is a test', 'a test', error);
 
-      expect(console.error).to.have.been.calledOnce.calledWithExactly(
-        '[test] this is a test',
-        {
-          error: {
-            someCustomProp: 'foo',
-            anotherCustomProp: 'bar',
-          },
-          event: 'a test',
+      expect(console.error).to.have.been.calledOnce.calledWithExactly('[test] this is a test', {
+        error: {
+          someCustomProp: 'foo',
+          anotherCustomProp: 'bar',
         },
-      );
+        event: 'a test',
+      });
     });
   });
 });

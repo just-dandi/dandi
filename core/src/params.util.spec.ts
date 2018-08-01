@@ -45,30 +45,18 @@ describe('getParamNames', () => {
   function parameterlessFunction(): void {}
   function singleParameterFunction(param: any): void {}
   function doubleParameterFunction(param1: any, param2): void {}
-  function multiParameterFunction(
-    param1: any,
-    param2: any,
-    param3: any,
-  ): void {}
+  function multiParameterFunction(param1: any, param2: any, param3: any): void {}
 
   const parameterlessArrowFunction = () => {};
   const singleParameterArrowFunction = (param) => {};
   const singleParameterParensArrowFunction = (param: any) => {};
   const doubleParameterArrowFunction = (param1: any, param2: any) => {};
-  const multiParameterArrowFunction = (
-    param1: any,
-    param2: any,
-    param3: any,
-  ) => {};
+  const multiParameterArrowFunction = (param1: any, param2: any, param3: any) => {};
 
   const parameterlessAnonFunction = function() {};
   const singleParameterAnonFunction = function(param: any) {};
   const doubleParameterAnonFunction = function(param1: any, param2: any) {};
-  const multiParameterAnonFunction = function(
-    param1: any,
-    param2: any,
-    param3: any,
-  ) {};
+  const multiParameterAnonFunction = function(param1: any, param2: any, param3: any) {};
 
   it('throws an error if the specified target is not a function', () => {
     expect(() => getParamNames({} as any)).to.throw;
@@ -87,36 +75,23 @@ describe('getParamNames', () => {
   });
 
   it('returns the array of parameter names for a rest params constructor', () => {
-    expect(() => getParamNames(SingleRestParameterTestClass)).to.throw(
-      UnsupportedParamTypeError,
-    );
+    expect(() => getParamNames(SingleRestParameterTestClass)).to.throw(UnsupportedParamTypeError);
   });
 
   it('returns the array of parameter names for a double parameter constructor', () => {
-    expect(getParamNames(DoubleParameterTestClass)).to.deep.equal([
-      'param1',
-      'param2',
-    ]);
+    expect(getParamNames(DoubleParameterTestClass)).to.deep.equal(['param1', 'param2']);
   });
 
   it('returns the array of parameter names for a double rest params constructor', () => {
-    expect(() => getParamNames(DoubleRestParameterTestClass)).to.throw(
-      UnsupportedParamTypeError,
-    );
+    expect(() => getParamNames(DoubleRestParameterTestClass)).to.throw(UnsupportedParamTypeError);
   });
 
   it('returns the array of parameter names for a multiple parameter constructor', () => {
-    expect(getParamNames(MultiParameterTestClass)).to.deep.equal([
-      'param1',
-      'param2',
-      'param3',
-    ]);
+    expect(getParamNames(MultiParameterTestClass)).to.deep.equal(['param1', 'param2', 'param3']);
   });
 
   it('returns the array of parameter names for a multi rest params constructor', () => {
-    expect(() => getParamNames(MultiRestParameterTestClass)).to.throw(
-      UnsupportedParamTypeError,
-    );
+    expect(() => getParamNames(MultiRestParameterTestClass)).to.throw(UnsupportedParamTypeError);
   });
 
   it('returns the array of parameter names for a parameterless method', () => {
@@ -124,21 +99,15 @@ describe('getParamNames', () => {
   });
 
   it('returns the array of parameter names for a single parameter method', () => {
-    expect(
-      getParamNames(TestClass.prototype.singleParam, 'singleParam'),
-    ).to.deep.equal(['param']);
+    expect(getParamNames(TestClass.prototype.singleParam, 'singleParam')).to.deep.equal(['param']);
   });
 
   it('returns the array of parameter names for a double parameter method', () => {
-    expect(
-      getParamNames(TestClass.prototype.doubleParam, 'doubleParam'),
-    ).to.deep.equal(['param1', 'param2']);
+    expect(getParamNames(TestClass.prototype.doubleParam, 'doubleParam')).to.deep.equal(['param1', 'param2']);
   });
 
   it('returns the array of parameter names for a multi parameter method', () => {
-    expect(
-      getParamNames(TestClass.prototype.multiParam, 'multiParam'),
-    ).to.deep.equal(['param1', 'param2', 'param3']);
+    expect(getParamNames(TestClass.prototype.multiParam, 'multiParam')).to.deep.equal(['param1', 'param2', 'param3']);
   });
 
   it('returns an empty array for a parameterless function', () => {
@@ -150,18 +119,11 @@ describe('getParamNames', () => {
   });
 
   it('returns an array of parameter names for a double parameter function', () => {
-    expect(getParamNames(doubleParameterFunction)).to.deep.equal([
-      'param1',
-      'param2',
-    ]);
+    expect(getParamNames(doubleParameterFunction)).to.deep.equal(['param1', 'param2']);
   });
 
   it('returns an array of parameter names for a multi parameter function', () => {
-    expect(getParamNames(multiParameterFunction)).to.deep.equal([
-      'param1',
-      'param2',
-      'param3',
-    ]);
+    expect(getParamNames(multiParameterFunction)).to.deep.equal(['param1', 'param2', 'param3']);
   });
 
   it('returns an empty array for a parameterless arrow function', () => {
@@ -169,30 +131,19 @@ describe('getParamNames', () => {
   });
 
   it('returns an array of parameter names for a single parameter function', () => {
-    expect(getParamNames(singleParameterArrowFunction)).to.deep.equal([
-      'param',
-    ]);
+    expect(getParamNames(singleParameterArrowFunction)).to.deep.equal(['param']);
   });
 
   it('returns an array of parameter names for a single parameter function with parens', () => {
-    expect(getParamNames(singleParameterParensArrowFunction)).to.deep.equal([
-      'param',
-    ]);
+    expect(getParamNames(singleParameterParensArrowFunction)).to.deep.equal(['param']);
   });
 
   it('returns an array of parameter names for a double parameter function', () => {
-    expect(getParamNames(doubleParameterArrowFunction)).to.deep.equal([
-      'param1',
-      'param2',
-    ]);
+    expect(getParamNames(doubleParameterArrowFunction)).to.deep.equal(['param1', 'param2']);
   });
 
   it('returns an array of parameter names for a multi parameter function', () => {
-    expect(getParamNames(multiParameterArrowFunction)).to.deep.equal([
-      'param1',
-      'param2',
-      'param3',
-    ]);
+    expect(getParamNames(multiParameterArrowFunction)).to.deep.equal(['param1', 'param2', 'param3']);
   });
 
   it('returns an empty array for a parameterless anonymous function', () => {
@@ -204,17 +155,10 @@ describe('getParamNames', () => {
   });
 
   it('returns an array of parameter names for a double parameter anonymous function', () => {
-    expect(getParamNames(doubleParameterAnonFunction)).to.deep.equal([
-      'param1',
-      'param2',
-    ]);
+    expect(getParamNames(doubleParameterAnonFunction)).to.deep.equal(['param1', 'param2']);
   });
 
   it('returns an array of parameter names for a multi parameter anonymous function', () => {
-    expect(getParamNames(multiParameterAnonFunction)).to.deep.equal([
-      'param1',
-      'param2',
-      'param3',
-    ]);
+    expect(getParamNames(multiParameterAnonFunction)).to.deep.equal(['param1', 'param2', 'param3']);
   });
 });

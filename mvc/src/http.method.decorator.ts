@@ -15,11 +15,7 @@ export type HttpMethodDecorator = (path?: string) => MethodDecorator;
 export type ControllerMethod = string;
 export type RoutePath = string;
 
-export function methodDecorator<T>(
-  options: HttpMethodOptions,
-  target: MethodTarget<T>,
-  propertyKey: string,
-) {
+export function methodDecorator<T>(options: HttpMethodOptions, target: MethodTarget<T>, propertyKey: string) {
   const meta = getControllerMetadata(target.constructor);
   let controllerMethodMetadata = meta.routeMap.get(propertyKey);
   if (!controllerMethodMetadata) {
@@ -38,9 +34,7 @@ export function methodDecorator<T>(
   if (!options.method) {
     return;
   }
-  let entryMethods: Set<HttpMethod> = controllerMethodMetadata.routePaths.get(
-    options.path,
-  );
+  let entryMethods: Set<HttpMethod> = controllerMethodMetadata.routePaths.get(options.path);
   if (!entryMethods) {
     entryMethods = new Set<HttpMethod>();
     controllerMethodMetadata.routePaths.set(options.path, entryMethods);
@@ -53,27 +47,9 @@ function methodDecoratorFactory(method: HttpMethod, path: string = '') {
   return methodDecorator.bind(null, options);
 }
 
-export const HttpGet: HttpMethodDecorator = methodDecoratorFactory.bind(
-  null,
-  HttpMethod.get,
-);
-export const HttpPost: HttpMethodDecorator = methodDecoratorFactory.bind(
-  null,
-  HttpMethod.post,
-);
-export const HttpPut: HttpMethodDecorator = methodDecoratorFactory.bind(
-  null,
-  HttpMethod.put,
-);
-export const HttpPatch: HttpMethodDecorator = methodDecoratorFactory.bind(
-  null,
-  HttpMethod.patch,
-);
-export const HttpDelete: HttpMethodDecorator = methodDecoratorFactory.bind(
-  null,
-  HttpMethod.delete,
-);
-export const HttpOptions: HttpMethodDecorator = methodDecoratorFactory.bind(
-  null,
-  HttpMethod.options,
-);
+export const HttpGet: HttpMethodDecorator = methodDecoratorFactory.bind(null, HttpMethod.get);
+export const HttpPost: HttpMethodDecorator = methodDecoratorFactory.bind(null, HttpMethod.post);
+export const HttpPut: HttpMethodDecorator = methodDecoratorFactory.bind(null, HttpMethod.put);
+export const HttpPatch: HttpMethodDecorator = methodDecoratorFactory.bind(null, HttpMethod.patch);
+export const HttpDelete: HttpMethodDecorator = methodDecoratorFactory.bind(null, HttpMethod.delete);
+export const HttpOptions: HttpMethodDecorator = methodDecoratorFactory.bind(null, HttpMethod.options);

@@ -9,9 +9,10 @@ export interface DbTransactionClient extends DbQueryable, Disposable {
   rollback(): Promise<void>;
 }
 
-export const DbTransactionClient: InjectionToken<
-  DbTransactionClient
-> = localOpinionatedToken<DbTransactionClient>('DbTransactionClient', {
-  singleton: false,
-  multi: false,
-});
+export const DbTransactionClient: InjectionToken<DbTransactionClient> = localOpinionatedToken<DbTransactionClient>(
+  'DbTransactionClient',
+  {
+    singleton: false,
+    multi: false,
+  },
+);

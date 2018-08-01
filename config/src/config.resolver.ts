@@ -10,10 +10,7 @@ import { InvalidConfigClientError } from './invalid.config.client.error';
 export class ConfigResolver {
   constructor(@Inject(ModelValidator) private validator: ModelValidator) {}
 
-  public async resolve<T>(
-    client: ConfigClient,
-    token: ConfigToken<T>,
-  ): Promise<T> {
+  public async resolve<T>(client: ConfigClient, token: ConfigToken<T>): Promise<T> {
     if (token.encrypted && !client.allowsEncryption) {
       throw new InvalidConfigClientError(
         `The ConfigClient implementation ${client.constructor.name}` +
@@ -21,9 +18,7 @@ export class ConfigResolver {
       );
     }
 
-    const strValue: string = isAsyncConfigClient(client)
-      ? await client.get(token)
-      : client.get(token);
+    const strValue: string = isAsyncConfigClient(client) ? await client.get(token) : client.get(token);
     const value = isPrimitiveType(token.type) ? strValue : JSON.parse(strValue);
     return this.validator.validateModel(token.type, value);
   }

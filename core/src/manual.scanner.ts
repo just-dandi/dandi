@@ -8,9 +8,7 @@ export type ManualScannerFn = () => any[];
 
 @Injectable()
 export class ManualScanner implements Scanner {
-  public static withConfig(
-    ...config: ManualScannerFn[]
-  ): MultiProvider<Scanner> {
+  public static withConfig(...config: ManualScannerFn[]): MultiProvider<Scanner> {
     return scannerProvider(ManualScanner, config);
   }
 

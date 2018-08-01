@@ -5,15 +5,8 @@ import { getTokenString, InjectionToken } from './injection.token';
 import { ResolverContext } from './resolver.context';
 
 export class MissingProviderError<T> extends AppError {
-  constructor(
-    public readonly token: InjectionToken<T>,
-    private context: ResolverContext<T>,
-  ) {
-    super(
-      `No provider for ${getTokenString(token)} while resolving ${context[
-        util.inspect.custom
-      ]()}`,
-    );
+  constructor(public readonly token: InjectionToken<T>, private context: ResolverContext<T>) {
+    super(`No provider for ${getTokenString(token)} while resolving ${context[util.inspect.custom]()}`);
   }
 
   public [util.inspect.custom](): string {

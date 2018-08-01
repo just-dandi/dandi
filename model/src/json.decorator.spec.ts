@@ -11,10 +11,7 @@ describe('@Json()', () => {
       public something: any;
     }
 
-    const meta = getMemberMetadata(
-      TestClass,
-      'something',
-    ) as DataPropertyMetadata;
+    const meta = getMemberMetadata(TestClass, 'something') as DataPropertyMetadata;
     expect(meta.json).to.be.true;
   });
 });

@@ -17,12 +17,7 @@ export class ErrorUtil {
     });
   }
 
-  public static logEventError(
-    source: string,
-    message: string,
-    event: any,
-    error: Error,
-  ): void {
+  public static logEventError(source: string, message: string, event: any, error: Error): void {
     console.error(`[${source}] ${message}`, {
       event,
       error: ErrorUtil.getLoggableError(error),

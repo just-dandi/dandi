@@ -1,11 +1,7 @@
 import { Inject, Injectable, Optional } from '@dandi/core';
 import { ModelValidator } from '@dandi/model-validation';
 
-import {
-  APIGatewayEventRequestContext,
-  APIGatewayProxyEvent,
-  Context,
-} from 'aws-lambda';
+import { APIGatewayEventRequestContext, APIGatewayProxyEvent, Context } from 'aws-lambda';
 
 import { DandiAwsLambdaError } from './dandi.aws.lambda.error';
 import { HttpEventOptions } from './http.event.options';
@@ -27,8 +23,7 @@ export interface HttpHandlerRequest {
 }
 
 @Injectable(LambdaEventTransformer)
-export class HttpEventTransformer
-  implements LambdaEventTransformer<APIGatewayProxyEvent, HttpHandlerRequest> {
+export class HttpEventTransformer implements LambdaEventTransformer<APIGatewayProxyEvent, HttpHandlerRequest> {
   constructor(
     @Inject(HttpEventOptions)
     @Optional()
@@ -38,10 +33,7 @@ export class HttpEventTransformer
     private validator: ModelValidator,
   ) {}
 
-  public transform(
-    event: APIGatewayProxyEvent,
-    context: Context,
-  ): HttpHandlerRequest {
+  public transform(event: APIGatewayProxyEvent, context: Context): HttpHandlerRequest {
     let body: any;
     if (event.body) {
       let bodyStr = event.body;
@@ -53,9 +45,7 @@ export class HttpEventTransformer
 
     if (this.options && this.options.validateBody) {
       if (!this.validator) {
-        throw new DandiAwsLambdaError(
-          'validateBody option is set, but no ModelValidator is provided',
-        );
+        throw new DandiAwsLambdaError('validateBody option is set, but no ModelValidator is provided');
       }
 
       body = this.validator.validateModel(this.options.validateBody, body);

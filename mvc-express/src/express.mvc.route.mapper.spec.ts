@@ -35,12 +35,7 @@ describe('ExpressMvcRouteMapper', () => {
       setHeader: stub().returnsThis(),
       status: stub().returnsThis(),
     };
-    mapper = new ExpressMvcRouteMapper(
-      container,
-      app,
-      routeExec,
-      new NoopLogger(),
-    );
+    mapper = new ExpressMvcRouteMapper(container, app, routeExec, new NoopLogger());
   });
   afterEach(() => {
     container = undefined;

@@ -9,8 +9,5 @@ export class JsonControllerResult implements ControllerResult {
     return 'application/json';
   }
 
-  constructor(
-    private _value: any,
-    public readonly headers?: { [headerName: string]: string },
-  ) {}
+  constructor(private _value: any, public readonly headers?: { [headerName: string]: string }) {}
 }

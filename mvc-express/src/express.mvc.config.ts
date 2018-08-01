@@ -6,8 +6,9 @@ export interface ExpressMvcConfig {
   port: number;
 }
 
-export const ExpressMvcConfig: InjectionToken<
-  ExpressMvcConfig
-> = localOpinionatedToken<ExpressMvcConfig>('@dandi/mvc:ExpressMvcConfig', {
-  multi: false,
-});
+export const ExpressMvcConfig: InjectionToken<ExpressMvcConfig> = localOpinionatedToken<ExpressMvcConfig>(
+  '@dandi/mvc:ExpressMvcConfig',
+  {
+    multi: false,
+  },
+);

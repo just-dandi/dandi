@@ -1,19 +1,7 @@
 import { Constructor } from '@dandi/common';
-import {
-  Bootstrapper,
-  Inject,
-  Injectable,
-  Logger,
-  Provider,
-} from '@dandi/core';
+import { Bootstrapper, Inject, Injectable, Logger, Provider } from '@dandi/core';
 import { Validation } from '@dandi/model-validation';
-import {
-  RouteExecutor,
-  RouteGenerator,
-  RouteHandler,
-  RouteInitializer,
-  RouteMapper,
-} from '@dandi/mvc';
+import { RouteExecutor, RouteGenerator, RouteHandler, RouteInitializer, RouteMapper } from '@dandi/mvc';
 import * as bodyParser from 'body-parser';
 
 import { Express } from 'express';
@@ -37,27 +25,15 @@ export type ExpressMvcApplicationOptions = {
 
 @Injectable(Bootstrapper)
 export class ExpressMvcApplication implements Bootstrapper {
-  public static config(
-    options: ExpressMvcApplicationOptions,
-  ): Array<Provider<any>> {
+  public static config(options: ExpressMvcApplicationOptions): Array<Provider<any>> {
     const config: ExpressMvcApplicationConfig = {
       expressInstanceProvider:
-        options.expressInstanceProvider ||
-        require('./default.express.provider').DEFAULT_EXPRESS_PROVIDER,
-      routeExecutor:
-        options.routeExecutor ||
-        require('./express.mvc.route.executor').ExpressMvcRouteExecutor,
-      routeGenerator:
-        options.routeGenerator || require('@dandi/mvc').DecoratorRouteGenerator,
-      routeHandler:
-        options.routeHandler ||
-        require('./express.mvc.route.handler').ExpressMvcRouteHandler,
-      routeInitializer:
-        options.routeInitializer ||
-        require('@dandi/mvc').DefaultRouteInitializer,
-      routeMapper:
-        options.routeMapper ||
-        require('./express.mvc.route.mapper').ExpressMvcRouteMapper,
+        options.expressInstanceProvider || require('./default.express.provider').DEFAULT_EXPRESS_PROVIDER,
+      routeExecutor: options.routeExecutor || require('./express.mvc.route.executor').ExpressMvcRouteExecutor,
+      routeGenerator: options.routeGenerator || require('@dandi/mvc').DecoratorRouteGenerator,
+      routeHandler: options.routeHandler || require('./express.mvc.route.handler').ExpressMvcRouteHandler,
+      routeInitializer: options.routeInitializer || require('@dandi/mvc').DefaultRouteInitializer,
+      routeMapper: options.routeMapper || require('./express.mvc.route.mapper').ExpressMvcRouteMapper,
       bootstrap: ExpressMvcApplication,
       config: options.config,
     };

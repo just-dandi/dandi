@@ -1,13 +1,5 @@
 import { Constructor, Disposable } from '@dandi/common';
-import {
-  Container,
-  InjectionToken,
-  Provider,
-  Repository,
-  Resolver,
-  ResolverContext,
-  ResolveResult,
-} from '@dandi/core';
+import { Container, InjectionToken, Provider, Repository, Resolver, ResolverContext, ResolveResult } from '@dandi/core';
 
 import { createStubInstance, SinonStubbedInstance } from 'sinon';
 
@@ -31,11 +23,7 @@ export interface TestResolver extends Resolver {
     ...repositories: Repository[]
   ): Promise<ResolveResult<SinonStubbedInstance<T>>>;
 
-  inject<T>(
-    token: InjectionToken<T>,
-    optional?: boolean,
-    ...repositories: Repository[]
-  ): Promise<T>;
+  inject<T>(token: InjectionToken<T>, optional?: boolean, ...repositories: Repository[]): Promise<T>;
 
   injectStub<T>(
     token: InjectionToken<T>,
@@ -60,11 +48,7 @@ class TestHarness implements TestResolver {
     });
   }
 
-  public invoke(
-    instance: any,
-    member: Function,
-    ...repositories: Repository[]
-  ): Promise<any> {
+  public invoke(instance: any, member: Function, ...repositories: Repository[]): Promise<any> {
     return this._container.invoke(instance, member, ...repositories);
   }
 
@@ -74,12 +58,7 @@ class TestHarness implements TestResolver {
     member: Function,
     ...repositories: Repository[]
   ): Promise<any> {
-    return this._container.invokeInContext(
-      context,
-      instance,
-      member,
-      ...repositories,
-    );
+    return this._container.invokeInContext(context, instance, member, ...repositories);
   }
 
   public resolve<T>(
@@ -95,22 +74,13 @@ class TestHarness implements TestResolver {
     optional?: boolean,
     ...repositories: Repository[]
   ): Promise<ResolveResult<SinonStubbedInstance<T>>> {
-    return this._container.resolve(token, optional, ...repositories) as Promise<
-      ResolveResult<SinonStubbedInstance<T>>
-    >;
+    return this._container.resolve(token, optional, ...repositories) as Promise<ResolveResult<SinonStubbedInstance<T>>>;
   }
 
-  public async inject<T>(
-    token: InjectionToken<T>,
-    optional?: boolean,
-    ...repositories: Repository[]
-  ): Promise<T> {
-    return await Disposable.use(
-      await this.resolve<T>(token, optional, ...repositories),
-      (result) => {
-        return result.value as T;
-      },
-    );
+  public async inject<T>(token: InjectionToken<T>, optional?: boolean, ...repositories: Repository[]): Promise<T> {
+    return await Disposable.use(await this.resolve<T>(token, optional, ...repositories), (result) => {
+      return result.value as T;
+    });
   }
 
   public async injectStub<T>(

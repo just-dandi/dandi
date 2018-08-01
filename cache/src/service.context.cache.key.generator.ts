@@ -1,9 +1,4 @@
-import {
-  Inject,
-  Injectable,
-  InjectionContext,
-  InjectionToken,
-} from '@dandi/core';
+import { Inject, Injectable, InjectionContext, InjectionToken } from '@dandi/core';
 
 import { CacheKeyGenerator } from './cache.key.generator';
 
@@ -14,9 +9,7 @@ export class ServiceContextCacheKeyGenerator implements CacheKeyGenerator {
   constructor(@Inject(InjectionContext) private context: InjectionToken<any>) {}
 
   public keyFor(...args: any[]): symbol {
-    const contextTag = `[${
-      typeof this.context === 'function' ? this.context.name : this.context
-    }]`;
+    const contextTag = `[${typeof this.context === 'function' ? this.context.name : this.context}]`;
     args.unshift(contextTag);
     const keyStr = args.map((arg) => arg.toString()).join(':');
     let key = keys.get(keyStr);

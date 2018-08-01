@@ -8,9 +8,7 @@ import { ResolverContext } from './resolver.context';
 const chaiInspect = Symbol.for('chai/inspect');
 
 describe('ResolverContext', () => {
-  function provider<T, TProvider extends Provider<T>>(
-    obj: TProvider,
-  ): TProvider {
+  function provider<T, TProvider extends Provider<T>>(obj: TProvider): TProvider {
     obj[chaiInspect] = () => `Provider[provide: ${obj.provide}]`;
     return obj;
   }
@@ -61,18 +59,8 @@ describe('ResolverContext', () => {
     });
     parentRepo1.register(parentProvider1);
     parentRepo2.register(parentProvider2);
-    parentContext = ResolverContext.create(
-      parentToken1,
-      null,
-      parentRepo1,
-      parentRepo2,
-    );
-    childContext = parentContext.childContext(
-      childToken1,
-      null,
-      childProvider1,
-      childProvider2,
-    );
+    parentContext = ResolverContext.create(parentToken1, null, parentRepo1, parentRepo2);
+    childContext = parentContext.childContext(childToken1, null, childProvider1, childProvider2);
   });
 
   afterEach(() => {
@@ -107,10 +95,7 @@ describe('ResolverContext', () => {
 
     it('sorts the repositories in order of precedence (reverse of defined order, like Object.assign)', () => {
       // note: slice(1) because the context adds its own repository to the front of the array
-      expect((parentContext as any).repositories.slice(1)).to.deep.equal([
-        parentRepo2,
-        parentRepo1,
-      ]);
+      expect((parentContext as any).repositories.slice(1)).to.deep.equal([parentRepo2, parentRepo1]);
     });
   });
 
@@ -121,12 +106,8 @@ describe('ResolverContext', () => {
 
     it('creates a new repository containing any specified providers', () => {
       expect((childContext as any).repositories.length).to.equal(1);
-      expect((childContext as any).repositories[0].providers).to.include.keys(
-        childToken1,
-      );
-      expect((childContext as any).repositories[0].providers).to.include.keys(
-        childToken2,
-      );
+      expect((childContext as any).repositories[0].providers).to.include.keys(childToken1);
+      expect((childContext as any).repositories[0].providers).to.include.keys(childToken2);
     });
 
     it('adds the child context to its array of children', () => {
@@ -172,11 +153,7 @@ describe('ResolverContext', () => {
         provide: parentToken1,
         useValue: overridingValue,
       });
-      const overridingContext = childContext.childContext(
-        parentToken1,
-        null,
-        overridingProvider,
-      );
+      const overridingContext = childContext.childContext(parentToken1, null, overridingProvider);
 
       expect(overridingContext.match).to.equal(overridingProvider);
     });

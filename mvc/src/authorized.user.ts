@@ -10,24 +10,18 @@ export interface AuthorizedUser {
   uid: string;
 }
 
-export const AuthorizedUser: InjectionToken<
-  AuthorizedUser
-> = localOpinionatedToken<AuthorizedUser>('AuthorizedUser', { multi: false });
+export const AuthorizedUser: InjectionToken<AuthorizedUser> = localOpinionatedToken<AuthorizedUser>('AuthorizedUser', {
+  multi: false,
+});
 
 export async function authorizedUserFactory(
   authService: AuthorizationService,
   req: MvcRequest,
   requestInfo: RequestInfo,
 ): Promise<AuthorizedUser> {
-  requestInfo.performance.mark(
-    'authorizedUserFactory',
-    'beforeGetAuthorizedUser',
-  );
+  requestInfo.performance.mark('authorizedUserFactory', 'beforeGetAuthorizedUser');
   const result = await authService.getAuthorizedUser(req.get('Authorization'));
-  requestInfo.performance.mark(
-    'authorizedUserFactory',
-    'afterGetAuthorizedUser',
-  );
+  requestInfo.performance.mark('authorizedUserFactory', 'afterGetAuthorizedUser');
 
   return result;
 }

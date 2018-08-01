@@ -1,25 +1,11 @@
 import { Constructor, DateTime, Url, Uuid } from '@dandi/common';
 
-import {
-  getAllKeys,
-  getModelMetadata,
-  MemberMetadata,
-} from './member.metadata';
+import { getAllKeys, getModelMetadata, MemberMetadata } from './member.metadata';
 
-export const NO_RECURSION: Array<Constructor<any>> = [
-  Array,
-  Boolean,
-  DateTime,
-  Number,
-  String,
-  Url,
-  Uuid,
-];
+export const NO_RECURSION: Array<Constructor<any>> = [Array, Boolean, DateTime, Number, String, Url, Uuid];
 
 export type PropertyNameFormatter = (property: string) => string;
-export type RecursionFilter<TMetadata extends MemberMetadata> = (
-  meta: TMetadata,
-) => boolean;
+export type RecursionFilter<TMetadata extends MemberMetadata> = (meta: TMetadata) => boolean;
 
 const DEFAULT_FORMATTER: PropertyNameFormatter = (prop) => prop;
 
@@ -30,10 +16,7 @@ export interface PathListOptions {
 }
 
 export class ModelUtil {
-  public static generatePathList<T>(
-    model: Constructor<T>,
-    options: PathListOptions = {},
-  ): string[] {
+  public static generatePathList<T>(model: Constructor<T>, options: PathListOptions = {}): string[] {
     if (!options.formatter) {
       options.formatter = DEFAULT_FORMATTER;
     }
@@ -51,20 +34,12 @@ export class ModelUtil {
     return getAllKeys(meta).reduce((result, prop) => {
       const memberMeta = meta[prop];
       const path = `${prefix}${options.formatter(prop)}`;
-      const canRecurse =
-        !options.recursionFilter || options.recursionFilter(memberMeta);
+      const canRecurse = !options.recursionFilter || options.recursionFilter(memberMeta);
       const isNonRecursive = NO_RECURSION.includes(memberMeta.type);
-      if (
-        !canRecurse ||
-        !memberMeta.type ||
-        isNonRecursive ||
-        depth === options.maxDepth
-      ) {
+      if (!canRecurse || !memberMeta.type || isNonRecursive || depth === options.maxDepth) {
         result.push(path);
       } else {
-        result.push(
-          ...ModelUtil.walkModel(memberMeta.type, path, options, depth + 1),
-        );
+        result.push(...ModelUtil.walkModel(memberMeta.type, path, options, depth + 1));
       }
       return result;
     }, []);

@@ -1,11 +1,4 @@
-import {
-  AppError,
-  Constructor,
-  DateTime,
-  Primitive,
-  Url,
-  Uuid,
-} from '@dandi/common';
+import { AppError, Constructor, DateTime, Primitive, Url, Uuid } from '@dandi/common';
 import { Inject, Injectable } from '@dandi/core';
 import { MemberMetadata } from '@dandi/model';
 
@@ -80,9 +73,7 @@ export class PrimitiveTypeValidator {
   public validate(value: any, metadata?: MemberMetadata): any {
     const primitiveValidator = this.primitive.get(metadata.type);
     if (!primitiveValidator) {
-      throw new AppError(
-        `${metadata.type} cannot be validated by PrimitiveTypeValidator`,
-      );
+      throw new AppError(`${metadata.type} cannot be validated by PrimitiveTypeValidator`);
     }
     return primitiveValidator.validate(value, metadata);
   }

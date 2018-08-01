@@ -1,13 +1,7 @@
 import { expect } from 'chai';
 import { SinonSpy, spy } from 'sinon';
 
-import {
-  Injectable,
-  InjectionTokenTypeError,
-  Multi,
-  Repository,
-  Singleton,
-} from '../';
+import { Injectable, InjectionTokenTypeError, Multi, Repository, Singleton } from '../';
 
 describe('@Injectable', () => {
   let register: SinonSpy;
@@ -43,9 +37,7 @@ describe('@Injectable', () => {
   it('throws if the specified token is not a valid InjectionToken', () => {
     class TestClass {}
 
-    expect(() => Injectable({} as any)(TestClass)).to.throw(
-      InjectionTokenTypeError,
-    );
+    expect(() => Injectable({} as any)(TestClass)).to.throw(InjectionTokenTypeError);
   });
 
   it('sets any specified options', () => {

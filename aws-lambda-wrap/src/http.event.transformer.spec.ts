@@ -1,8 +1,5 @@
 import { stubProvider, testHarness } from '@dandi/core-testing';
-import {
-  DecoratorModelValidator,
-  ModelValidator,
-} from '@dandi/model-validation';
+import { DecoratorModelValidator, ModelValidator } from '@dandi/model-validation';
 
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
@@ -13,10 +10,7 @@ import { MockContext } from '../test/mock.context';
 
 import { DandiAwsLambdaError } from './dandi.aws.lambda.error';
 import { HttpEventOptions } from './http.event.options';
-import {
-  HttpEventTransformer,
-  HttpHandlerRequest,
-} from './http.event.transformer';
+import { HttpEventTransformer, HttpHandlerRequest } from './http.event.transformer';
 import { LambdaEventTransformer } from './lambda.event.transformer';
 
 class TestBody {
@@ -24,10 +18,7 @@ class TestBody {
 }
 
 describe('HttpEventTransformer', () => {
-  let transformer: LambdaEventTransformer<
-    APIGatewayProxyEvent,
-    HttpHandlerRequest
-  >;
+  let transformer: LambdaEventTransformer<APIGatewayProxyEvent, HttpHandlerRequest>;
   let body: TestBody;
   let event: any;
   let context: Context;
@@ -143,23 +134,17 @@ describe('HttpEventTransformer', () => {
     });
 
     it('throws a DandiAwsLambdaError', () => {
-      expect(() => transformer.transform(event, context)).to.throw(
-        DandiAwsLambdaError,
-      );
+      expect(() => transformer.transform(event, context)).to.throw(DandiAwsLambdaError);
     });
   });
 
   describe('body validation', () => {
-    const harness = testHarness(
-      HttpEventTransformer,
-      stubProvider(DecoratorModelValidator, ModelValidator),
-      {
-        provide: HttpEventOptions,
-        useValue: {
-          validateBody: TestBody,
-        },
+    const harness = testHarness(HttpEventTransformer, stubProvider(DecoratorModelValidator, ModelValidator), {
+      provide: HttpEventOptions,
+      useValue: {
+        validateBody: TestBody,
       },
-    );
+    });
 
     let validator: SinonStubbedInstance<ModelValidator>;
 

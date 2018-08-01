@@ -19,10 +19,7 @@ export interface Cache {
   delete(key: symbol): Promise<boolean>;
 }
 
-const tokens = new Map<
-  CacheProviderType,
-  MappedInjectionToken<CacheProviderType, Cache>
->();
+const tokens = new Map<CacheProviderType, MappedInjectionToken<CacheProviderType, Cache>>();
 
 export const Cache = CacheProvider(CacheProviderType.cascading);
 

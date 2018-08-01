@@ -5,11 +5,7 @@ import { ResolveResult } from './resolve.result';
 import { ResolverContext } from './resolver.context';
 
 export interface Resolver {
-  invoke(
-    instance: any,
-    member: Function,
-    ...repositories: Repository[]
-  ): Promise<any>;
+  invoke(instance: any, member: Function, ...repositories: Repository[]): Promise<any>;
 
   invokeInContext(
     context: ResolverContext<any>,
@@ -18,11 +14,7 @@ export interface Resolver {
     ...repositories: Repository[]
   ): Promise<any>;
 
-  resolve<T>(
-    token: InjectionToken<T>,
-    optional?: boolean,
-    ...repositories: Repository[]
-  ): Promise<ResolveResult<T>>;
+  resolve<T>(token: InjectionToken<T>, optional?: boolean, ...repositories: Repository[]): Promise<ResolveResult<T>>;
 }
 
 export const Resolver = localOpinionatedToken<Resolver>('Resolver', {

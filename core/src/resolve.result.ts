@@ -1,10 +1,7 @@
 import { Disposable } from '@dandi/common';
 
 export class ResolveResult<T> implements Disposable {
-  public constructor(
-    private readonly context: Disposable,
-    private readonly _value: T | T[],
-  ) {}
+  public constructor(private readonly context: Disposable, private readonly _value: T | T[]) {}
 
   public get value(): T | T[] {
     return this._value;

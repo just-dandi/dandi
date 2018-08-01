@@ -1,10 +1,5 @@
 import { Constructor } from '@dandi/common';
-import {
-  getInjectableParamMetadata,
-  MethodTarget,
-  ParamMetadata,
-  Provider,
-} from '@dandi/core';
+import { getInjectableParamMetadata, MethodTarget, ParamMetadata, Provider } from '@dandi/core';
 import { ModelValidator } from '@dandi/model-validation';
 
 import { ModelBindingError } from './errors';
@@ -39,16 +34,11 @@ export function requestBodyDecorator<TModel, TTarget>(
   propertyName: string,
   paramIndex: number,
 ) {
-  const meta = getInjectableParamMetadata<
-    TTarget,
-    RequestBody<TModel, TTarget>
-  >(target, propertyName, paramIndex);
+  const meta = getInjectableParamMetadata<TTarget, RequestBody<TModel, TTarget>>(target, propertyName, paramIndex);
   meta.token = HttpRequestBody;
   meta.providers = [requestBodyProvider(requestBody.model)];
 }
 
-export function RequestBody<TModel, TTarget>(
-  model?: Constructor<TModel>,
-): ParameterDecorator {
+export function RequestBody<TModel, TTarget>(model?: Constructor<TModel>): ParameterDecorator {
   return requestBodyDecorator.bind(null, { model });
 }

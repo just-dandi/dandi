@@ -9,6 +9,6 @@ export interface RequestInfo {
   performance: PerfRecorder;
 }
 
-export const RequestInfo: InjectionToken<RequestInfo> = localOpinionatedToken<
-  RequestInfo
->('RequestInfo', { multi: false });
+export const RequestInfo: InjectionToken<RequestInfo> = localOpinionatedToken<RequestInfo>('RequestInfo', {
+  multi: false,
+});

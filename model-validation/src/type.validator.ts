@@ -8,18 +8,11 @@ export interface TypeValidator<T> {
   validate(value: any, metadata?: MemberMetadata): T;
 }
 
-export type ValidatedType =
-  | Constructor<any>
-  | ((...args: any[]) => ParameterDecorator);
+export type ValidatedType = Constructor<any> | ((...args: any[]) => ParameterDecorator);
 
-const tokens = new Map<
-  ValidatedType,
-  MappedInjectionToken<ValidatedType, TypeValidator<any>>
->();
+const tokens = new Map<ValidatedType, MappedInjectionToken<ValidatedType, TypeValidator<any>>>();
 
-export function TypeValidator<T>(
-  key: ValidatedType,
-): MappedInjectionToken<ValidatedType, TypeValidator<any>> {
+export function TypeValidator<T>(key: ValidatedType): MappedInjectionToken<ValidatedType, TypeValidator<any>> {
   let token = tokens.get(key);
   if (!token) {
     token = {

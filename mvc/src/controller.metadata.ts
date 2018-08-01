@@ -20,8 +20,6 @@ export interface ControllerMetadata extends MvcMetadata, AuthorizationMetadata {
   routeMap?: RouteMap;
 }
 
-export function getControllerMetadata(
-  target: Constructor<any>,
-): ControllerMetadata {
+export function getControllerMetadata(target: Constructor<any>): ControllerMetadata {
   return getMetadata(META_KEY, () => ({ routeMap: new RouteMap() }), target);
 }

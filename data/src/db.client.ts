@@ -10,6 +10,4 @@ export interface DbClient extends DbQueryable {
   transaction<T>(transactionFn: TransactionFn<T>): Promise<T>;
 }
 
-export const DbClient: InjectionToken<DbClient> = localOpinionatedToken<
-  DbClient
->('DbClient', { singleton: false });
+export const DbClient: InjectionToken<DbClient> = localOpinionatedToken<DbClient>('DbClient', { singleton: false });

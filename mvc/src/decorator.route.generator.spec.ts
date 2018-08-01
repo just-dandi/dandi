@@ -57,9 +57,7 @@ describe('DecoratorRouteGenerator', () => {
 
   function findRoute(path, httpMethod) {
     return routes.find(
-      (route) =>
-        route.path === `/decorator-route-generator${path}` &&
-        route.httpMethod === httpMethod,
+      (route) => route.path === `/decorator-route-generator${path}` && route.httpMethod === httpMethod,
     );
   }
 
@@ -68,11 +66,7 @@ describe('DecoratorRouteGenerator', () => {
     generator = new DecoratorRouteGenerator(logger);
     repository = Repository.for(Controller);
 
-    routes = generator
-      .generateRoutes()
-      .filter((route: Route) =>
-        route.path.startsWith('/decorator-route-generator/'),
-      );
+    routes = generator.generateRoutes().filter((route: Route) => route.path.startsWith('/decorator-route-generator/'));
     aGet = findRoute('/a/testA', HttpMethod.get);
     aPost = findRoute('/a/testA', HttpMethod.post);
     bPut = findRoute('/b/testB', HttpMethod.put);

@@ -1,10 +1,4 @@
-import {
-  Inject,
-  Injectable,
-  Logger,
-  Resolver,
-  ResolverContext,
-} from '@dandi/core';
+import { Inject, Injectable, Logger, Resolver, ResolverContext } from '@dandi/core';
 import {
   ControllerResult,
   isControllerResult,
@@ -19,10 +13,7 @@ import {
 
 @Injectable(RouteHandler)
 export class ExpressMvcRouteHandler implements RouteHandler {
-  constructor(
-    @Inject(Resolver) private resolver: Resolver,
-    @Inject(Logger) private logger: Logger,
-  ) {}
+  constructor(@Inject(Resolver) private resolver: Resolver, @Inject(Logger) private logger: Logger) {}
 
   public async handleRouteRequest(
     @Inject(ResolverContext) resolverContext: ResolverContext<any>,
@@ -32,36 +23,19 @@ export class ExpressMvcRouteHandler implements RouteHandler {
     @Inject(MvcResponse) res: MvcResponse,
     @Inject(RequestInfo) requestInfo: RequestInfo,
   ): Promise<void> {
-    requestInfo.performance.mark(
-      'ExpressMvcRouteHandler.handleRouteRequest',
-      'begin',
-    );
+    requestInfo.performance.mark('ExpressMvcRouteHandler.handleRouteRequest', 'begin');
 
     this.logger.debug(
-      `begin handleRouteRequest ${route.controllerCtr.name}.${
-        route.controllerMethod
-      }:`,
+      `begin handleRouteRequest ${route.controllerCtr.name}.${route.controllerMethod}:`,
       route.httpMethod.toUpperCase(),
       route.path,
     );
 
-    requestInfo.performance.mark(
-      'ExpressMvcRouteHandler.handleRouteRequest',
-      'beforeInvokeController',
-    );
-    const result = await this.resolver.invokeInContext(
-      resolverContext,
-      controller,
-      controller[route.controllerMethod],
-    );
-    requestInfo.performance.mark(
-      'ExpressMvcRouteHandler.handleRouteRequest',
-      'afterInvokeController',
-    );
+    requestInfo.performance.mark('ExpressMvcRouteHandler.handleRouteRequest', 'beforeInvokeController');
+    const result = await this.resolver.invokeInContext(resolverContext, controller, controller[route.controllerMethod]);
+    requestInfo.performance.mark('ExpressMvcRouteHandler.handleRouteRequest', 'afterInvokeController');
 
-    const controllerResult: ControllerResult = isControllerResult(result)
-      ? result
-      : new JsonControllerResult(result);
+    const controllerResult: ControllerResult = isControllerResult(result) ? result : new JsonControllerResult(result);
 
     if (controllerResult.headers) {
       Object.keys(controllerResult.headers).forEach((key) => {
@@ -69,30 +43,19 @@ export class ExpressMvcRouteHandler implements RouteHandler {
       });
     }
 
-    requestInfo.performance.mark(
-      'ExpressMvcRouteHandler.handleRouteRequest',
-      'beforeSendResponse',
-    );
+    requestInfo.performance.mark('ExpressMvcRouteHandler.handleRouteRequest', 'beforeSendResponse');
     res
       .contentType(controllerResult.contentType)
       .send(controllerResult.value)
       .end();
-    requestInfo.performance.mark(
-      'ExpressMvcRouteHandler.handleRouteRequest',
-      'afterSendResponse',
-    );
+    requestInfo.performance.mark('ExpressMvcRouteHandler.handleRouteRequest', 'afterSendResponse');
 
     this.logger.debug(
-      `end handleRouteRequest ${route.controllerCtr.name}.${
-        route.controllerMethod
-      }:`,
+      `end handleRouteRequest ${route.controllerCtr.name}.${route.controllerMethod}:`,
       route.httpMethod.toUpperCase(),
       route.path,
     );
 
-    requestInfo.performance.mark(
-      'ExpressMvcRouteHandler.handleRouteRequest',
-      'end',
-    );
+    requestInfo.performance.mark('ExpressMvcRouteHandler.handleRouteRequest', 'end');
   }
 }

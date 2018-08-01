@@ -17,50 +17,26 @@ import { LambdaHandler } from './lambda.handler';
 import { LambdaResponder } from './lambda.responder';
 import { localOpinionatedToken } from './local.token';
 
-const LambdaHandler: InjectionToken<LambdaHandler<any>> = localOpinionatedToken(
-  'LambdaHandler',
-  { multi: false },
-);
+const LambdaHandler: InjectionToken<LambdaHandler<any>> = localOpinionatedToken('LambdaHandler', { multi: false });
 
-export type HandlerFn<TEvent = any, TResult = any> = (
-  event: TEvent,
-  context: Context,
-) => void | Promise<TResult>;
+export type HandlerFn<TEvent = any, TResult = any> = (event: TEvent, context: Context) => void | Promise<TResult>;
 
 @Injectable()
-export class Lambda<
-  TEvent,
-  TEventData,
-  THandler extends LambdaHandler<TEventData>
-> {
-  public static handler<
-    TEvent,
-    TEventData,
-    THandler extends LambdaHandler<TEventData>
-  >(
+export class Lambda<TEvent, TEventData, THandler extends LambdaHandler<TEventData>> {
+  public static handler<TEvent, TEventData, THandler extends LambdaHandler<TEventData>>(
     handlerServiceType: Constructor<THandler>,
     container: Container,
   ): HandlerFn<TEvent, any>;
-  public static handler<
-    TEvent,
-    TEventData,
-    THandler extends LambdaHandler<TEventData>
-  >(
+  public static handler<TEvent, TEventData, THandler extends LambdaHandler<TEventData>>(
     handlerServiceType: Constructor<THandler>,
     ...modulesOrProviders: any[]
   ): HandlerFn<TEvent, any>;
-  public static handler<
-    TEvent,
-    TEventData,
-    THandler extends LambdaHandler<TEventData>
-  >(
+  public static handler<TEvent, TEventData, THandler extends LambdaHandler<TEventData>>(
     handlerServiceType: Constructor<THandler>,
     ...modulesOrProviders: any[]
   ): HandlerFn<TEvent, any> {
     const existingContainer =
-      modulesOrProviders.length === 1 &&
-      modulesOrProviders[0] instanceof Container &&
-      modulesOrProviders[0];
+      modulesOrProviders.length === 1 && modulesOrProviders[0] instanceof Container && modulesOrProviders[0];
 
     const container =
       existingContainer ||
@@ -93,8 +69,7 @@ export class Lambda<
   }
 
   constructor(
-    @Inject(LambdaEventTransformer)
-    private transformer: LambdaEventTransformer<any, any>,
+    @Inject(LambdaEventTransformer) private transformer: LambdaEventTransformer<any, any>,
     @Inject(LambdaHandler) private handler: LambdaHandler<TEventData>,
     @Inject(LambdaResponder) private responder: LambdaResponder<any>,
     @Inject(LambdaErrorHandler)
@@ -109,9 +84,7 @@ export class Lambda<
       return this.responder.handleResponse(result);
     } catch (err) {
       if (this.errorHandlers) {
-        this.errorHandlers.forEach((handler) =>
-          handler.handleError(event, err),
-        );
+        this.errorHandlers.forEach((handler) => handler.handleError(event, err));
       }
       return this.responder.handleError(err);
     }

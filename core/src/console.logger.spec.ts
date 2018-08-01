@@ -32,9 +32,7 @@ describe('ConsoleLogger', () => {
 
   describe('getContextTag', () => {
     it('returns the name of a class or function surrounded by brackets', () => {
-      expect((logger as any).getContextTag(function foo() {} as any)).to.equal(
-        '[foo]',
-      );
+      expect((logger as any).getContextTag(function foo() {} as any)).to.equal('[foo]');
     });
 
     it('returns the toString output of a non-class and non-function object surrounded by brackets', () => {
@@ -43,65 +41,39 @@ describe('ConsoleLogger', () => {
           return 'yeah man';
         },
       };
-      expect((logger as any).getContextTag(context as any)).to.equal(
-        '[yeah man]',
-      );
+      expect((logger as any).getContextTag(context as any)).to.equal('[yeah man]');
     });
   });
 
   describe('logging functions', () => {
     it('prefixes calls to debug, info, warn, and error with the context', () => {
       logger.debug('debug!');
-      expect(console.debug).to.have.been.calledOnce.calledWithExactly(
-        '[test]',
-        'debug!',
-      );
+      expect(console.debug).to.have.been.calledOnce.calledWithExactly('[test]', 'debug!');
 
       logger.info('info!');
-      expect(console.info).to.have.been.calledOnce.calledWithExactly(
-        '[test]',
-        'info!',
-      );
+      expect(console.info).to.have.been.calledOnce.calledWithExactly('[test]', 'info!');
 
       logger.warn('warn!');
-      expect(console.warn).to.have.been.calledOnce.calledWithExactly(
-        '[test]',
-        'warn!',
-      );
+      expect(console.warn).to.have.been.calledOnce.calledWithExactly('[test]', 'warn!');
 
       logger.error('error!');
-      expect(console.error).to.have.been.calledOnce.calledWithExactly(
-        '[test]',
-        'error!',
-      );
+      expect(console.error).to.have.been.calledOnce.calledWithExactly('[test]', 'error!');
     });
   });
 
   describe('log', () => {
     it('calls the logging method specified by the logging level', () => {
       logger.log(LogLevel.debug, 'debug!');
-      expect(console.debug).to.have.been.calledOnce.calledWithExactly(
-        '[test]',
-        'debug!',
-      );
+      expect(console.debug).to.have.been.calledOnce.calledWithExactly('[test]', 'debug!');
 
       logger.log(LogLevel.info, 'info!');
-      expect(console.info).to.have.been.calledOnce.calledWithExactly(
-        '[test]',
-        'info!',
-      );
+      expect(console.info).to.have.been.calledOnce.calledWithExactly('[test]', 'info!');
 
       logger.log(LogLevel.warn, 'warn!');
-      expect(console.warn).to.have.been.calledOnce.calledWithExactly(
-        '[test]',
-        'warn!',
-      );
+      expect(console.warn).to.have.been.calledOnce.calledWithExactly('[test]', 'warn!');
 
       logger.log(LogLevel.error, 'error!');
-      expect(console.error).to.have.been.calledOnce.calledWithExactly(
-        '[test]',
-        'error!',
-      );
+      expect(console.error).to.have.been.calledOnce.calledWithExactly('[test]', 'error!');
     });
   });
 });

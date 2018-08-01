@@ -30,9 +30,7 @@ export function getModelMetadata(target: Function): ModelMetadata {
   if (!classTarget) {
     const superClass = Object.getPrototypeOf(target);
     const usePrototypeTarget = !!target.prototype && !!superClass.name;
-    classTarget = Object.create(
-      usePrototypeTarget ? getModelMetadata(superClass) : null,
-    );
+    classTarget = Object.create(usePrototypeTarget ? getModelMetadata(superClass) : null);
     protoKey.set(classKey, classTarget);
   }
   return classTarget;
@@ -48,14 +46,9 @@ export function getAllKeys(obj: ModelMetadata): string[] {
   return Object.keys(obj).concat(getAllKeys(Object.getPrototypeOf(obj)));
 }
 
-export function getMemberMetadata(
-  target: any,
-  propertyName: string,
-  paramIndex?: number,
-): MemberMetadata {
+export function getMemberMetadata(target: any, propertyName: string, paramIndex?: number): MemberMetadata {
   const modelMetadata = getModelMetadata(target);
-  const key =
-    paramIndex === undefined ? propertyName : `${propertyName}__${paramIndex}`;
+  const key = paramIndex === undefined ? propertyName : `${propertyName}__${paramIndex}`;
   if (!modelMetadata[key]) {
     modelMetadata[key] = {} as any;
   }

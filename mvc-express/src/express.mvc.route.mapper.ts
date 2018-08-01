@@ -1,11 +1,5 @@
 import { Inject, Injectable, Logger, Resolver } from '@dandi/core';
-import {
-  CorsConfig,
-  HttpMethod,
-  Route,
-  RouteExecutor,
-  RouteMapper,
-} from '@dandi/mvc';
+import { CorsConfig, HttpMethod, Route, RouteExecutor, RouteMapper } from '@dandi/mvc';
 
 import * as cors from 'cors';
 import { Express } from 'express';
@@ -47,8 +41,7 @@ export class ExpressMvcRouteMapper implements RouteMapper {
       const corsConfig = hasCorsConfig(route.cors) ? route.cors : undefined;
       if (
         !hasCorsConfig(route.cors) ||
-        (route.cors.disablePreflight !== true &&
-          route.httpMethod !== HttpMethod.options)
+        (route.cors.disablePreflight !== true && route.httpMethod !== HttpMethod.options)
       ) {
         this.logger.debug(
           'mapping route',
@@ -57,21 +50,14 @@ export class ExpressMvcRouteMapper implements RouteMapper {
           'to cors',
           corsConfig || '(default)',
         );
-        this.app[HttpMethod.options](
-          route.path,
-          cors(Object.assign({}, corsConfig)),
-          () => {
-            console.log('OPTIONS!');
-          },
-        );
+        this.app[HttpMethod.options](route.path, cors(Object.assign({}, corsConfig)), () => {
+          console.log('OPTIONS!');
+        });
       }
       this.app.use(route.path, cors(corsConfig));
       this.corsRoutes.add(route.path);
     }
 
-    this.app[route.httpMethod](
-      route.path,
-      this.routeExecutor.execRoute.bind(this.routeExecutor, route),
-    );
+    this.app[route.httpMethod](route.path, this.routeExecutor.execRoute.bind(this.routeExecutor, route));
   }
 }

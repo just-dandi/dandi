@@ -1,11 +1,7 @@
 import { Disposable } from '@dandi/common';
 
 import { Bootstrapper } from './bootstrapper';
-import {
-  ContainerError,
-  ContainerNotInitializedError,
-  MissingTokenError,
-} from './container.error';
+import { ContainerError, ContainerNotInitializedError, MissingTokenError } from './container.error';
 import { getInjectableMetadata, ParamMetadata } from './injectable.metadata';
 import { getInjectionContext } from './injection.context.util';
 import { InjectionToken } from './injection.token';
@@ -35,8 +31,7 @@ export interface ContainerConfig {
 
 export type Options<T> = { [P in keyof T]?: T[P] };
 
-export class Container<TConfig extends ContainerConfig = ContainerConfig>
-  implements Resolver {
+export class Container<TConfig extends ContainerConfig = ContainerConfig> implements Resolver {
   protected get repositories(): Repository[] {
     return [
       ...this.scannedRepositories,
@@ -87,12 +82,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig>
       throw new MissingTokenError();
     }
 
-    const context = ResolverContext.create<T>(
-      token,
-      null,
-      ...this.repositories,
-      ...repositories,
-    );
+    const context = ResolverContext.create<T>(token, null, ...this.repositories, ...repositories);
     try {
       const result = await this.resolveInternal(token, optional, context);
       if (!result) {
@@ -105,11 +95,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig>
     }
   }
 
-  public invoke(
-    instance: any,
-    member: Function,
-    ...repositories: Repository[]
-  ): Promise<any> {
+  public invoke(instance: any, member: Function, ...repositories: Repository[]): Promise<any> {
     return this.invokeInContext(null, instance, member, ...repositories);
   }
 
@@ -130,11 +116,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig>
       : ResolverContext.create(null, member, ...repositories);
     return Disposable.useAsync(invokeContext, async (context) => {
       const args = meta.params
-        ? await Promise.all(
-            meta.params.map((param) =>
-              this.resolveParam(param, param.token, param.optional, context),
-            ),
-          )
+        ? await Promise.all(meta.params.map((param) => this.resolveParam(param, param.token, param.optional, context)))
         : [];
       return await member.apply(instance, args);
     });
@@ -142,16 +124,9 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig>
 
   protected async onInit(): Promise<void> {}
 
-  protected async generate<T>(
-    provider: GeneratingProvider<T>,
-    context: ResolverContext<T>,
-  ): Promise<T> {
+  protected async generate<T>(provider: GeneratingProvider<T>, context: ResolverContext<T>): Promise<T> {
     if (provider.providers) {
-      context = context.childContext(
-        provider.provide,
-        context.context,
-        ...provider.providers,
-      );
+      context = context.childContext(provider.provide, context.context, ...provider.providers);
     }
 
     if (isFactoryProvider(provider)) {
@@ -177,11 +152,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig>
     if (isClassProvider(provider)) {
       const meta = getInjectableMetadata(provider.useClass);
       const args = meta.params
-        ? await Promise.all(
-            meta.params.map((param) =>
-              this.resolveParam(param, param.token, param.optional, context),
-            ),
-          )
+        ? await Promise.all(meta.params.map((param) => this.resolveParam(param, param.token, param.optional, context)))
         : [];
       const instance = new provider.useClass(...args);
       if (provider.singleton) {
@@ -212,30 +183,24 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig>
       this.registerProviders(this.config.providers);
     }
 
-    await Disposable.useAsync(
-      await this.resolve(Scanner, true),
-      async (result) => {
-        if (!result) {
-          return;
-        }
-        const scanners = result.arrayValue;
-        await Promise.all(
-          scanners.map(async (scanner: Scanner) => {
-            this.scannedRepositories.push(await scanner.scan());
-          }),
-        );
-      },
-    );
+    await Disposable.useAsync(await this.resolve(Scanner, true), async (result) => {
+      if (!result) {
+        return;
+      }
+      const scanners = result.arrayValue;
+      await Promise.all(
+        scanners.map(async (scanner: Scanner) => {
+          this.scannedRepositories.push(await scanner.scan());
+        }),
+      );
+    });
 
     // if a logger hasn't already been registered, register the NoopLogger
-    await Disposable.useAsync(
-      await this.resolve(Logger, true),
-      async (result) => {
-        if (!result) {
-          this.repository.register(NoopLogger);
-        }
-      },
-    );
+    await Disposable.useAsync(await this.resolve(Logger, true), async (result) => {
+      if (!result) {
+        this.repository.register(NoopLogger);
+      }
+    });
 
     await this.onInit();
   }
@@ -261,10 +226,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig>
     );
   }
 
-  private async resolveProvider<T>(
-    provider: Provider<T>,
-    context: ResolverContext<T>,
-  ): Promise<T> {
+  private async resolveProvider<T>(provider: Provider<T>, context: ResolverContext<T>): Promise<T> {
     if (isValueProvider(provider)) {
       return provider.useValue;
     }
@@ -304,10 +266,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig>
     if (Array.isArray(entry)) {
       return await Promise.all(
         entry.map((provider) => {
-          return this.resolveProvider(
-            provider,
-            context.childContext(token, getInjectionContext(provider)),
-          );
+          return this.resolveProvider(provider, context.childContext(token, getInjectionContext(provider)));
         }),
       );
     }

@@ -1,15 +1,8 @@
-import {
-  Constructor,
-  Disposable,
-  InvalidDisposeTargetError,
-} from '@dandi/common';
+import { Constructor, Disposable, InvalidDisposeTargetError } from '@dandi/common';
 
 import { globalSymbol } from './global.symbol';
 import { InjectionToken } from './injection.token';
-import {
-  OpinionatedProviderOptionsConflictError,
-  OpinionatedToken,
-} from './opinionated.token';
+import { OpinionatedProviderOptionsConflictError, OpinionatedToken } from './opinionated.token';
 import { Provider, ProviderOptions } from './provider';
 import { ProviderTypeError } from './provider.type.error';
 import { isProvider } from './provider.util';
@@ -50,38 +43,23 @@ export class Repository<TContext = any> implements Disposable {
     return this.for(GLOBAL_CONTEXT);
   }
 
-  private readonly providers = new Map<
-    InjectionToken<any>,
-    RepositoryEntry<any>
-  >();
+  private readonly providers = new Map<InjectionToken<any>, RepositoryEntry<any>>();
 
   private readonly singletons = new Map<Provider<any>, any>();
 
-  private constructor(
-    private context: any,
-    private readonly allowSingletons: boolean,
-  ) {}
+  private constructor(private context: any, private readonly allowSingletons: boolean) {}
 
-  public register<T>(
-    target: Constructor<T> | Provider<T>,
-    options?: RegisterOptions<T>,
-  ): this {
+  public register<T>(target: Constructor<T> | Provider<T>, options?: RegisterOptions<T>): this {
     if (isProvider(target)) {
       this.registerProvider(target);
       return this;
     }
 
     if (typeof target === 'function') {
-      const injectableProviderOptions = Reflect.get(
-        target,
-        ProviderOptions.valueOf() as symbol,
-      ) as ProviderOptions<T>;
+      const injectableProviderOptions = Reflect.get(target, ProviderOptions.valueOf() as symbol) as ProviderOptions<T>;
       if (injectableProviderOptions) {
         this.registerProvider({
-          provide:
-            (options && options.provide) ||
-            injectableProviderOptions.provide ||
-            target,
+          provide: (options && options.provide) || injectableProviderOptions.provide || target,
           useClass: target,
           multi: injectableProviderOptions.multi,
           singleton: injectableProviderOptions.singleton,
@@ -109,14 +87,9 @@ export class Repository<TContext = any> implements Disposable {
     return this.providers.values();
   }
 
-  public addSingleton<TSingleton>(
-    provider: Provider<TSingleton>,
-    value: TSingleton,
-  ): TSingleton {
+  public addSingleton<TSingleton>(provider: Provider<TSingleton>, value: TSingleton): TSingleton {
     if (!this.allowSingletons) {
-      throw new Error(
-        'Singletons are not allowed to be registered on this Repository instance',
-      );
+      throw new Error('Singletons are not allowed to be registered on this Repository instance');
     }
     if (!isProvider(provider)) {
       throw new ProviderTypeError(provider);
@@ -139,10 +112,7 @@ export class Repository<TContext = any> implements Disposable {
     Disposable.remapDisposed(this, reason);
   }
 
-  private registerProvider<T>(
-    provider: Provider<T>,
-    target?: Constructor<T> | Provider<T>,
-  ) {
+  private registerProvider<T>(provider: Provider<T>, target?: Constructor<T> | Provider<T>) {
     if (provider.provide instanceof OpinionatedToken) {
       const opinionatedOptions = provider.provide.options;
       Object.keys(opinionatedOptions).forEach((optionKey) => {
@@ -159,17 +129,14 @@ export class Repository<TContext = any> implements Disposable {
       });
     }
 
-    let entry: Provider<T> | Array<Provider<T>> = this.providers.get(
-      provider.provide,
-    );
+    let entry: Provider<T> | Array<Provider<T>> = this.providers.get(provider.provide);
 
     if (entry) {
       const entryIsMulti = entry && Array.isArray(entry);
 
       if (provider.multi && !entryIsMulti) {
         throw new ConflictingRegistrationOptionsError(
-          `${target ||
-            provider} specified multi option, but already had existing registrations without multi`,
+          `${target || provider} specified multi option, but already had existing registrations without multi`,
           entry,
           target,
         );
@@ -177,9 +144,7 @@ export class Repository<TContext = any> implements Disposable {
 
       if (!provider.multi && entryIsMulti) {
         throw new ConflictingRegistrationOptionsError(
-          `Existing entries for ${
-            provider.provide
-          } specified multi option, but ${target || provider} did not`,
+          `Existing entries for ${provider.provide} specified multi option, but ${target || provider} did not`,
           entry,
           target,
         );

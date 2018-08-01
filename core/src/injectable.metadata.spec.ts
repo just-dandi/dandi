@@ -1,11 +1,6 @@
 import { expect } from 'chai';
 
-import {
-  getInjectableMetadata,
-  getInjectableParamMetadata,
-  methodTarget,
-  MethodTarget,
-} from '../';
+import { getInjectableMetadata, getInjectableParamMetadata, methodTarget, MethodTarget } from '../';
 
 class TestClass {
   constructor(param1: any, param2: any) {}
@@ -31,11 +26,7 @@ describe('getInjectableParamMetadata', () => {
     });
 
     it('initializes the metadata for a constructor parameter', () => {
-      const paramMeta = getInjectableParamMetadata(
-        methodTarget(TestClass),
-        null,
-        1,
-      );
+      const paramMeta = getInjectableParamMetadata(methodTarget(TestClass), null, 1);
       paramMeta.optional = true;
       const meta = getInjectableMetadata(TestClass);
 
@@ -43,16 +34,10 @@ describe('getInjectableParamMetadata', () => {
     });
 
     it('returns existing metadata for a constructor parameter', () => {
-      const paramMeta = getInjectableParamMetadata(
-        methodTarget(TestClass),
-        null,
-        1,
-      );
+      const paramMeta = getInjectableParamMetadata(methodTarget(TestClass), null, 1);
       paramMeta.optional = true;
 
-      expect(
-        getInjectableParamMetadata(methodTarget(TestClass), null, 1).optional,
-      ).to.be.true;
+      expect(getInjectableParamMetadata(methodTarget(TestClass), null, 1).optional).to.be.true;
     });
   });
 
@@ -88,9 +73,7 @@ describe('getInjectableParamMetadata', () => {
       const paramMeta = getInjectableParamMetadata(target, 'method', 1);
       paramMeta.optional = true;
 
-      expect(
-        getInjectableParamMetadata(methodTarget(TestClass), null, 1).optional,
-      ).to.be.true;
+      expect(getInjectableParamMetadata(methodTarget(TestClass), null, 1).optional).to.be.true;
     });
   });
 });

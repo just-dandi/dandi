@@ -15,12 +15,7 @@ export class CamelSnakeDataMapper implements DataMapper {
     return mapKeys(param, Object.assign({}, obj));
   }
 
-  private initPath(
-    path: string[],
-    parent: any,
-    value: any,
-    emptySegments: Map<any, Set<string>>,
-  ): void {
+  private initPath(path: string[], parent: any, value: any, emptySegments: Map<any, Set<string>>): void {
     const segment = path.pop();
     if (!path.length) {
       parent[segment] = value;

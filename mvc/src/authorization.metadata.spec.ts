@@ -1,8 +1,4 @@
-import {
-  AuthorizationCondition,
-  AuthorizationMetadata,
-  mergeAuthorization,
-} from '@dandi/mvc';
+import { AuthorizationCondition, AuthorizationMetadata, mergeAuthorization } from '@dandi/mvc';
 
 // tslint:disable no-unused-expression
 import { expect } from 'chai';
@@ -20,9 +16,7 @@ describe('AuthorizationMetadata', () => {
 
     it('returns a single object with all conditions from each entry', () => {
       const entry1: AuthorizationMetadata = {
-        authorization: [
-          { provide: AuthorizationCondition, useValue: { allowed: true } },
-        ],
+        authorization: [{ provide: AuthorizationCondition, useValue: { allowed: true } }],
       };
       const entry2: AuthorizationMetadata = {
         authorization: [
@@ -39,9 +33,7 @@ describe('AuthorizationMetadata', () => {
 
     it('only includes unique entries', () => {
       const entry1: AuthorizationMetadata = {
-        authorization: [
-          { provide: AuthorizationCondition, useValue: { allowed: true } },
-        ],
+        authorization: [{ provide: AuthorizationCondition, useValue: { allowed: true } }],
       };
       const entry2: AuthorizationMetadata = {
         authorization: [

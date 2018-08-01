@@ -23,11 +23,7 @@ describe('PgDbQueryableBase', () => {
       validateMember: stub(),
       validateModel: stub(),
     };
-    queryable = new PgDbQueryableBase<PgDbQueryableClient>(
-      client,
-      dataMapper,
-      modelValidator,
-    );
+    queryable = new PgDbQueryableBase<PgDbQueryableClient>(client, dataMapper, modelValidator);
   });
   afterEach(() => {
     client = undefined;
@@ -55,9 +51,7 @@ describe('PgDbQueryableBase', () => {
 
       const result = await queryable.query(cmd, args);
 
-      expect(dataMapper.mapFromDb).to.have.been.calledWith(
-        clientResult.rows[0],
-      );
+      expect(dataMapper.mapFromDb).to.have.been.calledWith(clientResult.rows[0]);
       expect(result).to.deep.equal([value, value]);
     });
   });

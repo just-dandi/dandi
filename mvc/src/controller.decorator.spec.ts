@@ -52,17 +52,9 @@ describe('@Controller', () => {
   it('throws an error if the path is null or undefined', () => {
     class TestClass {}
 
-    expect(() => Controller(null)(TestClass)).to.throw(
-      MissingControllerPathError,
-    );
-    expect(() => Controller(undefined)(TestClass)).to.throw(
-      MissingControllerPathError,
-    );
-    expect(() => Controller({ path: null })(TestClass)).to.throw(
-      MissingControllerPathError,
-    );
-    expect(() => Controller({ path: undefined })(TestClass)).to.throw(
-      MissingControllerPathError,
-    );
+    expect(() => Controller(null)(TestClass)).to.throw(MissingControllerPathError);
+    expect(() => Controller(undefined)(TestClass)).to.throw(MissingControllerPathError);
+    expect(() => Controller({ path: null })(TestClass)).to.throw(MissingControllerPathError);
+    expect(() => Controller({ path: undefined })(TestClass)).to.throw(MissingControllerPathError);
   });
 });

@@ -12,13 +12,8 @@ export interface PgDbQueryableClient {
   query(cmd: string, args: any[]): Promise<QueryResult>;
 }
 
-export class PgDbQueryableBase<TClient extends PgDbQueryableClient>
-  implements DbQueryable {
-  constructor(
-    protected client: TClient,
-    protected dataMapper: DataMapper,
-    protected modelValidator: ModelValidator,
-  ) {}
+export class PgDbQueryableBase<TClient extends PgDbQueryableClient> implements DbQueryable {
+  constructor(protected client: TClient, protected dataMapper: DataMapper, protected modelValidator: ModelValidator) {}
 
   public async query(cmd: string, ...args: any[]): Promise<any[]> {
     let result: QueryResult;
@@ -36,11 +31,7 @@ export class PgDbQueryableBase<TClient extends PgDbQueryableClient>
     return result.rows.map((row: any) => this.dataMapper.mapFromDb(row));
   }
 
-  public async queryModel<T>(
-    model: Constructor<T>,
-    cmd: string,
-    ...args: any[]
-  ): Promise<T[]> {
+  public async queryModel<T>(model: Constructor<T>, cmd: string, ...args: any[]): Promise<T[]> {
     cmd = this.replaceSelectList(model, cmd);
     const result = await this.query(cmd, ...args);
     if (!result || !result.length) {
@@ -50,11 +41,7 @@ export class PgDbQueryableBase<TClient extends PgDbQueryableClient>
     return result.map((item) => this.modelValidator.validateModel(model, item));
   }
 
-  public async queryModelSingle<T>(
-    model: Constructor<T>,
-    cmd: string,
-    ...args: any[]
-  ): Promise<T> {
+  public async queryModelSingle<T>(model: Constructor<T>, cmd: string, ...args: any[]): Promise<T> {
     const result = await this.queryModel(model, cmd, ...args);
     if (!result || !result.length) {
       return null;
@@ -74,11 +61,7 @@ export class PgDbQueryableBase<TClient extends PgDbQueryableClient>
     const tableMatch = cmd.match(/from\s+[\w._]+\s+(?:as\s+)?(\w+)/);
     const table = tableMatch ? tableMatch[1] : null;
     const joinMatches = cmd.match(/join\s+[\w._]+\s+(?:as\s+)?(\w+)\s+on/g);
-    const joins = joinMatches
-      ? joinMatches.map(
-          (join) => join.match(/join\s+[\w._]+\s+(?:as\s+)?(\w+)/)[1],
-        )
-      : [];
+    const joins = joinMatches ? joinMatches.map((join) => join.match(/join\s+[\w._]+\s+(?:as\s+)?(\w+)/)[1]) : [];
     const aliases = (table ? [table] : []).concat(joins);
     if (!aliases.length) {
       return cmd;
@@ -100,14 +83,9 @@ export class PgDbQueryableBase<TClient extends PgDbQueryableClient>
       return cmd;
     }
 
-    const newSelect = toKeep
-      .concat(matchingDecoratorNames)
-      .map((field) => `    ${field} as "${field}"`);
+    const newSelect = toKeep.concat(matchingDecoratorNames).map((field) => `    ${field} as "${field}"`);
 
-    return cmd.replace(
-      /select\s+([\w\s,._]+)\s+from/i,
-      `select\n${newSelect.join(',\n')}\nfrom`,
-    );
+    return cmd.replace(/select\s+([\w\s,._]+)\s+from/i, `select\n${newSelect.join(',\n')}\nfrom`);
   }
 
   private formatArg(arg: any): any {

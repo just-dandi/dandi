@@ -5,9 +5,10 @@ import { localOpinionatedToken } from './local.token';
 
 export type InjectionContext = Constructor<any> | Function;
 
-export const InjectionContext: InjectionToken<
-  InjectionContext
-> = localOpinionatedToken<InjectionContext>('InjectionContext', {
-  multi: false,
-  singleton: false,
-});
+export const InjectionContext: InjectionToken<InjectionContext> = localOpinionatedToken<InjectionContext>(
+  'InjectionContext',
+  {
+    multi: false,
+    singleton: false,
+  },
+);

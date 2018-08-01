@@ -1,22 +1,9 @@
 import { expect } from 'chai';
 import { spy, stub } from 'sinon';
 
-import {
-  Bootstrapper,
-  Container,
-  Inject,
-  Injectable,
-  Optional,
-  Provider,
-  Scanner,
-  SymbolToken,
-} from '../';
+import { Bootstrapper, Container, Inject, Injectable, Optional, Provider, Scanner, SymbolToken } from '../';
 
-import {
-  ContainerError,
-  ContainerNotInitializedError,
-  MissingTokenError,
-} from './container.error';
+import { ContainerError, ContainerNotInitializedError, MissingTokenError } from './container.error';
 import { InjectionContext } from './injection.context';
 import { MissingProviderError } from './missing.provider.error';
 import { AsyncFactoryProvider } from './provider';
@@ -56,10 +43,7 @@ describe('Container', () => {
 
       await (container as any).init();
 
-      expect((container as any).repository.providers).to.contain.keys([
-        token1,
-        token2,
-      ]);
+      expect((container as any).repository.providers).to.contain.keys([token1, token2]);
     });
 
     it('runs any scanners registered in the constructor configuration', async () => {
@@ -90,10 +74,7 @@ describe('Container', () => {
       expect(scanner1.scan).to.have.been.calledOnce;
       expect(scanner2.scan).to.have.been.calledOnce;
 
-      expect((container as any).repositories).to.include.members([
-        repository1,
-        repository2,
-      ]);
+      expect((container as any).repositories).to.include.members([repository1, repository2]);
     });
   });
 
@@ -377,9 +358,7 @@ describe('Container', () => {
       const container = new Container();
       await container.start();
 
-      await expect(container.resolve(token)).to.be.rejectedWith(
-        MissingProviderError,
-      );
+      await expect(container.resolve(token)).to.be.rejectedWith(MissingProviderError);
     });
 
     it('can resolve singletons from class providers', async () => {
@@ -407,17 +386,13 @@ describe('Container', () => {
       class TestToken {}
 
       const container = new Container();
-      await expect(container.resolve(TestToken)).to.be.rejectedWith(
-        ContainerNotInitializedError,
-      );
+      await expect(container.resolve(TestToken)).to.be.rejectedWith(ContainerNotInitializedError);
     });
 
     it('throws a MissingTokenError if called without a valid injection token', async () => {
       const container = new Container();
       await container.start();
-      await expect(container.resolve(null)).to.be.rejectedWith(
-        MissingTokenError,
-      );
+      await expect(container.resolve(null)).to.be.rejectedWith(MissingTokenError);
     });
   });
 
@@ -429,9 +404,7 @@ describe('Container', () => {
 
       const container = new Container();
       const instance = new TestClass();
-      await expect(
-        container.invoke(instance, instance.method),
-      ).to.be.rejectedWith(ContainerNotInitializedError);
+      await expect(container.invoke(instance, instance.method)).to.be.rejectedWith(ContainerNotInitializedError);
     });
 
     it('can invoke methods that have been decorated with @Inject', async () => {

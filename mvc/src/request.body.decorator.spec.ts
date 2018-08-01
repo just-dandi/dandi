@@ -11,11 +11,7 @@ describe('@HttpRequestBody', () => {
       public method(@RequestBody(TestModel) body: any): void {}
     }
 
-    const meta = getInjectableParamMetadata(
-      TestController.prototype as MethodTarget<TestController>,
-      'method',
-      0,
-    );
+    const meta = getInjectableParamMetadata(TestController.prototype as MethodTarget<TestController>, 'method', 0);
 
     expect(meta).to.exist;
     expect(meta.token).to.equal(HttpRequestBody);
@@ -28,10 +24,7 @@ describe('@HttpRequestBody', () => {
       public method(@RequestBody(TestModel) body: any): void {}
     }
 
-    const meta: RequestBody<
-      TestModel,
-      TestController
-    > = getInjectableParamMetadata(
+    const meta: RequestBody<TestModel, TestController> = getInjectableParamMetadata(
       TestController.prototype as MethodTarget<TestController>,
       'method',
       0,

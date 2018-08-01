@@ -86,10 +86,7 @@ export class Disposable {
   /**
    * Invokes the specified function, then disposes the object.
    */
-  public static use<T extends Disposable, TResult = void>(
-    obj: T,
-    use: (obj: T) => TResult,
-  ): TResult {
+  public static use<T extends Disposable, TResult = void>(obj: T, use: (obj: T) => TResult): TResult {
     let error: Error;
     try {
       return use(obj);

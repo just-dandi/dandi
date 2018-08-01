@@ -6,6 +6,6 @@ export interface LambdaErrorHandler<TEvent> {
   handleError(event: TEvent, error: Error): void;
 }
 
-export const LambdaErrorHandler: InjectionToken<
-  LambdaErrorHandler<any>
-> = localOpinionatedToken('LambdaErrorHandler', { multi: true });
+export const LambdaErrorHandler: InjectionToken<LambdaErrorHandler<any>> = localOpinionatedToken('LambdaErrorHandler', {
+  multi: true,
+});

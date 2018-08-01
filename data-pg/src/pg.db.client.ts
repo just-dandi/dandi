@@ -1,11 +1,6 @@
 import { AppError, Disposable } from '@dandi/common';
 import { Inject, Injectable, Logger, Resolver } from '@dandi/core';
-import {
-  DataMapper,
-  DbClient,
-  DbTransactionClient,
-  TransactionFn,
-} from '@dandi/data';
+import { DataMapper, DbClient, DbTransactionClient, TransactionFn } from '@dandi/data';
 import { ModelValidator } from '@dandi/model-validation';
 
 import { PgDbPool } from './pg.db.pool';
@@ -18,8 +13,7 @@ export class TransactionAlreadyInProgressError extends AppError {
 }
 
 @Injectable(DbClient)
-export class PgDbClient extends PgDbQueryableBase<PgDbPool>
-  implements DbClient, Disposable {
+export class PgDbClient extends PgDbQueryableBase<PgDbPool> implements DbClient, Disposable {
   private activeTransactions: DbTransactionClient[] = [];
 
   constructor(
@@ -33,8 +27,7 @@ export class PgDbClient extends PgDbQueryableBase<PgDbPool>
   }
 
   public async transaction<T>(transactionFn: TransactionFn<T>): Promise<T> {
-    const transaction = (await this.resolver.resolve(DbTransactionClient))
-      .singleValue;
+    const transaction = (await this.resolver.resolve(DbTransactionClient)).singleValue;
     try {
       this.activeTransactions.push(transaction);
 
@@ -44,10 +37,7 @@ export class PgDbClient extends PgDbQueryableBase<PgDbPool>
     } catch (err) {
       throw err;
     } finally {
-      this.activeTransactions.splice(
-        this.activeTransactions.indexOf(transaction),
-        1,
-      );
+      this.activeTransactions.splice(this.activeTransactions.indexOf(transaction), 1);
     }
   }
 

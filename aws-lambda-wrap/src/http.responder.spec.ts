@@ -84,10 +84,7 @@ describe('HttpResponder', () => {
       public exec(res: APIGatewayProxyResult): void {}
     }
 
-    const harness = testHarness(
-      HttpResponder,
-      stubProvider(TestResponseInterceptor, HttpResponseInterceptor),
-    );
+    const harness = testHarness(HttpResponder, stubProvider(TestResponseInterceptor, HttpResponseInterceptor));
 
     let interceptor: HttpResponseInterceptor;
 

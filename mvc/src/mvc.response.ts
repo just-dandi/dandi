@@ -15,9 +15,7 @@ export interface MvcResponse {
   status(code: number): this;
 }
 
-export const MvcResponse: InjectionToken<MvcResponse> = localOpinionatedToken<
-  MvcResponse
->('MvcResponse', {
+export const MvcResponse: InjectionToken<MvcResponse> = localOpinionatedToken<MvcResponse>('MvcResponse', {
   multi: false,
   singleton: false,
 });

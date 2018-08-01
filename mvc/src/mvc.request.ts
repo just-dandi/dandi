@@ -12,9 +12,7 @@ export interface MvcRequest {
   get(key: string): string;
 }
 
-export const MvcRequest: InjectionToken<MvcRequest> = localOpinionatedToken<
-  MvcRequest
->('MvcRequest', {
+export const MvcRequest: InjectionToken<MvcRequest> = localOpinionatedToken<MvcRequest>('MvcRequest', {
   multi: false,
   singleton: false,
 });

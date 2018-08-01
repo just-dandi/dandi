@@ -58,9 +58,7 @@ describe('DateTimeTypeValidator', () => {
 
     it('throws a TypeValidationError if the date is not valid', () => {
       const date = 'uhh what';
-      expect(() => validator.validate(date, null)).to.throw(
-        TypeValidationError,
-      );
+      expect(() => validator.validate(date, null)).to.throw(TypeValidationError);
     });
   });
 });

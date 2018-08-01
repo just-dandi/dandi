@@ -9,9 +9,7 @@ export interface PerfRecordEntry {
 }
 
 const SEPARATOR = new Array(126).join('-') + '\n';
-const COLS = ` ${'component'.padEnd(45)} | ${'name'.padEnd(
-  35,
-)} | ${'time'.padEnd(17)} | ${'diff'.padEnd(17)}\n`;
+const COLS = ` ${'component'.padEnd(45)} | ${'name'.padEnd(35)} | ${'time'.padEnd(17)} | ${'diff'.padEnd(17)}\n`;
 
 function timeString(time: [number, number]): string {
   return `${time[0]}.${time[1].toString().padStart(9, '0')}`;

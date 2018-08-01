@@ -8,6 +8,7 @@ export interface HttpResponseInterceptor {
   exec(response: APIGatewayProxyResult): void;
 }
 
-export const HttpResponseInterceptor: InjectionToken<
-  HttpResponseInterceptor
-> = localOpinionatedToken('HttpResponseInterceptor', { multi: true });
+export const HttpResponseInterceptor: InjectionToken<HttpResponseInterceptor> = localOpinionatedToken(
+  'HttpResponseInterceptor',
+  { multi: true },
+);

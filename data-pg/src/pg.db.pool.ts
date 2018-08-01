@@ -10,10 +10,7 @@ import { PgDbQueryableClient } from './pg.db.queryable';
 export class PgDbPool implements Disposable, PgDbQueryableClient {
   private pool: Pool;
 
-  constructor(
-    @Inject(PgDbConfig) config: PoolConfig,
-    @Inject(Resolver) private resolver: Resolver,
-  ) {
+  constructor(@Inject(PgDbConfig) config: PoolConfig, @Inject(Resolver) private resolver: Resolver) {
     this.pool = new Pool(config);
   }
 

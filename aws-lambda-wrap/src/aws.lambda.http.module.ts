@@ -6,10 +6,7 @@ export interface AwsLambdaHttpModule extends Array<any> {
   configure(options: HttpEventOptions): any[];
 }
 
-export const AwsLambdaHttpModule: AwsLambdaHttpModule = [
-  HttpResponder,
-  HttpEventTransformer,
-] as any;
+export const AwsLambdaHttpModule: AwsLambdaHttpModule = [HttpResponder, HttpEventTransformer] as any;
 Object.defineProperty(AwsLambdaHttpModule, 'configure', {
   value: (options: HttpEventOptions) => {
     return AwsLambdaHttpModule.concat([

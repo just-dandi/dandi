@@ -29,16 +29,11 @@ export interface InjectableMetadata {
   params: Array<ParamMetadata<any>>;
 }
 
-export const getInjectableMetadata: MetadataAccessor<
-  InjectableMetadata
-> = getMetadata.bind(null, META_KEY, () => ({
+export const getInjectableMetadata: MetadataAccessor<InjectableMetadata> = getMetadata.bind(null, META_KEY, () => ({
   params: [] as Array<ParamMetadata<any>>,
 }));
 
-export function getInjectableParamMetadata<
-  TTarget,
-  TMetadata extends ParamMetadata<TTarget> = ParamMetadata<TTarget>
->(
+export function getInjectableParamMetadata<TTarget, TMetadata extends ParamMetadata<TTarget> = ParamMetadata<TTarget>>(
   target: MethodTarget<TTarget>,
   propertyName: string,
   paramIndex: number,

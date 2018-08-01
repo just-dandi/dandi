@@ -18,9 +18,7 @@ describe('UuidTypeValidator', () => {
   describe('validate', () => {
     it('returns a Uuid instance for valid uuid strings', () => {
       const value = Uuid.create();
-      expect(validator.validate(value.toString()).toString()).to.equal(
-        value.toString(),
-      );
+      expect(validator.validate(value.toString()).toString()).to.equal(value.toString());
     });
 
     it('returns the same Uuid instance for the same uuid string', () => {

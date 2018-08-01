@@ -13,10 +13,7 @@ export function configValueFactory<T>(
   return resolver.resolve(client, token);
 }
 
-export function configProvider<T>(
-  client: Constructor<ConfigClient>,
-  token: ConfigToken<T>,
-): Provider<T> {
+export function configProvider<T>(client: Constructor<ConfigClient>, token: ConfigToken<T>): Provider<T> {
   return {
     provide: token.provide || token.type,
     useFactory: configValueFactory.bind(null, token),

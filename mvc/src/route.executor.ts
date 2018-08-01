@@ -9,6 +9,6 @@ export interface RouteExecutor {
   execRoute(route: Route, req: MvcRequest, res: MvcResponse): Promise<void>;
 }
 
-export const RouteExecutor: InjectionToken<
-  RouteExecutor
-> = localOpinionatedToken<RouteExecutor>('RouteExecutor', { multi: false });
+export const RouteExecutor: InjectionToken<RouteExecutor> = localOpinionatedToken<RouteExecutor>('RouteExecutor', {
+  multi: false,
+});

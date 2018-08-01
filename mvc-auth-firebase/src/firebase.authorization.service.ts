@@ -28,9 +28,7 @@ export class FirebaseAuthorizationService implements AuthorizationService {
     });
   }
 
-  public async getAuthorizedUser(
-    authorization: string,
-  ): Promise<AuthorizedUser> {
+  public async getAuthorizedUser(authorization: string): Promise<AuthorizedUser> {
     const tokenStr = authorization.substring(authorization.indexOf(' ') + 1);
     const userKey = this.cacheKey.keyFor(tokenStr);
     let user = await this.cache.get<UserRecord>(userKey);

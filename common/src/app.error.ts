@@ -10,10 +10,7 @@ export class AppError extends Error {
   public getStack(): string {
     let stack = `${this.constructor.name} ${this.stack}`;
     if (this.innerError) {
-      const innerStack =
-        this.innerError instanceof AppError
-          ? this.innerError.getStack()
-          : this.innerError.stack;
+      const innerStack = this.innerError instanceof AppError ? this.innerError.getStack() : this.innerError.stack;
       stack += '\n Inner ' + innerStack;
     }
     return stack;

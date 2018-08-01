@@ -9,11 +9,7 @@ export function modelDecorator(
   propertyName: string,
   paramIndex?: number,
 ) {
-  const memberMetadata = getMemberMetadata(
-    target.constructor,
-    propertyName,
-    paramIndex,
-  );
+  const memberMetadata = getMemberMetadata(target.constructor, propertyName, paramIndex);
   Object.assign(memberMetadata, decoratorMetadata);
 }
 

@@ -5,13 +5,10 @@ import { localOpinionatedToken } from './local.token';
 
 export type NodeEnv = string;
 
-export const NodeEnv: InjectionToken<string> = localOpinionatedToken(
-  'NodeEnv',
-  {
-    multi: false,
-    singleton: true,
-  },
-);
+export const NodeEnv: InjectionToken<string> = localOpinionatedToken('NodeEnv', {
+  multi: false,
+  singleton: true,
+});
 
 export const NodeEnvProvider: Provider<String> = EnvConfigClient.provider({
   type: String,

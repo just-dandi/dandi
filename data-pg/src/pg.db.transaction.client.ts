@@ -20,8 +20,7 @@ export class TransactionRollbackError extends AppError {
 }
 
 @Injectable(DbTransactionClient)
-export class PgDbTransactionClient extends PgDbQueryableBase<PgDbPoolClient>
-  implements DbTransactionClient {
+export class PgDbTransactionClient extends PgDbQueryableBase<PgDbPoolClient> implements DbTransactionClient {
   private state: TransactionState;
 
   constructor(
@@ -46,11 +45,7 @@ export class PgDbTransactionClient extends PgDbQueryableBase<PgDbPoolClient>
     }
   }
 
-  public async queryModel<T>(
-    model: Constructor<T>,
-    cmd: string,
-    ...args: any[]
-  ): Promise<T[]> {
+  public async queryModel<T>(model: Constructor<T>, cmd: string, ...args: any[]): Promise<T[]> {
     if (!this.state) {
       this.state = TransactionState.begin;
       await super.query(TransactionState.begin);

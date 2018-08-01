@@ -9,13 +9,12 @@ import { PgDbQueryableClient } from './pg.db.queryable';
 
 export interface PgDbPoolClient extends Disposable, PgDbQueryableClient {}
 
-export const PgDbPoolClient: InjectionToken<
-  PgDbPoolClient
-> = localOpinionatedToken('PgDbPoolClient', { multi: false, singleton: false });
+export const PgDbPoolClient: InjectionToken<PgDbPoolClient> = localOpinionatedToken('PgDbPoolClient', {
+  multi: false,
+  singleton: false,
+});
 
-export async function poolClientFactory(
-  pool: PgDbPool,
-): Promise<PgDbPoolClient> {
+export async function poolClientFactory(pool: PgDbPool): Promise<PgDbPoolClient> {
   const client = await pool.connect();
   if (Disposable.isDisposable(client)) {
     return client;

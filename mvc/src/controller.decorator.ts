@@ -14,10 +14,7 @@ export interface ControllerDecorator<T> {
   new (options?: Controller<T>): Controller<T>;
 }
 
-export function controllerDecorator<T>(
-  options: Controller<T>,
-  target: Constructor<T>,
-): void {
+export function controllerDecorator<T>(options: Controller<T>, target: Constructor<T>): void {
   injectableDecorator(null, [], target);
   const meta = getControllerMetadata(target);
   meta.path = options.path;

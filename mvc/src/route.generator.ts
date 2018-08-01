@@ -7,6 +7,6 @@ export interface RouteGenerator {
   generateRoutes(): Route[];
 }
 
-export const RouteGenerator: InjectionToken<
-  RouteGenerator
-> = localOpinionatedToken<RouteGenerator>('RouteGenerator', { multi: false });
+export const RouteGenerator: InjectionToken<RouteGenerator> = localOpinionatedToken<RouteGenerator>('RouteGenerator', {
+  multi: false,
+});

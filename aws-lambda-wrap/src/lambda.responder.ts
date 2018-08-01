@@ -7,6 +7,6 @@ export interface LambdaResponder<TResponse> {
   handleError(error: Error): Promise<any>;
 }
 
-export const LambdaResponder: InjectionToken<
-  LambdaResponder<any>
-> = localOpinionatedToken('LambdaResponder', { multi: false });
+export const LambdaResponder: InjectionToken<LambdaResponder<any>> = localOpinionatedToken('LambdaResponder', {
+  multi: false,
+});

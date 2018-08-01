@@ -6,12 +6,7 @@ import { DecoratorModelValidator } from '@dandi/model-validation/src/decorator.m
 
 import { expect } from 'chai';
 import { Pool, PoolClient } from 'pg';
-import {
-  createStubInstance,
-  SinonStub,
-  SinonStubbedInstance,
-  stub,
-} from 'sinon';
+import { createStubInstance, SinonStub, SinonStubbedInstance, stub } from 'sinon';
 
 import { PgDbClient, TransactionAlreadyInProgressError } from './pg.db.client';
 import { PgDbPool } from './pg.db.pool';
@@ -34,13 +29,7 @@ describe('PgDbClient', () => {
     modelValidator = createStubInstance(DecoratorModelValidator);
     resolver = createStubInstance(Container);
     logger = createStubInstance(NoopLogger);
-    dbClient = new PgDbClient(
-      pool,
-      dataMapper,
-      modelValidator,
-      resolver,
-      logger,
-    );
+    dbClient = new PgDbClient(pool, dataMapper, modelValidator, resolver, logger);
   });
   afterEach(() => {
     pool = undefined;
@@ -55,16 +44,12 @@ describe('PgDbClient', () => {
   xdescribe('transaction', () => {
     it('throws if a transaction is already in progress', async () => {
       dbClient.transaction(async () => {});
-      await expect(dbClient.transaction(async () => {})).to.be.rejectedWith(
-        TransactionAlreadyInProgressError,
-      );
+      await expect(dbClient.transaction(async () => {})).to.be.rejectedWith(TransactionAlreadyInProgressError);
     });
 
     it('calls the transactionFn and then automatically disposes the transaction', async () => {
       let transactionDispose: SinonStub;
-      const transactionFn = stub().callsFake(
-        (transaction) => (transactionDispose = stub(transaction, 'dispose')),
-      );
+      const transactionFn = stub().callsFake((transaction) => (transactionDispose = stub(transaction, 'dispose')));
 
       await dbClient.transaction(transactionFn);
 

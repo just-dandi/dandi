@@ -1,10 +1,4 @@
-import {
-  ClassProvider,
-  Inject,
-  Injectable,
-  Logger,
-  Repository,
-} from '@dandi/core';
+import { ClassProvider, Inject, Injectable, Logger, Repository } from '@dandi/core';
 
 import { mergeAuthorization } from './authorization.metadata';
 import { Controller } from './controller.decorator';
@@ -30,23 +24,13 @@ export class DecoratorRouteGenerator implements RouteGenerator {
 
       this.logger.debug('found controller', controllerCtr.name);
 
-      for (const [
-        controllerMethod,
-        controllerMethodMetadata,
-      ] of meta.routeMap.entries()) {
-        const authorizationMeta = mergeAuthorization(
-          meta,
-          controllerMethodMetadata,
-        );
-        const authorization =
-          authorizationMeta && authorizationMeta.authorization;
+      for (const [controllerMethod, controllerMethodMetadata] of meta.routeMap.entries()) {
+        const authorizationMeta = mergeAuthorization(meta, controllerMethodMetadata);
+        const authorization = authorizationMeta && authorizationMeta.authorization;
         const methodCors = controllerMethodMetadata.cors;
         const cors = getCorsConfig(controllerCors, methodCors);
 
-        for (const [
-          methodPath,
-          httpMethods,
-        ] of controllerMethodMetadata.routePaths.entries()) {
+        for (const [methodPath, httpMethods] of controllerMethodMetadata.routePaths.entries()) {
           const path = this.normalizePath(meta.path, methodPath);
 
           httpMethods.forEach((httpMethod) => {

@@ -5,17 +5,9 @@ import { ModelValidator } from '@dandi/model-validation';
 import { PoolClient } from 'pg';
 
 import { expect } from 'chai';
-import {
-  createStubInstance,
-  SinonStub,
-  SinonStubbedInstance,
-  stub,
-} from 'sinon';
+import { createStubInstance, SinonStub, SinonStubbedInstance, stub } from 'sinon';
 
-import {
-  PgDbTransactionClient,
-  TransactionRollbackError,
-} from './pg.db.transaction.client';
+import { PgDbTransactionClient, TransactionRollbackError } from './pg.db.transaction.client';
 
 describe('PgDbTransactionClient', () => {
   let client: Disposable & SinonStubbedInstance<PoolClient>;
@@ -36,12 +28,7 @@ describe('PgDbTransactionClient', () => {
       validateModel: stub(),
     };
     logger = createStubInstance(NoopLogger);
-    transactionClient = new PgDbTransactionClient(
-      client,
-      dataMapper,
-      modelValidator,
-      logger,
-    );
+    transactionClient = new PgDbTransactionClient(client, dataMapper, modelValidator, logger);
   });
   afterEach(() => {
     client = undefined;
@@ -64,10 +51,7 @@ describe('PgDbTransactionClient', () => {
       expect((transactionClient as any).state).to.equal('BEGIN');
       expect(client.query).to.have.been.calledTwice;
       expect(client.query.firstCall.args).to.deep.equal(['BEGIN', undefined]);
-      expect(client.query.secondCall.args).to.deep.equal([
-        'SELECT foo FROM bar',
-        undefined,
-      ]);
+      expect(client.query.secondCall.args).to.deep.equal(['SELECT foo FROM bar', undefined]);
     });
 
     xit('does not send additional BEGIN queries if the transaction has already begun', async () => {
@@ -76,14 +60,8 @@ describe('PgDbTransactionClient', () => {
 
       expect(client.query).to.have.been.calledThrice;
       expect(client.query.firstCall.args).to.deep.equal(['BEGIN', undefined]);
-      expect(client.query.secondCall.args).to.deep.equal([
-        'INSERT INTO bar (foo) VALUES ($1)',
-        [42],
-      ]);
-      expect(client.query.thirdCall.args).to.deep.equal([
-        'SELECT foo FROM bar',
-        undefined,
-      ]);
+      expect(client.query.secondCall.args).to.deep.equal(['INSERT INTO bar (foo) VALUES ($1)', [42]]);
+      expect(client.query.thirdCall.args).to.deep.equal(['SELECT foo FROM bar', undefined]);
     });
 
     xit('rolls the transaction back if an exception is thrown and rethrows the error', async () => {
@@ -101,10 +79,7 @@ describe('PgDbTransactionClient', () => {
       expect(catcher).to.have.been.calledOnce;
       expect(client.query).to.have.been.calledTwice;
       expect(client.query.firstCall.args).to.deep.equal(['BEGIN']);
-      expect(client.query.secondCall.args).to.deep.equal([
-        'SELECT foo FROM bar',
-        undefined,
-      ]);
+      expect(client.query.secondCall.args).to.deep.equal(['SELECT foo FROM bar', undefined]);
       expect(transactionClient.rollback).to.have.been.calledOnce;
     });
   });
@@ -159,9 +134,9 @@ describe('PgDbTransactionClient', () => {
         throw rollbackError;
       });
 
-      const rollbackResultError = await expect(
-        transactionClient.rollback(),
-      ).to.be.rejectedWith(TransactionRollbackError);
+      const rollbackResultError = await expect(transactionClient.rollback()).to.be.rejectedWith(
+        TransactionRollbackError,
+      );
       expect(rollbackResultError.innerError).to.equal(rollbackError);
     });
 
@@ -172,9 +147,9 @@ describe('PgDbTransactionClient', () => {
         throw rollbackError;
       });
 
-      const rollbackResultError = await expect(
-        transactionClient.rollback(originalError),
-      ).to.be.rejectedWith(TransactionRollbackError);
+      const rollbackResultError = await expect(transactionClient.rollback(originalError)).to.be.rejectedWith(
+        TransactionRollbackError,
+      );
       expect(rollbackResultError.originalError).to.equal(originalError);
     });
   });
@@ -195,9 +170,7 @@ describe('PgDbTransactionClient', () => {
 
       await transactionClient.dispose('');
 
-      expect(transactionClient.commit).to.have.been.calledOnce.calledBefore(
-        client.release,
-      );
+      expect(transactionClient.commit).to.have.been.calledOnce.calledBefore(client.release);
     });
 
     it('does not attempt to commit the transaction if it has already been committed', async () => {

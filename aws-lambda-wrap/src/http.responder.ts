@@ -19,10 +19,7 @@ export class HttpResponder implements LambdaResponder<APIGatewayProxyResult> {
 
   public handleError(error: Error): Promise<APIGatewayProxyResult> {
     const result = {
-      statusCode:
-        (error as any).statusCode ||
-        (this.options && this.options.errorStatusCode) ||
-        500,
+      statusCode: (error as any).statusCode || (this.options && this.options.errorStatusCode) || 500,
       body: JSON.stringify({
         message: error.message,
         stack: error.stack,
@@ -35,18 +32,13 @@ export class HttpResponder implements LambdaResponder<APIGatewayProxyResult> {
   public handleResponse(response: any): Promise<APIGatewayProxyResult> {
     const result: APIGatewayProxyResult = {
       statusCode: (this.options && this.options.successStatusCode) || 200,
-      body:
-        response === undefined || response === null
-          ? undefined
-          : JSON.stringify(response),
+      body: response === undefined || response === null ? undefined : JSON.stringify(response),
     };
 
     return this.postProcess(result);
   }
 
-  private postProcess(
-    result: APIGatewayProxyResult,
-  ): Promise<APIGatewayProxyResult> {
+  private postProcess(result: APIGatewayProxyResult): Promise<APIGatewayProxyResult> {
     if (this.responseInterceptors) {
       this.responseInterceptors.forEach((int) => int.exec(result));
     }

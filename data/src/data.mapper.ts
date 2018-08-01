@@ -7,6 +7,4 @@ export interface DataMapper {
   mapToDb<T>(obj: T): any;
 }
 
-export const DataMapper: InjectionToken<DataMapper> = localOpinionatedToken<
-  DataMapper
->('DataMapper', { multi: false });
+export const DataMapper: InjectionToken<DataMapper> = localOpinionatedToken<DataMapper>('DataMapper', { multi: false });

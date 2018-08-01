@@ -6,11 +6,8 @@ export interface RequestProviderRegistrar {
   provide(...args: any[]): Promise<Array<Provider<any>>>;
 }
 
-export const RequestProviderRegistrar: InjectionToken<
+export const RequestProviderRegistrar: InjectionToken<RequestProviderRegistrar> = localOpinionatedToken<
   RequestProviderRegistrar
-> = localOpinionatedToken<RequestProviderRegistrar>(
-  'RequestProviderRegistrar',
-  {
-    multi: true,
-  },
-);
+>('RequestProviderRegistrar', {
+  multi: true,
+});

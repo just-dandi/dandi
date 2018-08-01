@@ -16,8 +16,6 @@ export interface AsyncConfigClient extends ConfigClient {
   get(token: ConfigToken<any>): Promise<string>;
 }
 
-export function isAsyncConfigClient(
-  obj: ConfigClient,
-): obj is AsyncConfigClient {
+export function isAsyncConfigClient(obj: ConfigClient): obj is AsyncConfigClient {
   return obj.async;
 }

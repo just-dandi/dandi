@@ -6,9 +6,7 @@ export interface AuthorizationMetadata {
   authorization?: Array<Provider<AuthorizationCondition>>;
 }
 
-export function mergeAuthorization(
-  ...args: AuthorizationMetadata[]
-): AuthorizationMetadata {
+export function mergeAuthorization(...args: AuthorizationMetadata[]): AuthorizationMetadata {
   if (!args.length) {
     return undefined;
   }

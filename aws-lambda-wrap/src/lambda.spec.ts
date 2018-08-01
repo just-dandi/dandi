@@ -20,8 +20,7 @@ interface TestEventData {}
 
 interface TestResponse {}
 
-class TestTransformer
-  implements LambdaEventTransformer<TestEvent, TestEventData> {
+class TestTransformer implements LambdaEventTransformer<TestEvent, TestEventData> {
   public transform(event: TestEvent, context: Context): TestEventData {
     return undefined;
   }
@@ -59,9 +58,7 @@ describe('Lambda', () => {
   let response: TestResponse;
   let handlerFn: HandlerFn<TestEvent, any>;
 
-  let transformer: SinonStubbedInstance<
-    LambdaEventTransformer<TestEvent, TestEventData>
-  >;
+  let transformer: SinonStubbedInstance<LambdaEventTransformer<TestEvent, TestEventData>>;
   let responder: SinonStubbedInstance<LambdaResponder<TestResponse>>;
 
   beforeEach(async () => {
@@ -106,9 +103,7 @@ describe('Lambda', () => {
       await handlerFn(event, context);
 
       expect(handleEvent).to.have.been.calledTwice;
-      expect(handleEvent.firstCall.thisValue).to.equal(
-        handleEvent.secondCall.thisValue,
-      );
+      expect(handleEvent.firstCall.thisValue).to.equal(handleEvent.secondCall.thisValue);
     });
   });
 
@@ -145,22 +140,15 @@ describe('Lambda', () => {
       });
 
       it('calls the event transformer with the passed event and context', async () => {
-        expect(transformer.transform).to.have.been.calledOnce.calledWithExactly(
-          event,
-          context,
-        );
+        expect(transformer.transform).to.have.been.calledOnce.calledWithExactly(event, context);
       });
 
       it('passes the result of the event transformer to the handler', async () => {
-        expect(
-          TestHandler.instance.handleEvent,
-        ).to.have.been.calledOnce.calledWithExactly(eventData, context);
+        expect(TestHandler.instance.handleEvent).to.have.been.calledOnce.calledWithExactly(eventData, context);
       });
 
       it('passes the result of the handler to the responder', () => {
-        expect(
-          responder.handleResponse,
-        ).to.have.been.calledOnce.calledWithExactly(response);
+        expect(responder.handleResponse).to.have.been.calledOnce.calledWithExactly(response);
       });
 
       describe('errors', () => {
@@ -179,9 +167,7 @@ describe('Lambda', () => {
         });
 
         it("calls the responder's handleError method with the error", () => {
-          expect(
-            responder.handleError,
-          ).to.have.been.calledOnce.calledWithExactly(error);
+          expect(responder.handleError).to.have.been.calledOnce.calledWithExactly(error);
         });
       });
     });
@@ -221,9 +207,7 @@ describe('Lambda', () => {
     });
 
     it('calls any error handlers with the error and original event', () => {
-      expect(
-        errorHandler.handleError,
-      ).to.have.been.calledOnce.calledWithExactly(event, error);
+      expect(errorHandler.handleError).to.have.been.calledOnce.calledWithExactly(event, error);
     });
   });
 });

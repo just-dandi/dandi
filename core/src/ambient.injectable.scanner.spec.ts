@@ -1,11 +1,6 @@
 import { expect } from 'chai';
 
-import {
-  AmbientInjectableScanner,
-  Container,
-  Injectable,
-  Repository,
-} from '../';
+import { AmbientInjectableScanner, Container, Injectable, Repository } from '../';
 
 describe('AmbientInjectableScanner', () => {
   describe('scan', () => {
@@ -22,8 +17,6 @@ describe('AmbientInjectableScanner', () => {
     const container = new Container({ providers: [AmbientInjectableScanner] });
     await container.start();
 
-    expect((await container.resolve(TestInjectable)).value).to.be.instanceOf(
-      TestInjectable,
-    );
+    expect((await container.resolve(TestInjectable)).value).to.be.instanceOf(TestInjectable);
   });
 });

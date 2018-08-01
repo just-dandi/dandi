@@ -12,7 +12,4 @@ export interface Logger {
   error(...args: any[]): void;
 }
 
-export const Logger: InjectionToken<Logger> = localOpinionatedToken<Logger>(
-  'Logger',
-  { multi: false },
-);
+export const Logger: InjectionToken<Logger> = localOpinionatedToken<Logger>('Logger', { multi: false });

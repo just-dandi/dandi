@@ -2,11 +2,7 @@ import { DateTime, Url, Uuid } from '@dandi/common';
 
 import { expect } from 'chai';
 
-import {
-  getMemberMetadata,
-  getModelMetadata,
-  MemberMetadata,
-} from './member.metadata';
+import { getMemberMetadata, getModelMetadata, MemberMetadata } from './member.metadata';
 import {
   ArrayOf,
   DateTimeFormat,
@@ -273,9 +269,7 @@ describe('ModelDecorator', () => {
         public testMethod(@OneOf(Uuid, String) testParam) {}
       }
 
-      expect(
-        getMemberMetadata(TestClassMethod, 'testMethod', 0).oneOf,
-      ).to.deep.equal([Uuid, String]);
+      expect(getMemberMetadata(TestClassMethod, 'testMethod', 0).oneOf).to.deep.equal([Uuid, String]);
     });
   });
 

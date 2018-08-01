@@ -9,6 +9,6 @@ export interface HttpEventOptions {
   errorStatusCode?: number;
 }
 
-export const HttpEventOptions: InjectionToken<
-  HttpEventOptions
-> = localOpinionatedToken('HttpEventOptions', { multi: false });
+export const HttpEventOptions: InjectionToken<HttpEventOptions> = localOpinionatedToken('HttpEventOptions', {
+  multi: false,
+});

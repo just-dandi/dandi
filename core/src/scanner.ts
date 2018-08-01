@@ -13,13 +13,8 @@ export interface Scanner {
   scan(): Promise<Repository>;
 }
 
-export const Scanner: InjectionToken<Scanner> = localOpinionatedToken<Scanner>(
-  'Scanner',
-  { multi: true },
-);
-export const ScannerConfig: InjectionToken<any[]> = localSymbolToken<any[]>(
-  'ScannerConfig',
-);
+export const Scanner: InjectionToken<Scanner> = localOpinionatedToken<Scanner>('Scanner', { multi: true });
+export const ScannerConfig: InjectionToken<any[]> = localSymbolToken<any[]>('ScannerConfig');
 
 export function scannerProvider<T extends Scanner>(
   scanner: Constructor<Scanner>,

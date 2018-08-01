@@ -1,12 +1,6 @@
 import { expect } from 'chai';
 
-import {
-  getInjectableParamMetadata,
-  Inject,
-  InjectionTokenTypeError,
-  methodTarget,
-  SymbolToken,
-} from '../';
+import { getInjectableParamMetadata, Inject, InjectionTokenTypeError, methodTarget, SymbolToken } from '../';
 
 describe('@Inject', () => {
   it("sets the specified token on the decorated parameter's metadata", () => {
@@ -24,8 +18,6 @@ describe('@Inject', () => {
       constructor(param: any) {}
     }
 
-    expect(() => Inject({} as any)(TestClass, null, 0)).to.throw(
-      InjectionTokenTypeError,
-    );
+    expect(() => Inject({} as any)(TestClass, null, 0)).to.throw(InjectionTokenTypeError);
   });
 });

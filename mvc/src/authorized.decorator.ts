@@ -25,9 +25,7 @@ export function authorizedDecorator(
   }
 }
 
-export function Authorized(
-  ...conditions: Array<Provider<AuthorizationCondition>>
-) {
+export function Authorized(...conditions: Array<Provider<AuthorizationCondition>>) {
   return authorizedDecorator.bind(null, [IsAuthorized, ...conditions]);
 }
 

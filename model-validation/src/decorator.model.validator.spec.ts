@@ -2,13 +2,7 @@ import { Primitive } from '@dandi/common';
 import { MemberMetadata, OneOf, Property } from '@dandi/model';
 
 import { expect } from 'chai';
-import {
-  createStubInstance,
-  SinonSpy,
-  SinonStubbedInstance,
-  spy,
-  stub,
-} from 'sinon';
+import { createStubInstance, SinonSpy, SinonStubbedInstance, spy, stub } from 'sinon';
 
 import { DecoratorModelValidator } from './decorator.model.validator';
 import { MetadataValidationError } from './metadata.validation.error';
@@ -19,9 +13,7 @@ import { RequiredPropertyError } from './required.property.error';
 import { TypeValidator } from './type.validator';
 
 describe('DecoratorModelValidator', () => {
-  let primitiveTypeValidator: SinonStubbedInstance<
-    TypeValidator<Primitive<any>>
-  >;
+  let primitiveTypeValidator: SinonStubbedInstance<TypeValidator<Primitive<any>>>;
   let validator: DecoratorModelValidator;
 
   beforeEach(() => {
@@ -132,9 +124,7 @@ describe('DecoratorModelValidator', () => {
     });
 
     it('throws a RequiredPropertyError for properties marked with @Required() if the value is undefined', () => {
-      expect(() =>
-        validator.validateMember({ required: true }, 'prop', undefined),
-      )
+      expect(() => validator.validateMember({ required: true }, 'prop', undefined))
         .to.throw(RequiredPropertyError)
         .contains({ message: "The 'prop' property is required" });
     });
@@ -150,9 +140,7 @@ describe('DecoratorModelValidator', () => {
     it('uses the primitive validator to validate primitive types', () => {
       validator.validateMember({ type: String }, 'prop', 'foo');
 
-      expect(
-        primitiveTypeValidator.validate,
-      ).to.have.been.calledOnce.calledWithExactly('foo', { type: String });
+      expect(primitiveTypeValidator.validate).to.have.been.calledOnce.calledWithExactly('foo', { type: String });
     });
 
     it('validates complex types with validateModel', () => {
@@ -197,9 +185,7 @@ describe('DecoratorModelValidator', () => {
           subType: String,
         };
 
-        expect(() => validator.validateMember(meta, 'obj', '1, 2')).to.throw(
-          ModelValidationError,
-        );
+        expect(() => validator.validateMember(meta, 'obj', '1, 2')).to.throw(ModelValidationError);
       });
     });
 
@@ -236,119 +222,61 @@ describe('DecoratorModelValidator', () => {
           .onSecondCall()
           .throws(new Error('Not a boolean'));
 
-        expect(() => validator.validateMember(meta, 'prop', 'foo')).to.throw(
-          OneOfValidationError,
-        );
+        expect(() => validator.validateMember(meta, 'prop', 'foo')).to.throw(OneOfValidationError);
       });
     });
 
     describe('metadata validation', () => {
       it('validates patterns', () => {
-        expect(
-          validator.validateMember(
-            { type: String, pattern: /foo/ },
-            'prop',
-            'foo',
-          ),
-        ).to.equal('foo');
+        expect(validator.validateMember({ type: String, pattern: /foo/ }, 'prop', 'foo')).to.equal('foo');
       });
 
       it('throws a MetadataValidationError if the value does not match a pattern', () => {
-        expect(() =>
-          validator.validateMember(
-            { type: String, pattern: /bar/ },
-            'prop',
-            'foo',
-          ),
-        )
+        expect(() => validator.validateMember({ type: String, pattern: /bar/ }, 'prop', 'foo'))
           .to.throw(MetadataValidationError)
           .contains({ message: 'pattern' });
       });
 
       it('validates a minimum string length', () => {
-        expect(
-          validator.validateMember(
-            { type: String, minLength: 3 },
-            'prop',
-            'foo',
-          ),
-        ).to.equal('foo');
+        expect(validator.validateMember({ type: String, minLength: 3 }, 'prop', 'foo')).to.equal('foo');
       });
 
       it('throws a MetadataValidationError if the value is shorter than the minimum length', () => {
-        expect(() =>
-          validator.validateMember(
-            { type: String, minLength: 4 },
-            'prop',
-            'foo',
-          ),
-        )
+        expect(() => validator.validateMember({ type: String, minLength: 4 }, 'prop', 'foo'))
           .to.throw(MetadataValidationError)
           .contains({ message: 'minLength' });
       });
 
       it('validates a maximum string length', () => {
-        expect(
-          validator.validateMember(
-            { type: String, maxLength: 4 },
-            'prop',
-            'foo',
-          ),
-        ).to.equal('foo');
+        expect(validator.validateMember({ type: String, maxLength: 4 }, 'prop', 'foo')).to.equal('foo');
       });
 
       it('throws a MetadataValidationError if the value is longer than the maximum length', () => {
-        expect(() =>
-          validator.validateMember(
-            { type: String, maxLength: 2 },
-            'prop',
-            'foo',
-          ),
-        )
+        expect(() => validator.validateMember({ type: String, maxLength: 2 }, 'prop', 'foo'))
           .to.throw(MetadataValidationError)
           .contains({ message: 'maxLength' });
       });
 
       it('validates a minimum array length', () => {
         expect(
-          validator.validateMember(
-            { type: Array, subType: String, minLength: 3 },
-            'prop',
-            [1, 2, 3],
-          ),
+          validator.validateMember({ type: Array, subType: String, minLength: 3 }, 'prop', [1, 2, 3]),
         ).to.deep.equal([1, 2, 3]);
       });
 
       it('throws a MetadataValidationError if the array is smaller than the minimum length', () => {
-        expect(() =>
-          validator.validateMember(
-            { type: Array, subType: String, minLength: 4 },
-            'prop',
-            [1, 2, 3],
-          ),
-        )
+        expect(() => validator.validateMember({ type: Array, subType: String, minLength: 4 }, 'prop', [1, 2, 3]))
           .to.throw(MetadataValidationError)
           .contains({ message: 'minLength' });
       });
 
       it('validates a maximum array length', () => {
         expect(
-          validator.validateMember(
-            { type: Array, subType: String, maxLength: 4 },
-            'prop',
-            [1, 2, 3],
-          ),
+          validator.validateMember({ type: Array, subType: String, maxLength: 4 }, 'prop', [1, 2, 3]),
         ).to.deep.equal([1, 2, 3]);
       });
 
       it('throws a MetadataValidationError if the array is larger than the maximum length', () => {
-        expect(() =>
-          validator.validateMember(
-            { type: Array, subType: String, maxLength: 2 },
-            'prop',
-            [1, 2, 3],
-          ),
-        )
+        expect(() => validator.validateMember({ type: Array, subType: String, maxLength: 2 }, 'prop', [1, 2, 3]))
           .to.throw(MetadataValidationError)
           .contains({ message: 'maxLength' });
       });
@@ -361,8 +289,7 @@ describe('DecoratorModelValidator', () => {
         )
           .to.throw(MetadataValidationError)
           .contains({
-            message:
-              'minLength or maxLength value does not have a length property',
+            message: 'minLength or maxLength value does not have a length property',
           });
       });
 
@@ -374,59 +301,38 @@ describe('DecoratorModelValidator', () => {
         )
           .to.throw(MetadataValidationError)
           .contains({
-            message:
-              'minLength or maxLength value does not have a length property',
+            message: 'minLength or maxLength value does not have a length property',
           });
       });
 
       it('throws if minValue is defined, but the value is not numeric', () => {
-        expect(() =>
-          validator.validateMember(
-            { type: Number, minValue: 4 },
-            'prop',
-            'foo',
-          ),
-        )
+        expect(() => validator.validateMember({ type: Number, minValue: 4 }, 'prop', 'foo'))
           .to.throw(MetadataValidationError)
           .contains({ message: 'minValue or maxValue value is not numeric' });
       });
 
       it('throws if maxValue is defined, but the value is not numeric', () => {
-        expect(() =>
-          validator.validateMember(
-            { type: Number, maxValue: 4 },
-            'prop',
-            'foo',
-          ),
-        )
+        expect(() => validator.validateMember({ type: Number, maxValue: 4 }, 'prop', 'foo'))
           .to.throw(MetadataValidationError)
           .contains({ message: 'minValue or maxValue value is not numeric' });
       });
 
       it('validates a minimum value', () => {
-        expect(
-          validator.validateMember({ type: Number, minValue: 4 }, 'prop', 5),
-        ).to.equal(5);
+        expect(validator.validateMember({ type: Number, minValue: 4 }, 'prop', 5)).to.equal(5);
       });
 
       it('throws a MetadataValidationError if the value is less than the minimum value', () => {
-        expect(() =>
-          validator.validateMember({ type: Number, minValue: 2 }, 'prop', 1),
-        )
+        expect(() => validator.validateMember({ type: Number, minValue: 2 }, 'prop', 1))
           .to.throw(MetadataValidationError)
           .contains({ message: 'minValue' });
       });
 
       it('validates a maximum value', () => {
-        expect(
-          validator.validateMember({ type: Number, minValue: 4 }, 'prop', 5),
-        ).to.equal(5);
+        expect(validator.validateMember({ type: Number, minValue: 4 }, 'prop', 5)).to.equal(5);
       });
 
       it('throws a MetadataValidationError if the value is greater than the maximum value', () => {
-        expect(() =>
-          validator.validateMember({ type: Number, maxValue: 4 }, 'prop', 5),
-        )
+        expect(() => validator.validateMember({ type: Number, maxValue: 4 }, 'prop', 5))
           .to.throw(MetadataValidationError)
           .contains({ message: 'maxValue' });
       });

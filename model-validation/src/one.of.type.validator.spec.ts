@@ -50,9 +50,7 @@ describe('OneOfTypeValidator', () => {
       const uuid = Uuid.create();
       primitive.validate.throws(new Error('nope'));
 
-      expect(() =>
-        validator.validate(uuid.toString(), { oneOf: [Uuid, String] }),
-      ).to.throw(OneOfValidationError);
+      expect(() => validator.validate(uuid.toString(), { oneOf: [Uuid, String] })).to.throw(OneOfValidationError);
     });
   });
 });

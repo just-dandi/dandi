@@ -26,7 +26,7 @@ import {
 import { expect } from 'chai';
 import { createStubInstance, SinonStubbedInstance, stub } from 'sinon';
 
-describe.only('DefaultRouteInitialzer', () => {
+describe('DefaultRouteInitializer', () => {
   let container: Container;
   let initializer: RouteInitializer;
   let route: Route;
