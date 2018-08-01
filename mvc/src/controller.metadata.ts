@@ -10,7 +10,7 @@ import { MvcMetadata } from './mvc.metadata';
 export class RouteMap extends Map<ControllerMethod, ControllerMethodMetadata> {}
 export interface ControllerMethodMetadata extends AuthorizationMetadata {
   routePaths?: RouteMapEntry;
-  cors?: CorsConfig | boolean;
+  cors?: CorsConfig | true;
 }
 export class RouteMapEntry extends Map<RoutePath, Set<HttpMethod>> {}
 

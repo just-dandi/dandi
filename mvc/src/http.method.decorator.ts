@@ -7,7 +7,7 @@ import { HttpMethod } from './http.method';
 export interface HttpMethodOptions {
   method?: HttpMethod;
   path?: string;
-  cors?: CorsConfig | boolean;
+  cors?: CorsConfig | true;
 }
 
 export type HttpMethodDecorator = (path?: string) => MethodDecorator;

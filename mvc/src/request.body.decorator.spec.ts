@@ -1,7 +1,10 @@
-import { getInjectableParamMetadata, MethodTarget } from '@dandi/core';
-import { expect } from 'chai';
+import { FactoryProvider, getInjectableParamMetadata, MethodTarget } from '@dandi/core';
+import { ModelValidator } from '@dandi/model-validation';
 
-import { HttpRequestBody, RequestBody } from '../';
+import { expect } from 'chai';
+import { SinonStubbedInstance, stub } from 'sinon';
+
+import { HttpRequestBody, ModelBindingError, RequestBody, requestBodyProvider } from '../';
 
 describe('@HttpRequestBody', () => {
   it('sets the HttpRequestBody token for the decorated parameter', () => {
@@ -32,5 +35,46 @@ describe('@HttpRequestBody', () => {
 
     expect(meta.providers).to.exist;
     expect(meta.providers[0].provide).to.equal(HttpRequestBody);
+  });
+});
+
+describe('requestBodyProvider', () => {
+  class Foo {}
+
+  let provider: FactoryProvider<any>;
+  let validator: SinonStubbedInstance<ModelValidator>;
+
+  beforeEach(() => {
+    provider = requestBodyProvider(Foo) as FactoryProvider<any>;
+    validator = {
+      validateMember: stub(),
+      validateModel: stub(),
+    };
+  });
+  afterEach(() => {
+    provider = undefined;
+    validator = undefined;
+  });
+
+  it('returns undefined if the request has no body', () => {
+    const req: any = {};
+
+    const result = provider.useFactory(req, validator);
+
+    expect(result).to.be.undefined;
+  });
+
+  it('validates the body if it exists', () => {
+    const req: any = { body: {} };
+    validator.validateModel.returns(req.body);
+
+    expect(provider.useFactory(req, validator)).to.equal(req.body);
+  });
+
+  it('throws a ModelBindingError if model validation fails', () => {
+    const req: any = { body: {} };
+    validator.validateModel.throws(new Error('Your llama is lloose!'));
+
+    expect(() => provider.useFactory(req, validator)).to.throw(ModelBindingError);
   });
 });

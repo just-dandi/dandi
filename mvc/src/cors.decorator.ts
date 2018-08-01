@@ -2,9 +2,9 @@ import { getControllerMetadata } from './controller.metadata';
 import { CorsConfig } from './cors.config';
 import { methodDecorator } from './http.method.decorator';
 
-export type CorsDecorator = (config: CorsConfig | boolean) => ClassDecorator | MethodDecorator;
+export type CorsDecorator = (config: CorsConfig | true) => ClassDecorator | MethodDecorator;
 
-export function Cors(config: CorsConfig | boolean = true): MethodDecorator & ClassDecorator {
+export function Cors(config: CorsConfig | true = true): MethodDecorator & ClassDecorator {
   return (target: any, propertyKey?: string): void => {
     if (typeof target === 'function') {
       const meta = getControllerMetadata(target);
@@ -21,15 +21,9 @@ export function Cors(config: CorsConfig | boolean = true): MethodDecorator & Cla
   };
 }
 
-export function getCorsConfig(
-  controllerCors: CorsConfig | boolean,
-  methodCors: CorsConfig | boolean,
-): CorsConfig | boolean {
+export function getCorsConfig(controllerCors: CorsConfig | true, methodCors: CorsConfig | true): CorsConfig | true {
   if (!controllerCors) {
     return methodCors;
-  }
-  if (methodCors === false) {
-    return false;
   }
   if (methodCors === undefined) {
     return controllerCors;

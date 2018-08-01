@@ -1,6 +1,6 @@
-import { expect } from 'chai';
+import { Controller, getCorsConfig, HttpGet } from '@dandi/mvc';
 
-import { Controller, HttpGet } from '../index';
+import { expect } from 'chai';
 
 import { getControllerMetadata } from './controller.metadata';
 import { Cors } from './cors.decorator';
@@ -34,6 +34,33 @@ describe('@Cors', () => {
 
       expect(methodMeta).to.exist;
       expect(methodMeta.cors).to.exist;
+    });
+  });
+});
+
+describe('getCorsConfig', () => {
+  it('returns the methodCors if controllerCors is falsy', () => {
+    const controllerCors = undefined;
+    const methodCors = {};
+
+    expect(getCorsConfig(controllerCors, methodCors)).to.equal(methodCors);
+  });
+
+  it('returns the controllerCors if the methodCors is undefined', () => {
+    const controllerCors = {};
+    const methodCors = undefined;
+
+    expect(getCorsConfig(controllerCors, methodCors)).to.equal(controllerCors);
+  });
+
+  it('returns true if both the controller and method cors were set to true', () => {
+    expect(getCorsConfig(true, true)).to.be.true;
+  });
+
+  it('merges the configs if both controller and method cors are truthy', () => {
+    expect(getCorsConfig({ allowedHeaders: ['bar'] }, { exposedHeaders: ['foo'] })).to.deep.equal({
+      allowedHeaders: ['bar'],
+      exposedHeaders: ['foo'],
     });
   });
 });

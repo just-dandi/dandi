@@ -2,5 +2,5 @@ import { CorsConfig } from './cors.config';
 
 export interface MvcMetadata {
   path?: string;
-  cors?: CorsConfig | boolean;
+  cors?: CorsConfig | true;
 }

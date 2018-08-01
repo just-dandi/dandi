@@ -15,7 +15,7 @@ export function requestBodyProvider(model: Constructor<any>): Provider<any> {
     provide: HttpRequestBody,
     useFactory: (req: MvcRequest, validator: ModelValidator) => {
       if (!req.body) {
-        return null;
+        return undefined;
       }
       try {
         return validator.validateModel(model, req.body);

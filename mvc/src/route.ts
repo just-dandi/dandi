@@ -12,7 +12,7 @@ export interface Route {
   path: string;
   controllerCtr: Constructor<any>;
   controllerMethod: string;
-  cors?: CorsConfig;
+  cors?: CorsConfig | true;
   authorization?: Array<Provider<AuthorizationCondition>>;
 }
 
