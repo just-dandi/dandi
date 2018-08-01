@@ -8,30 +8,19 @@ import {
   Repository,
   Resolver,
 } from '@dandi/core';
+import { AuthProviderFactory } from './auth.provider.factory';
 
-import {
-  AuthorizationCondition,
-  DeniedAuthorization,
-} from './authorization.condition';
-import { AuthorizationService } from './authorization.service';
-import { AuthorizedUser, AuthorizedUserFactory } from './authorized.user';
-import { ForbiddenError, UnauthorizedError } from './errors';
+import { AuthorizationCondition, DeniedAuthorization } from './authorization.condition';
+import { ForbiddenError } from './errors';
 import { MvcRequest } from './mvc.request';
 import { MvcResponse } from './mvc.response';
-import { RequestAuthorizationService } from './request.authorization.service';
 import { RequestInfo } from './request.info';
 import { RequestProviderRegistrar } from './request.provider.registrar';
 import { Route } from './route';
 import { RouteInitializationError } from './route.initialization.error';
 import { RouteInitializer } from './route.initializer';
 
-import {
-  HttpRequestBody,
-  HttpRequestId,
-  RequestController,
-  RequestPathParamMap,
-  RequestQueryParamMap,
-} from './tokens';
+import { HttpRequestBody, HttpRequestId, RequestController, RequestPathParamMap, RequestQueryParamMap } from './tokens';
 
 @Injectable(RouteInitializer)
 export class DefaultRouteInitializer implements RouteInitializer {
@@ -40,6 +29,7 @@ export class DefaultRouteInitializer implements RouteInitializer {
     @Inject(RequestProviderRegistrar)
     @Optional()
     private registrars: RequestProviderRegistrar[],
+    @Inject(AuthProviderFactory) private authProviderFactory: AuthProviderFactory,
     @Inject(Logger) private logger: Logger,
   ) {}
 
@@ -50,9 +40,7 @@ export class DefaultRouteInitializer implements RouteInitializer {
     res: MvcResponse,
   ): Promise<Repository> {
     this.logger.debug(
-      `begin initRouteRequest ${route.controllerCtr.name}.${
-        route.controllerMethod
-      }:`,
+      `begin initRouteRequest ${route.controllerCtr.name}.${route.controllerMethod}:`,
       route.httpMethod.toUpperCase(),
       route.path,
     );
@@ -71,9 +59,7 @@ export class DefaultRouteInitializer implements RouteInitializer {
       throw new RouteInitializationError(err, route);
     } finally {
       this.logger.debug(
-        `end initRouteRequest ${route.controllerCtr.name}.${
-          route.controllerMethod
-        }:`,
+        `end initRouteRequest ${route.controllerCtr.name}.${route.controllerMethod}:`,
         route.httpMethod.toUpperCase(),
         route.path,
       );
@@ -101,89 +87,37 @@ export class DefaultRouteInitializer implements RouteInitializer {
   }
 
   private registerRequestBody(repo: Repository, route: Route): void {
-    const meta = getInjectableMetadata(
-      route.controllerCtr.prototype[route.controllerMethod],
-    );
-    const requestBody = meta.params.find(
-      (param) => param.token && param.token === HttpRequestBody,
-    );
+    const meta = getInjectableMetadata(route.controllerCtr.prototype[route.controllerMethod]);
+    const requestBody = meta.params.find((param) => param.token && param.token === HttpRequestBody);
     if (requestBody) {
       requestBody.providers.forEach((provider) => repo.register(provider));
     }
   }
 
-  private async registerAuthProviders(
-    repo: Repository,
-    route: Route,
-    req: MvcRequest,
-  ): Promise<void> {
-    const authHeader = req.get('Authorization');
-
-    if (!authHeader && route.authorization) {
-      throw new UnauthorizedError();
-    }
-
-    if (!route.authorization) {
-      repo.register({
-        provide: AuthorizedUser,
-        useValue: null,
-      });
-      return;
-    }
-
-    const authSchemeEndIndex = authHeader.indexOf(' ');
-    const authScheme = authHeader.substring(
-      0,
-      authSchemeEndIndex > 0 ? authSchemeEndIndex : undefined,
-    );
-    const authServiceResult = await this.resolver.resolve(
-      AuthorizationService(authScheme),
-      !route.authorization,
-    );
-    if (authServiceResult) {
-      repo.register({
-        provide: RequestAuthorizationService,
-        useValue: authServiceResult.singleValue,
-      });
-      repo.register(AuthorizedUserFactory);
-    }
-
-    if (Array.isArray(route.authorization) && route.authorization.length) {
-      route.authorization.forEach((condition) => repo.register(condition));
-    }
+  private async registerAuthProviders(repo: Repository, route: Route, req: MvcRequest): Promise<void> {
+    const providers = await this.authProviderFactory.createAuthProviders(route, req);
+    providers.forEach((provider) => repo.register(provider));
   }
 
   private async handleAuthorizationConditions(repo: Repository): Promise<void> {
-    const results = await this.resolver.resolve(
-      AuthorizationCondition,
-      true,
-      repo,
-    );
+    const results = await this.resolver.resolve(AuthorizationCondition, true, repo);
     if (!results) {
       return;
     }
 
-    const denied = results.arrayValue.filter(
-      (result) => !result.allowed,
-    ) as DeniedAuthorization[];
+    const denied = results.arrayValue.filter((result) => !result.allowed) as DeniedAuthorization[];
     if (denied.length) {
       throw new ForbiddenError(denied.map((d) => d.reason).join('; '));
     }
   }
 
-  private async registerRequestRegistrarProviders(
-    repo: Repository,
-  ): Promise<void> {
+  private async registerRequestRegistrarProviders(repo: Repository): Promise<void> {
     if (!this.registrars) {
       return;
     }
     await Promise.all(
       this.registrars.map(async (registrar: RequestProviderRegistrar) => {
-        const providers = (await this.resolver.invoke(
-          registrar,
-          registrar.provide,
-          repo,
-        )) as Array<Provider<any>>;
+        const providers = (await this.resolver.invoke(registrar, registrar.provide, repo)) as Array<Provider<any>>;
         if (providers) {
           providers.forEach((provider) => {
             repo.register(provider);

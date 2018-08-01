@@ -1,12 +1,7 @@
 {
-  "extends": "plugin:prettier/recommended",
+  "extends": "prettier",
   "parser": "typescript-eslint-parser",
-  "plugins": [
-    "prettier",
-    "import",
-    "typescript",
-    "mocha"
-  ],
+  "plugins": ["prettier", "import", "typescript", "mocha"],
   "parserOptions": {
     "ecmaVersion": 8
   },
@@ -47,31 +42,34 @@
     "block-spacing": ["error", "always"],
     "brace-style": ["error", "1tbs"],
     "camelcase": ["error", { "properties": "always" }],
-    "comma-dangle": ["error", {
-      "arrays": "always-multiline",
-      "objects": "always-multiline",
-      "imports": "always-multiline",
-      "exports": "always-multiline",
-      "functions": "always-multiline"
-    }],
+    "comma-dangle": [
+      "error",
+      {
+        "arrays": "always-multiline",
+        "objects": "always-multiline",
+        "imports": "always-multiline",
+        "exports": "always-multiline",
+        "functions": "always-multiline"
+      }
+    ],
     "comma-spacing": ["error", { "before": false, "after": true }],
     "curly": ["error", "all"],
     "eqeqeq": ["error", "always"],
     "eol-last": ["error", "always"],
     "import/order": ["error"],
-    "key-spacing": ["warn", {
-      "beforeColon": false,
-      "afterColon": true,
-      "mode": "minimum",
-      "align": "value"
-    }],
-    "keyword-spacing": ["error", { "before": true, "after": true }],
-    "lines-around-comment": ["error", {
-      "beforeBlockComment": true
-    }],
-    "lines-between-class-members": ["error", "always", {
-      "exceptAfterSingleLine": true
-    }],
+    "lines-around-comment": [
+      "error",
+      {
+        "beforeBlockComment": true
+      }
+    ],
+    "lines-between-class-members": [
+      "error",
+      "always",
+      {
+        "exceptAfterSingleLine": true
+      }
+    ],
     "max-statements-per-line": ["error", { "max": 1 }],
     "multiline-ternary": ["error", "always-multiline"],
     "new-cap": ["error", { "newIsCap": true, "capIsNew": true, "properties": true }],
@@ -80,20 +78,26 @@
     "no-array-constructor": ["error"],
     "no-console": ["off"],
     "no-dupe-args": "off", // doesn't play nice with decorators in constructors
-    "no-else-return": ["error" , { "allowElseIf": false }],
+    "no-else-return": ["error", { "allowElseIf": false }],
     "no-invalid-this": ["error"],
-    "no-magic-numbers": ["error", {
-      "ignoreArrayIndexes": true,
-      "enforceConst": true,
-      "detectObjects": true,
-      "ignore": [0, 1]
-    }],
-    "no-multi-spaces": ["error", {
-      "exceptions": {
-        "ImportDeclaration": true,
-        "VariableDeclarator": true
+    "no-magic-numbers": [
+      "error",
+      {
+        "ignoreArrayIndexes": true,
+        "enforceConst": true,
+        "detectObjects": true,
+        "ignore": [0, 1]
       }
-    }],
+    ],
+    "no-multi-spaces": [
+      "error",
+      {
+        "exceptions": {
+          "ImportDeclaration": true,
+          "VariableDeclarator": true
+        }
+      }
+    ],
     "no-new": ["error"],
     "no-new-func": ["error"],
     "no-lonely-if": ["error"],

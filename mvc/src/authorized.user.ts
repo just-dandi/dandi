@@ -32,7 +32,7 @@ export async function authorizedUserFactory(
   return result;
 }
 
-export const AuthorizedUserFactory: Provider<AuthorizedUser> = {
+export const AuthorizedUserProvider: Provider<AuthorizedUser> = {
   provide: AuthorizedUser,
   useFactory: authorizedUserFactory,
   async: true,
