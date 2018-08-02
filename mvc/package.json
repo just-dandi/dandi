@@ -11,11 +11,7 @@
     "url": "https://github.com/dandi-mvc/dandi/issues"
   },
   "homepage": "https://github.com/dandi-mvc/dandi#readme",
-  "devDependencies": {
-    "@types/node": "^9.6.17",
-    "luxon": "^1.2.1",
-    "uuid": "^3.2.1"
-  },
+  "devDependencies": {},
   "peerDependencies": {
     "@dandi/cache": "1.0.0-alpha.14",
     "@dandi/common": "1.0.0-alpha.14",

@@ -12,12 +12,9 @@
   },
   "homepage": "https://github.com/dandi-mvc/dandi#readme",
   "dependencies": {
-    "firebase-admin": "^5.12.0"
+    "firebase-admin": "^5.13.1"
   },
-  "devDependencies": {
-    "luxon": "^1.2.1",
-    "uuid": "^3.2.1"
-  },
+  "devDependencies": {},
   "peerDependencies": {
     "@dandi/cache": "1.0.0-alpha.14",
     "@dandi/common": "1.0.0-alpha.14",

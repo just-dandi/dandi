@@ -14,11 +14,7 @@
   "dependencies": {
     "change-case": "^3.0.2"
   },
-  "devDependencies": {
-    "@types/node": "^9.6.20",
-    "luxon": "^1.2.1",
-    "uuid": "^3.2.1"
-  },
+  "devDependencies": {},
   "peerDependencies": {
     "@dandi/common": "1.0.0-alpha.14",
     "@dandi/config": "1.0.0-alpha.14",

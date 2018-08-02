@@ -15,10 +15,7 @@
     "aws-sdk": "^2.256.1"
   },
   "devDependencies": {
-    "@types/aws-sdk": "^2.7.0",
-    "@types/node": "^9.6.20",
-    "luxon": "^1.2.1",
-    "uuid": "^3.2.1"
+    "@types/aws-sdk": "^2.7.0"
   },
   "peerDependencies": {
     "@dandi/common": "1.0.0-alpha.14",
