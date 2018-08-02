@@ -1,7 +1,18 @@
 import { expect } from 'chai';
 import { spy, stub } from 'sinon';
 
-import { Bootstrapper, Container, Inject, Injectable, Optional, Provider, Scanner, SymbolToken } from '../';
+import {
+  AmbientInjectableScanner,
+  Bootstrapper,
+  Container,
+  Inject,
+  Injectable,
+  Optional,
+  Provider,
+  Scanner,
+  Singleton,
+  SymbolToken,
+} from '../';
 
 import { ContainerError, ContainerNotInitializedError, MissingTokenError } from './container.error';
 import { InjectionContext } from './injection.context';
@@ -380,6 +391,20 @@ describe('Container', () => {
 
       const secondResult = await container.resolve(TestToken);
       expect(secondResult.singleValue).to.equal(result.singleValue);
+    });
+
+    it('can resolve singletons discovered on the global/ambient repository', async () => {
+      @Injectable(Singleton)
+      class TestClass {}
+
+      const container = new Container({ providers: [AmbientInjectableScanner] });
+      await container.start();
+
+      const result1 = await container.resolve(TestClass);
+      const result2 = await container.resolve(TestClass);
+
+      expect(result1.value).to.be.instanceof(TestClass);
+      expect(result1.value).to.equal(result2.value);
     });
 
     it('throws a ContainerNotInitializedError if called before being initialized', async () => {

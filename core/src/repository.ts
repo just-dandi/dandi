@@ -43,11 +43,15 @@ export class Repository<TContext = any> implements Disposable {
     return this.for(GLOBAL_CONTEXT);
   }
 
+  public get allowSingletons(): boolean {
+    return this._allowSingletons;
+  }
+
   private readonly providers = new Map<InjectionToken<any>, RepositoryEntry<any>>();
 
   private readonly singletons = new Map<Provider<any>, any>();
 
-  private constructor(private context: any, private readonly allowSingletons: boolean) {}
+  private constructor(private context: any, private readonly _allowSingletons: boolean) {}
 
   public register<T>(target: Constructor<T> | Provider<T>, options?: RegisterOptions<T>): this {
     if (isProvider(target)) {
@@ -88,7 +92,7 @@ export class Repository<TContext = any> implements Disposable {
   }
 
   public addSingleton<TSingleton>(provider: Provider<TSingleton>, value: TSingleton): TSingleton {
-    if (!this.allowSingletons) {
+    if (!this._allowSingletons) {
       throw new Error('Singletons are not allowed to be registered on this Repository instance');
     }
     if (!isProvider(provider)) {

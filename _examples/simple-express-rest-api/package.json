@@ -1,0 +1,11 @@
+{
+  "name": "@dandi/example-simple-express-rest-api",
+  "private": true,
+  "scripts": {
+    "start": "supervisor -e node,js,ts -- --require ts-node/register --require tsconfig-paths/register ./server.ts"
+  },
+  "devDependencies": {
+    "supervisor": "^0.12.0",
+    "ts-node": "^7.0.0"
+  }
+}

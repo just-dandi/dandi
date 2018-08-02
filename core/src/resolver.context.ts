@@ -1,4 +1,5 @@
 import { Disposable } from '@dandi/common';
+
 import * as util from 'util';
 
 import { InjectionContext } from './injection.context';
@@ -23,6 +24,7 @@ export class ResolverContext<T> implements Disposable {
     }
     return this._match;
   }
+
   public get result(): ResolveResult<T> {
     return this._result;
   }
@@ -95,14 +97,16 @@ export class ResolverContext<T> implements Disposable {
 
   public addSingleton(provider: Provider<T>, value: T): T {
     return this.find(provider.provide, (repo) => {
-      repo.addSingleton(provider, value);
+      const singletonRepo = repo.allowSingletons ? repo : this.findSingletonRepo(repo);
+      singletonRepo.addSingleton(provider, value);
       return value;
     });
   }
 
   public getSingleton(provider: Provider<T>): T {
     return this.find(provider.provide, (repo) => {
-      return repo.getSingleton(provider);
+      const singletonRepo = repo.allowSingletons ? repo : this.findSingletonRepo(repo);
+      return singletonRepo.getSingleton(provider);
     });
   }
 
@@ -179,5 +183,11 @@ export class ResolverContext<T> implements Disposable {
     const cacheEntry = this.doFind(token);
     this.findCache.set(token, cacheEntry);
     return cacheEntry as FindCacheEntry<T>;
+  }
+
+  private findSingletonRepo(fromRepo: Repository): Repository {
+    const repos = this.repositories.slice(0).reverse();
+    const availableRepos = repos.slice(repos.indexOf(fromRepo) + 1);
+    return availableRepos.find((repo) => repo.allowSingletons);
   }
 }
