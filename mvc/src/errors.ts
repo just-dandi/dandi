@@ -1,5 +1,6 @@
 import { AppError } from '@dandi/common';
-import { HttpStatusCode } from '@dandi/mvc';
+
+import { HttpStatusCode } from './http.status.code';
 
 export class RequestError extends AppError {
   constructor(
