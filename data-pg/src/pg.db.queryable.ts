@@ -23,7 +23,6 @@ export class PgDbQueryableBase<TClient extends PgDbQueryableClient> implements D
       });
     }
     try {
-      console.log('QUERY', cmd, JSON.stringify(args));
       result = await this.client.query(cmd, args);
     } catch (err) {
       throw new PgDbQueryError(err);
@@ -37,7 +36,6 @@ export class PgDbQueryableBase<TClient extends PgDbQueryableClient> implements D
     if (!result || !result.length) {
       return result;
     }
-    console.log('RESULT', result);
     return result.map((item) => this.modelValidator.validateModel(model, item));
   }
 
