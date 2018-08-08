@@ -17,6 +17,9 @@ export function requestBodyProvider(model: Constructor<any>): Provider<any> {
       if (!req.body) {
         return undefined;
       }
+      if (!model) {
+        return req.body;
+      }
       try {
         return validator.validateModel(model, req.body);
       } catch (err) {
