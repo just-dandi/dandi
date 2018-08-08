@@ -1,4 +1,4 @@
-import { Constructor, isPrimitiveType, Primitive } from '@dandi/common';
+import { Constructor, isPrimitiveType } from '@dandi/common';
 import { Inject, Injectable } from '@dandi/core';
 import { getAllKeys, getModelMetadata, MemberMetadata, OneOf } from '@dandi/model';
 
@@ -6,12 +6,13 @@ import { MetadataValidationError } from './metadata.validation.error';
 import { ModelValidationError } from './model.validation.error';
 import { ModelValidator } from './model.validator';
 import { OneOfValidationAttempt, OneOfValidationError } from './one.of.validation.error';
+import { PrimitiveTypeValidator } from './primitive.type.validator';
 import { RequiredPropertyError } from './required.property.error';
-import { TypeValidationError, TypeValidator } from './type.validator';
+import { TypeValidationError } from './type.validator';
 
 @Injectable(ModelValidator)
 export class DecoratorModelValidator implements ModelValidator {
-  constructor(@Inject(TypeValidator(Primitive)) private primitive: TypeValidator<Primitive<any>>) {}
+  constructor(@Inject(PrimitiveTypeValidator) private primitive: PrimitiveTypeValidator) {}
 
   public validateModel(type: Constructor<any>, obj: any, parentKey?: string): any {
     if (!type) {

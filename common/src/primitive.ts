@@ -1,13 +1,15 @@
+import { Currency } from '@dandi/core';
 import { DateTime } from 'luxon';
 
 import { Url } from './url';
 import { Uuid } from './uuid';
 
-export type PrimitiveType = Boolean | DateTime | Number | String | Url | Uuid;
+export type PrimitiveType = Boolean | Currency | DateTime | Number | String | Url | Uuid;
 
 export function isPrimitiveType(type: any): type is PrimitiveType {
   return (
     type === Boolean ||
+    type === Currency ||
     type === DateTime ||
     type === Number ||
     type === Primitive ||

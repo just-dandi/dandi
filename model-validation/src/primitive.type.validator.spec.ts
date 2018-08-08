@@ -105,13 +105,13 @@ describe('PrimitiveTypeValidator', () => {
   let uuid: SinonStubbedInstance<UuidTypeValidator>;
 
   beforeEach(() => {
-    bool = createStubInstance(BooleanTypeValidator);
-    dt = createStubInstance(DateTimeTypeValidator);
-    num = createStubInstance(NumberTypeValidator);
-    str = createStubInstance(StringTypeValidator);
-    url = createStubInstance(UrlTypeValidator);
-    uuid = createStubInstance(UuidTypeValidator);
-    validator = new PrimitiveTypeValidator(bool, dt, num, str, url, uuid);
+    bool = Object.assign(createStubInstance(BooleanTypeValidator), { type: Boolean });
+    dt = Object.assign(createStubInstance(DateTimeTypeValidator), { type: DateTime });
+    num = Object.assign(createStubInstance(NumberTypeValidator), { type: Number });
+    str = Object.assign(createStubInstance(StringTypeValidator), { type: String });
+    url = Object.assign(createStubInstance(UrlTypeValidator), { type: Url });
+    uuid = Object.assign(createStubInstance(UuidTypeValidator), { type: Uuid });
+    validator = new PrimitiveTypeValidator([bool, dt, num, str, url, uuid] as any);
   });
   afterEach(() => {
     bool = undefined;

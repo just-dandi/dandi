@@ -1,5 +1,5 @@
+import { CurrencyTypeValidator } from './currency.type.validator';
 import { DateTimeTypeValidator } from './date.time.type.validator';
-import { OneOfTypeValidator } from './one.of.type.validator';
 import {
   BooleanTypeValidator,
   NumberTypeValidator,
@@ -11,9 +11,9 @@ import { UuidTypeValidator } from './uuid.type.validator';
 
 export const TypeValidators = [
   BooleanTypeValidator,
+  CurrencyTypeValidator,
   DateTimeTypeValidator,
   NumberTypeValidator,
-  OneOfTypeValidator,
   PrimitiveTypeValidator,
   StringTypeValidator,
   UrlTypeValidator,

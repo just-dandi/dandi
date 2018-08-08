@@ -1,6 +1,6 @@
 import { getInjectableParamMetadata, InjectionToken, MethodTarget, Provider } from '@dandi/core';
 import { getMemberMetadata, MemberMetadata } from '@dandi/model';
-import { TypeValidator, ValidatedType } from '@dandi/model-validation';
+import { PrimitiveTypeValidator, ValidatedType } from '@dandi/model-validation';
 
 import { localSymbolTokenFor } from './local.token';
 import { requestParamValidatorFactory } from './request.param.validator';
@@ -20,7 +20,7 @@ export function requestParamProvider(
   return {
     provide: token,
     useFactory: requestParamValidatorFactory.bind(null, type, paramName, memberMetadata),
-    deps: [mapToken, TypeValidator(type)],
+    deps: [mapToken, PrimitiveTypeValidator],
   };
 }
 

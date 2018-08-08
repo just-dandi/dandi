@@ -1,3 +1,5 @@
+import { Url } from '@dandi/common';
+
 import { expect } from 'chai';
 
 import { UrlTypeValidator } from './url.type.validator';
@@ -17,6 +19,7 @@ describe('UrlTypeValidator', () => {
       const urlStr = 'http://localhost/';
       const result = validator.validate(urlStr);
       expect(result.toString()).to.equal(urlStr);
+      expect(result).to.be.instanceOf(Url);
     });
 
     it('throws if given an invalid url', () => {

@@ -1,5 +1,5 @@
 import { FactoryProvider, getInjectableParamMetadata, methodTarget, SymbolToken } from '@dandi/core';
-import { TypeValidator } from '@dandi/model-validation';
+import { PrimitiveTypeValidator } from '@dandi/model-validation';
 import { expect } from 'chai';
 
 import { PathParam, QueryParam, RequestPathParamMap, RequestQueryParamMap } from '../';
@@ -36,7 +36,7 @@ describe('@RequestParam', () => {
     expect(pathMeta.providers).not.to.be.empty;
     expect(pathMeta.providers[0].provide).to.equal(pathMeta.token);
     expect((pathMeta.providers[0] as FactoryProvider<any>).deps).to.include.members([
-      TypeValidator(String),
+      PrimitiveTypeValidator,
       RequestPathParamMap,
     ]);
 
@@ -44,7 +44,7 @@ describe('@RequestParam', () => {
     expect(queryMeta.providers).not.to.be.empty;
     expect(queryMeta.providers[0].provide).to.equal(queryMeta.token);
     expect((queryMeta.providers[0] as FactoryProvider<any>).deps).to.include.members([
-      TypeValidator(String),
+      PrimitiveTypeValidator,
       RequestQueryParamMap,
     ]);
   });

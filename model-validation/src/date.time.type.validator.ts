@@ -4,8 +4,9 @@ import { MemberMetadata } from '@dandi/model';
 
 import { TypeValidationError, TypeValidator } from './type.validator';
 
-@Injectable(TypeValidator(DateTime))
+@Injectable(TypeValidator)
 export class DateTimeTypeValidator implements TypeValidator<DateTime> {
+  public readonly type = DateTime;
   public validate(value: any, metadata: MemberMetadata): DateTime {
     let dt: DateTime;
     const asInt = parseInt(value, 10);
