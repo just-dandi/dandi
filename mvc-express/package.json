@@ -1,6 +1,6 @@
 {
   "name": "@dandi/mvc-express",
-  "version": "1.0.0-alpha.14",
+  "version": "1.0.0-alpha.15",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -22,11 +22,11 @@
     "@types/express": "^4.16.0"
   },
   "peerDependencies": {
-    "@dandi/cache": "1.0.0-alpha.14",
-    "@dandi/common": "1.0.0-alpha.14",
-    "@dandi/core": "1.0.0-alpha.14",
-    "@dandi/model": "1.0.0-alpha.14",
-    "@dandi/model-validation": "1.0.0-alpha.14",
-    "@dandi/mvc": "1.0.0-alpha.14"
+    "@dandi/cache": "1.0.0-alpha.15",
+    "@dandi/common": "1.0.0-alpha.15",
+    "@dandi/core": "1.0.0-alpha.15",
+    "@dandi/model": "1.0.0-alpha.15",
+    "@dandi/model-validation": "1.0.0-alpha.15",
+    "@dandi/mvc": "1.0.0-alpha.15"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "@dandi/core-testing",
-  "version": "1.0.0-alpha.14",
+  "version": "1.0.0-alpha.15",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -14,8 +14,8 @@
   "dependencies": {},
   "devDependencies": {},
   "peerDependencies": {
-    "@dandi/common": "1.0.0-alpha.14",
-    "@dandi/core": "1.0.0-alpha.14",
+    "@dandi/common": "1.0.0-alpha.15",
+    "@dandi/core": "1.0.0-alpha.15",
     "sinon": "^6.0.0"
   }
 }

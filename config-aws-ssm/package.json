@@ -1,6 +1,6 @@
 {
   "name": "@dandi/config-aws-ssm",
-  "version": "1.0.0-alpha.14",
+  "version": "1.0.0-alpha.15",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -18,8 +18,8 @@
     "@types/aws-sdk": "^2.7.0"
   },
   "peerDependencies": {
-    "@dandi/common": "1.0.0-alpha.14",
-    "@dandi/config": "1.0.0-alpha.14",
-    "@dandi/core": "1.0.0-alpha.14"
+    "@dandi/common": "1.0.0-alpha.15",
+    "@dandi/config": "1.0.0-alpha.15",
+    "@dandi/core": "1.0.0-alpha.15"
   }
 }
