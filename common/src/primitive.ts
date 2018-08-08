@@ -1,6 +1,6 @@
-import { Currency } from '@dandi/core';
 import { DateTime } from 'luxon';
 
+import { Currency } from './currency';
 import { Url } from './url';
 import { Uuid } from './uuid';
 

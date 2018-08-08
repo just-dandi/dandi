@@ -1,5 +1,6 @@
 export * from './src/app.error';
 export * from './src/constructor';
+export * from './src/currency';
 export * from './src/disposable';
 export * from './src/error.util';
 export * from './src/metadata';

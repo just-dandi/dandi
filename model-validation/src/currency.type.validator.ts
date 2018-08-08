@@ -1,4 +1,5 @@
-import { Currency, Injectable } from '@dandi/core';
+import { Currency } from '@dandi/common';
+import { Injectable } from '@dandi/core';
 import { MemberMetadata } from '@dandi/model';
 
 import { TypeValidator } from './type.validator';
