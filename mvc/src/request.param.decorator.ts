@@ -1,3 +1,4 @@
+import { isConstructor } from '@dandi/common';
 import { getInjectableParamMetadata, InjectionToken, MethodTarget, Provider } from '@dandi/core';
 import { getMemberMetadata, MemberMetadata } from '@dandi/model';
 import { PrimitiveTypeValidator, ValidatedType } from '@dandi/model-validation';
@@ -35,6 +36,9 @@ export function requestParamDecorator<T>(
   const meta = getInjectableParamMetadata(target, memberName, paramIndex);
   const memberMetadata = getMemberMetadata(target.constructor, memberName, paramIndex);
   const token = requestParamToken<T>(mapToken, memberName, name || meta.name);
+  if (isConstructor(type)) {
+    memberMetadata.type = type;
+  }
   meta.token = token;
   meta.providers = [requestParamProvider(mapToken, token, type, name || meta.name, memberMetadata)];
 }

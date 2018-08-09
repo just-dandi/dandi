@@ -49,10 +49,6 @@ export class BooleanTypeValidator implements TypeValidator<Boolean> {
   }
 }
 
-export interface PrimitiveTypeValidator extends TypeValidator<any> {
-  isPrimitiveType(type: Constructor<any>): boolean;
-}
-
 @Injectable()
 export class PrimitiveTypeValidator {
   private primitive = new Map<Constructor<any>, TypeValidator<any>>();

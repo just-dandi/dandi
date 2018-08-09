@@ -10,6 +10,7 @@ export function requestParamValidatorFactory(
   paramMap: ParamMap,
   validator: PrimitiveTypeValidator,
 ) {
+  // FIXME: why is memberMetadata null?
   const value = paramMap[paramName];
   return validator.validate(value, memberMetadata);
 }
