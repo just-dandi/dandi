@@ -83,6 +83,10 @@ export class Repository<TContext = any> implements Disposable {
     throw new InvalidRegistrationTargetError(target, options);
   }
 
+  public registerProviders(...providers: Provider<any>[]): void {
+    providers.forEach((provider) => this.registerProvider(provider));
+  }
+
   public get<T>(token: InjectionToken<T>): RepositoryEntry<T> {
     return this.providers.get(token);
   }

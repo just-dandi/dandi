@@ -11,7 +11,7 @@ export interface Route {
   siblingMethods: Set<HttpMethod>;
   path: string;
   controllerCtr: Constructor<any>;
-  controllerMethod: string;
+  controllerMethod: string | symbol;
   cors?: CorsConfig | true;
   authorization?: Array<Provider<AuthorizationCondition>>;
 }

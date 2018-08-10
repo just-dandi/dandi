@@ -12,7 +12,7 @@ export interface HttpMethodOptions {
 
 export type HttpMethodDecorator = (path?: string) => MethodDecorator;
 
-export type ControllerMethod = string;
+export type ControllerMethod = string | symbol;
 export type RoutePath = string;
 
 export function methodDecorator<T>(options: HttpMethodOptions, target: MethodTarget<T>, propertyKey: string) {

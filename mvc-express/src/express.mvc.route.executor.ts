@@ -2,6 +2,7 @@ import { AppError, Disposable, Uuid } from '@dandi/common';
 import { Inject, Injectable, Logger, Repository, Resolver } from '@dandi/core';
 import { MvcRequest, MvcResponse, PerfRecord, Route, RouteExecutor, RouteHandler, RouteInitializer } from '@dandi/mvc';
 
+// TODO: is there anything actually express-specific in here? If not, move to @dandi/mvc:DefaultRouteExecutor
 @Injectable(RouteExecutor)
 export class ExpressMvcRouteExecutor implements RouteExecutor {
   constructor(
@@ -16,14 +17,14 @@ export class ExpressMvcRouteExecutor implements RouteExecutor {
     const performance = new PerfRecord('ExpressRouteExecutor.execRoute', 'begin');
 
     this.logger.debug(
-      `begin execRoute ${route.controllerCtr.name}.${route.controllerMethod}:`,
+      `begin execRoute ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
       route.httpMethod.toUpperCase(),
       route.path,
     );
 
     try {
       this.logger.debug(
-        `before initRouteRequest ${route.controllerCtr.name}.${route.controllerMethod}:`,
+        `before initRouteRequest ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
         route.httpMethod.toUpperCase(),
         route.path,
       );
@@ -33,14 +34,14 @@ export class ExpressMvcRouteExecutor implements RouteExecutor {
       performance.mark('ExpressRouteExecutor.execRoute', 'afterInitRouteRequest');
 
       this.logger.debug(
-        `after initRouteRequest ${route.controllerCtr.name}.${route.controllerMethod}:`,
+        `after initRouteRequest ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
         route.httpMethod.toUpperCase(),
         route.path,
       );
 
       await Disposable.useAsync(requestRepo, async (reqRepo: Repository) => {
         this.logger.debug(
-          `before handleRouteRequest ${route.controllerCtr.name}.${route.controllerMethod}:`,
+          `before handleRouteRequest ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
           route.httpMethod.toUpperCase(),
           route.path,
         );
@@ -50,14 +51,14 @@ export class ExpressMvcRouteExecutor implements RouteExecutor {
         performance.mark('ExpressRouteExecutor.execRoute', 'afterHandleRouteRequest');
 
         this.logger.debug(
-          `after handleRouteRequest ${route.controllerCtr.name}.${route.controllerMethod}:`,
+          `after handleRouteRequest ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
           route.httpMethod.toUpperCase(),
           route.path,
         );
       });
     } catch (err) {
       this.logger.warn(
-        `error serving ${route.controllerCtr.name}.${route.controllerMethod}:`,
+        `error serving ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
         route.httpMethod.toUpperCase(),
         route.path,
         '\n',
@@ -72,7 +73,7 @@ export class ExpressMvcRouteExecutor implements RouteExecutor {
       });
     } finally {
       this.logger.debug(
-        `end execRoute ${route.controllerCtr.name}.${route.controllerMethod}:`,
+        `end execRoute ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
         route.httpMethod.toUpperCase(),
         route.path,
       );

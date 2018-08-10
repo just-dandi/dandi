@@ -35,7 +35,7 @@ export class DecoratorRouteGenerator implements RouteGenerator {
 
           httpMethods.forEach((httpMethod) => {
             this.logger.debug(
-              `generated route for ${controllerCtr.name}.${controllerMethod}:`,
+              `generated route for ${controllerCtr.name}.${controllerMethod.toString()}:`,
               httpMethod.toUpperCase(),
               path,
             );

@@ -3,6 +3,9 @@ import { Constructor, DateTime, Url } from '@dandi/common';
 import { getMemberMetadata, MemberMetadata } from './member.metadata';
 import { EMAIL_PATTERN, URL_PATTERN } from './pattern';
 
+const EMAIL_MIN_LENGTH = 6;
+const EMAIL_MAX_LENGTH = 254;
+
 export function modelDecorator(
   decoratorMetadata: MemberMetadata,
   target: any,
@@ -36,8 +39,8 @@ export function Pattern(pattern: RegExp) {
 }
 export function Email() {
   return modelDecorator.bind(null, {
-    minLength: 6,
-    maxLength: 254,
+    minLength: EMAIL_MIN_LENGTH,
+    maxLength: EMAIL_MAX_LENGTH,
     pattern: EMAIL_PATTERN,
     type: String,
   });
@@ -70,7 +73,7 @@ export function UrlArray() {
   });
 }
 
-// TODO: move this into @dandi/common or @dandi/di-common - this could be used for injection too
+// TODO: move this into @dandi/common or @dandi/core - this could be used for injection too
 export function OneOf(...oneOf: Array<Constructor<any>>) {
   return modelDecorator.bind(null, {
     type: OneOf,

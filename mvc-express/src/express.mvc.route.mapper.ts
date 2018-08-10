@@ -33,7 +33,7 @@ export class ExpressMvcRouteMapper implements RouteMapper {
       route.httpMethod.toUpperCase(),
       route.path,
       'to',
-      `${route.controllerCtr.name}.${route.controllerMethod}`,
+      `${route.controllerCtr.name}.${route.controllerMethod.toString()}`,
       route.cors,
     );
 

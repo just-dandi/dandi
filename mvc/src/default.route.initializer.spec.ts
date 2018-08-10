@@ -9,7 +9,6 @@ import {
   ForbiddenError,
   HttpMethod,
   HttpRequestBody,
-  IsAuthorized,
   MvcRequest,
   MvcResponse,
   RequestBody,

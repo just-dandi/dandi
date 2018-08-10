@@ -33,5 +33,5 @@ export function getTokenString(token: InjectionToken<any> | Function): string {
   if (typeof token === 'function') {
     return token.name;
   }
-  return token.toString().replace(/[\W-]+/g, '_');
+  return (isMappedInjectionToken(token) ? token.provide : token).toString().replace(/[\W-]+/g, '_');
 }
