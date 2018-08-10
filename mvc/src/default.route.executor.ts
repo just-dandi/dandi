@@ -1,10 +1,17 @@
 import { AppError, Disposable, Uuid } from '@dandi/common';
 import { Inject, Injectable, Logger, Repository, Resolver } from '@dandi/core';
-import { MvcRequest, MvcResponse, PerfRecord, Route, RouteExecutor, RouteHandler, RouteInitializer } from '@dandi/mvc';
 
-// TODO: is there anything actually express-specific in here? If not, move to @dandi/mvc:DefaultRouteExecutor
+import { HttpStatusCode } from './http.status.code';
+import { MvcRequest } from './mvc.request';
+import { MvcResponse } from './mvc.response';
+import { PerfRecord } from './perf.record';
+import { Route } from './route';
+import { RouteExecutor } from './route.executor';
+import { RouteInitializer } from './route.initializer';
+import { RouteHandler } from './route.handler';
+
 @Injectable(RouteExecutor)
-export class ExpressMvcRouteExecutor implements RouteExecutor {
+export class DefaultMvcRouteExecutor implements RouteExecutor {
   constructor(
     @Inject(Resolver) private resolver: Resolver,
     @Inject(RouteInitializer) private routeInitializer: RouteInitializer,
@@ -65,7 +72,7 @@ export class ExpressMvcRouteExecutor implements RouteExecutor {
         AppError.stack(err),
       );
 
-      res.status(err.statusCode || 500).json({
+      res.status(err.statusCode || HttpStatusCode.internalServerError).json({
         error: {
           type: err.constructor.name,
           message: err.message,

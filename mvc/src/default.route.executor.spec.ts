@@ -5,10 +5,10 @@ import { HttpMethod, RequestInfo, Route, RouteHandler, RouteInitializer } from '
 import { expect } from 'chai';
 import { createStubInstance, SinonStubbedInstance, stub } from 'sinon';
 
-import { ExpressMvcRouteExecutor } from './express.mvc.route.executor';
+import { DefaultMvcRouteExecutor } from './default.route.executor';
 
-describe('ExpressMvcRouteExecutor', () => {
-  let routeExec: ExpressMvcRouteExecutor;
+describe('DefaultMvcRouteExecutor', () => {
+  let routeExec: DefaultMvcRouteExecutor;
   let resolver: SinonStubbedInstance<Resolver>;
   let routeInit: SinonStubbedInstance<RouteInitializer>;
   let routeHandler: SinonStubbedInstance<RouteHandler>;
@@ -60,7 +60,7 @@ describe('ExpressMvcRouteExecutor', () => {
       },
     };
     logger = createStubInstance(NoopLogger);
-    routeExec = new ExpressMvcRouteExecutor(resolver, routeInit, routeHandler, logger);
+    routeExec = new DefaultMvcRouteExecutor(resolver, routeInit, routeHandler, logger);
   });
   afterEach(() => {
     routeInit = undefined;

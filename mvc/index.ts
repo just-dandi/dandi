@@ -11,6 +11,7 @@ export * from './src/controller.result';
 export * from './src/cors.config';
 export * from './src/cors.decorator';
 export * from './src/decorator.route.generator';
+export * from './src/default.route.executor';
 export * from './src/default.route.initializer';
 export * from './src/errors';
 export * from './src/http.method';
