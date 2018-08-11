@@ -1,6 +1,6 @@
 {
   "name": "@dandi/data",
-  "version": "1.0.0-alpha.15",
+  "version": "1.0.0-alpha.16",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -16,9 +16,9 @@
   },
   "devDependencies": {},
   "peerDependencies": {
-    "@dandi/common": "1.0.0-alpha.15",
-    "@dandi/config": "1.0.0-alpha.15",
-    "@dandi/core": "1.0.0-alpha.15",
-    "@dandi/model": "1.0.0-alpha.15"
+    "@dandi/common": "1.0.0-alpha.16",
+    "@dandi/config": "1.0.0-alpha.16",
+    "@dandi/core": "1.0.0-alpha.16",
+    "@dandi/model": "1.0.0-alpha.16"
   }
 }
