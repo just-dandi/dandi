@@ -1,6 +1,6 @@
 import { MethodTarget, Provider } from '@dandi/core';
-import { initAuthorizationMetadata } from '@dandi/mvc/src/authorized.decorator';
 
+import { initAuthorizationMetadata } from './authorized.decorator';
 import { AuthorizationCondition } from './authorization.condition';
 import { ConditionFactory, ConditionHelper } from './condition.decorator';
 import { RequestParamDecorator } from './request.param.decorator';

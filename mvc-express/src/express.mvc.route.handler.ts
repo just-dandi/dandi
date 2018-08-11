@@ -26,7 +26,7 @@ export class ExpressMvcRouteHandler implements RouteHandler {
     requestInfo.performance.mark('ExpressMvcRouteHandler.handleRouteRequest', 'begin');
 
     this.logger.debug(
-      `begin handleRouteRequest ${route.controllerCtr.name}.${route.controllerMethod}:`,
+      `begin handleRouteRequest ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
       route.httpMethod.toUpperCase(),
       route.path,
     );
@@ -51,7 +51,7 @@ export class ExpressMvcRouteHandler implements RouteHandler {
     requestInfo.performance.mark('ExpressMvcRouteHandler.handleRouteRequest', 'afterSendResponse');
 
     this.logger.debug(
-      `end handleRouteRequest ${route.controllerCtr.name}.${route.controllerMethod}:`,
+      `end handleRouteRequest ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
       route.httpMethod.toUpperCase(),
       route.path,
     );

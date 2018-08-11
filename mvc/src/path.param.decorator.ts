@@ -1,5 +1,6 @@
 import { ValidatedType } from '@dandi/model-validation';
-import { makeRequestParamDecorator, RequestParamDecorator } from '@dandi/mvc/src/request.param.decorator';
+
+import { makeRequestParamDecorator, RequestParamDecorator } from './request.param.decorator';
 
 import { RequestPathParamMap } from './tokens';
 
