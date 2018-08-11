@@ -5,6 +5,7 @@ export * from './src/authorization.service';
 export * from './src/authorization.metadata';
 export { Authorized, IsAuthorized } from './src/authorized.decorator';
 export * from './src/authorized.user';
+export * from './src/condition.decorator';
 export { Controller, MissingControllerPathError } from './src/controller.decorator';
 export * from './src/controller.metadata';
 export * from './src/controller.result';
