@@ -1,4 +1,3 @@
-import { Primitive } from '@dandi/common';
 import { Container } from '@dandi/core';
 import { MemberMetadata } from '@dandi/model';
 import {
@@ -10,7 +9,7 @@ import {
 import { PathParam, RequestPathParamMap } from '@dandi/mvc';
 
 import { expect } from 'chai';
-import { SinonStubbedInstance, stub } from 'sinon';
+import { SinonStubbedInstance, stub, createStubInstance } from 'sinon';
 
 import { requestParamValidatorFactory } from './request.param.validator';
 
@@ -19,16 +18,9 @@ describe('requestParamValidatorFactory', () => {
   let validator: SinonStubbedInstance<ModelValidator>;
   let memberMetadata: MemberMetadata;
 
-  function makeValidator(): SinonStubbedInstance<DecoratorModelValidator> {
-    return stub({
-      type: Primitive,
-      validate: () => {},
-    }) as any;
-  }
-
   beforeEach(() => {
     paramMap = { foo: 'bar' };
-    validator = makeValidator();
+    validator = createStubInstance(DecoratorModelValidator);
     memberMetadata = {
       type: String,
     };
@@ -55,6 +47,7 @@ describe('requestParamValidatorFactory', () => {
     const controller = new TestController();
     const container = new Container({
       providers: [
+        DecoratorModelValidator,
         PrimitiveTypeValidator,
         {
           provide: TypeValidator,
