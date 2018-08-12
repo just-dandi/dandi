@@ -50,8 +50,8 @@ export class DefaultRouteInitializer implements RouteInitializer {
     try {
       this.registerRequestProviders(repo, route, req, requestInfo, res);
       await this.registerAuthProviders(repo, route, req);
-      await this.handleAuthorizationConditions(repo);
       await this.registerRequestRegistrarProviders(repo);
+      await this.handleAuthorizationConditions(repo);
 
       return repo;
     } catch (err) {
@@ -89,7 +89,11 @@ export class DefaultRouteInitializer implements RouteInitializer {
 
     // registers value providers from @PathParam, @QueryParam, @RequestBody decorators
     const meta = getInjectableMetadata(route.controllerCtr.prototype[route.controllerMethod]);
-    meta.params.forEach((param) => repo.registerProviders(...param.providers));
+    meta.params.forEach((param) => {
+      if (param.providers) {
+        repo.registerProviders(...param.providers);
+      }
+    });
   }
 
   private async registerAuthProviders(repo: Repository, route: Route, req: MvcRequest): Promise<void> {
