@@ -1,7 +1,12 @@
 import { Primitive } from '@dandi/common';
 import { Container } from '@dandi/core';
 import { MemberMetadata } from '@dandi/model';
-import { PrimitiveTypeValidator, TypeValidator } from '@dandi/model-validation';
+import {
+  DecoratorModelValidator,
+  ModelValidator,
+  PrimitiveTypeValidator,
+  TypeValidator,
+} from '@dandi/model-validation';
 import { PathParam, RequestPathParamMap } from '@dandi/mvc';
 
 import { expect } from 'chai';
@@ -11,10 +16,10 @@ import { requestParamValidatorFactory } from './request.param.validator';
 
 describe('requestParamValidatorFactory', () => {
   let paramMap: { [key: string]: string };
-  let validator: SinonStubbedInstance<PrimitiveTypeValidator> & PrimitiveTypeValidator;
+  let validator: SinonStubbedInstance<ModelValidator>;
   let memberMetadata: MemberMetadata;
 
-  function makeValidator(): SinonStubbedInstance<PrimitiveTypeValidator> & PrimitiveTypeValidator {
+  function makeValidator(): SinonStubbedInstance<DecoratorModelValidator> {
     return stub({
       type: Primitive,
       validate: () => {},
@@ -36,7 +41,7 @@ describe('requestParamValidatorFactory', () => {
   it('calls validators with the value from the param map specified by the key', () => {
     requestParamValidatorFactory(String, 'foo', memberMetadata, paramMap, validator);
 
-    expect(validator.validate).to.have.been.calledOnce.calledWith('bar', memberMetadata);
+    expect(validator.validateMember).to.have.been.calledOnce.calledWith(memberMetadata, 'foo', 'bar');
   });
 
   it('works', async () => {

@@ -1,7 +1,7 @@
 import { isConstructor } from '@dandi/common';
 import { getInjectableParamMetadata, InjectionToken, MethodTarget, ParamMetadata, Provider } from '@dandi/core';
 import { getMemberMetadata, MemberMetadata } from '@dandi/model';
-import { PrimitiveTypeValidator, ValidatedType } from '@dandi/model-validation';
+import { ModelValidator, ValidatedType } from '@dandi/model-validation';
 
 import { ConditionDecorators } from './condition.decorator';
 import { conditionWithinByKeyDecorator } from './condition.within';
@@ -30,7 +30,7 @@ export function requestParamProvider(
   return {
     provide: token,
     useFactory: requestParamValidatorFactory.bind(null, type, paramName, memberMetadata),
-    deps: [mapToken, PrimitiveTypeValidator],
+    deps: [mapToken, ModelValidator],
   };
 }
 

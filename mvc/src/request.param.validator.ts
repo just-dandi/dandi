@@ -1,5 +1,5 @@
 import { MemberMetadata } from '@dandi/model';
-import { PrimitiveTypeValidator } from '@dandi/model-validation';
+import { ModelValidator } from '@dandi/model-validation';
 
 import { ParamMap } from './tokens';
 
@@ -8,9 +8,8 @@ export function requestParamValidatorFactory(
   paramName: string,
   memberMetadata: MemberMetadata,
   paramMap: ParamMap,
-  validator: PrimitiveTypeValidator,
+  validator: ModelValidator,
 ) {
-  // FIXME: why is memberMetadata null?
   const value = paramMap[paramName];
-  return validator.validate(value, memberMetadata);
+  return validator.validateMember(memberMetadata, paramName, value);
 }
