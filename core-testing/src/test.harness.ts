@@ -1,7 +1,7 @@
 import { Constructor, Disposable } from '@dandi/common';
 import { Container, InjectionToken, Provider, Repository, Resolver, ResolverContext, ResolveResult } from '@dandi/core';
 
-import { createStubInstance, SinonStubbedInstance } from 'sinon';
+import { createStubInstance, SinonStub, SinonStubbedInstance, stub } from 'sinon';
 
 export function stubProvider<TService extends TToken, TToken = TService>(
   service: Constructor<TService>,
@@ -32,20 +32,42 @@ export interface TestResolver extends Resolver {
   ): Promise<SinonStubbedInstance<T>>;
 }
 
-class TestHarness implements TestResolver {
+export class TestHarness implements TestResolver {
   private _container: Container;
   public get container(): Container {
     return this._container;
   }
 
-  constructor(...providers: any[]) {
-    beforeEach(async () => {
-      this._container = new Container({ providers });
-      await this._container.start();
+  /**
+   * Allows the use of {AmbientInjectableScanner} within a test context without including injectables leaked from other
+   * tests or modules.
+   */
+  public static scopeGlobalRepository(): void {
+    let repo: Repository;
+    let globalRepoStub: SinonStub;
+    beforeEach(() => {
+      repo = Repository.for(this);
+      globalRepoStub = stub(Repository, 'global').get(() => repo);
     });
     afterEach(() => {
-      this._container = undefined;
+      globalRepoStub.restore();
+      repo.dispose('test complete');
+      repo = undefined;
     });
+  }
+
+  constructor(providers: any[], suite: boolean = true) {
+    if (suite) {
+      beforeEach(async () => {
+        this._container = new Container({ providers });
+        await this._container.start();
+      });
+      afterEach(() => {
+        this._container = undefined;
+      });
+    } else {
+      this._container = new Container({ providers });
+    }
   }
 
   public invoke(instance: any, member: Function, ...repositories: Repository[]): Promise<any> {
@@ -94,4 +116,10 @@ class TestHarness implements TestResolver {
 
 export function testHarness(...providers: any[]): TestResolver {
   return new TestHarness(providers);
+}
+
+export async function testHarnessSingle(...providers: any[]): Promise<TestResolver> {
+  const harness = new TestHarness(providers, false);
+  await harness.container.start();
+  return harness;
 }

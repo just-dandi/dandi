@@ -1,6 +1,5 @@
 import { LambdaErrorHandler } from '@dandi/aws-lambda-wrap';
-import { AmbientInjectableScanner } from '@dandi/core';
-import { stubProvider, testHarness } from '@dandi/core-testing';
+import { stubProvider, testHarness, TestHarness } from '@dandi/core-testing';
 
 import { Context } from 'aws-lambda';
 
@@ -37,6 +36,8 @@ class TestResponder implements LambdaResponder<TestResponse> {
 }
 
 describe('Lambda', () => {
+  TestHarness.scopeGlobalRepository();
+
   class TestHandler implements LambdaHandler<TestEventData> {
     public static instance: SinonStubbedInstance<LambdaHandler<TestEventData>>;
 
@@ -86,6 +87,7 @@ describe('Lambda', () => {
     beforeEach(async () => {
       handlerFn = Lambda.handler(
         TestHandler,
+        Lambda,
         stubProvider(TestHandler),
         stubProvider(TestTransformer, LambdaEventTransformer),
         stubProvider(TestResponder, LambdaResponder),
@@ -109,7 +111,7 @@ describe('Lambda', () => {
 
   describe('basic usage', () => {
     const harness = testHarness(
-      AmbientInjectableScanner,
+      Lambda,
       stubProvider(TestHandler),
       stubProvider(TestTransformer, LambdaEventTransformer),
       stubProvider(TestResponder, LambdaResponder),
@@ -179,7 +181,7 @@ describe('Lambda', () => {
     }
 
     const harness = testHarness(
-      AmbientInjectableScanner,
+      Lambda,
       stubProvider(TestHandler),
       stubProvider(TestTransformer, LambdaEventTransformer),
       stubProvider(TestResponder, LambdaResponder),
