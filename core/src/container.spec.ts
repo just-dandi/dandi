@@ -1,3 +1,4 @@
+import { TestHarness } from '@dandi/core-testing';
 import { expect } from 'chai';
 import { spy, stub } from 'sinon';
 
@@ -21,6 +22,8 @@ import { AsyncFactoryProvider } from './provider';
 import { Repository } from './repository';
 
 describe('Container', () => {
+  TestHarness.scopeGlobalRepository();
+
   describe('ctr', () => {
     xit('merges options with defaults', () => {
       // no config right now

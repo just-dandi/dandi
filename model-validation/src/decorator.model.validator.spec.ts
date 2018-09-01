@@ -13,13 +13,13 @@ import { RequiredPropertyError } from './required.property.error';
 import { TypeValidator } from './type.validator';
 
 describe('DecoratorModelValidator', () => {
-  let primitiveTypeValidator: SinonStubbedInstance<TypeValidator<Primitive<any>>>;
+  let primitiveTypeValidator: SinonStubbedInstance<PrimitiveTypeValidator>;
   let validator: DecoratorModelValidator;
 
   beforeEach(() => {
     primitiveTypeValidator = createStubInstance(PrimitiveTypeValidator);
     primitiveTypeValidator.validate.returnsArg(0);
-    validator = new DecoratorModelValidator(primitiveTypeValidator);
+    validator = new DecoratorModelValidator(primitiveTypeValidator as any);
   });
   afterEach(() => {
     validator = undefined;

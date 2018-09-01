@@ -1,8 +1,11 @@
+import { TestHarness } from '@dandi/core-testing';
 import { expect } from 'chai';
 
 import { AmbientInjectableScanner, Container, Injectable, Repository } from '../';
 
 describe('AmbientInjectableScanner', () => {
+  TestHarness.scopeGlobalRepository();
+
   describe('scan', () => {
     it('returns the global repository', async () => {
       const scanner = new AmbientInjectableScanner();

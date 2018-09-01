@@ -1,3 +1,3 @@
-export function globalSymbol(desc: string): symbol {
-  return Symbol.for(`@dandi/common#${desc}`);
-}
+import { GlobalSymbolFn, packageGlobalSymbol } from './package.global.symbol';
+
+export const globalSymbol: GlobalSymbolFn = packageGlobalSymbol.bind(null, '@dandi/core');
