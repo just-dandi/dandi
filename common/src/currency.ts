@@ -2,6 +2,9 @@ const CURRENCY_PATTERN = /^(\D+)?(\d+\.\d{0,2})$/;
 
 export class Currency extends Number {
   public static parse(value: string): Currency {
+    if (value === null || value === undefined) {
+      return new Currency(parseInt(value));
+    }
     const intValue = parseInt(value, 10);
 
     if (!isNaN(intValue)) {
