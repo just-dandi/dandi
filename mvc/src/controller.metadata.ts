@@ -4,7 +4,7 @@ import { AuthorizationMetadata } from './authorization.metadata';
 import { CorsConfig } from './cors.config';
 import { HttpMethod } from './http.method';
 import { ControllerMethod, RoutePath } from './http.method.decorator';
-import { mvcGlobalSymbol } from './mvc.global.symbol';
+import { globalSymbol } from './global.symbol';
 import { MvcMetadata } from './mvc.metadata';
 
 export class RouteMap extends Map<ControllerMethod, ControllerMethodMetadata> {}
@@ -14,7 +14,7 @@ export interface ControllerMethodMetadata extends AuthorizationMetadata {
 }
 export class RouteMapEntry extends Map<RoutePath, Set<HttpMethod>> {}
 
-const META_KEY = mvcGlobalSymbol('meta:controller');
+const META_KEY = globalSymbol('meta:controller');
 
 export interface ControllerMetadata extends MvcMetadata, AuthorizationMetadata {
   routeMap?: RouteMap;

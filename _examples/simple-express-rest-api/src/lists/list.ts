@@ -1,25 +1,24 @@
 import { Uuid } from '@dandi/common';
 import { ModelBase, Property, Required } from '@dandi/model';
+import { ResourceId } from '@dandi/mvc-hal';
 
-export class DataModelRequest extends ModelBase {
+export class ListRequest extends ModelBase {
   constructor(source?: any) {
     super(source);
   }
 
   @Property(String)
   @Required()
-  public name: string;
-
-  @Property(String)
-  public tag: string;
+  public title: string;
 }
 
-export class DataModel extends DataModelRequest {
+export class List extends ListRequest {
   constructor(source?: any) {
     super(source);
   }
 
   @Property(Uuid)
   @Required()
-  public id: Uuid;
+  @ResourceId()
+  public listId: Uuid;
 }

@@ -1,4 +1,5 @@
 export interface ControllerResult {
+  readonly resultObject: object;
   readonly contentType: string;
   readonly headers?: { [key: string]: string };
   readonly value: string;

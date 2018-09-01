@@ -2,8 +2,12 @@ import { CascadingCache, MemoryCache, ServiceContextCacheKeyGenerator } from '@d
 import { ConsoleLogger, Container, AmbientInjectableScanner } from '@dandi/core';
 import { Validation } from '@dandi/model-validation';
 import { ExpressMvcApplication } from '@dandi/mvc-express';
+import { MvcHal } from '@dandi/mvc-hal';
 
-import { DataController } from './data/data.controller';
+import { ExampleController } from './example/example.controller';
+import { ListController } from './lists/list.controller';
+import { Db } from './shared/db';
+import { TaskController } from './tasks/task.controller';
 
 const DEFAULT_SERVER_PORT = 7080;
 
@@ -24,7 +28,12 @@ export const server = new Container({
     MemoryCache,
     ServiceContextCacheKeyGenerator,
 
+    MvcHal,
+    Db,
+
     // Controllers
-    DataController,
+    ListController,
+    TaskController,
+    ExampleController,
   ],
 });

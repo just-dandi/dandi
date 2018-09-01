@@ -1,0 +1,21 @@
+{
+  "name": "@dandi/mvc-hal",
+  "version": "1.0.0-alpha.19",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dandi-mvc/dandi.git"
+  },
+  "author": "Daniel Schaffer <dan@dandoes.net>",
+  "bugs": {
+    "url": "https://github.com/dandi-mvc/dandi/issues"
+  },
+  "homepage": "https://github.com/dandi-mvc/dandi#readme",
+  "dependencies": {},
+  "devDependencies": {},
+  "peerDependencies": {
+    "@dandi/common": "1.0.0-alpha.19",
+    "@dandi/core": "1.0.0-alpha.19",
+    "@dandi/mvc": "1.0.0-alpha.19"
+  }
+}

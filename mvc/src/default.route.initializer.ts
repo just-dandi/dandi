@@ -29,8 +29,10 @@ export class DefaultRouteInitializer implements RouteInitializer {
     @Inject(RequestProviderRegistrar)
     @Optional()
     private registrars: RequestProviderRegistrar[],
-    @Inject(AuthProviderFactory) private authProviderFactory: AuthProviderFactory,
     @Inject(Logger) private logger: Logger,
+    @Inject(AuthProviderFactory)
+    @Optional()
+    private authProviderFactory?: AuthProviderFactory,
   ) {}
 
   public async initRouteRequest(
@@ -97,6 +99,9 @@ export class DefaultRouteInitializer implements RouteInitializer {
   }
 
   private async registerAuthProviders(repo: Repository, route: Route, req: MvcRequest): Promise<void> {
+    if (!this.authProviderFactory) {
+      return;
+    }
     const providers = await this.authProviderFactory.createAuthProviders(route, req);
     repo.registerProviders(...providers);
   }

@@ -4,11 +4,11 @@ import { HttpMethod, JsonControllerResult, RequestInfo, Route } from '@dandi/mvc
 import { expect } from 'chai';
 import { stub } from 'sinon';
 
-import { ExpressMvcRouteHandler } from '../';
+import { DefaultRouteHandler } from './default.route.handler';
 
-describe('ExpressMvcRouteHandler', () => {
+describe('DefaultMvcRouteHandler', () => {
   let container: Container;
-  let handler: ExpressMvcRouteHandler;
+  let handler: DefaultRouteHandler;
 
   let resolverContext: ResolverContext<any>;
   let controller: any;
@@ -21,7 +21,7 @@ describe('ExpressMvcRouteHandler', () => {
     container = new Container();
     await container.start();
     resolverContext = ResolverContext.create(null);
-    handler = new ExpressMvcRouteHandler(container, new NoopLogger());
+    handler = new DefaultRouteHandler(container, new NoopLogger());
     route = {
       controllerCtr: class TestClass {},
       controllerMethod: 'method',

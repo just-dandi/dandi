@@ -1,13 +1,17 @@
+import { isJsonable } from '@dandi/common';
+
 import { ControllerResult } from './controller.result';
+
+const CONTENT_TYPE = 'application/json';
 
 export class JsonControllerResult implements ControllerResult {
   public get value(): string {
-    return JSON.stringify(this._value);
+    return JSON.stringify(isJsonable(this.resultObject) ? this.resultObject.toJsonObject() : this.resultObject);
   }
 
   public get contentType(): string {
-    return 'application/json';
+    return CONTENT_TYPE;
   }
 
-  constructor(private _value: any, public readonly headers?: { [headerName: string]: string }) {}
+  constructor(public readonly resultObject: any, public readonly headers?: { [headerName: string]: string }) {}
 }

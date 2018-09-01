@@ -45,7 +45,7 @@ describe('DefaultRouteInitializer', () => {
     await container.start();
     authProviderFactory = createStubInstance(AuthorizationAuthProviderFactory);
     authProviderFactory.createAuthProviders.resolves([]);
-    initializer = new DefaultRouteInitializer(container, null, authProviderFactory, new NoopLogger());
+    initializer = new DefaultRouteInitializer(container, null, new NoopLogger(), authProviderFactory);
     route = {
       httpMethod: HttpMethod.get,
       siblingMethods: new Set([HttpMethod.get]),

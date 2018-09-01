@@ -18,6 +18,7 @@ allow developers to use only the features they require.
 - Built on top of [Express 4](https://expressjs.com/)
 - Decorator-based route configuration
 - Automatic path parameter, query parameter, and body model mapping and validation
+- Support for automatically generating [HAL](http://stateless.co/hal_specification.html) output
 
 ### Misc
 
@@ -35,6 +36,7 @@ allow developers to use only the features they require.
 - **[@dandi/model](./model)** 🕸 - Model decorators
 - **[@dandi/model-validation](./model-validation)** - Model validation utilities
 - **[@dandi/mvc](./mvc)** - MVC decorators and base utilities (not specific to Express)
+- **[@dandi/mvc-hal](./mvc-hal)** - Supports rendering HAL JSON from existing `@dandi/mvc` controllers
 
 # 3rd Party Integration Modules
 
