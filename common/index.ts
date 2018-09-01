@@ -3,6 +3,7 @@ export * from './src/constructor';
 export * from './src/currency';
 export * from './src/disposable';
 export * from './src/error.util';
+export * from './src/jsonable';
 export * from './src/metadata';
 export * from './src/primitive';
 export * from './src/type.helpers';
