@@ -1,7 +1,7 @@
-import { Constructor, getMetadata, MethodTarget } from '../../common/index';
+import { Constructor, getMetadata, MethodTarget } from '@dandi/common';
+import { getResourceMetadata, RESOURCE_META_KEY } from '@dandi/hal';
 
 import { getAccessorMetadata } from './resource.accessor.decorator';
-import { getResourceMetadata, RESOURCE_META_KEY } from '../../hal/src/resource.metadata';
 
 export function resourceListAccessor(resource: Constructor<any>, target: MethodTarget<any>, propertyKey: string) {
   const meta = getResourceMetadata(resource);
