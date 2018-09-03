@@ -81,7 +81,6 @@ describe('DecoratorRouteGenerator', () => {
 
   describe('generateRoutes', () => {
     it('generates a route for each http method configured for each method in each controller', () => {
-      console.log(routes);
       expect(routes.length).to.equal(5);
       expect(aGet).to.exist;
       expect(aPost).to.exist;
