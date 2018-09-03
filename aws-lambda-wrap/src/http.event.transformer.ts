@@ -38,7 +38,7 @@ export class HttpEventTransformer implements LambdaEventTransformer<APIGatewayPr
     if (event.body) {
       let bodyStr = event.body;
       if (event.isBase64Encoded) {
-        bodyStr = new Buffer(bodyStr, 'base64').toString('utf-8');
+        bodyStr = Buffer.from(bodyStr, 'base64').toString('utf-8');
       }
       body = JSON.parse(bodyStr);
     }

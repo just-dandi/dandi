@@ -69,7 +69,7 @@ describe('HttpEventTransformer', () => {
     });
 
     it('creates a HttpHandlerRequest object using the event values and deserialized base64 encoded body', () => {
-      event.body = new Buffer(event.body, 'utf8').toString('base64');
+      event.body = Buffer.from(event.body, 'utf8').toString('base64');
       event.isBase64Encoded = true;
 
       const eventWithoutBody = Object.assign({}, event);
