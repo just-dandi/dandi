@@ -1,6 +1,6 @@
 {
   "name": "@dandi/hal",
-  "version": "1.0.0-alpha.21",
+  "version": "1.0.0-alpha.22",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -14,6 +14,6 @@
   "dependencies": {},
   "devDependencies": {},
   "peerDependencies": {
-    "@dandi/common": "1.0.0-alpha.21"
+    "@dandi/common": "1.0.0-alpha.22"
   }
 }
