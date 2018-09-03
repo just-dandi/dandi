@@ -1,5 +1,7 @@
 import { InjectionToken, Provider } from '@dandi/core';
-import { Route, RouteGenerator } from '@dandi/mvc';
+
+import { Route } from './route';
+import { RouteGenerator } from './route.generator';
 
 import { localOpinionatedToken } from './local.token';
 

@@ -1,5 +1,6 @@
 import { Jsonable } from '@dandi/common';
-import { SELF_RELATION } from '@dandi/mvc-hal';
+
+import { SELF_RELATION } from './relation.decorator';
 
 export interface ComposedLink {
   href: string;
