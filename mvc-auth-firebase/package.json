@@ -1,6 +1,6 @@
 {
   "name": "@dandi/mvc-auth-firebase",
-  "version": "1.0.0-alpha.19",
+  "version": "1.0.0-alpha.20",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -12,16 +12,16 @@
   },
   "homepage": "https://github.com/dandi-mvc/dandi#readme",
   "dependencies": {
-    "firebase-admin": "^5.13.1"
+    "firebase-admin": "^6.0.0"
   },
   "devDependencies": {},
   "peerDependencies": {
-    "@dandi/cache": "1.0.0-alpha.19",
-    "@dandi/common": "1.0.0-alpha.19",
+    "@dandi/cache": "1.0.0-alpha.20",
+    "@dandi/common": "1.0.0-alpha.20",
     "@dandi/config": "^1.0.0-pre.4",
-    "@dandi/core": "1.0.0-alpha.19",
-    "@dandi/model": "1.0.0-alpha.19",
-    "@dandi/mvc": "1.0.0-alpha.19",
-    "@dandi/mvc-express": "1.0.0-alpha.19"
+    "@dandi/core": "1.0.0-alpha.20",
+    "@dandi/model": "1.0.0-alpha.20",
+    "@dandi/mvc": "1.0.0-alpha.20",
+    "@dandi/mvc-express": "1.0.0-alpha.20"
   }
 }

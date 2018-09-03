@@ -22,7 +22,7 @@ errorHandler() {
 pkgVersion=$(node -p "require('./package.json').version")
 
 echo ${bold} Publishing @dandi suite v${pkgVersion}...${normal}
-for dir in {'common','core','core-testing','model','model-validation','config','config-aws-ssm','data','data-pg','cache','mvc','mvc-express', 'mvc-hal','mvc-auth-firebase','aws-lambda-wrap'}
+for dir in {'common','core','core-testing','model','model-validation','config','config-aws-ssm','data','data-pg','cache','mvc','mvc-express','mvc-hal','mvc-auth-firebase','aws-lambda-wrap'}
 do
 
     pkgName=$(node -p "require('./${dir%*/}/package.json').name")
@@ -30,7 +30,7 @@ do
     echo
     echo ${bold}${pkgName}${normal}
     echo ${bold}  Updating package version...${normal}
-    ts-node ./update.package.ts ${dir%*/}
+    node_modules/.bin/ts-node ./update.package.ts ${dir%*/}
 
     pushd ${dir%*/} >/dev/null
 
@@ -40,7 +40,7 @@ do
 
     echo ${bold}  Building...
     rm -rf dist
-    tsc -p tsconfig.build.json --outDir dist
+    ../node_modules/.bin/tsc -p tsconfig.build.json --outDir dist
     cp package.json dist
     if [ -e README.md ]
     then
