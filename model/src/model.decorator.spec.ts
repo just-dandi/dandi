@@ -1,4 +1,6 @@
-import { DateTime, Url, Uuid } from '@dandi/common';
+import { Url, Uuid } from '@dandi/common';
+
+import { DateTime } from 'luxon';
 
 import { expect } from 'chai';
 

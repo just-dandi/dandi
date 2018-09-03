@@ -1,9 +1,10 @@
 import { Cache, CacheKeyGenerator } from '@dandi/cache';
-import { DateTime } from '@dandi/common';
 import { Inject, Injectable, Singleton } from '@dandi/core';
 import { AuthorizationService, AuthorizedUser } from '@dandi/mvc';
 
 import * as admin from 'firebase-admin';
+import { DateTime } from 'luxon';
+
 import App = admin.app.App;
 import Auth = admin.auth.Auth;
 import UserRecord = admin.auth.UserRecord;

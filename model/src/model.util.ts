@@ -1,4 +1,5 @@
-import { Constructor, DateTime, Url, Uuid } from '@dandi/common';
+import { Constructor, Url, Uuid } from '@dandi/common';
+import { DateTime } from 'luxon';
 
 import { getAllKeys, getModelMetadata, MemberMetadata } from './member.metadata';
 

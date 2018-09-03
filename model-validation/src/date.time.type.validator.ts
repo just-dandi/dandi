@@ -1,6 +1,7 @@
-import { DateTime } from '@dandi/common';
 import { Injectable } from '@dandi/core';
 import { MemberMetadata } from '@dandi/model';
+
+import { DateTime } from 'luxon';
 
 import { TypeValidationError, TypeValidator } from './type.validator';
 

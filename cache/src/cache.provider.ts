@@ -1,5 +1,5 @@
-import { Duration } from '@dandi/common';
 import { MappedInjectionToken } from '@dandi/core';
+import { Duration } from 'luxon';
 
 import { localOpinionatedToken } from './local.token';
 

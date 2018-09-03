@@ -1,4 +1,6 @@
-import { AppError, DateTime, Url, Uuid } from '@dandi/common';
+import { AppError, Url, Uuid } from '@dandi/common';
+
+import { DateTime } from 'luxon';
 
 import { expect } from 'chai';
 import { createStubInstance, SinonStubbedInstance } from 'sinon';
