@@ -1,9 +1,9 @@
 import { Inject, Injectable } from '@dandi/core';
+import { SELF_RELATION } from '@dandi/hal';
 import { ControllerResult, ControllerResultTransformer, ParamMap, RequestQueryParamMap, MvcRequest } from '@dandi/mvc';
 
 import { CompositionContext } from './composition.context';
 import { HalControllerResult } from './hal.controller.result';
-import { SELF_RELATION } from './relation.decorator';
 import { ResourceComposer } from './resource.composer';
 
 export const EMBED_RELS_KEY = '_embedded';
@@ -23,7 +23,10 @@ export class HalResultTransformer implements ControllerResultTransformer {
       this.request.path,
       embeddedRels ? embeddedRels.split(',') : [],
     );
-    const resource = await this.composer.compose(result.resultObject, context);
+    const resource = await this.composer.compose(
+      result.resultObject,
+      context,
+    );
     return new HalControllerResult(resource, result.headers);
   }
 }

@@ -1,5 +1,4 @@
-import { Constructor } from '@dandi/common';
-import { MethodTarget } from '@dandi/core';
+import { Constructor, MethodTarget } from '@dandi/common';
 
 import { getResourceMetadata } from './resource.metadata';
 

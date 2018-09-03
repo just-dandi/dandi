@@ -13,6 +13,8 @@ data/index.ts
 data/src/**/*.spec.ts
 data-pg/index.ts
 data-pg/src/**/*.spec.ts
+hal/index.ts
+hal/src/**/*.spec.ts
 model/index.ts
 model/src/**/*.spec.ts
 model-validation/index.ts

@@ -1,4 +1,4 @@
-import { MethodTarget } from '@dandi/core';
+import { MethodTarget } from '@dandi/common';
 
 import { getControllerMetadata, RouteMapEntry } from './controller.metadata';
 import { CorsConfig } from './cors.config';

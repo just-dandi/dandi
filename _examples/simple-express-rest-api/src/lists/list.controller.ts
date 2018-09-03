@@ -1,7 +1,7 @@
 import { Uuid } from '@dandi/common';
 import { Inject } from '@dandi/core';
 import { Controller, HttpGet, PathParam, HttpPost, RequestBody } from '@dandi/mvc';
-import { ResourceAccessor, ResourceId, ResourceListAccessor } from '@dandi/mvc-hal';
+import { AccessorResourceId, ResourceAccessor, ResourceListAccessor } from '@dandi/mvc-hal';
 
 import { Task, TaskRequest } from '../tasks/task';
 
@@ -28,7 +28,7 @@ export class ListController {
   @ResourceAccessor(ListResource)
   public async getList(
     @PathParam(Uuid)
-    @ResourceId()
+    @AccessorResourceId()
     listId: Uuid,
   ): Promise<ListResource> {
     return new ListResource(await this.listManager.getList(listId));
@@ -38,7 +38,7 @@ export class ListController {
   @ResourceListAccessor(Task)
   public listTasks(
     @PathParam(Uuid)
-    @ResourceId(List)
+    @AccessorResourceId(List)
     listId: Uuid,
   ): Promise<Task[]> {
     return this.listManager.getAllTasks(listId);

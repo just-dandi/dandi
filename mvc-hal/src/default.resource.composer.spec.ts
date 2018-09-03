@@ -1,6 +1,7 @@
 import { Uuid } from '@dandi/common';
 import { Provider } from '@dandi/core';
 import { testHarnessSingle } from '@dandi/core-testing';
+import { ComposedResource, ListRelation, Relation, ResourceId, SELF_RELATION } from '@dandi/hal';
 import { ModelValidator } from '@dandi/model-validation';
 import {
   Controller,
@@ -15,15 +16,11 @@ import {
   Routes,
 } from '@dandi/mvc';
 import {
-  ComposedResource,
+  AccessorResourceId,
   CompositionContext,
-  ListRelation,
-  Relation,
   ResourceAccessor,
   ResourceComposer,
-  ResourceId,
   ResourceListAccessor,
-  SELF_RELATION,
 } from '@dandi/mvc-hal';
 
 import { expect } from 'chai';
@@ -49,7 +46,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceAccessor(TestModel)
         getModel(
           @PathParam(Number)
-          @ResourceId()
+          @AccessorResourceId()
           id,
         ): Promise<TestModel> {
           return null;
@@ -111,7 +108,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceAccessor(TestModel)
         getModel(
           @PathParam(Number)
-          @ResourceId()
+          @AccessorResourceId()
           id,
         ): Promise<TestModel> {
           return null;
@@ -123,7 +120,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceAccessor(TestModelParent)
         getModelParent(
           @PathParam(Number)
-          @ResourceId()
+          @AccessorResourceId()
           id,
         ): Promise<TestModelParent> {
           return null;
@@ -189,7 +186,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceAccessor(TestModel)
         getModel(
           @PathParam(Number)
-          @ResourceId()
+          @AccessorResourceId()
           id,
         ): Promise<TestModel> {
           return null;
@@ -202,7 +199,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceAccessor(TestModelParent)
         getModelParent(
           @PathParam(Number)
-          @ResourceId()
+          @AccessorResourceId()
           id,
         ): Promise<TestModelParent> {
           return null;
@@ -212,7 +209,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceListAccessor(TestModel)
         listChildren(
           @PathParam(Number)
-          @ResourceId(TestModelParent)
+          @AccessorResourceId(TestModelParent)
           id,
         ): Promise<TestModel[]> {
           return null;
@@ -289,7 +286,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceAccessor(TestModel)
         getModel(
           @PathParam(Number)
-          @ResourceId()
+          @AccessorResourceId()
           id,
         ): Promise<TestModel> {
           return null;
@@ -301,7 +298,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceAccessor(TestModelParent)
         getModelParent(
           @PathParam(Number)
-          @ResourceId()
+          @AccessorResourceId()
           id,
         ): Promise<TestModelParent> {
           return Promise.resolve(new TestModelParent(id));
@@ -406,7 +403,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceAccessor(TestModel)
         getModel(
           @PathParam(Number)
-          @ResourceId()
+          @AccessorResourceId()
           id,
         ): Promise<TestModel> {
           return null;
@@ -419,7 +416,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceAccessor(TestModelParent)
         getModelParent(
           @PathParam(Number)
-          @ResourceId()
+          @AccessorResourceId()
           id,
         ): Promise<TestModelParent> {
           return null;
@@ -429,7 +426,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceListAccessor(TestModel)
         listChildren(
           @PathParam(Number)
-          @ResourceId(TestModelParent)
+          @AccessorResourceId(TestModelParent)
           id,
         ): Promise<TestModel[]> {
           return Promise.resolve([
@@ -577,7 +574,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceAccessor(LevelOneModel)
         async getLevelOneModel(
           @PathParam(Number)
-          @ResourceId()
+          @AccessorResourceId()
           id,
         ): Promise<LevelOneModel> {
           return new LevelOneModel(id);
@@ -589,7 +586,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceAccessor(LevelTwoModel)
         async getLevelTwoModel(
           @PathParam(Number)
-          @ResourceId()
+          @AccessorResourceId()
           id,
         ): Promise<LevelTwoModel> {
           return new LevelTwoModel(id, id * 2);
@@ -601,7 +598,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceAccessor(LevelThreeModel)
         async getLevelThreeModel(
           @PathParam(Number)
-          @ResourceId()
+          @AccessorResourceId()
           id,
         ): Promise<LevelThreeModel> {
           return new LevelThreeModel(id, id * 2);
@@ -736,7 +733,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceAccessor(OtherModel)
         async getOther(
           @PathParam(Number)
-          @ResourceId()
+          @AccessorResourceId()
           id,
         ): Promise<OtherModel> {
           return new OtherModel(id);
@@ -749,7 +746,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceAccessor(TestModel)
         async getModel(
           @PathParam(Number)
-          @ResourceId()
+          @AccessorResourceId()
           id,
         ): Promise<TestModel> {
           return new TestModel(id, id * 2);
@@ -762,7 +759,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceAccessor(TestModelParent)
         async getModelParent(
           @PathParam(Number)
-          @ResourceId()
+          @AccessorResourceId()
           id,
         ): Promise<TestModelParent> {
           return new TestModelParent(id);
@@ -772,7 +769,7 @@ describe('DefaultResourceComposer', () => {
         @ResourceListAccessor(TestModel)
         listChildren(
           @PathParam(Number)
-          @ResourceId(TestModelParent)
+          @AccessorResourceId(TestModelParent)
           id,
         ): Promise<TestModel[]> {
           return Promise.resolve([

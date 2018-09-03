@@ -1,4 +1,4 @@
-import { ListRelation } from '@dandi/mvc-hal';
+import { ListRelation } from '@dandi/hal';
 
 import { Task } from '../tasks/task';
 

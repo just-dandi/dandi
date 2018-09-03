@@ -1,5 +1,5 @@
-import { isConstructor } from '@dandi/common';
-import { MethodTarget, Provider } from '@dandi/core';
+import { isConstructor, MethodTarget } from '@dandi/common';
+import { Provider } from '@dandi/core';
 
 import { AuthorizationCondition } from './authorization.condition';
 import { AuthorizedUser } from './authorized.user';

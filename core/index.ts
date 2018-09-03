@@ -14,7 +14,6 @@ export * from './src/manual.scanner';
 export * from './src/noop.logger';
 export * from './src/opinionated.token';
 export * from './src/optional.decorator';
-export * from './src/package.global.symbol';
 export * from './src/provider';
 export * from './src/repository';
 export * from './src/resolve.result';

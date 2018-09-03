@@ -38,8 +38,8 @@ export class TaskList {
 
 The `@ResourceId()` decorator on the resource model must correspond with
 a `@ResourceAccessor()` decorator, which is applied to the controller
-method used to get that resource, and a `@ResourceId()` decorator on the
-parameter specifying the model's ID:
+method used to get that resource, and a `@AccessorResourceId()`
+decorator on the parameter specifying the source for model's ID:
 
 ```typescript
 @Controller('/list')
@@ -47,14 +47,14 @@ export class TaskListController {
 
   @HttpGet(':listId')
   @ResourceAccessor(TaskList)
-  public getList(@PathParam(Uuid) @ResourceId() listId: Uuid): Promise<TaskList> {
+  public getList(@PathParam(Uuid) @AccessorResourceId() listId: Uuid): Promise<TaskList> {
     ...
   }
 
 }
 ```
 
-The `@ResourceId()` decorator on the `listId` parameter will be linked
+The `@AccessorResourceId()` decorator on the `listId` parameter will be linked
 to the `listId` property on the `TaskList` model since the
 `@ResourceAccessor()` decorator specifies `TaskList` as its type, and
 `listId` is defined as its ID property by its own `@ResourceId()`
@@ -69,7 +69,7 @@ export class TaskListController {
 
   @HttpGet(':listId')
   @ResourceAccessor(TaskList)
-  public getList(@PathParam(Uuid) listId: Uuid): Promise<TaskList> {
+  public getList(@PathParam(Uuid) @AccessorResourceId() listId: Uuid): Promise<TaskList> {
     ...
   }
 
@@ -163,13 +163,13 @@ export class TaskListController {
 
   @HttpGet(':listId')
   @ResourceAccessor(TaskListResource)
-  public getList(@PathParam(Uuid) @ResourceId() listId: Uuid): Promise<TaskList> {
+  public getList(@PathParam(Uuid) @AccessorResourceId() listId: Uuid): Promise<TaskList> {
     ...
   }
 
   @HttpGet(':listId/task')
   @ResourceListAccessor(Task)
-  public listTasks(@PathParam(Uuid) @ResourceId(List) listId: Uuid): Promise<Task[]> {
+  public listTasks(@PathParam(Uuid) @AccessorResourceId(List) listId: Uuid): Promise<Task[]> {
     ...
   }
 
@@ -180,7 +180,7 @@ export class TaskListController {
 
   @HttpGet(':taskId')
   @ResourceAccessor(TaskResource)
-  public getTask(@PathParam(Uuid) @ResourceId() listId: Uuid): Promise<Task> {
+  public getTask(@PathParam(Uuid) @AccessorResourceId() listId: Uuid): Promise<Task> {
     ...
   }
 

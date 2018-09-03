@@ -1,13 +1,12 @@
-import { Constructor, getMetadata } from '@dandi/common';
-import { MethodTarget } from '@dandi/core';
+import { Constructor, getMetadata, MethodTarget } from '@dandi/common';
+import { getResourceMetadata, RESOURCE_META_KEY, ResourceAccessorMetadata } from '@dandi/hal';
 
 import { globalSymbol } from './global.symbol';
-import { getResourceMetadata, RESOURCE_META_KEY, ResourceAccessor } from './resource.metadata';
 
 export const RESOURCE_ACCESSOR_META_KEY = globalSymbol('meta:ResourceAccessor');
 
-export function getAccessorMetadata(target: MethodTarget<any>, propertyKey: string) {
-  return getMetadata<ResourceAccessor>(
+export function getAccessorMetadata(target: MethodTarget<any>, propertyKey: string): ResourceAccessorMetadata {
+  return getMetadata<ResourceAccessorMetadata>(
     RESOURCE_ACCESSOR_META_KEY,
     () => ({
       controller: target.constructor,

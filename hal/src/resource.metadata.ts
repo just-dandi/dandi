@@ -1,11 +1,10 @@
-import { Constructor, getMetadata } from '@dandi/common';
-import { MethodTarget } from '@dandi/core';
+import { Constructor, getMetadata, MethodTarget } from '@dandi/common';
 
 import { globalSymbol } from './global.symbol';
 
 export const RESOURCE_META_KEY = globalSymbol('meta:Resource');
 
-export interface ResourceAccessor {
+export interface ResourceAccessorMetadata {
   resource?: Constructor<any>;
   controller: Constructor<any>;
   method: string;
@@ -15,8 +14,8 @@ export interface ResourceAccessor {
 export interface ResourceMetadata {
   resource: Constructor<any>;
   idProperty: string;
-  getAccessor?: ResourceAccessor;
-  listAccessor?: ResourceAccessor;
+  getAccessor?: ResourceAccessorMetadata;
+  listAccessor?: ResourceAccessorMetadata;
   relations: { [rel: string]: ResourceRelationMetadata };
 }
 

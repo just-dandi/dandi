@@ -1,6 +1,15 @@
 import { Constructor, Disposable } from '@dandi/common';
 import { Inject, Injectable, Repository, Resolver, ResolverContext } from '@dandi/core';
 import {
+  ITEMS_RELATION,
+  ResourceMetadata,
+  SELF_RELATION,
+  getResourceMetadata,
+  ResourceRelationMetadata,
+  ResourceAccessorMetadata,
+  ComposedResource,
+} from '@dandi/hal';
+import {
   ControllerMethodMetadata,
   getControllerMetadata,
   isControllerResult,
@@ -14,12 +23,9 @@ import {
   Routes,
 } from '@dandi/mvc';
 
-import { ComposedResource } from './composed.resource';
+import { InheritedResourceType } from './accessor.resource.id.decorator';
 import { CompositionContext } from './composition.context';
 import { ResourceComposer } from './resource.composer';
-import { InheritedResourceType } from './resource.id.decorator';
-import { getResourceMetadata, ResourceAccessor, ResourceMetadata, ResourceRelationMetadata } from './resource.metadata';
-import { ITEMS_RELATION, SELF_RELATION } from './relation.decorator';
 
 function embedResponseAccess(): MvcResponse {
   throw new Error(`Response object should not be used during embedding`);
@@ -41,7 +47,17 @@ export class DefaultResourceComposer implements ResourceComposer {
     if (Array.isArray(resource)) {
       // TODO: support pagination
       const result = new ComposedResource({ count: resource.length, total: resource.length });
-      result.embedResource(ITEMS_RELATION, await Promise.all(resource.map((item) => this.compose(item, context))));
+      result.embedResource(
+        ITEMS_RELATION,
+        await Promise.all(
+          resource.map((item) =>
+            this.compose(
+              item,
+              context,
+            ),
+          ),
+        ),
+      );
 
       result.addSelfLink({
         href: context.path,
@@ -109,7 +125,7 @@ export class DefaultResourceComposer implements ResourceComposer {
     url: string,
     meta: ResourceMetadata,
     relMeta: ResourceRelationMetadata,
-    accessor: ResourceAccessor,
+    accessor: ResourceAccessorMetadata,
     resource: any,
   ): string {
     const params = Array.from(new Set(url.match(/:\w+/g).map((param) => param.substring(1))));
@@ -128,7 +144,7 @@ export class DefaultResourceComposer implements ResourceComposer {
     meta: ResourceMetadata,
     relMeta: ResourceRelationMetadata,
     param: string,
-    accessor: ResourceAccessor,
+    accessor: ResourceAccessorMetadata,
   ): any {
     const paramResource = accessor.paramMap[param];
     const isSameResource = paramResource === resource.constructor || paramResource === InheritedResourceType;
@@ -234,8 +250,18 @@ export class DefaultResourceComposer implements ResourceComposer {
     const result = await this.resolver.invokeInContext(resolverContext, controller, controller[route.controllerMethod]);
     const resultResource: any = isControllerResult(result) ? result.resultObject : result;
     if (Array.isArray(resultResource)) {
-      return Promise.all(resultResource.map((resource) => this.compose(resource, compositionContext)));
+      return Promise.all(
+        resultResource.map((resource) =>
+          this.compose(
+            resource,
+            compositionContext,
+          ),
+        ),
+      );
     }
-    return this.compose(resultResource, compositionContext);
+    return this.compose(
+      resultResource,
+      compositionContext,
+    );
   }
 }

@@ -1,6 +1,6 @@
 import { Uuid } from '@dandi/common';
 import { ModelBase, Property, Required } from '@dandi/model';
-import { ResourceId } from '@dandi/mvc-hal';
+import { ResourceId } from '@dandi/hal';
 
 export class ListRequest extends ModelBase {
   constructor(source?: any) {

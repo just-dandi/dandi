@@ -1,5 +1,5 @@
-import { Constructor } from '@dandi/common';
-import { getInjectableParamMetadata, MethodTarget, ParamMetadata, Provider } from '@dandi/core';
+import { Constructor, MethodTarget } from '@dandi/common';
+import { getInjectableParamMetadata, ParamMetadata, Provider } from '@dandi/core';
 import { ModelValidator } from '@dandi/model-validation';
 
 import { ModelBindingError } from './errors';

@@ -1,4 +1,4 @@
-import { Constructor, getMetadata, MetadataAccessor } from '@dandi/common';
+import { Constructor, getMetadata, MetadataAccessor, MethodTarget } from '@dandi/common';
 
 import { globalSymbol } from './global.symbol';
 import { InjectionToken } from './injection.token';
@@ -6,12 +6,6 @@ import { getParamNames } from './params.util';
 import { Provider } from './provider';
 
 const META_KEY = globalSymbol('meta:injectable');
-
-export type ClassMethods<T> = { [P in keyof T]?: T[P] };
-
-export type MethodTarget<T> = ClassMethods<T> & {
-  constructor: Constructor<T>;
-};
 
 export function methodTarget<T>(target: Constructor<T>): MethodTarget<T> {
   return target.prototype as MethodTarget<T>;

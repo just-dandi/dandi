@@ -1,4 +1,5 @@
-import { MethodTarget, Provider } from '@dandi/core';
+import { MethodTarget } from '@dandi/common';
+import { Provider } from '@dandi/core';
 
 import { initAuthorizationMetadata } from './authorized.decorator';
 import { AuthorizationCondition } from './authorization.condition';

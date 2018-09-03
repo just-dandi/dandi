@@ -1,12 +1,9 @@
-export * from './src/composed.resource';
+export * from './src/accessor.resource.id.decorator';
 export * from './src/composition.context';
 export * from './src/default.resource.composer';
 export * from './src/hal.controller.result';
 export * from './src/hal.result.transformer';
 export * from './src/mvc.hal.module';
-export * from './src/relation.decorator';
 export * from './src/resource.accessor.decorator';
 export * from './src/resource.composer';
-export * from './src/resource.id.decorator';
 export * from './src/resource.list.accessor.decorator';
-export { ResourceMetadata } from './src/resource.metadata';

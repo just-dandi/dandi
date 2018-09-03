@@ -1,7 +1,7 @@
 import { Uuid } from '@dandi/common';
 import { Inject } from '@dandi/core';
 import { Controller, HttpGet, HttpPatch, PathParam, RequestBody } from '@dandi/mvc';
-import { ResourceAccessor, ResourceId } from '@dandi/mvc-hal';
+import { AccessorResourceId, ResourceAccessor } from '@dandi/mvc-hal';
 
 import { Task, TaskResource } from './task';
 import { TaskManager } from './task.manager';
@@ -14,7 +14,7 @@ export class TaskController {
   @ResourceAccessor(TaskResource)
   public async getTask(
     @PathParam(Uuid)
-    @ResourceId()
+    @AccessorResourceId()
     taskId: Uuid,
   ): Promise<TaskResource> {
     return new TaskResource(await this.taskManager.getTask(taskId));

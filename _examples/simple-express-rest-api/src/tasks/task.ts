@@ -1,6 +1,6 @@
 import { Uuid } from '@dandi/common';
+import { Relation, ResourceId } from '@dandi/hal';
 import { ModelBase, Property, Required } from '@dandi/model';
-import { Relation, ResourceId } from '@dandi/mvc-hal';
 
 import { List } from '../lists/list';
 
