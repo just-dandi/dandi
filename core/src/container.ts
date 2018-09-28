@@ -69,7 +69,8 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     }
   }
 
-  public async resolve<T>(
+  public async resolveInContext<T>(
+    context: ResolverContext<T>,
     token: InjectionToken<T>,
     optional: boolean = false,
     ...repositories: Repository[]
@@ -82,17 +83,27 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
       throw new MissingTokenError();
     }
 
-    const context = ResolverContext.create<T>(token, null, ...this.repositories, ...repositories);
+    const resolveContext = context
+      ? context.childContext(token, null, ...this.repositories, ...repositories)
+      : ResolverContext.create<T>(token, null, ...this.repositories, ...repositories);
     try {
-      const result = await this.resolveInternal(token, optional, context);
+      const result = await this.resolveInternal(token, optional, resolveContext);
       if (!result) {
         return null;
       }
-      return context.resolveValue(result);
+      return resolveContext.resolveValue(result);
     } catch (err) {
-      context.dispose(`Container error during resolve(): ${err.message}`);
+      resolveContext.dispose(`Container error during resolve(): ${err.message}`);
       throw err;
     }
+  }
+
+  public resolve<T>(
+    token: InjectionToken<T>,
+    optional: boolean = false,
+    ...repositories: Repository[]
+  ): Promise<ResolveResult<T>> {
+    return this.resolveInContext(null, token, optional, ...repositories);
   }
 
   public invoke(instance: any, member: Function, ...repositories: Repository[]): Promise<any> {

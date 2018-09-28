@@ -15,6 +15,13 @@ export interface Resolver {
   ): Promise<any>;
 
   resolve<T>(token: InjectionToken<T>, optional?: boolean, ...repositories: Repository[]): Promise<ResolveResult<T>>;
+
+  resolveInContext<T>(
+    context: ResolverContext<any>,
+    token: InjectionToken<T>,
+    optional?: boolean,
+    ...repositories: Repository[]
+  ): Promise<ResolveResult<T>>;
 }
 
 export const Resolver = localOpinionatedToken<Resolver>('Resolver', {
