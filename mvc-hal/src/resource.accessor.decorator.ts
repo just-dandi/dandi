@@ -1,5 +1,5 @@
 import { Constructor, getMetadata, MethodTarget } from '@dandi/common';
-import { getResourceMetadata, RESOURCE_META_KEY, ResourceAccessorMetadata } from '@dandi/hal';
+import { getResourceMetadata, ResourceAccessorMetadata, resourceMetaKey } from '@dandi/hal';
 
 import { globalSymbol } from './global.symbol';
 
@@ -23,7 +23,7 @@ export function resourceAccessor(resource: Constructor<any>, target: MethodTarge
   meta.getAccessor.resource = resource;
 
   // also set a reference to the metadata on the method itself so it can be retrieved and updated by resourceIdDecorator
-  getMetadata(RESOURCE_META_KEY, () => meta, target[propertyKey]);
+  getMetadata(resourceMetaKey(resource), () => meta, target[propertyKey]);
 }
 
 export function ResourceAccessor(resource: Constructor<any>) {

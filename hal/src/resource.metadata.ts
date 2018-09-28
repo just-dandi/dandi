@@ -1,8 +1,10 @@
-import { Constructor, getMetadata, isConstructor, MethodTarget } from '@dandi/common';
+import { Constructor, getMetadata, isConstructor } from '@dandi/common';
 
 import { globalSymbol } from './global.symbol';
 
-export const RESOURCE_META_KEY = globalSymbol('meta:Resource');
+export function resourceMetaKey(target: Constructor<any>): symbol {
+  return globalSymbol(`meta:Resource:${target.name}`);
+}
 
 export interface ResourceAccessorMetadata {
   resource?: Constructor<any>;
@@ -17,6 +19,7 @@ export interface ResourceMetadata {
   getAccessor?: ResourceAccessorMetadata;
   listAccessor?: ResourceAccessorMetadata;
   relations: { [rel: string]: ResourceRelationMetadata };
+  parent?: ResourceMetadata;
 }
 
 export interface ResourceRelationMetadata {
@@ -25,15 +28,15 @@ export interface ResourceRelationMetadata {
   idProperty?: string;
 }
 
-export function getResourceMetadata(target: Constructor<any> | MethodTarget<any>): ResourceMetadata {
-  const ctr = isConstructor(target) ? target : target.constructor as Constructor<any>;
+export function getResourceMetadata(obj: any): ResourceMetadata {
+  const target = isConstructor(obj) ? obj : (obj.constructor as Constructor<any>);
   return getMetadata<ResourceMetadata>(
-    RESOURCE_META_KEY,
+    resourceMetaKey(target),
     () => {
-      const meta = { resource: ctr, relations: {}, idProperty: null };
+      const meta: ResourceMetadata = { resource: target, relations: {}, idProperty: null };
       const targetParent = Object.getPrototypeOf(target);
       if (targetParent !== Object && targetParent.name) {
-        Object.setPrototypeOf(meta, getResourceMetadata(targetParent));
+        meta.parent = getResourceMetadata(targetParent);
       }
       return meta;
     },

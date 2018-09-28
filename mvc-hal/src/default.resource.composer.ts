@@ -1,4 +1,4 @@
-import { Constructor, Disposable } from '@dandi/common';
+import { Disposable } from '@dandi/common';
 import { Inject, Injectable, Repository, Resolver, ResolverContext } from '@dandi/core';
 import {
   ITEMS_RELATION,
@@ -66,7 +66,7 @@ export class DefaultResourceComposer implements ResourceComposer {
     }
 
     const result = new ComposedResource(resource);
-    const meta = getResourceMetadata(resource.constructor as Constructor<any>);
+    const meta = getResourceMetadata(resource);
     context.relStack.push('self');
 
     Object.keys(meta.relations).forEach((rel) => {

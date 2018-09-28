@@ -21,7 +21,7 @@ export class HalResultTransformer implements ControllerResultTransformer {
     const context: CompositionContext = CompositionContext.for(
       SELF_RELATION,
       this.request.path,
-      embeddedRels ? embeddedRels.split(',') : [],
+      embeddedRels ? (Array.isArray(embeddedRels) ? embeddedRels : embeddedRels.split(',')) : [],
     );
     if (!Resource.isResource(result.resultObject)) {
       return result;
