@@ -1,4 +1,4 @@
-import { Constructor, getMetadata, MethodTarget } from '@dandi/common';
+import { Constructor, getMetadata, isConstructor, MethodTarget } from '@dandi/common';
 
 import { globalSymbol } from './global.symbol';
 
@@ -26,10 +26,11 @@ export interface ResourceRelationMetadata {
 }
 
 export function getResourceMetadata(target: Constructor<any> | MethodTarget<any>): ResourceMetadata {
+  const ctr = isConstructor(target) ? target : target.constructor as Constructor<any>;
   return getMetadata<ResourceMetadata>(
     RESOURCE_META_KEY,
     () => {
-      const meta = { resource: target as Constructor<any>, relations: {}, idProperty: null };
+      const meta = { resource: ctr, relations: {}, idProperty: null };
       const targetParent = Object.getPrototypeOf(target);
       if (targetParent !== Object && targetParent.name) {
         Object.setPrototypeOf(meta, getResourceMetadata(targetParent));

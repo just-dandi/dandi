@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@dandi/core';
-import { SELF_RELATION } from '@dandi/hal';
+import { Resource, SELF_RELATION } from '@dandi/hal';
 import { ControllerResult, ControllerResultTransformer, ParamMap, RequestQueryParamMap, MvcRequest } from '@dandi/mvc';
 
 import { CompositionContext } from './composition.context';
@@ -23,6 +23,9 @@ export class HalResultTransformer implements ControllerResultTransformer {
       this.request.path,
       embeddedRels ? embeddedRels.split(',') : [],
     );
+    if (!Resource.isResource(result.resultObject)) {
+      return result;
+    }
     const resource = await this.composer.compose(
       result.resultObject,
       context,
