@@ -1,4 +1,5 @@
-import { FactoryProvider, getInjectableParamMetadata, MethodTarget } from '@dandi/core';
+import { MethodTarget } from '@dandi/common';
+import { FactoryProvider, getInjectableParamMetadata } from '@dandi/core';
 import { ModelValidator } from '@dandi/model-validation';
 
 import { expect } from 'chai';

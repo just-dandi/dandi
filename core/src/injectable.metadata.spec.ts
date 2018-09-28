@@ -1,6 +1,7 @@
+import { MethodTarget } from '@dandi/common';
 import { expect } from 'chai';
 
-import { getInjectableMetadata, getInjectableParamMetadata, methodTarget, MethodTarget } from '../';
+import { getInjectableMetadata, getInjectableParamMetadata, methodTarget } from '@dandi/core';
 
 class TestClass {
   constructor(param1: any, param2: any) {}
