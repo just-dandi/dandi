@@ -37,6 +37,7 @@ export class DefaultResourceComposer implements ResourceComposer {
     @Inject(Resolver) private resolver: Resolver,
     @Inject(RouteInitializer) private routeInitializer: RouteInitializer,
     @Inject(Routes) private routes: Route[],
+    @Inject(ResolverContext) private resolverContext: ResolverContext<any>,
   ) {}
 
   public async compose(resource: any, context: CompositionContext): Promise<ComposedResource<any>> {
@@ -200,7 +201,7 @@ export class DefaultResourceComposer implements ResourceComposer {
         rt.controllerCtr === accessor.controller &&
         rt.controllerMethod === accessor.method,
     );
-    const ogRequest = (await this.resolver.resolve(MvcRequest)).singleValue;
+    const ogRequest = (await this.resolver.resolveInContext(this.resolverContext, MvcRequest)).singleValue;
     const requestParams = Object.keys(accessor.paramMap).reduce((params, key) => {
       params[key] = this.getParamValue(resource, meta, relMeta, key, accessor);
       return params;
@@ -228,7 +229,7 @@ export class DefaultResourceComposer implements ResourceComposer {
       status: embedResponseAccess,
     };
 
-    const requestInfo = (await this.resolver.resolve(RequestInfo)).singleValue;
+    const requestInfo = (await this.resolver.resolveInContext(this.resolverContext, RequestInfo)).singleValue;
     const embedRepo = await this.routeInitializer.initRouteRequest(route, req, requestInfo, res);
 
     embedRepo.register({
