@@ -91,6 +91,15 @@ export class TestHarness implements TestResolver {
     return this._container.resolve(token, optional, ...repositories);
   }
 
+  public resolveInContext<T>(
+    context: ResolverContext<any>,
+    token: InjectionToken<T>,
+    optional?: boolean,
+    ...repositories: Repository[]
+  ): Promise<ResolveResult<T>> {
+    return this._container.resolveInContext(context, token, optional, ...repositories);
+  }
+
   public resolveStub<T>(
     token: InjectionToken<T>,
     optional?: boolean,
