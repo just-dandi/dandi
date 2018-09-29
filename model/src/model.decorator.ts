@@ -18,28 +18,28 @@ export function modelDecorator(
   Object.assign(memberMetadata, decoratorMetadata);
 }
 
-export function Property(type?: Constructor<any>) {
+export function Property(type?: Constructor<any>): PropertyDecorator {
   return modelDecorator.bind(null, { type });
 }
-export function Required() {
+export function Required(): PropertyDecorator {
   return modelDecorator.bind(null, { required: true });
 }
-export function MinLength(minLength: number) {
+export function MinLength(minLength: number): PropertyDecorator {
   return modelDecorator.bind(null, { minLength });
 }
-export function MaxLength(maxLength: number) {
+export function MaxLength(maxLength: number): PropertyDecorator {
   return modelDecorator.bind(null, { maxLength });
 }
-export function MinValue(minValue: number) {
+export function MinValue(minValue: number): PropertyDecorator {
   return modelDecorator.bind(null, { minValue });
 }
-export function MaxValue(maxValue: number) {
+export function MaxValue(maxValue: number): PropertyDecorator {
   return modelDecorator.bind(null, { maxValue });
 }
-export function Pattern(pattern: RegExp) {
+export function Pattern(pattern: RegExp): PropertyDecorator {
   return modelDecorator.bind(null, { pattern });
 }
-export function Email() {
+export function Email(): PropertyDecorator {
   return modelDecorator.bind(null, {
     minLength: EMAIL_MIN_LENGTH,
     maxLength: EMAIL_MAX_LENGTH,
@@ -47,27 +47,27 @@ export function Email() {
     type: String,
   });
 }
-export function UrlProperty() {
+export function UrlProperty(): PropertyDecorator {
   return modelDecorator.bind(null, {
     pattern: URL_PATTERN,
     type: Url,
   });
 }
-export function DateTimeFormat(format: string) {
+export function DateTimeFormat(format: string): PropertyDecorator {
   return modelDecorator.bind(null, {
     format,
     type: DateTime,
   });
 }
 
-export function ArrayOf<T>(itemType: Constructor<T>, pattern?: RegExp) {
+export function ArrayOf<T>(itemType: Constructor<T>): PropertyDecorator {
   return modelDecorator.bind(null, {
     type: Array,
     subType: itemType,
   });
 }
 
-export function UrlArray() {
+export function UrlArray(): PropertyDecorator {
   return modelDecorator.bind(null, {
     type: Array,
     subType: Url,
@@ -75,7 +75,7 @@ export function UrlArray() {
   });
 }
 
-// TODO: move this into @dandi/common or @dandi/core - this could be used for injection too
+// TODO: move this into @dandi/common - this could be used for injection too
 export function OneOf(...oneOf: Array<Constructor<any>>) {
   return modelDecorator.bind(null, {
     type: OneOf,
