@@ -119,6 +119,9 @@ export class Disposable {
   public static remapDisposed<T>(target: T, reason: string): T {
     const thrower = throwAlreadyDisposed.bind(target, target, reason);
     for (const prop in target) {
+      if (prop === 'disposed') {
+        continue;
+      }
       if (typeof target[prop] === 'function') {
         target[prop] = thrower;
       } else {
