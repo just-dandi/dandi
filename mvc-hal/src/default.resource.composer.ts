@@ -98,16 +98,16 @@ export class DefaultResourceComposer implements ResourceComposer {
     }
 
     result.addSelfLink({
-      href: this.getUrl({ resource: meta.resource, list: false, idProperty: meta.idProperty }, resource),
+      href: this.getUrl(meta, resource),
     });
 
     return result;
   }
 
   private getUrl(relMeta: ResourceRelationMetadata, resource: any): string {
-    const meta = getResourceMetadata(relMeta.resource);
+    const relResourceMeta = getResourceMetadata(relMeta.resource);
 
-    const accessor = relMeta.list ? meta.listAccessor : meta.getAccessor;
+    const accessor = relMeta.list ? relResourceMeta.listAccessor : relResourceMeta.getAccessor;
     if (!accessor) {
       throw new Error('Relation does not have corresponding accessor');
     }
@@ -116,21 +116,25 @@ export class DefaultResourceComposer implements ResourceComposer {
     const methodPath = this.getMethodPath(methodMeta);
 
     if (!methodPath) {
-      return controllerMeta.path;
+      return this.replacePathParams(controllerMeta.path, relResourceMeta, relMeta, accessor, resource);
     }
     const url = this.normalizePath(controllerMeta.path, methodPath);
-    return this.replacePathParams(url, meta, relMeta, accessor, resource);
+    return this.replacePathParams(url, relResourceMeta, relMeta, accessor, resource);
   }
 
   private replacePathParams(
     url: string,
-    meta: ResourceMetadata,
+    relResourceMeta: ResourceMetadata,
     relMeta: ResourceRelationMetadata,
     accessor: ResourceAccessorMetadata,
     resource: any,
   ): string {
-    const params = Array.from(new Set(url.match(/:\w+/g).map((param) => param.substring(1))));
-    const values = params.map((param) => this.getParamValue(resource, meta, relMeta, param, accessor));
+    const paramsMatch = url.match(/:\w+/g);
+    if (!paramsMatch) {
+      return url;
+    }
+    const params = Array.from(new Set(paramsMatch.map((param) => param.substring(1))));
+    const values = params.map((param) => this.getParamValue(resource, relResourceMeta, relMeta, param, accessor));
     const valueMap = params.reduce((map, rel, index) => {
       map[rel] = values[index];
       return map;
@@ -148,7 +152,9 @@ export class DefaultResourceComposer implements ResourceComposer {
     accessor: ResourceAccessorMetadata,
   ): any {
     const paramResource = accessor.paramMap[param];
-    const isSameResource = paramResource === resource.constructor || paramResource === InheritedResourceType;
+    const isSameResource =
+      (paramResource === resource.constructor && relMeta.resource === paramResource) ||
+      paramResource === InheritedResourceType;
     const paramMeta = isSameResource ? relMeta : getResourceMetadata(paramResource);
 
     if (paramMeta.idProperty) {

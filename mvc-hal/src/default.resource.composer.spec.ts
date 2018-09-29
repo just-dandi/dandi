@@ -1,7 +1,7 @@
-import { Uuid } from '@dandi/common';
+import { Disposable, Uuid } from '@dandi/common';
 import { Provider } from '@dandi/core';
 import { testHarnessSingle } from '@dandi/core-testing';
-import { ComposedResource, ListRelation, Relation, ResourceId, SELF_RELATION } from '@dandi/hal';
+import { ComposedResource, HalModelBase, ListRelation, Relation, ResourceId, SELF_RELATION } from '@dandi/hal';
 import { ModelValidator } from '@dandi/model-validation';
 import {
   Controller,
@@ -362,18 +362,20 @@ describe('DefaultResourceComposer', () => {
           },
         },
       );
-      const composer = await harness.inject(ResourceComposer);
-      const result = await composer.compose(
-        new TestModel(42, 7),
-        CompositionContext.for('self', 'test/42', ['parent']),
-      );
+      await Disposable.useAsync(await harness.resolve(ResourceComposer), async (composerResult) => {
+        const composer = composerResult.singleValue;
+        const result = await composer.compose(
+          new TestModel(42, 7),
+          CompositionContext.for('self', 'test/42', ['parent']),
+        );
 
-      expect(result.embedded).to.have.keys('parent');
-      const embeddedParent = result.getEmbedded('parent') as ComposedResource<any>;
-      expect(embeddedParent).to.exist;
-      expect(embeddedParent).to.be.instanceOf(ComposedResource);
-      expect(embeddedParent.entity).to.be.instanceOf(TestModelParent);
-      expect(embeddedParent.entity.id).to.equal(7);
+        expect(result.embedded).to.have.keys('parent');
+        const embeddedParent = result.getEmbedded('parent') as ComposedResource<any>;
+        expect(embeddedParent).to.exist;
+        expect(embeddedParent).to.be.instanceOf(ComposedResource);
+        expect(embeddedParent.entity).to.be.instanceOf(TestModelParent);
+        expect(embeddedParent.entity.id).to.equal(7);
+      });
     });
 
     it('embeds links for array relations', async () => {
@@ -504,28 +506,30 @@ describe('DefaultResourceComposer', () => {
         },
       );
 
-      const composer = await harness.inject(ResourceComposer);
-      const result = await composer.compose(
-        new TestModelParent(42),
-        CompositionContext.for('self', '/test/42', ['children']),
-      );
+      await Disposable.useAsync(await harness.resolve(ResourceComposer), async (composerResult) => {
+        const composer = composerResult.singleValue;
+        const result = await composer.compose(
+          new TestModelParent(42),
+          CompositionContext.for('self', '/test/42', ['children']),
+        );
 
-      expect(result.embedded).to.have.keys('children');
-      const embeddedChildren = result.getEmbedded('children') as ComposedResource<TestModel>[];
-      expect(embeddedChildren).to.exist;
-      expect(embeddedChildren).to.be.instanceOf(Array);
-      embeddedChildren.forEach((child) => {
-        expect(child).to.be.instanceOf(ComposedResource);
-        expect(child.entity).to.be.instanceOf(TestModel);
+        expect(result.embedded).to.have.keys('children');
+        const embeddedChildren = result.getEmbedded('children') as ComposedResource<TestModel>[];
+        expect(embeddedChildren).to.exist;
+        expect(embeddedChildren).to.be.instanceOf(Array);
+        embeddedChildren.forEach((child) => {
+          expect(child).to.be.instanceOf(ComposedResource);
+          expect(child.entity).to.be.instanceOf(TestModel);
+        });
+        expect(embeddedChildren.map((child) => child.entity)).to.deep.equal([
+          { id: 1 },
+          { id: 2 },
+          { id: 3 },
+          { id: 5 },
+          { id: 8 },
+          { id: 13 },
+        ]);
       });
-      expect(embeddedChildren.map((child) => child.entity)).to.deep.equal([
-        { id: 1 },
-        { id: 2 },
-        { id: 3 },
-        { id: 5 },
-        { id: 8 },
-        { id: 13 },
-      ]);
     });
 
     it('embeds nested links for non-array relations', async () => {
@@ -671,23 +675,26 @@ describe('DefaultResourceComposer', () => {
           },
         },
       );
-      const composer = await harness.inject(ResourceComposer);
-      const result = await composer.compose(
-        new LevelThreeModel(21, 42),
-        CompositionContext.for('self', '/level-three/21', ['parent.parent']),
-      );
 
-      expect(result.embedded).to.have.keys('parent');
-      const embeddedParent = result.getEmbedded('parent') as ComposedResource<any>;
-      expect(embeddedParent).to.exist;
-      expect(embeddedParent).to.be.instanceOf(ComposedResource);
-      expect(embeddedParent.entity).to.be.instanceOf(LevelTwoModel);
-      expect(embeddedParent.entity.id).to.equal(42);
-      const embeddedRoot = embeddedParent.getEmbedded('parent') as ComposedResource<any>;
-      expect(embeddedRoot).to.exist;
-      expect(embeddedRoot).to.be.instanceOf(ComposedResource);
-      expect(embeddedRoot.entity).to.be.instanceOf(LevelOneModel);
-      expect(embeddedRoot.entity.id).to.equal(84);
+      await Disposable.useAsync(await harness.resolve(ResourceComposer), async (composerResult) => {
+        const composer = composerResult.singleValue;
+        const result = await composer.compose(
+          new LevelThreeModel(21, 42),
+          CompositionContext.for('self', '/level-three/21', ['parent.parent']),
+        );
+
+        expect(result.embedded).to.have.keys('parent');
+        const embeddedParent = result.getEmbedded('parent') as ComposedResource<any>;
+        expect(embeddedParent).to.exist;
+        expect(embeddedParent).to.be.instanceOf(ComposedResource);
+        expect(embeddedParent.entity).to.be.instanceOf(LevelTwoModel);
+        expect(embeddedParent.entity.id).to.equal(42);
+        const embeddedRoot = embeddedParent.getEmbedded('parent') as ComposedResource<any>;
+        expect(embeddedRoot).to.exist;
+        expect(embeddedRoot).to.be.instanceOf(ComposedResource);
+        expect(embeddedRoot.entity).to.be.instanceOf(LevelOneModel);
+        expect(embeddedRoot.entity.id).to.equal(84);
+      });
     });
 
     it('embeds nested links for array relations', async () => {
@@ -853,34 +860,232 @@ describe('DefaultResourceComposer', () => {
           },
         },
       );
+      await Disposable.useAsync(await harness.resolve(ResourceComposer), async (composerResult) => {
+        const composer = composerResult.singleValue;
+        const result = await composer.compose(
+          new TestModelParent(42),
+          CompositionContext.for('self', '/parent/42/test-model', ['children.other']),
+        );
 
-      const composer = await harness.inject(ResourceComposer);
-      const result = await composer.compose(
-        new TestModelParent(42),
-        CompositionContext.for('self', '/parent/42/test-model', ['children.other']),
-      );
-
-      expect(result.embedded).to.have.keys('children');
-      const embeddedChildren = result.getEmbedded('children') as ComposedResource<TestModel>[];
-      expect(embeddedChildren).to.exist;
-      expect(embeddedChildren).to.be.instanceOf(Array);
-      embeddedChildren.forEach((child) => {
-        expect(child).to.be.instanceOf(ComposedResource);
-        expect(child.entity).to.be.instanceOf(TestModel);
+        expect(result.embedded).to.have.keys('children');
+        const embeddedChildren = result.getEmbedded('children') as ComposedResource<TestModel>[];
+        expect(embeddedChildren).to.exist;
+        expect(embeddedChildren).to.be.instanceOf(Array);
+        embeddedChildren.forEach((child) => {
+          expect(child).to.be.instanceOf(ComposedResource);
+          expect(child.entity).to.be.instanceOf(TestModel);
+        });
+        expect(embeddedChildren.map((child) => child.entity)).to.deep.equal([
+          { id: 1, otherId: 2 },
+          { id: 2, otherId: 4 },
+          { id: 3, otherId: 6 },
+          { id: 5, otherId: 10 },
+          { id: 8, otherId: 16 },
+          { id: 13, otherId: 26 },
+        ]);
+        embeddedChildren.forEach((child) => {
+          const embeddedOther = child.getEmbedded('other') as ComposedResource<OtherModel>;
+          expect(embeddedOther).to.exist;
+          expect(embeddedOther.entity).to.be.instanceOf(OtherModel);
+          expect(embeddedOther.entity.id).to.equal(child.entity.otherId);
+        });
       });
-      expect(embeddedChildren.map((child) => child.entity)).to.deep.equal([
-        { id: 1, otherId: 2 },
-        { id: 2, otherId: 4 },
-        { id: 3, otherId: 6 },
-        { id: 5, otherId: 10 },
-        { id: 8, otherId: 16 },
-        { id: 13, otherId: 26 },
-      ]);
-      embeddedChildren.forEach((child) => {
-        const embeddedOther = child.getEmbedded('other') as ComposedResource<OtherModel>;
-        expect(embeddedOther).to.exist;
-        expect(embeddedOther.entity).to.be.instanceOf(OtherModel);
-        expect(embeddedOther.entity.id).to.equal(child.entity.otherId);
+    });
+
+    it('embeds nested links for array relations on an index model', async () => {
+      class Item extends HalModelBase {
+        constructor(source?: any) {
+          super(source);
+        }
+
+        @ResourceId()
+        public itemId: number;
+      }
+      class List extends HalModelBase {
+        constructor(source?: any) {
+          super(source);
+        }
+
+        @ResourceId()
+        public listId: number;
+
+        @ListRelation(Item)
+        public items: Item[];
+      }
+      class Me extends HalModelBase {
+        constructor(source?: any) {
+          super(source);
+        }
+
+        @ListRelation(List)
+        public lists: List[];
+      }
+
+      @Controller('/list')
+      class ListController {
+        @HttpGet()
+        @ResourceListAccessor(List)
+        async getLists(): Promise<List[]> {
+          return [
+            new List({ listId: Math.random() }),
+            new List({ listId: Math.random() }),
+            new List({ listId: Math.random() }),
+          ];
+        }
+
+        @HttpGet('/:listId')
+        @ResourceAccessor(List)
+        async getList(
+          @PathParam(Number)
+          @AccessorResourceId()
+          listId,
+        ) {
+          return new List({ listId });
+        }
+
+        @HttpGet('/:listId/item')
+        @ResourceListAccessor(Item)
+        async getListItems(
+          @PathParam(Number)
+          @AccessorResourceId(List)
+          listId,
+        ) {
+          return [
+            new Item({ listId, itemId: Math.random() }),
+            new Item({ listId, itemId: Math.random() }),
+            new Item({ listId, itemId: Math.random() }),
+          ];
+        }
+      }
+
+      @Controller('/me')
+      class MeController {
+        @HttpGet()
+        @ResourceAccessor(Me)
+        async getMe(): Promise<Me> {
+          return new Me();
+        }
+      }
+
+      @Controller('/item')
+      class ItemController {
+        @HttpGet(':itemId')
+        @ResourceAccessor(Item)
+        async getItem(
+          @PathParam(Number)
+          @AccessorResourceId()
+          itemId,
+        ): Promise<Item> {
+          return new Item({ itemId });
+        }
+      }
+
+      const routes: Provider<Route[]> = {
+        provide: Routes,
+        useValue: [
+          {
+            httpMethod: HttpMethod.get,
+            path: '/list',
+            siblingMethods: new Set<HttpMethod>([HttpMethod.get]),
+            controllerCtr: ListController,
+            controllerMethod: 'getLists',
+          },
+          {
+            httpMethod: HttpMethod.get,
+            path: '/list/:listId',
+            siblingMethods: new Set<HttpMethod>([HttpMethod.get]),
+            controllerCtr: ListController,
+            controllerMethod: 'getList',
+          },
+          {
+            httpMethod: HttpMethod.get,
+            path: '/list/:listId/item',
+            siblingMethods: new Set<HttpMethod>([HttpMethod.get]),
+            controllerCtr: ListController,
+            controllerMethod: 'getListItems',
+          },
+          {
+            httpMethod: HttpMethod.get,
+            path: '/me',
+            siblingMethods: new Set<HttpMethod>([HttpMethod.get]),
+            controllerCtr: MeController,
+            controllerMethod: 'getMe',
+          },
+          {
+            httpMethod: HttpMethod.get,
+            path: '/item/:id',
+            siblingMethods: new Set<HttpMethod>([HttpMethod.get]),
+            controllerCtr: ItemController,
+            controllerMethod: 'getItem',
+          },
+        ],
+      };
+      const request: Provider<MvcRequest> = {
+        provide: MvcRequest,
+        useValue: {
+          body: null,
+          params: {},
+          path: '/parent/42/test-model',
+          query: {},
+          method: HttpMethod.get,
+          get(key: string) {
+            return null;
+          },
+        },
+      };
+
+      const requestInfo: Provider<RequestInfo> = {
+        provide: RequestInfo,
+        useValue: {
+          requestId: Uuid.create(),
+          performance: createStubInstance(PerfRecord),
+        },
+      };
+
+      const harness = await testHarnessSingle(
+        DefaultResourceComposer,
+        MeController,
+        DefaultRouteInitializer,
+        routes,
+        request,
+        requestInfo,
+        {
+          provide: ModelValidator,
+          useValue: {
+            validateModel: stub().returnsArg(1),
+            validateMember: stub().returnsArg(2),
+          },
+        },
+      );
+      await Disposable.useAsync(await harness.resolve(ResourceComposer), async (composerResult) => {
+        const composer = composerResult.singleValue;
+        const result = await composer.compose(
+          new Me(),
+          CompositionContext.for('self', '/me', ['lists.items']),
+        );
+
+        expect(result.embedded).to.have.keys('lists');
+        const embeddedLists = result.getEmbedded('lists') as ComposedResource<List>[];
+        expect(embeddedLists).to.exist;
+        expect(embeddedLists).to.be.instanceOf(Array);
+        embeddedLists.forEach((list) => {
+          expect(list).to.be.instanceOf(ComposedResource);
+          expect(list.entity).to.be.instanceOf(List);
+        });
+        // expect(embeddedLists.map((child) => child.entity)).to.deep.equal([
+        //   { id: 1, otherId: 2 },
+        //   { id: 2, otherId: 4 },
+        //   { id: 3, otherId: 6 },
+        //   { id: 5, otherId: 10 },
+        //   { id: 8, otherId: 16 },
+        //   { id: 13, otherId: 26 },
+        // ]);
+        // embeddedLists.forEach((child) => {
+        //   const embeddedOther = child.getEmbedded('other') as ComposedResource<List>;
+        //   expect(embeddedOther).to.exist;
+        //   expect(embeddedOther.entity).to.be.instanceOf(List);
+        //   expect(embeddedOther.entity.listId).to.equal(child.entity.otherId);
+        // });
       });
     });
   });
