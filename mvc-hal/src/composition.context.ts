@@ -1,7 +1,6 @@
 import { Disposable } from '@dandi/common';
 import { Repository } from '@dandi/core';
-
-import { SELF_RELATION } from './relation.decorator';
+import { SELF_RELATION } from '@dandi/hal';
 
 export type ParentCompositionContext = { [P in keyof CompositionContext]?: CompositionContext[P] };
 

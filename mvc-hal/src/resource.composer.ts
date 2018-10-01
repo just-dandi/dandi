@@ -1,6 +1,6 @@
 import { InjectionToken } from '@dandi/core';
+import { ComposedResource } from '@dandi/hal';
 
-import { ComposedResource } from './composed.resource';
 import { CompositionContext } from './composition.context';
 import { localOpinionatedToken } from './local.token';
 
