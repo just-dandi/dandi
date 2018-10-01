@@ -20,7 +20,9 @@ export function getAccessorMetadata(target: MethodTarget<any>, propertyKey: stri
 export function resourceAccessor(resource: Constructor<any>, target: MethodTarget<any>, propertyKey: string) {
   const meta = getResourceMetadata(resource);
   meta.getAccessor = getAccessorMetadata(target, propertyKey);
-  meta.getAccessor.resource = resource;
+  if (resource) {
+    meta.getAccessor.resource = resource;
+  }
 
   // also set a reference to the metadata on the method itself so it can be retrieved and updated by resourceIdDecorator
   getMetadata(resourceMetaKey(resource), () => meta, target[propertyKey]);

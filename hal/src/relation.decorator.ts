@@ -29,10 +29,10 @@ export function relationDecorator(
   }
 }
 
-export function Relation(resource: Constructor<any>, rel?: string) {
+export function Relation(resource?: Constructor<any>, rel?: string) {
   return relationDecorator.bind(null, resource, rel, false);
 }
 
-export function ListRelation(resource: Constructor<any>, rel?: string) {
+export function ListRelation(resource?: Constructor<any>, rel?: string) {
   return relationDecorator.bind(null, resource, rel, true);
 }
