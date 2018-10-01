@@ -16,7 +16,7 @@ export class HalModelBase {
     return this._embedded[rel] as T;
   }
 
-  protected getLink(rel: string): HalLink {
+  public getLink(rel: string): HalLink {
     if (!this._links) {
       return undefined;
     }
