@@ -1,12 +1,8 @@
-import { readdir, stat } from 'fs-extra';
 import { extname, resolve } from 'path';
 
-import { Inject } from './inject.decorator';
-import { Injectable } from './injectable.decorator';
-import { Provider } from './provider';
-import { Repository } from './repository';
+import { Inject, Injectable, Provider, Repository, Scanner, ScannerConfig, scannerProvider } from '@dandi/core';
 
-import { Scanner, ScannerConfig, scannerProvider } from './scanner';
+import { readdir, stat } from 'fs-extra';
 
 const DEFAULT_EXTENSIONS = ['.ts', '.js'];
 

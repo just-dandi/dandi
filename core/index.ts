@@ -2,7 +2,6 @@ export * from './src/ambient.injectable.scanner';
 export * from './src/bootstrapper';
 export * from './src/console.logger';
 export * from './src/container';
-export * from './src/file.system.scanner';
 export * from './src/inject.decorator';
 export * from './src/injectable.decorator';
 export * from './src/injectable.metadata';

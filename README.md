@@ -30,12 +30,13 @@ allow developers to use only the features they require.
 # Core Modules
 
 - **[@dandi/common](./common)** 🕸 - Common types and utilities
-- **[@dandi/core](./core)** - Dependency Injection
-- **[@dandi/data](./data)** - Base types and utilities for working with data services
-- **[@dandi/config](./config)** - Configuration services
+- **[@dandi/core](./core)** 🕸 - Dependency Injection
+- **[@dandi/core-node](./core-node)** - Additional DI utilities specific to NodeJS
+- **[@dandi/data](./data)** 🕸 - Base types and utilities for working with data services
+- **[@dandi/config](./config)** 🕸 - Configuration services
 - **[@dandi/hal](./hal)** - 🕸 - Model decorators, basic types and utilities for supporting HAL
 - **[@dandi/model](./model)** 🕸 - Model decorators
-- **[@dandi/model-validation](./model-validation)** - Model validation utilities
+- **[@dandi/model-validation](./model-validation)** 🕸 - Model validation utilities
 - **[@dandi/mvc](./mvc)** - MVC decorators and base utilities (not specific to Express)
 - **[@dandi/mvc-hal](./mvc-hal)** - Supports rendering HAL JSON from existing `@dandi/mvc` controllers
 

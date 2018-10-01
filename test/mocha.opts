@@ -7,6 +7,8 @@ common/index.ts
 common/src/**/*.spec.ts
 core/index.ts
 core/src/**/*.spec.ts
+core-node/index.ts
+core-node/src/**/*.spec.ts
 cache/index.ts
 cache/src/**/*.spec.ts
 data/index.ts
