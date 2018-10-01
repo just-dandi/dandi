@@ -1,6 +1,6 @@
 {
   "name": "@dandi/model",
-  "version": "1.0.0-alpha.23",
+  "version": "1.0.0-alpha.24",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -13,6 +13,6 @@
   "homepage": "https://github.com/dandi-mvc/dandi#readme",
   "devDependencies": {},
   "peerDependencies": {
-    "@dandi/common": "1.0.0-alpha.23"
+    "@dandi/common": "1.0.0-alpha.24"
   }
 }
