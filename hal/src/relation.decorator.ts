@@ -19,6 +19,9 @@ export function relationDecorator(
     meta.relations[rel || propertyKey] = relMeta;
   } else {
     relMeta.list = list;
+    if (!resource) {
+      return;
+    }
     if (relMeta.resource) {
       if (relMeta.resource !== resource) {
         throw new Error('resource mismatch');
