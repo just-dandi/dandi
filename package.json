@@ -1,7 +1,7 @@
 {
   "name": "dandi",
   "private": true,
-  "version": "1.0.0-alpha.24",
+  "version": "1.0.0-alpha.25",
   "description": "",
   "scripts": {
     "test": "mocha $NODE_DEBUG_OPTION",

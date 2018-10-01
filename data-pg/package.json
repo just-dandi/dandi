@@ -1,6 +1,6 @@
 {
   "name": "@dandi/data-pg",
-  "version": "1.0.0-alpha.24",
+  "version": "1.0.0-alpha.25",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -19,10 +19,10 @@
     "@types/pg": "^7.4.10"
   },
   "peerDependencies": {
-    "@dandi/common": "1.0.0-alpha.24",
-    "@dandi/core": "1.0.0-alpha.24",
-    "@dandi/data": "1.0.0-alpha.24",
-    "@dandi/model": "1.0.0-alpha.24",
-    "@dandi/model-validation": "1.0.0-alpha.24"
+    "@dandi/common": "1.0.0-alpha.25",
+    "@dandi/core": "1.0.0-alpha.25",
+    "@dandi/data": "1.0.0-alpha.25",
+    "@dandi/model": "1.0.0-alpha.25",
+    "@dandi/model-validation": "1.0.0-alpha.25"
   }
 }
