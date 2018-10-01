@@ -1,5 +1,5 @@
 import { Constructor } from '@dandi/common';
-import { getResourceMetadata, ResourceMetadata, resourceMetaKey } from '@dandi/hal';
+import { resourceMetaKey, ResourceMetadata, getResourceMetadata } from './resource.metadata';
 
 export function Relations(forModel: Constructor<any>) {
   return function(target: Constructor<any>) {
