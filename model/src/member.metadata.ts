@@ -48,7 +48,7 @@ export function getAllKeys(obj: ModelMetadata): string[] {
 
 export function getMemberMetadata(target: any, propertyName: string, paramIndex?: number): MemberMetadata {
   const modelMetadata = getModelMetadata(target);
-  const key = paramIndex === undefined ? propertyName : `${propertyName}__${paramIndex}`;
+  const key = typeof paramIndex === 'number' ? `${propertyName}__${paramIndex}` : propertyName;
   if (!modelMetadata[key]) {
     modelMetadata[key] = {} as any;
   }

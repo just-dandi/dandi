@@ -43,6 +43,26 @@ describe('ModelDecorator', () => {
       const meta = getMemberMetadata(TestClass, 'requiredProperty');
       expect(meta.required).to.be.true;
     });
+
+    it('sets the "required" property on the member\'s metadata when decorating a set accessor', () => {
+      class TestClass {
+        @Required()
+        public set requiredProperty(value: string) {}
+      }
+      const meta = getMemberMetadata(TestClass, 'requiredProperty');
+      expect(meta.required).to.be.true;
+    });
+
+    it('sets the "required" property on the member\'s metadata when decorating a get accessor', () => {
+      class TestClass {
+        @Required()
+        public get requiredProperty(): string {
+          return null;
+        }
+      }
+      const meta = getMemberMetadata(TestClass, 'requiredProperty');
+      expect(meta.required).to.be.true;
+    });
   });
 
   describe('@MinLength', () => {
