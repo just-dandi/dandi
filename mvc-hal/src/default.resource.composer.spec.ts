@@ -1,7 +1,19 @@
 import { Disposable, Uuid } from '@dandi/common';
 import { Provider } from '@dandi/core';
 import { testHarnessSingle } from '@dandi/core-testing';
-import { ComposedResource, HalModelBase, ListRelation, Relation, ResourceId, SELF_RELATION } from '@dandi/hal';
+import {
+  AccessorResourceId,
+  CompositionContext,
+  ResourceAccessor,
+  ResourceComposer,
+  ResourceListAccessor,
+  ComposedResource,
+  HalModelBase,
+  ListRelation,
+  Relation,
+  ResourceId,
+  SELF_RELATION,
+} from '@dandi/hal';
 import { ModelValidator } from '@dandi/model-validation';
 import {
   Controller,
@@ -15,13 +27,6 @@ import {
   Route,
   Routes,
 } from '@dandi/mvc';
-import {
-  AccessorResourceId,
-  CompositionContext,
-  ResourceAccessor,
-  ResourceComposer,
-  ResourceListAccessor,
-} from '@dandi/mvc-hal';
 
 import { expect } from 'chai';
 import { createStubInstance, stub } from 'sinon';

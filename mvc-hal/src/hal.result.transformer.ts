@@ -1,10 +1,8 @@
 import { Inject, Injectable } from '@dandi/core';
-import { Resource, SELF_RELATION } from '@dandi/hal';
+import { CompositionContext, Resource, ResourceComposer, SELF_RELATION } from '@dandi/hal';
 import { ControllerResult, ControllerResultTransformer, ParamMap, RequestQueryParamMap, MvcRequest } from '@dandi/mvc';
 
-import { CompositionContext } from './composition.context';
 import { HalControllerResult } from './hal.controller.result';
-import { ResourceComposer } from './resource.composer';
 
 export const EMBED_RELS_KEY = '_embedded';
 

@@ -8,6 +8,9 @@ import {
   ResourceRelationMetadata,
   ResourceAccessorMetadata,
   ComposedResource,
+  ResourceComposer,
+  CompositionContext,
+  InheritedResourceType,
 } from '@dandi/hal';
 import {
   ControllerMethodMetadata,
@@ -22,10 +25,6 @@ import {
   RouteInitializer,
   Routes,
 } from '@dandi/mvc';
-
-import { InheritedResourceType } from './accessor.resource.id.decorator';
-import { CompositionContext } from './composition.context';
-import { ResourceComposer } from './resource.composer';
 
 function embedResponseAccess(): MvcResponse {
   throw new Error(`Response object should not be used during embedding`);
