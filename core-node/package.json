@@ -1,6 +1,6 @@
 {
   "name": "@dandi/core-node",
-  "version": "1.0.0-alpha.25",
+  "version": "1.0.0-alpha.26",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -18,7 +18,7 @@
     "@types/fs-extra": "^5.0.4"
   },
   "peerDependencies": {
-    "@dandi/common": "1.0.0-alpha.25",
-    "@dandi/core": "1.0.0-alpha.25"
+    "@dandi/common": "1.0.0-alpha.26",
+    "@dandi/core": "1.0.0-alpha.26"
   }
 }
