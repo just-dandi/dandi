@@ -71,7 +71,7 @@ export class DefaultResourceComposer implements ResourceComposer {
     context.relStack.push('self');
 
     Object.keys(meta.relations).forEach((rel) => {
-      result.addLink(rel, { href: this.getUrl(meta.relations[rel], resource) });
+      result.addLink(rel, { href: this.getUrl(rel, meta.relations[rel], resource) });
     });
 
     if (context.embeddedRels && context.embeddedRels.length) {
@@ -98,18 +98,22 @@ export class DefaultResourceComposer implements ResourceComposer {
     }
 
     result.addSelfLink({
-      href: this.getUrl(meta, resource),
+      href: this.getUrl(SELF_RELATION, meta, resource),
     });
 
     return result;
   }
 
-  private getUrl(relMeta: ResourceRelationMetadata, resource: any): string {
+  private getUrl(rel, relMeta: ResourceRelationMetadata, resource: any): string {
     const relResourceMeta = getResourceMetadata(relMeta.resource);
 
     const accessor = relMeta.list ? relResourceMeta.listAccessor : relResourceMeta.getAccessor;
     if (!accessor) {
-      throw new Error('Relation does not have corresponding accessor');
+      throw new Error(
+        `Relation '${rel}' of '${relMeta.resource.name}' does not have corresponding${
+          relMeta.list ? ' list' : ' resource'
+        } accessor`,
+      );
     }
     const controllerMeta = getControllerMetadata(accessor.controller);
     const methodMeta = controllerMeta.routeMap.get(accessor.method);
@@ -167,7 +171,7 @@ export class DefaultResourceComposer implements ResourceComposer {
       return resource[meta.idProperty];
     }
 
-    throw new Error('Could not determine property for param');
+    throw new Error(`Could not determine @ResourceId property on '${resource.constructor.name}' for param '${param}'`);
   }
 
   private getMethodPath(methodMeta: ControllerMethodMetadata): string {

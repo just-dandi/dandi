@@ -80,6 +80,109 @@ describe('DefaultResourceComposer', () => {
       expect(result.getLink(SELF_RELATION)).to.include({ href: '/test/42' });
     });
 
+    it('adds self link on models with no relations and no identifier', async () => {
+      class TestModel {
+        constructor() {}
+      }
+
+      @Controller('/test')
+      class TestController {
+        @HttpGet()
+        @ResourceAccessor(TestModel)
+        getModel(): Promise<TestModel> {
+          return null;
+        }
+      }
+
+      const routes: Provider<Route[]> = {
+        provide: Routes,
+        useValue: [
+          {
+            httpMethod: HttpMethod.get,
+            path: '/test',
+            siblingMethods: new Set<HttpMethod>([HttpMethod.get]),
+            controllerCtr: TestController,
+            controllerMethod: 'getModel',
+          },
+        ],
+      };
+
+      const harness = await testHarnessSingle(DefaultResourceComposer, TestController, DefaultRouteInitializer, routes);
+      const composer = await harness.inject(ResourceComposer);
+      const result = await composer.compose(
+        new TestModel(),
+        CompositionContext.for('self', '/test', []),
+      );
+
+      expect(result.getLink(SELF_RELATION)).to.exist;
+      expect(result.getLink(SELF_RELATION)).to.include({ href: '/test' });
+    });
+
+    it('adds self link on models with relations, but no identifier', async () => {
+      class Resource {
+        @ResourceId()
+        resourceId: number;
+      }
+      class Index {
+        constructor() {}
+
+        @ListRelation(Resource)
+        public resources: Resource[];
+      }
+
+      @Controller('/index')
+      class IndexController {
+        @HttpGet()
+        @ResourceAccessor(Index)
+        getModel(): Promise<Index> {
+          return null;
+        }
+      }
+
+      @Controller('/resource')
+      class ResourceController {
+        @ResourceListAccessor(Resource)
+        @HttpGet()
+        getResources() {}
+
+        @ResourceAccessor(Resource)
+        @HttpGet(':resourceId')
+        getResource(
+          @PathParam(Number)
+          @AccessorResourceId()
+          resourceId,
+        ) {}
+      }
+
+      const routes: Provider<Route[]> = {
+        provide: Routes,
+        useValue: [
+          {
+            httpMethod: HttpMethod.get,
+            path: '/index',
+            siblingMethods: new Set<HttpMethod>([HttpMethod.get]),
+            controllerCtr: IndexController,
+            controllerMethod: 'getModel',
+          },
+        ],
+      };
+
+      const harness = await testHarnessSingle(
+        DefaultResourceComposer,
+        IndexController,
+        DefaultRouteInitializer,
+        routes,
+      );
+      const composer = await harness.inject(ResourceComposer);
+      const result = await composer.compose(
+        new Index(),
+        CompositionContext.for('self', '/index', []),
+      );
+
+      expect(result.getLink(SELF_RELATION)).to.exist;
+      expect(result.getLink(SELF_RELATION)).to.include({ href: '/index' });
+    });
+
     it('adds links for non-array relations specified by the @Relation() decorator', async () => {
       class TestModelParent {
         constructor(id?: number) {
