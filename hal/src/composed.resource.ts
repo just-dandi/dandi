@@ -1,4 +1,4 @@
-import { Jsonable } from '@dandi/common';
+import { isJsonable, Jsonable } from '@dandi/common';
 
 import { SELF_RELATION } from './relation.decorator';
 
@@ -39,8 +39,9 @@ export class ComposedResource<T> implements Jsonable {
     return !!this.embedded[rel];
   }
 
-  public toJsonObject(): any {
-    return Object.assign({ _links: this.links }, this.entity, this.getEmbeddedJsonObject());
+  public toJSON(): any {
+    const entity = isJsonable(this.entity) ? this.entity.toJSON() : this.entity;
+    return Object.assign({ _links: this.links }, entity, this.getEmbeddedJsonObject());
   }
 
   private getEmbeddedJsonObject() {
@@ -51,7 +52,7 @@ export class ComposedResource<T> implements Jsonable {
     return {
       _embedded: Object.keys(this.embedded).reduce((result, rel) => {
         const composed = this.embedded[rel];
-        result[rel] = Array.isArray(composed) ? composed.map((item) => item.toJsonObject()) : composed.toJsonObject();
+        result[rel] = Array.isArray(composed) ? composed.map((item) => item.toJSON()) : composed.toJSON();
         return result;
       }, {}),
     };

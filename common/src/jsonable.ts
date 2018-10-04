@@ -1,10 +1,10 @@
 export interface Jsonable {
-  toJsonObject(): any;
+  toJSON(): any;
 }
 
 export function isJsonable(obj: any): obj is Jsonable {
   if (!obj) {
     return false;
   }
-  return typeof obj.toJsonObject === 'function';
+  return typeof obj.toJSON === 'function';
 }
