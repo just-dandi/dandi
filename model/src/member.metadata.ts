@@ -11,6 +11,7 @@ export interface MemberMetadata {
   pattern?: RegExp;
   format?: string;
   oneOf?: Array<Constructor<any>>;
+  json?: boolean;
 }
 
 export interface ModelMetadata {

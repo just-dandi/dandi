@@ -1,44 +1,47 @@
 import { Container } from '@dandi/core';
 import { MemberMetadata } from '@dandi/model';
-import {
-  DecoratorModelValidator,
-  ModelValidator,
-  PrimitiveTypeValidator,
-  TypeValidator,
-} from '@dandi/model-validation';
+import { DecoratorModelBuilder, ModelBuilder, PrimitiveTypeConverter, TypeConverter } from '@dandi/model-builder';
 import { PathParam, RequestPathParamMap } from '@dandi/mvc';
 
 import { expect } from 'chai';
 import { SinonStubbedInstance, stub, createStubInstance } from 'sinon';
 
+import { RequestParamModelBuilderOptionsProvider } from './request.param.decorator';
 import { requestParamValidatorFactory } from './request.param.validator';
 
 describe('requestParamValidatorFactory', () => {
   let paramMap: { [key: string]: string };
-  let validator: SinonStubbedInstance<ModelValidator>;
+  let builder: SinonStubbedInstance<ModelBuilder>;
   let memberMetadata: MemberMetadata;
 
   beforeEach(() => {
     paramMap = { foo: 'bar' };
-    validator = createStubInstance(DecoratorModelValidator);
+    builder = createStubInstance(DecoratorModelBuilder);
     memberMetadata = {
       type: String,
     };
   });
   afterEach(() => {
     paramMap = undefined;
-    validator = undefined;
+    builder = undefined;
   });
 
   it('calls validators with the value from the param map specified by the key', () => {
-    requestParamValidatorFactory(String, 'foo', memberMetadata, paramMap, validator);
+    requestParamValidatorFactory(
+      String,
+      'foo',
+      memberMetadata,
+      paramMap,
+      builder,
+      RequestParamModelBuilderOptionsProvider.useFactory(),
+    );
 
-    expect(validator.validateMember).to.have.been.calledOnce.calledWith(memberMetadata, 'foo', 'bar');
+    expect(builder.constructMember).to.have.been.calledOnce.calledWith(memberMetadata, 'foo', 'bar');
   });
 
   it('works', async () => {
     const s = stub();
-    const validate = stub();
+    const convert = stub();
     class TestController {
       public testMethod(@PathParam(String) foo: string) {
         s(foo);
@@ -47,13 +50,13 @@ describe('requestParamValidatorFactory', () => {
     const controller = new TestController();
     const container = new Container({
       providers: [
-        DecoratorModelValidator,
-        PrimitiveTypeValidator,
+        DecoratorModelBuilder,
+        PrimitiveTypeConverter,
         {
-          provide: TypeValidator,
+          provide: TypeConverter,
           useValue: {
             type: String,
-            validate,
+            convert,
           },
         },
         {
@@ -68,6 +71,6 @@ describe('requestParamValidatorFactory', () => {
 
     await container.invoke(controller, controller.testMethod);
 
-    expect(validate).to.have.been.calledWith('bar', { type: String });
+    expect(convert).to.have.been.calledWith('bar', { type: String });
   });
 });

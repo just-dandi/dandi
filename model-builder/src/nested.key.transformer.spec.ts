@@ -1,15 +1,15 @@
 import { expect } from 'chai';
 
-import { CamelSnakeDataMapper } from './camel.snake.data.mapper';
+import { NestedKeyTransformer } from './nested.key.transformer';
 
-describe('CamelSnakeDataMapper', () => {
-  let dataMapper: CamelSnakeDataMapper;
+describe('NestedKeyTransformer', () => {
+  let transformer: NestedKeyTransformer;
 
   beforeEach(() => {
-    dataMapper = new CamelSnakeDataMapper();
+    transformer = new NestedKeyTransformer();
   });
   afterEach(() => {
-    dataMapper = undefined;
+    transformer = undefined;
   });
 
   describe('mapFromDb', () => {
@@ -19,7 +19,7 @@ describe('CamelSnakeDataMapper', () => {
         'foo.b': 'okay',
         bar: 'hello',
       };
-      expect(dataMapper.mapFromDb(dbObj)).to.deep.equal({
+      expect(transformer.transform(dbObj)).to.deep.equal({
         bar: 'hello',
         foo: {
           a: 'yes',
@@ -34,7 +34,7 @@ describe('CamelSnakeDataMapper', () => {
         'foo.b': null,
         bar: 'hello',
       };
-      expect(dataMapper.mapFromDb(dbObj)).to.deep.equal({
+      expect(transformer.transform(dbObj)).to.deep.equal({
         bar: 'hello',
       });
     });
@@ -45,7 +45,7 @@ describe('CamelSnakeDataMapper', () => {
         'foo.b': 'yes',
         bar: 'hello',
       };
-      expect(dataMapper.mapFromDb(dbObj)).to.deep.equal({
+      expect(transformer.transform(dbObj)).to.deep.equal({
         bar: 'hello',
         foo: {
           a: null,
@@ -60,7 +60,7 @@ describe('CamelSnakeDataMapper', () => {
         'foo.b.okay': 'yes',
         bar: 'hello',
       };
-      expect(dataMapper.mapFromDb(dbObj)).to.deep.equal({
+      expect(transformer.transform(dbObj)).to.deep.equal({
         bar: 'hello',
         foo: {
           a: null,

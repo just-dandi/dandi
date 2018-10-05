@@ -1,5 +1,5 @@
 import { MemberMetadata } from '@dandi/model';
-import { ModelValidator } from '@dandi/model-validation';
+import { MemberBuilderOptions, ModelBuilder } from '@dandi/model-builder';
 
 import { ParamMap } from './tokens';
 
@@ -8,8 +8,9 @@ export function requestParamValidatorFactory(
   paramName: string,
   memberMetadata: MemberMetadata,
   paramMap: ParamMap,
-  validator: ModelValidator,
+  builder: ModelBuilder,
+  options: MemberBuilderOptions,
 ) {
   const value = paramMap[paramName];
-  return validator.validateMember(memberMetadata, paramName, value);
+  return builder.constructMember(memberMetadata, paramName, value, options);
 }

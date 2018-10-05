@@ -1,9 +1,10 @@
 import { Constructor, MethodTarget } from '@dandi/common';
 import { getInjectableParamMetadata, ParamMetadata, Provider } from '@dandi/core';
-import { ModelValidator } from '@dandi/model-validation';
+import { ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder';
 
 import { ModelBindingError } from './errors';
 import { MvcRequest } from './mvc.request';
+import { RequestParamModelBuilderOptions, RequestParamModelBuilderOptionsProvider } from './request.param.decorator';
 import { HttpRequestBody } from './tokens';
 
 export interface RequestBody<TModel, TTarget> extends ParamMetadata<TTarget> {
@@ -13,7 +14,7 @@ export interface RequestBody<TModel, TTarget> extends ParamMetadata<TTarget> {
 export function requestBodyProvider(model: Constructor<any>): Provider<any> {
   return {
     provide: HttpRequestBody,
-    useFactory: (req: MvcRequest, validator: ModelValidator) => {
+    useFactory: (req: MvcRequest, builder: ModelBuilder, options: ModelBuilderOptions) => {
       if (!req.body) {
         return undefined;
       }
@@ -21,13 +22,14 @@ export function requestBodyProvider(model: Constructor<any>): Provider<any> {
         return req.body;
       }
       try {
-        return validator.validateModel(model, req.body);
+        return builder.constructModel(model, req.body, options);
       } catch (err) {
         throw new ModelBindingError(err);
       }
     },
     singleton: true,
-    deps: [MvcRequest, ModelValidator],
+    deps: [MvcRequest, ModelBuilder, RequestParamModelBuilderOptions],
+    providers: [RequestParamModelBuilderOptionsProvider],
   };
 }
 

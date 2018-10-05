@@ -1,17 +1,13 @@
 import { Url } from '@dandi/common';
 import { testHarness } from '@dandi/core-testing';
 import { Property, UrlProperty } from '@dandi/model';
-import { ModelValidator, Validation } from '@dandi/model-validation';
+import { DecoratorModelBuilder, ModelBuilder, Validation } from '@dandi/model-builder';
 
-// tslint:disable no-unused-expression
 import { expect } from 'chai';
-import { createStubInstance, SinonStubbedInstance, stub } from 'sinon';
 
-import { DecoratorModelValidator } from './decorator.model.validator';
-
-describe('DecoratorModelValidator', () => {
+describe('DecoratorModelBuilder', () => {
   const harness = testHarness(Validation);
-  let validator: ModelValidator;
+  let builder: ModelBuilder;
 
   class TestModel {
     @UrlProperty()
@@ -24,21 +20,21 @@ describe('DecoratorModelValidator', () => {
   }
 
   beforeEach(async () => {
-    validator = await harness.inject(ModelValidator);
+    builder = await harness.inject(ModelBuilder);
   });
   afterEach(() => {
-    validator = undefined;
+    builder = undefined;
   });
 
   describe('validate', () => {
     it('converts properties to the correct types for a flat class', () => {
-      const result = validator.validateModel(TestModel, { url: 'http://foo.bar' });
+      const result = builder.constructModel(TestModel, { url: 'http://foo.bar' });
 
       expect(result.url).to.be.instanceOf(Url);
     });
 
     it('converts properties to the correct types for a subclass', () => {
-      const result = validator.validateModel(TestModel2, { url: 'http://foo.bar' });
+      const result = builder.constructModel(TestModel2, { url: 'http://foo.bar' });
 
       expect(result.url).to.be.instanceOf(Url);
     });

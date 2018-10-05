@@ -1,7 +1,7 @@
 import { Constructor, Url, Uuid } from '@dandi/common';
-import { DataMapper, DbQueryable } from '@dandi/data';
+import { DbQueryable } from '@dandi/data';
 import { DataPropertyMetadata, ModelUtil } from '@dandi/model';
-import { ModelValidator } from '@dandi/model-validation';
+import { ModelBuilder } from '@dandi/model-builder';
 
 import { snakeCase } from 'change-case';
 import { QueryResult } from 'pg';
@@ -13,7 +13,7 @@ export interface PgDbQueryableClient {
 }
 
 export class PgDbQueryableBase<TClient extends PgDbQueryableClient> implements DbQueryable {
-  constructor(protected client: TClient, protected dataMapper: DataMapper, protected modelValidator: ModelValidator) {}
+  constructor(protected client: TClient, protected modelBuilder: ModelBuilder) {}
 
   public async query(cmd: string, ...args: any[]): Promise<any[]> {
     let result: QueryResult;
@@ -27,7 +27,7 @@ export class PgDbQueryableBase<TClient extends PgDbQueryableClient> implements D
     } catch (err) {
       throw new PgDbQueryError(err);
     }
-    return result.rows.map((row: any) => this.dataMapper.mapFromDb(row));
+    return result.rows;
   }
 
   public async queryModel<T>(model: Constructor<T>, cmd: string, ...args: any[]): Promise<T[]> {
@@ -36,7 +36,7 @@ export class PgDbQueryableBase<TClient extends PgDbQueryableClient> implements D
     if (!result || !result.length) {
       return result;
     }
-    return result.map((item) => this.modelValidator.validateModel(model, item));
+    return result.map((item) => this.modelBuilder.constructModel(model, item));
   }
 
   public async queryModelSingle<T>(model: Constructor<T>, cmd: string, ...args: any[]): Promise<T> {

@@ -11,7 +11,7 @@ import { RouteInitializer } from './route.initializer';
 import { RouteHandler } from './route.handler';
 
 @Injectable(RouteExecutor)
-export class DefaultMvcRouteExecutor implements RouteExecutor {
+export class DefaultRouteExecutor implements RouteExecutor {
   constructor(
     @Inject(Resolver) private resolver: Resolver,
     @Inject(RouteInitializer) private routeInitializer: RouteInitializer,

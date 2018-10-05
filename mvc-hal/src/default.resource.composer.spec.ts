@@ -11,7 +11,7 @@ import {
   ResourceId,
   SELF_RELATION,
 } from '@dandi/hal';
-import { ModelValidator } from '@dandi/model-validation';
+import { ModelBuilder } from '@dandi/model-builder';
 import {
   Controller,
   DefaultRouteInitializer,
@@ -461,10 +461,10 @@ describe('DefaultResourceComposer', () => {
         request,
         requestInfo,
         {
-          provide: ModelValidator,
+          provide: ModelBuilder,
           useValue: {
-            validateModel: stub().returnsArg(1),
-            validateMember: stub().returnsArg(2),
+            constructModel: stub().returnsArg(1),
+            constructMember: stub().returnsArg(2),
           },
         },
       );
@@ -604,10 +604,10 @@ describe('DefaultResourceComposer', () => {
         request,
         requestInfo,
         {
-          provide: ModelValidator,
+          provide: ModelBuilder,
           useValue: {
-            validateModel: stub().returnsArg(1),
-            validateMember: stub().returnsArg(2),
+            constructModel: stub().returnsArg(1),
+            constructMember: stub().returnsArg(2),
           },
         },
       );
@@ -774,10 +774,10 @@ describe('DefaultResourceComposer', () => {
         request,
         requestInfo,
         {
-          provide: ModelValidator,
+          provide: ModelBuilder,
           useValue: {
-            validateModel: stub().returnsArg(1),
-            validateMember: stub().returnsArg(2),
+            constructModel: stub().returnsArg(1),
+            constructMember: stub().returnsArg(2),
           },
         },
       );
@@ -959,10 +959,10 @@ describe('DefaultResourceComposer', () => {
         request,
         requestInfo,
         {
-          provide: ModelValidator,
+          provide: ModelBuilder,
           useValue: {
-            validateModel: stub().returnsArg(1),
-            validateMember: stub().returnsArg(2),
+            constructModel: stub().returnsArg(1),
+            constructMember: stub().returnsArg(2),
           },
         },
       );
@@ -1156,10 +1156,10 @@ describe('DefaultResourceComposer', () => {
         request,
         requestInfo,
         {
-          provide: ModelValidator,
+          provide: ModelBuilder,
           useValue: {
-            validateModel: stub().returnsArg(1),
-            validateMember: stub().returnsArg(2),
+            constructModel: stub().returnsArg(1),
+            constructMember: stub().returnsArg(2),
           },
         },
       );

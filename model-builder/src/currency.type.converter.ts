@@ -2,12 +2,13 @@ import { Currency } from '@dandi/common';
 import { Injectable } from '@dandi/core';
 import { MemberMetadata } from '@dandi/model';
 
-import { TypeValidator } from './type.validator';
+import { TypeConverter } from './type.converter';
 
-@Injectable(TypeValidator)
-export class CurrencyTypeValidator implements TypeValidator<Currency> {
+@Injectable(TypeConverter)
+export class CurrencyTypeConverter implements TypeConverter<Currency> {
   public readonly type = Currency;
-  public validate(value: any, metadata?: MemberMetadata): Currency {
+
+  public convert(value: any, metadata?: MemberMetadata): Currency {
     const result = Currency.parse(value);
     if (result.valid) {
       return result;

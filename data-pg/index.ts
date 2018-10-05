@@ -1,4 +1,4 @@
-export * from './src/pg.db';
+export * from './src/pg.db.module';
 export * from './src/pg.db.client';
 export * from './src/pg.db.config';
 export * from './src/pg.db.pool';

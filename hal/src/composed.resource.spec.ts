@@ -18,10 +18,10 @@ describe('ComposedResource', () => {
     jsonObject = undefined;
   });
 
-  describe('toJsonObject', () => {
+  describe('toJSON', () => {
     describe('no embeds', () => {
       beforeEach(() => {
-        jsonObject = composed.toJsonObject();
+        jsonObject = composed.toJSON();
       });
 
       it('copies the original entity', () => {
@@ -43,17 +43,17 @@ describe('ComposedResource', () => {
 
       beforeEach(() => {
         const embedded = new ComposedResource({ id: 3 }).addSelfLink({ href: 'parent' });
-        embeddedToJsonObject = spy(embedded, 'toJsonObject');
+        embeddedToJsonObject = spy(embedded, 'toJSON');
         composed.embedResource('parent', embedded);
 
-        jsonObject = composed.toJsonObject();
+        jsonObject = composed.toJSON();
       });
 
       it('includes the map of embedded resources as _embedded', () => {
         expect(jsonObject).to.have.property('_embedded');
       });
 
-      it("includes the output of the embedded resource's toJsonObject", () => {
+      it("includes the output of the embedded resource's toJSON", () => {
         expect(embeddedToJsonObject).to.have.been.called;
         expect(jsonObject._embedded.parent).to.equal(embeddedToJsonObject.firstCall.returnValue);
       });
@@ -68,17 +68,17 @@ describe('ComposedResource', () => {
           new ComposedResource({ id: 4 }).addSelfLink({ href: 'child/4' }),
           new ComposedResource({ id: 5 }).addSelfLink({ href: 'child/5' }),
         ];
-        embeddedToJsonObject = embedded.map((item) => spy(item, 'toJsonObject'));
+        embeddedToJsonObject = embedded.map((item) => spy(item, 'toJSON'));
         composed.embedResource('children', embedded);
 
-        jsonObject = composed.toJsonObject();
+        jsonObject = composed.toJSON();
       });
 
       it('includes the map of embedded resources as _embedded', () => {
         expect(jsonObject).to.have.property('_embedded');
       });
 
-      it("includes the output of the embedded resource's toJsonObject", () => {
+      it("includes the output of the embedded resource's toJSON", () => {
         embeddedToJsonObject.forEach((item, index) => {
           expect(item).to.have.been.called;
           expect(jsonObject._embedded.children[index]).to.equal(item.firstCall.returnValue);

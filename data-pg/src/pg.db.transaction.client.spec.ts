@@ -1,7 +1,6 @@
 import { Disposable } from '@dandi/common';
 import { Logger, NoopLogger } from '@dandi/core';
-import { DataMapper, PassThroughDataMapper } from '@dandi/data';
-import { ModelValidator } from '@dandi/model-validation';
+import { ModelBuilder } from '@dandi/model-builder';
 import { PoolClient } from 'pg';
 
 import { expect } from 'chai';
@@ -11,8 +10,7 @@ import { PgDbTransactionClient, TransactionRollbackError } from './pg.db.transac
 
 describe('PgDbTransactionClient', () => {
   let client: Disposable & SinonStubbedInstance<PoolClient>;
-  let dataMapper: SinonStubbedInstance<DataMapper>;
-  let modelValidator: ModelValidator;
+  let modelValidator: ModelBuilder;
   let logger: SinonStubbedInstance<Logger>;
   let transactionClient: PgDbTransactionClient;
 
@@ -22,17 +20,15 @@ describe('PgDbTransactionClient', () => {
       release: stub(),
       dispose: stub(),
     } as any;
-    dataMapper = createStubInstance(PassThroughDataMapper);
     modelValidator = {
-      validateMember: stub(),
-      validateModel: stub(),
+      constructMember: stub(),
+      constructModel: stub(),
     };
     logger = createStubInstance(NoopLogger);
-    transactionClient = new PgDbTransactionClient(client, dataMapper, modelValidator, logger);
+    transactionClient = new PgDbTransactionClient(client, modelValidator, logger);
   });
   afterEach(() => {
     client = undefined;
-    dataMapper = undefined;
     modelValidator = undefined;
     logger = undefined;
     transactionClient = undefined;

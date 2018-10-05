@@ -3,12 +3,12 @@ import { MemberMetadata } from '@dandi/model';
 
 import { DateTime } from 'luxon';
 
-import { TypeValidationError, TypeValidator } from './type.validator';
+import { TypeConversionError, TypeConverter } from './type.converter';
 
-@Injectable(TypeValidator)
-export class DateTimeTypeValidator implements TypeValidator<DateTime> {
+@Injectable(TypeConverter)
+export class DateTimeTypeConverter implements TypeConverter<DateTime> {
   public readonly type = DateTime;
-  public validate(value: any, metadata: MemberMetadata): DateTime {
+  public convert(value: any, metadata: MemberMetadata): DateTime {
     let dt: DateTime;
     const asInt = parseInt(value, 10);
     const isNumber =
@@ -20,17 +20,15 @@ export class DateTimeTypeValidator implements TypeValidator<DateTime> {
       dt = DateTime.fromJSDate(value);
     } else if (isNumber) {
       dt = DateTime.fromMillis(asInt);
+    } else if (metadata && metadata.format) {
+      dt = DateTime.fromFormat(value, metadata.format, {
+        zone: 'utc',
+      });
     } else {
-      if (metadata && metadata.format) {
-        dt = DateTime.fromFormat(value, metadata.format, {
-          zone: 'utc',
-        });
-      } else {
-        dt = DateTime.fromISO(value);
-      }
+      dt = DateTime.fromISO(value);
     }
     if (!dt.isValid) {
-      throw new TypeValidationError(value, DateTime);
+      throw new TypeConversionError(value, DateTime);
     }
 
     return dt;

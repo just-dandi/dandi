@@ -11,9 +11,6 @@
     "url": "https://github.com/dandi-mvc/dandi/issues"
   },
   "homepage": "https://github.com/dandi-mvc/dandi#readme",
-  "dependencies": {
-    "change-case": "^3.0.2"
-  },
   "devDependencies": {},
   "peerDependencies": {
     "@dandi/common": "1.0.0-alpha.26",

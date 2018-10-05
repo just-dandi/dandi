@@ -1,5 +1,5 @@
 import { stubProvider, testHarness } from '@dandi/core-testing';
-import { DecoratorModelValidator, ModelValidator } from '@dandi/model-validation';
+import { DecoratorModelBuilder, ModelBuilder } from '@dandi/model-builder';
 
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
@@ -139,24 +139,24 @@ describe('HttpEventTransformer', () => {
   });
 
   describe('body validation', () => {
-    const harness = testHarness(HttpEventTransformer, stubProvider(DecoratorModelValidator, ModelValidator), {
+    const harness = testHarness(HttpEventTransformer, stubProvider(DecoratorModelBuilder, ModelBuilder), {
       provide: HttpEventOptions,
       useValue: {
         validateBody: TestBody,
       },
     });
 
-    let validator: SinonStubbedInstance<ModelValidator>;
+    let builder: SinonStubbedInstance<ModelBuilder>;
 
     beforeEach(async () => {
       transformer = await harness.inject(LambdaEventTransformer);
-      validator = await harness.injectStub(ModelValidator);
+      builder = await harness.injectStub(ModelBuilder);
 
-      validator.validateModel.returns(body);
+      builder.constructModel.returns(body);
     });
     afterEach(() => {
       transformer = undefined;
-      validator = undefined;
+      builder = undefined;
     });
 
     it('validates the body and creates a HttpHandlerRequest object using the event values and deserialized body', () => {
@@ -164,7 +164,7 @@ describe('HttpEventTransformer', () => {
       delete eventWithoutBody.body;
 
       const result = transformer.transform(event, context);
-      expect(validator.validateModel).to.have.been.calledWith(TestBody, body);
+      expect(builder.constructModel).to.have.been.calledWith(TestBody, body);
 
       expect(result).to.include(eventWithoutBody);
       expect(result.body).to.deep.equal(body);

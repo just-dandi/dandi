@@ -1,12 +1,10 @@
 import { Url } from '@dandi/common';
 import { testHarness } from '@dandi/core-testing';
 import { Required, UrlProperty } from '@dandi/model';
-import { Validation } from '@dandi/model-validation';
+import { Validation } from '@dandi/model-builder';
 import { MvcRequest, RequestBody } from '@dandi/mvc';
 
-// tslint:disable no-unused-expression
 import { expect } from 'chai';
-import { createStubInstance, SinonStubbedInstance, stub } from 'sinon';
 
 describe('RequestBodyDecorator', () => {
   class TestModel {
@@ -40,7 +38,7 @@ describe('RequestBodyDecorator', () => {
     controller = undefined;
   });
 
-  it('validates the body', async () => {
+  it('constructs and validates the body', async () => {
     const result = await harness.invoke(controller, controller.test);
     expect(result).to.be.instanceof(TestModel);
     expect(result.url).to.be.instanceof(Url);

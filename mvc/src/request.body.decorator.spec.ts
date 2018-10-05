@@ -1,6 +1,6 @@
 import { MethodTarget } from '@dandi/common';
 import { FactoryProvider, getInjectableParamMetadata } from '@dandi/core';
-import { ModelValidator } from '@dandi/model-validation';
+import { ModelBuilder } from '@dandi/model-builder';
 
 import { expect } from 'chai';
 import { SinonStubbedInstance, stub } from 'sinon';
@@ -43,13 +43,13 @@ describe('requestBodyProvider', () => {
   class Foo {}
 
   let provider: FactoryProvider<any>;
-  let validator: SinonStubbedInstance<ModelValidator>;
+  let validator: SinonStubbedInstance<ModelBuilder>;
 
   beforeEach(() => {
     provider = requestBodyProvider(Foo) as FactoryProvider<any>;
     validator = {
-      validateMember: stub(),
-      validateModel: stub(),
+      constructMember: stub(),
+      constructModel: stub(),
     };
   });
   afterEach(() => {
@@ -67,14 +67,14 @@ describe('requestBodyProvider', () => {
 
   it('validates the body if it exists', () => {
     const req: any = { body: {} };
-    validator.validateModel.returns(req.body);
+    validator.constructModel.returns(req.body);
 
     expect(provider.useFactory(req, validator)).to.equal(req.body);
   });
 
   it('throws a ModelBindingError if model validation fails', () => {
     const req: any = { body: {} };
-    validator.validateModel.throws(new Error('Your llama is lloose!'));
+    validator.constructModel.throws(new Error('Your llama is lloose!'));
 
     expect(() => provider.useFactory(req, validator)).to.throw(ModelBindingError);
   });

@@ -1,21 +1,16 @@
 import { AppError } from '@dandi/common';
 import { Container, Logger, NoopLogger, Resolver } from '@dandi/core';
-import { DataMapper, PassThroughDataMapper } from '@dandi/data';
-import { ModelValidator } from '@dandi/model-validation';
-import { DecoratorModelValidator } from '@dandi/model-validation/src/decorator.model.validator';
+import { DecoratorModelBuilder, ModelBuilder } from '@dandi/model-builder';
+import { PgDbClient, PgDbPool, TransactionAlreadyInProgressError } from '@dandi/data-pg';
 
 import { expect } from 'chai';
-import { Pool, PoolClient } from 'pg';
+import { PoolClient } from 'pg';
 import { createStubInstance, SinonStub, SinonStubbedInstance, stub } from 'sinon';
-
-import { PgDbClient, TransactionAlreadyInProgressError } from './pg.db.client';
-import { PgDbPool } from './pg.db.pool';
 
 describe('PgDbClient', () => {
   let pool: PgDbPool & SinonStubbedInstance<PgDbPool>;
   let poolClient: SinonStubbedInstance<PoolClient>;
-  let dataMapper: SinonStubbedInstance<DataMapper>;
-  let modelValidator: SinonStubbedInstance<ModelValidator>;
+  let modelValidator: SinonStubbedInstance<ModelBuilder>;
   let resolver: SinonStubbedInstance<Resolver>;
   let logger: SinonStubbedInstance<Logger>;
   let dbClient: PgDbClient;
@@ -25,16 +20,14 @@ describe('PgDbClient', () => {
       query: stub().returns({ rows: [] }),
       release: stub(),
     } as any;
-    dataMapper = createStubInstance(PassThroughDataMapper);
-    modelValidator = createStubInstance(DecoratorModelValidator);
+    modelValidator = createStubInstance(DecoratorModelBuilder);
     resolver = createStubInstance(Container);
     logger = createStubInstance(NoopLogger);
-    dbClient = new PgDbClient(pool, dataMapper, modelValidator, resolver, logger);
+    dbClient = new PgDbClient(pool, modelValidator, resolver, logger);
   });
   afterEach(() => {
     pool = undefined;
     poolClient = undefined;
-    dataMapper = undefined;
     modelValidator = undefined;
     resolver = undefined;
     logger = undefined;

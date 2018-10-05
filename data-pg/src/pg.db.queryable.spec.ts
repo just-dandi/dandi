@@ -1,16 +1,14 @@
-import { DataMapper, PassThroughDataMapper } from '@dandi/data';
-import { ModelValidator } from '@dandi/model-validation';
+import { ModelBuilder } from '@dandi/model-builder';
 
 import { expect } from 'chai';
-import { createStubInstance, SinonStubbedInstance, stub } from 'sinon';
+import { SinonStubbedInstance, stub } from 'sinon';
 
 import { PgDbQueryableBase, PgDbQueryableClient } from './pg.db.queryable';
 
 describe('PgDbQueryableBase', () => {
   let client: SinonStubbedInstance<PgDbQueryableClient>;
-  let dataMapper: SinonStubbedInstance<DataMapper>;
   let queryable: PgDbQueryableBase<PgDbQueryableClient>;
-  let modelValidator: ModelValidator;
+  let modelValidator: ModelBuilder;
   let clientResult: any;
 
   beforeEach(() => {
@@ -18,16 +16,14 @@ describe('PgDbQueryableBase', () => {
     client = {
       query: stub().returns(clientResult),
     };
-    dataMapper = createStubInstance(PassThroughDataMapper);
     modelValidator = {
-      validateMember: stub(),
-      validateModel: stub(),
+      constructMember: stub(),
+      constructModel: stub(),
     };
-    queryable = new PgDbQueryableBase<PgDbQueryableClient>(client, dataMapper, modelValidator);
+    queryable = new PgDbQueryableBase<PgDbQueryableClient>(client, modelValidator);
   });
   afterEach(() => {
     client = undefined;
-    dataMapper = undefined;
     modelValidator = undefined;
     queryable = undefined;
   });
@@ -40,19 +36,6 @@ describe('PgDbQueryableBase', () => {
       await queryable.query(cmd, args);
 
       expect(client.query).to.have.been.calledWithExactly(cmd, [args]);
-    });
-
-    it('returns the result of passing the rows property through dataMapper.mapFromDb()', async () => {
-      const value = { id: 'c' };
-      dataMapper.mapFromDb.returns(value);
-
-      const cmd = 'SELECT foo FROM bar WHERE ix = $1';
-      const args = ['nay'];
-
-      const result = await queryable.query(cmd, args);
-
-      expect(dataMapper.mapFromDb).to.have.been.calledWith(clientResult.rows[0]);
-      expect(result).to.deep.equal([value, value]);
     });
   });
 });

@@ -5,10 +5,10 @@ import { HttpMethod, RequestInfo, Route, RouteHandler, RouteInitializer } from '
 import { expect } from 'chai';
 import { createStubInstance, SinonStubbedInstance, stub } from 'sinon';
 
-import { DefaultMvcRouteExecutor } from './default.route.executor';
+import { DefaultRouteExecutor } from './default.route.executor';
 
 describe('DefaultMvcRouteExecutor', () => {
-  let routeExec: DefaultMvcRouteExecutor;
+  let routeExec: DefaultRouteExecutor;
   let resolver: SinonStubbedInstance<Resolver>;
   let routeInit: SinonStubbedInstance<RouteInitializer>;
   let routeHandler: SinonStubbedInstance<RouteHandler>;
@@ -44,6 +44,7 @@ describe('DefaultMvcRouteExecutor', () => {
     };
     resolver = {
       resolve: stub(),
+      resolveInContext: stub(),
       invoke: stub(),
       invokeInContext: stub(),
     };
@@ -60,7 +61,7 @@ describe('DefaultMvcRouteExecutor', () => {
       },
     };
     logger = createStubInstance(NoopLogger);
-    routeExec = new DefaultMvcRouteExecutor(resolver, routeInit, routeHandler, logger);
+    routeExec = new DefaultRouteExecutor(resolver, routeInit, routeHandler, logger);
   });
   afterEach(() => {
     routeInit = undefined;

@@ -1,5 +1,5 @@
 import { Inject, Injectable, Optional } from '@dandi/core';
-import { ModelValidator } from '@dandi/model-validation';
+import { ModelBuilder } from '@dandi/model-builder';
 
 import { APIGatewayEventRequestContext, APIGatewayProxyEvent, Context } from 'aws-lambda';
 
@@ -28,9 +28,9 @@ export class HttpEventTransformer implements LambdaEventTransformer<APIGatewayPr
     @Inject(HttpEventOptions)
     @Optional()
     private options: HttpEventOptions,
-    @Inject(ModelValidator)
+    @Inject(ModelBuilder)
     @Optional()
-    private validator: ModelValidator,
+    private builder: ModelBuilder,
   ) {}
 
   public transform(event: APIGatewayProxyEvent, context: Context): HttpHandlerRequest {
@@ -44,11 +44,11 @@ export class HttpEventTransformer implements LambdaEventTransformer<APIGatewayPr
     }
 
     if (this.options && this.options.validateBody) {
-      if (!this.validator) {
-        throw new DandiAwsLambdaError('validateBody option is set, but no ModelValidator is provided');
+      if (!this.builder) {
+        throw new DandiAwsLambdaError('validateBody option is set, but no ModelBuilder is provided');
       }
 
-      body = this.validator.validateModel(this.options.validateBody, body);
+      body = this.builder.constructModel(this.options.validateBody, body);
     }
 
     return {

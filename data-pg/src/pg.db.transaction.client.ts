@@ -1,7 +1,7 @@
 import { AppError, Constructor, Disposable } from '@dandi/common';
 import { Inject, Injectable, Logger } from '@dandi/core';
-import { DataMapper, DbTransactionClient } from '@dandi/data';
-import { ModelValidator } from '@dandi/model-validation';
+import { DbTransactionClient } from '@dandi/data';
+import { ModelBuilder } from '@dandi/model-builder';
 
 import { PgDbPoolClient } from './pg.db.pool.client';
 import { PgDbTransactionQueryError } from './pg.db.query.error';
@@ -25,11 +25,10 @@ export class PgDbTransactionClient extends PgDbQueryableBase<PgDbPoolClient> imp
 
   constructor(
     @Inject(PgDbPoolClient) client: PgDbPoolClient,
-    @Inject(DataMapper) dataMapper: DataMapper,
-    @Inject(ModelValidator) modelValidator: ModelValidator,
+    @Inject(ModelBuilder) modelValidator: ModelBuilder,
     @Inject(Logger) private logger: Logger,
   ) {
-    super(client, dataMapper, modelValidator);
+    super(client, modelValidator);
   }
 
   public async query(cmd: string, ...args: any[]): Promise<any[]> {

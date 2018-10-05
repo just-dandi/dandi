@@ -5,7 +5,7 @@ This example demonstrates usage of the following `@dandi` packages:
 - `@dandi/core`
 - `@dandi/mvc`
 - `@dandi/mvc-express`
-- `@dandi/model-validation`
+- `@dandi/model-builder`
 
 ## Running the Example
 
@@ -36,7 +36,7 @@ starts the container.
 This file is used to construct the `@dandi` DI container used to run
 the application. It pulls in the MVC service implementations from
 `@dandi/mvc` and `@dandi/mvc-express`, validation implementations from
-`@dandi/model-validation`, as well as the controller used in
+`@dandi/model-builder`, as well as the controller used in
 the application itself.
 
 ### src/data/data.model.ts

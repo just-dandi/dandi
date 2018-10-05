@@ -19,8 +19,8 @@ hal/index.ts
 hal/src/**/*.spec.ts
 model/index.ts
 model/src/**/*.spec.ts
-model-validation/index.ts
-model-validation/src/**/*.spec.ts
+model-builder/index.ts
+model-builder/src/**/*.spec.ts
 mvc/index.ts
 mvc/src/**/*.spec.ts
 mvc-express/index.ts
