@@ -26,7 +26,7 @@
     "@dandi/common": "1.0.0-alpha.26",
     "@dandi/core": "1.0.0-alpha.26",
     "@dandi/model": "1.0.0-alpha.26",
-    "@dandi/model-validation": "1.0.0-alpha.26",
+    "@dandi/model-builder": "1.0.0-alpha.26",
     "@dandi/mvc": "1.0.0-alpha.26"
   }
 }

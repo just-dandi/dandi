@@ -2,4 +2,4 @@
 
 npm link @dandi/common
 npm link @dandi/core
-npm link @dandi/model-validation
+npm link @dandi/model-builder

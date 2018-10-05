@@ -125,7 +125,7 @@ export class MyModel {
 
 // main.ts
 import { AwsLambdaHttpModule, Lambda } from '@dandi/aws-lambda';
-import { Validation } from '@dandi/model-validation';
+import { Validation } from '@dandi/model-builder';
 import { MyHandler } from './my-handler';
 import { MyModel } from './my-model';
 

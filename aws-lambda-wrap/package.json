@@ -15,7 +15,7 @@
   "peerDependencies": {
     "@dandi/common": "1.0.0-alpha.26",
     "@dandi/core": "1.0.0-alpha.26",
-    "@dandi/model-validation": "1.0.0-alpha.26"
+    "@dandi/model-builder": "1.0.0-alpha.26"
   },
   "dependencies": {
     "aws-lambda": "^0.1.2"
