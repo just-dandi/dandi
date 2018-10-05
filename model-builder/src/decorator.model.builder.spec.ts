@@ -1,3 +1,4 @@
+import { Uuid } from '@dandi/common';
 import { MemberMetadata, OneOf, Property } from '@dandi/model';
 
 import { expect } from 'chai';
@@ -152,10 +153,10 @@ describe('DecoratorModelBuilder', () => {
     });
 
     describe('arrays', () => {
-      it('converts each of the array members using the array subtype', () => {
+      it('converts each of the array members using the array valueType', () => {
         const meta: MemberMetadata = {
           type: Array,
-          subType: String,
+          valueType: String,
         };
 
         builder.constructMember(meta, 'obj', ['foo', 'bar']);
@@ -167,10 +168,96 @@ describe('DecoratorModelBuilder', () => {
       it('throws an error if the input is not an array', () => {
         const meta: MemberMetadata = {
           type: Array,
-          subType: String,
+          valueType: String,
         };
 
         expect(() => builder.constructMember(meta, 'obj', '1, 2')).to.throw(ModelValidationError);
+      });
+    });
+
+    describe('sets', () => {
+      it('converts each of the set members using the set valueType', () => {
+        const meta: MemberMetadata = {
+          type: Array,
+          valueType: String,
+        };
+
+        builder.constructMember(meta, 'obj', ['foo', 'bar']);
+        expect(primitiveTypeValidator.convert)
+          .to.have.been.calledTwice.calledWithExactly('foo', { type: String })
+          .calledWithExactly('bar', { type: String });
+      });
+
+      it('throws an error if the input is not an array', () => {
+        const meta: MemberMetadata = {
+          type: Set,
+          valueType: String,
+        };
+
+        expect(() => builder.constructMember(meta, 'obj', '1, 2')).to.throw(ModelValidationError);
+      });
+
+      it('returns a set', () => {
+        const meta: MemberMetadata = {
+          type: Set,
+          valueType: String,
+        };
+
+        const result: Set<string> = builder.constructMember(meta, 'obj', ['foo', 'bar']);
+        expect(result).to.be.instanceOf(Set);
+        expect(result.size).to.equal(2);
+      });
+    });
+
+    describe('maps', () => {
+      it('converts each of the map members using the map valueType', () => {
+        const meta: MemberMetadata = {
+          type: Map,
+          keyType: Uuid,
+          valueType: Number,
+        };
+
+        const key1 = Uuid.create().toString();
+        const key2 = Uuid.create().toString();
+        const input = {
+          [key1]: '1',
+          [key2]: '2',
+        };
+        builder.constructMember(meta, 'obj', input);
+        expect(primitiveTypeValidator.convert)
+          .to.have.been.callCount(4)
+          .calledWithExactly(key1, { type: Uuid })
+          .calledWithExactly('1', { type: Number })
+          .calledWithExactly(key2, { type: Uuid })
+          .calledWithExactly('2', { type: Number });
+      });
+
+      it('throws an error if the input is not an object', () => {
+        const meta: MemberMetadata = {
+          type: Map,
+          keyType: Uuid,
+          valueType: Number,
+        };
+
+        expect(() => builder.constructMember(meta, 'obj', '1, 2')).to.throw(ModelValidationError);
+      });
+
+      it('returns a map', () => {
+        const meta: MemberMetadata = {
+          type: Map,
+          keyType: Uuid,
+          valueType: Number,
+        };
+
+        const key1 = Uuid.create().toString();
+        const key2 = Uuid.create().toString();
+        const input = {
+          [key1]: '1',
+          [key2]: '2',
+        };
+        const result: Map<Uuid, Number> = builder.constructMember(meta, 'obj', input);
+        expect(result).to.be.instanceOf(Map);
+        expect(result.size).to.equal(2);
       });
     });
 

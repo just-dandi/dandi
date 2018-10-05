@@ -20,21 +20,7 @@ export class DecoratorModelBuilder implements ModelBuilder {
   }
 
   private transformKey(key: string, options: ModelBuilderOptions): string {
-    return options.keyTransform ? options.keyTransform.transformFn(key) : key;
-  }
-
-  private getMemberOptions(memberMetadata: MemberMetadata, options: MemberBuilderOptions) {
-    // clone the options
-    const memberOptions: ModelBuilderOptions = {};
-    if (options.keyTransform) {
-      memberOptions.keyTransform = Object.assign({}, options.keyTransform);
-    }
-    memberOptions.validators = (options.validators || []).slice(0);
-
-    if (memberMetadata.json && memberOptions.keyTransform && !memberOptions.keyTransform.transformJson) {
-      memberOptions.keyTransform = null;
-    }
-    return memberOptions;
+    return options.keyTransform ? options.keyTransform(key) : key;
   }
 
   private constructModelInternal(
@@ -56,14 +42,8 @@ export class DecoratorModelBuilder implements ModelBuilder {
       key = this.transformKey(key, options);
       const objValue = obj[key];
       const memberMetadata = modelMetadata[key];
-      const memberOptions = this.getMemberOptions(memberMetadata, options);
       try {
-        result[key] = this.constructMemberInternal(
-          memberMetadata,
-          this.getKey(parentKey, key),
-          objValue,
-          memberOptions,
-        );
+        result[key] = this.constructMemberInternal(memberMetadata, this.getKey(parentKey, key), objValue, options);
       } catch (err) {
         throw new ModelValidationError(key, err);
       }
@@ -102,6 +82,14 @@ export class DecoratorModelBuilder implements ModelBuilder {
       return this.constructArrayMember(metadata, key, value, options);
     }
 
+    if (metadata.type === Set) {
+      return this.constructSetMember(metadata, key, value, options);
+    }
+
+    if (metadata.type === Map) {
+      return this.constructMapMember(metadata, key, value, options);
+    }
+
     if ((metadata.type as any) === OneOf) {
       return this.constructOneOf(metadata, key, value, options);
     }
@@ -109,7 +97,12 @@ export class DecoratorModelBuilder implements ModelBuilder {
     if (isPrimitiveType(metadata.type)) {
       return this.convertPrimitive(metadata, value);
     }
-    return this.constructModelInternal(metadata.type, value, key, options);
+    return this.constructModelInternal(
+      metadata.type,
+      value,
+      key,
+      metadata.json ? { validators: options.validators } : options,
+    );
   }
 
   private convertPrimitive(metadata: MemberMetadata, value: any): any {
@@ -146,8 +139,49 @@ export class DecoratorModelBuilder implements ModelBuilder {
     }
 
     return value.map((entry, index) => {
-      const entryMeta: MemberMetadata = { type: metadata.subType };
+      const entryMeta: MemberMetadata = { type: metadata.valueType };
       return this.constructMemberInternal(entryMeta, this.getKey(key, index.toString()), entry, options);
     });
+  }
+
+  private constructSetMember(
+    metadata: MemberMetadata,
+    key: string,
+    value: any[],
+    options: MemberBuilderOptions,
+  ): Set<any> {
+    if (!Array.isArray(value)) {
+      throw new ModelValidationError(key, new TypeConversionError(value, Set));
+    }
+
+    return value.reduce((result, entry, index) => {
+      const entryMeta: MemberMetadata = { type: metadata.valueType };
+      result.add(this.constructMemberInternal(entryMeta, this.getKey(key, index.toString()), entry, options));
+      return result;
+    }, new Set());
+  }
+
+  private constructMapMember(
+    metadata: MemberMetadata,
+    key: string,
+    value: any,
+    options: MemberBuilderOptions,
+  ): Map<any, any> {
+    if (typeof value !== 'object') {
+      throw new ModelValidationError(key, new TypeConversionError(value, Map));
+    }
+
+    return Object.keys(value).reduce((result, mapKey) => {
+      const keyMeta: MemberMetadata = { type: metadata.keyType };
+      // note: the real options are not passed for the key because map keys must not be transformed
+      const convertedKey = this.constructMemberInternal(keyMeta, this.getKey(key, `(key for '${mapKey}')`), mapKey, {});
+
+      const valueMeta: MemberMetadata = { type: metadata.valueType };
+      const convertedValue = this.constructMemberInternal(valueMeta, this.getKey(key, mapKey), value[mapKey], options);
+
+      result.set(convertedKey, convertedValue);
+
+      return result;
+    }, new Map());
   }
 }

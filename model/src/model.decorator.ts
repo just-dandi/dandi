@@ -60,17 +60,32 @@ export function DateTimeFormat(format: string): PropertyDecorator {
   });
 }
 
-export function ArrayOf<T>(itemType: Constructor<T>): PropertyDecorator {
+export function ArrayOf<T>(valueType: Constructor<T>): PropertyDecorator {
   return modelDecorator.bind(null, {
     type: Array,
-    subType: itemType,
+    valueType,
+  });
+}
+
+export function SetOf<T>(valueType: Constructor<T>): PropertyDecorator {
+  return modelDecorator.bind(null, {
+    type: Set,
+    valueType,
+  });
+}
+
+export function MapOf<TKey, TValue>(keyType: Constructor<TKey>, valueType: Constructor<TValue>): PropertyDecorator {
+  return modelDecorator.bind(null, {
+    type: Map,
+    keyType,
+    valueType,
   });
 }
 
 export function UrlArray(): PropertyDecorator {
   return modelDecorator.bind(null, {
     type: Array,
-    subType: Url,
+    valueType: Url,
     pattern: URL_PATTERN,
   });
 }

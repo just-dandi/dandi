@@ -9,6 +9,7 @@ import {
   ArrayOf,
   DateTimeFormat,
   Email,
+  MapOf,
   MaxLength,
   MaxValue,
   MinLength,
@@ -17,6 +18,7 @@ import {
   Pattern,
   Property,
   Required,
+  SetOf,
   UrlArray,
   UrlProperty,
 } from './model.decorator';
@@ -230,8 +232,8 @@ describe('ModelDecorator', () => {
       expect(meta.type).to.equal(Array);
     });
 
-    it('sets the "subType" property on the member\'s metadata to the specified item type', () => {
-      expect(meta.subType).to.equal(String);
+    it('sets the "valueType" property on the member\'s metadata to the specified item type', () => {
+      expect(meta.valueType).to.equal(String);
     });
   });
 
@@ -254,8 +256,8 @@ describe('ModelDecorator', () => {
       expect(meta.type).to.equal(Array);
     });
 
-    it('sets the "subType" property on the member\'s metadata to Url', () => {
-      expect(meta.subType).to.equal(Url);
+    it('sets the "valueType" property on the member\'s metadata to Url', () => {
+      expect(meta.valueType).to.equal(Url);
     });
 
     it('sets the "pattern" property on the member\'s metadata to URL_PATTERN', () => {
@@ -292,6 +294,53 @@ describe('ModelDecorator', () => {
       }
 
       expect(getMemberMetadata(TestClassMethod, 'testMethod', 0).oneOf).to.deep.equal([Uuid, String]);
+    });
+  });
+
+  describe('@SetOf', () => {
+    class TestClass {
+      @SetOf(String)
+      public strings: Set<string>;
+    }
+
+    let meta: MemberMetadata;
+
+    beforeEach(() => {
+      meta = getMemberMetadata(TestClass, 'strings');
+    });
+    afterEach(() => {
+      meta = undefined;
+    });
+    it('sets the "type" property of the member\'s metadata to Set', () => {
+      expect(meta.type).to.equal(Set);
+    });
+    it('sets the "valueType" property on the member\'s metadata to the specified item type', () => {
+      expect(meta.valueType).to.equal(String);
+    });
+  });
+
+  describe('@MapOf', () => {
+    class TestClass {
+      @MapOf(Uuid, Number)
+      public theMap: Map<Uuid, number>;
+    }
+
+    let meta: MemberMetadata;
+
+    beforeEach(() => {
+      meta = getMemberMetadata(TestClass, 'theMap');
+    });
+    afterEach(() => {
+      meta = undefined;
+    });
+    it('sets the "type" property of the member\'s metadata to Map', () => {
+      expect(meta.type).to.equal(Map);
+    });
+    it('sets the "keyType" property on the member\'s metadata to the specified key type', () => {
+      expect(meta.keyType).to.equal(Uuid);
+    });
+    it('sets the "valueType" property on the member\'s metadata to the specified item type', () => {
+      expect(meta.valueType).to.equal(Number);
     });
   });
 

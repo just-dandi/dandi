@@ -2,7 +2,8 @@ import { Constructor } from '@dandi/common';
 
 export interface MemberMetadata {
   type?: Constructor<any>;
-  subType?: Constructor<any>;
+  keyType?: Constructor<any>;
+  valueType?: Constructor<any>;
   required?: boolean;
   minLength?: number;
   maxLength?: number;

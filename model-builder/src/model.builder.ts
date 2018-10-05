@@ -9,10 +9,7 @@ import { ModelValidator } from './model.validator';
 
 export interface MemberBuilderOptions {
   validators?: ModelValidator[];
-  keyTransform?: {
-    transformFn: KeyTransformFn;
-    transformJson?: boolean;
-  };
+  keyTransform?: KeyTransformFn;
 }
 
 export interface ModelBuilderOptions extends MemberBuilderOptions {

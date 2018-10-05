@@ -54,25 +54,25 @@ describe('MetadataModelValidator', () => {
     });
 
     it('validates a minimum array length', () => {
-      expect(validator.validateMember({ type: Array, subType: String, minLength: 3 }, 'prop', [1, 2, 3])).to.deep.equal(
-        [1, 2, 3],
-      );
+      expect(
+        validator.validateMember({ type: Array, valueType: String, minLength: 3 }, 'prop', [1, 2, 3]),
+      ).to.deep.equal([1, 2, 3]);
     });
 
     it('throws a MetadataValidationError if the array is smaller than the minimum length', () => {
-      expect(() => validator.validateMember({ type: Array, subType: String, minLength: 4 }, 'prop', [1, 2, 3]))
+      expect(() => validator.validateMember({ type: Array, valueType: String, minLength: 4 }, 'prop', [1, 2, 3]))
         .to.throw(MetadataValidationError)
         .contains({ message: 'minLength' });
     });
 
     it('validates a maximum array length', () => {
-      expect(validator.validateMember({ type: Array, subType: String, maxLength: 4 }, 'prop', [1, 2, 3])).to.deep.equal(
-        [1, 2, 3],
-      );
+      expect(
+        validator.validateMember({ type: Array, valueType: String, maxLength: 4 }, 'prop', [1, 2, 3]),
+      ).to.deep.equal([1, 2, 3]);
     });
 
     it('throws a MetadataValidationError if the array is larger than the maximum length', () => {
-      expect(() => validator.validateMember({ type: Array, subType: String, maxLength: 2 }, 'prop', [1, 2, 3]))
+      expect(() => validator.validateMember({ type: Array, valueType: String, maxLength: 2 }, 'prop', [1, 2, 3]))
         .to.throw(MetadataValidationError)
         .contains({ message: 'maxLength' });
     });
