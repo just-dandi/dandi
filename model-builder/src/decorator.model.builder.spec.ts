@@ -1,13 +1,16 @@
 import { Uuid } from '@dandi/common';
-import { MemberMetadata, OneOf, Property, SourceAccessor } from '@dandi/model';
+import { Json, MapOf, MemberMetadata, OneOf, Property, SourceAccessor } from '@dandi/model';
+import {
+  DataTransformer,
+  DecoratorModelBuilder,
+  ModelValidationError,
+  OneOfConversionError,
+  PrimitiveTypeConverter,
+} from '@dandi/model-builder';
+import { camel } from '@dandi/model-builder/node_modules/change-case';
 
 import { expect } from 'chai';
 import { createStubInstance, SinonSpy, SinonStubbedInstance, spy, stub } from 'sinon';
-
-import { DecoratorModelBuilder } from './decorator.model.builder';
-import { ModelValidationError } from './model.validation.error';
-import { OneOfConversionError } from './one.of.conversion.error';
-import { PrimitiveTypeConverter } from './primitive.type.converter';
 
 describe('DecoratorModelBuilder', () => {
   let primitiveTypeValidator: SinonStubbedInstance<PrimitiveTypeConverter>;
@@ -145,6 +148,27 @@ describe('DecoratorModelBuilder', () => {
       expect(secondCallValue).to.equal('true');
     });
 
+    it('returns undefined if the SourceAccessor path does not exist', () => {
+      class AccessorPathTest {
+        @SourceAccessor('foo.bars.oh.yes')
+        @Property(String)
+        public fooBar: string;
+      }
+
+      builder.constructModel(AccessorPathTest, { foo: { bar: 'yup' }, isAwesome: 'true' });
+
+      expect((builder as any).constructMemberInternal).to.have.been.calledOnce;
+
+      const firstCallMeta: MemberMetadata = constructMember.firstCall.args[0];
+      expect(firstCallMeta.type).to.equal(String);
+
+      const firstCallKey = constructMember.firstCall.args[1];
+      expect(firstCallKey).to.equal('fooBar');
+
+      const firstCallValue = constructMember.firstCall.args[2];
+      expect(firstCallValue).to.be.undefined;
+    });
+
     it('assigns the result of constructMemberInternal to each key', () => {
       const value = { prop1: 'foo', prop2: '123' };
       constructMember.restore();
@@ -176,6 +200,102 @@ describe('DecoratorModelBuilder', () => {
           message: 'Error validating prop2: Your llama is lloose!',
           innerError: memberError,
         });
+    });
+
+    it('uses the data transformers if specified', () => {
+      const source = { 'prop1.value': 'foo', 'prop2.value': 'bar' };
+      const value = { prop1: { value: 'foo' }, prop2: { value: 'bar' } };
+      stub(builder as any, 'constructModelInternal');
+      const transformer: SinonStubbedInstance<DataTransformer> = {
+        transform: stub().returns(value),
+      };
+      const options = { dataTransformers: [transformer] };
+
+      builder.constructModel(TestModel, source, options);
+
+      expect(transformer.transform).to.have.been.calledOnce.calledWithExactly(source);
+      expect((builder as any).constructModelInternal).to.have.been.calledOnce.calledWithExactly(
+        TestModel,
+        value,
+        null,
+        options,
+      );
+    });
+
+    it('uses the key transformer is specified', () => {
+      class KeyTransformerTest {
+        @Property(String)
+        public fooBar: string;
+
+        @Property(String)
+        public heyMan: string;
+      }
+      // eslint-disable-next-line camelcase
+      const source = { foo_bar: 'yeah', hey_man: 'okay' };
+      const options = { keyTransform: camel };
+
+      builder.constructModel(KeyTransformerTest, source, options);
+
+      expect((builder as any).constructMemberInternal)
+        .to.have.been.calledTwice.calledWithExactly({ type: String }, 'fooBar', 'yeah', options)
+        .calledWithExactly({ type: String }, 'heyMan', 'okay', options);
+    });
+
+    it('does not use key transformers on members marked as JSON', () => {
+      class Blob {
+        @Property(String)
+        // eslint-disable-next-line camelcase
+        foo_bar: string;
+      }
+      class KeyTransformerTest {
+        @Json()
+        @Property(Blob)
+        public blob: any;
+
+        @Property(String)
+        public heyMan: string;
+      }
+      // eslint-disable-next-line camelcase
+      const source = { blob: { foo_bar: 'yeah' }, hey_man: 'okay' };
+      const options = { keyTransform: camel };
+
+      builder.constructModel(KeyTransformerTest, source, options);
+
+      expect((builder as any).constructMemberInternal)
+        .to.have.been.calledThrice.calledWithExactly(
+          { type: Blob, json: true },
+          'blob',
+          // eslint-disable-next-line camelcase
+          { foo_bar: 'yeah' },
+          options,
+        )
+        .calledWithExactly({ type: String }, 'blob.foo_bar', 'yeah', {
+          validators: undefined,
+        })
+        .calledWithExactly({ type: String }, 'heyMan', 'okay', options);
+    });
+
+    it('does not use key transformers on Map members', () => {
+      class KeyTransformerTest {
+        @MapOf(String, String)
+        public map: any;
+
+        @Property(String)
+        public heyMan: string;
+      }
+      // eslint-disable-next-line camelcase
+      const source = { map: { foo_bar: 'yeah' }, hey_man: 'okay' };
+      const options = { keyTransform: camel };
+
+      builder.constructModel(KeyTransformerTest, source, options);
+
+      expect((builder as any).constructMemberInternal)
+        .to.have.callCount(4)
+        // eslint-disable-next-line camelcase
+        .calledWithExactly({ type: Map, keyType: String, valueType: String }, 'map', { foo_bar: 'yeah' }, options)
+        .calledWithExactly({ type: String }, "map.(key for 'foo_bar')", 'foo_bar', {})
+        .calledWithExactly({ type: String }, 'map.foo_bar', 'yeah', options)
+        .calledWithExactly({ type: String }, 'heyMan', 'okay', options);
     });
   });
 

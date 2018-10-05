@@ -19,10 +19,6 @@ export class DecoratorModelBuilder implements ModelBuilder {
     return this.constructModelInternal(type, obj, null, options || {});
   }
 
-  private transformKey(key: string, options: ModelBuilderOptions): string {
-    return options.keyTransform ? options.keyTransform(key) : key;
-  }
-
   private constructModelInternal(
     type: Constructor<any>,
     obj: any,
@@ -38,8 +34,14 @@ export class DecoratorModelBuilder implements ModelBuilder {
 
     const result = new type(obj);
 
+    if (options.keyTransform && !Array.isArray(obj) && typeof obj === 'object') {
+      obj = Object.keys(obj).reduce((result, key) => {
+        result[options.keyTransform(key)] = obj[key];
+        return result;
+      }, {});
+    }
+
     typeKeys.forEach((key) => {
-      key = this.transformKey(key, options);
       const memberMetadata = modelMetadata[key];
       const objValue = this.getSourceValue(obj, key, memberMetadata);
       try {
@@ -70,7 +72,7 @@ export class DecoratorModelBuilder implements ModelBuilder {
   }
 
   public constructMember(metadata: MemberMetadata, key: string, value: any, options?: MemberBuilderOptions): any {
-    return this.constructMemberInternal(metadata, this.transformKey(key, options || {}), value, options || {});
+    return this.constructMemberInternal(metadata, key, value, options || {});
   }
 
   private constructMemberInternal(
