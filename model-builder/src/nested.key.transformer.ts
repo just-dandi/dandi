@@ -1,5 +1,7 @@
+import { Injectable } from '@dandi/core';
 import { DataTransformer } from './data.transformer';
 
+@Injectable()
 export class NestedKeyTransformer implements DataTransformer {
   public transform(obj: any): any {
     const emptySegments = new Map<any, Set<string>>();

@@ -8,6 +8,7 @@ export * from './src/metadata.model.validator';
 export * from './src/metadata.validation.error';
 export * from './src/model.builder';
 export * from './src/model.validation.error';
+export * from './src/nested.key.transformer';
 export * from './src/one.of.conversion.error';
 export * from './src/primitive.type.converter';
 export * from './src/required.property.error';

@@ -40,8 +40,8 @@ export class DecoratorModelBuilder implements ModelBuilder {
 
     typeKeys.forEach((key) => {
       key = this.transformKey(key, options);
-      const objValue = obj[key];
       const memberMetadata = modelMetadata[key];
+      const objValue = this.getSourceValue(obj, key, memberMetadata);
       try {
         result[key] = this.constructMemberInternal(memberMetadata, this.getKey(parentKey, key), objValue, options);
       } catch (err) {
@@ -50,6 +50,23 @@ export class DecoratorModelBuilder implements ModelBuilder {
     });
 
     return result;
+  }
+
+  private getSourceValue(source: any, key: string, memberMetadata: MemberMetadata): any {
+    if (!memberMetadata.sourceAccessor) {
+      return source[key];
+    }
+
+    if (typeof memberMetadata.sourceAccessor === 'function') {
+      return memberMetadata.sourceAccessor(source);
+    }
+
+    return memberMetadata.sourceAccessor.split('.').reduce((source, segment) => {
+      if (!source) {
+        return source;
+      }
+      return source[segment];
+    }, source);
   }
 
   public constructMember(metadata: MemberMetadata, key: string, value: any, options?: MemberBuilderOptions): any {

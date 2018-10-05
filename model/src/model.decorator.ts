@@ -3,7 +3,7 @@ import { Constructor, Url } from '@dandi/common';
 import { DateTime } from 'luxon';
 
 import { EMAIL_PATTERN, URL_PATTERN } from './pattern';
-import { getMemberMetadata, MemberMetadata } from './member.metadata';
+import { getMemberMetadata, MemberMetadata, MemberSourceAccessor } from './member.metadata';
 
 const EMAIL_MIN_LENGTH = 6;
 const EMAIL_MAX_LENGTH = 254;
@@ -95,5 +95,11 @@ export function OneOf(...oneOf: Array<Constructor<any>>) {
   return modelDecorator.bind(null, {
     type: OneOf,
     oneOf,
+  });
+}
+
+export function SourceAccessor(sourceAccessor: MemberSourceAccessor): PropertyDecorator {
+  return modelDecorator.bind(null, {
+    sourceAccessor,
   });
 }

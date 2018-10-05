@@ -1,5 +1,9 @@
 import { Constructor } from '@dandi/common';
 
+export type SourceAccessorFn = <TSource, TMember>(source: TSource) => TMember;
+
+export type MemberSourceAccessor = string | SourceAccessorFn;
+
 export interface MemberMetadata {
   type?: Constructor<any>;
   keyType?: Constructor<any>;
@@ -13,6 +17,7 @@ export interface MemberMetadata {
   format?: string;
   oneOf?: Array<Constructor<any>>;
   json?: boolean;
+  sourceAccessor?: MemberSourceAccessor;
 }
 
 export interface ModelMetadata {

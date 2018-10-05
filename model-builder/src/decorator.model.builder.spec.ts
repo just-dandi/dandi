@@ -1,5 +1,5 @@
 import { Uuid } from '@dandi/common';
-import { MemberMetadata, OneOf, Property } from '@dandi/model';
+import { MemberMetadata, OneOf, Property, SourceAccessor } from '@dandi/model';
 
 import { expect } from 'chai';
 import { createStubInstance, SinonSpy, SinonStubbedInstance, spy, stub } from 'sinon';
@@ -77,6 +77,72 @@ describe('DecoratorModelBuilder', () => {
 
       const secondCallValue = constructMember.secondCall.args[2];
       expect(secondCallValue).to.equal('123');
+    });
+
+    it('uses the SourceAccessorFn to access the source value if provided', () => {
+      class AccessorFnTest {
+        @SourceAccessor((source: any) => source.foo.bar)
+        @Property(String)
+        public fooBar: string;
+
+        @Property(Boolean)
+        public isAwesome;
+      }
+
+      builder.constructModel(AccessorFnTest, { foo: { bar: 'yup' }, isAwesome: 'true' });
+
+      expect((builder as any).constructMemberInternal).to.have.been.calledTwice;
+
+      const firstCallMeta: MemberMetadata = constructMember.firstCall.args[0];
+      expect(firstCallMeta.type).to.equal(String);
+
+      const firstCallKey = constructMember.firstCall.args[1];
+      expect(firstCallKey).to.equal('fooBar');
+
+      const firstCallValue = constructMember.firstCall.args[2];
+      expect(firstCallValue).to.equal('yup');
+
+      const secondCallMeta: MemberMetadata = constructMember.secondCall.args[0];
+      expect(secondCallMeta.type).to.equal(Boolean);
+
+      const secondCallKey = constructMember.secondCall.args[1];
+      expect(secondCallKey).to.equal('isAwesome');
+
+      const secondCallValue = constructMember.secondCall.args[2];
+      expect(secondCallValue).to.equal('true');
+    });
+
+    it('uses the SourceAccessor path to access the source value if provided', () => {
+      class AccessorPathTest {
+        @SourceAccessor('foo.bar')
+        @Property(String)
+        public fooBar: string;
+
+        @Property(Boolean)
+        public isAwesome;
+      }
+
+      builder.constructModel(AccessorPathTest, { foo: { bar: 'yup' }, isAwesome: 'true' });
+
+      expect((builder as any).constructMemberInternal).to.have.been.calledTwice;
+
+      const firstCallMeta: MemberMetadata = constructMember.firstCall.args[0];
+      expect(firstCallMeta.type).to.equal(String);
+
+      const firstCallKey = constructMember.firstCall.args[1];
+      expect(firstCallKey).to.equal('fooBar');
+
+      const firstCallValue = constructMember.firstCall.args[2];
+      expect(firstCallValue).to.equal('yup');
+
+      const secondCallMeta: MemberMetadata = constructMember.secondCall.args[0];
+      expect(secondCallMeta.type).to.equal(Boolean);
+
+      const secondCallKey = constructMember.secondCall.args[1];
+      expect(secondCallKey).to.equal('isAwesome');
+
+      const secondCallValue = constructMember.secondCall.args[2];
+      expect(secondCallValue).to.equal('true');
     });
 
     it('assigns the result of constructMemberInternal to each key', () => {
