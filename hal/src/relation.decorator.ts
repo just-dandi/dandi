@@ -1,4 +1,5 @@
 import { Constructor, MethodTarget } from '@dandi/common';
+import { getMemberMetadata } from '@dandi/model';
 
 import { getResourceMetadata } from './resource.metadata';
 
@@ -30,6 +31,9 @@ export function relationDecorator(
       relMeta.resource = resource;
     }
   }
+
+  const memberMeta = getMemberMetadata(target, propertyKey);
+  memberMeta.sourceAccessor = `_embedded.${rel || propertyKey}`;
 }
 
 export function Relation(resource?: Constructor<any>, rel?: string) {
