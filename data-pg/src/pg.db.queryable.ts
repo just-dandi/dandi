@@ -1,7 +1,7 @@
 import { Constructor, Url, Uuid } from '@dandi/common';
 import { DbQueryable } from '@dandi/data';
 import { DataPropertyMetadata, ModelUtil } from '@dandi/model';
-import { ModelBuilder } from '@dandi/model-builder';
+import { ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder';
 
 import { snakeCase } from 'change-case';
 import { QueryResult } from 'pg';
@@ -13,7 +13,11 @@ export interface PgDbQueryableClient {
 }
 
 export class PgDbQueryableBase<TClient extends PgDbQueryableClient> implements DbQueryable {
-  constructor(protected client: TClient, protected modelBuilder: ModelBuilder) {}
+  constructor(
+    protected client: TClient,
+    protected modelBuilder: ModelBuilder,
+    protected modelBuilderOptions?: ModelBuilderOptions,
+  ) {}
 
   public async query(cmd: string, ...args: any[]): Promise<any[]> {
     let result: QueryResult;
@@ -36,7 +40,7 @@ export class PgDbQueryableBase<TClient extends PgDbQueryableClient> implements D
     if (!result || !result.length) {
       return result;
     }
-    return result.map((item) => this.modelBuilder.constructModel(model, item));
+    return result.map((item) => this.modelBuilder.constructModel(model, item, this.modelBuilderOptions));
   }
 
   public async queryModelSingle<T>(model: Constructor<T>, cmd: string, ...args: any[]): Promise<T> {

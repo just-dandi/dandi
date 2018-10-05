@@ -1,10 +1,11 @@
 import { AppError, Disposable } from '@dandi/common';
-import { Inject, Injectable, Logger, Resolver } from '@dandi/core';
+import { Inject, Injectable, Logger, Optional, Resolver } from '@dandi/core';
 import { DbClient, DbTransactionClient, TransactionFn } from '@dandi/data';
-import { ModelBuilder } from '@dandi/model-builder';
+import { ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder';
 
 import { PgDbPool } from './pg.db.pool';
 import { PgDbQueryableBase } from './pg.db.queryable';
+import { PgDbModelBuilderOptions } from './pg.db.model.builder.options';
 
 export class TransactionAlreadyInProgressError extends AppError {
   constructor() {
@@ -21,8 +22,11 @@ export class PgDbClient extends PgDbQueryableBase<PgDbPool> implements DbClient,
     @Inject(ModelBuilder) modelValidator: ModelBuilder,
     @Inject(Resolver) private resolver: Resolver,
     @Inject(Logger) private logger: Logger,
+    @Inject(PgDbModelBuilderOptions)
+    @Optional()
+    modelBuilderOptions?: ModelBuilderOptions,
   ) {
-    super(pool, modelValidator);
+    super(pool, modelValidator, modelBuilderOptions);
   }
 
   public async transaction<T>(transactionFn: TransactionFn<T>): Promise<T> {
