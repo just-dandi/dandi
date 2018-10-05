@@ -1,9 +1,9 @@
 export * from './src/currency.type.converter';
 export * from './src/data.transformer';
 export * from './src/date.time.type.converter';
-export * from './src/decorator.model.builder';
 // export * from './src/key.mapper.factory';
 export * from './src/key.transformer';
+export * from './src/metadata.model.builder';
 export * from './src/metadata.model.validator';
 export * from './src/metadata.validation.error';
 export * from './src/model.builder';

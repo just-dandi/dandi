@@ -1,4 +1,4 @@
-import { DecoratorModelBuilder } from './decorator.model.builder';
+import { MetadataModelBuilder } from './metadata.model.builder';
 import { TypeConverters } from './type.converters';
 
-export const Validation: any[] = [...TypeConverters, DecoratorModelBuilder];
+export const Validation: any[] = [...TypeConverters, MetadataModelBuilder];

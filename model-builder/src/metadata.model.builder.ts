@@ -9,7 +9,7 @@ import { PrimitiveTypeConverter } from './primitive.type.converter';
 import { TypeConversionError } from './type.converter';
 
 @Injectable(ModelBuilder)
-export class DecoratorModelBuilder implements ModelBuilder {
+export class MetadataModelBuilder implements ModelBuilder {
   constructor(@Inject(PrimitiveTypeConverter) private primitive: PrimitiveTypeConverter) {}
 
   public constructModel(type: Constructor<any>, obj: any, options?: ModelBuilderOptions): any {

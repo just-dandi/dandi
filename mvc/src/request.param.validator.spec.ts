@@ -1,6 +1,6 @@
 import { Container } from '@dandi/core';
 import { MemberMetadata } from '@dandi/model';
-import { DecoratorModelBuilder, ModelBuilder, PrimitiveTypeConverter, TypeConverter } from '@dandi/model-builder';
+import { MetadataModelBuilder, ModelBuilder, PrimitiveTypeConverter, TypeConverter } from '@dandi/model-builder';
 import { PathParam, RequestPathParamMap } from '@dandi/mvc';
 
 import { expect } from 'chai';
@@ -16,7 +16,7 @@ describe('requestParamValidatorFactory', () => {
 
   beforeEach(() => {
     paramMap = { foo: 'bar' };
-    builder = createStubInstance(DecoratorModelBuilder);
+    builder = createStubInstance(MetadataModelBuilder);
     memberMetadata = {
       type: String,
     };
@@ -50,7 +50,7 @@ describe('requestParamValidatorFactory', () => {
     const controller = new TestController();
     const container = new Container({
       providers: [
-        DecoratorModelBuilder,
+        MetadataModelBuilder,
         PrimitiveTypeConverter,
         {
           provide: TypeConverter,

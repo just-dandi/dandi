@@ -1,12 +1,12 @@
 import { AppError, Constructor, Disposable } from '@dandi/common';
 import { Inject, Injectable, Logger, Optional } from '@dandi/core';
 import { DbTransactionClient } from '@dandi/data';
-import { PgDbModelBuilderOptions } from '@dandi/data-pg';
 import { ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder';
 
 import { PgDbPoolClient } from './pg.db.pool.client';
 import { PgDbTransactionQueryError } from './pg.db.query.error';
 import { PgDbQueryableBase } from './pg.db.queryable';
+import { PgDbModelBuilderOptions } from './pg.db.model.builder.options';
 
 enum TransactionState {
   begin = 'BEGIN',

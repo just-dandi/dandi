@@ -1,5 +1,5 @@
 import { Constructor } from '@dandi/common';
-import { InjectionToken } from '@dandi/core';
+import { InjectionToken, Provider } from '@dandi/core';
 import { MemberMetadata } from '@dandi/model';
 
 import { DataTransformer } from './data.transformer';
@@ -15,6 +15,15 @@ export interface MemberBuilderOptions {
 export interface ModelBuilderOptions extends MemberBuilderOptions {
   dataTransformers?: DataTransformer[];
 }
+
+export const ModelBuilderOptions = {
+  provider(token: InjectionToken<ModelBuilderOptions>, options: ModelBuilderOptions): Provider<ModelBuilderOptions> {
+    return {
+      provide: token,
+      useValue: options,
+    };
+  },
+};
 
 export interface ModelBuilder {
   constructModel<T>(type: Constructor<T>, obj: any, options?: ModelBuilderOptions): T;

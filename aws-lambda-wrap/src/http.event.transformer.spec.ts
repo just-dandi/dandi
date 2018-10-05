@@ -1,5 +1,5 @@
 import { stubProvider, testHarness } from '@dandi/core-testing';
-import { DecoratorModelBuilder, ModelBuilder } from '@dandi/model-builder';
+import { MetadataModelBuilder, ModelBuilder } from '@dandi/model-builder';
 
 import { APIGatewayProxyEvent, Context } from 'aws-lambda';
 
@@ -139,7 +139,7 @@ describe('HttpEventTransformer', () => {
   });
 
   describe('body validation', () => {
-    const harness = testHarness(HttpEventTransformer, stubProvider(DecoratorModelBuilder, ModelBuilder), {
+    const harness = testHarness(HttpEventTransformer, stubProvider(MetadataModelBuilder, ModelBuilder), {
       provide: HttpEventOptions,
       useValue: {
         validateBody: TestBody,

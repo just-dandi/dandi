@@ -2,7 +2,7 @@ import { Uuid } from '@dandi/common';
 import { Json, MapOf, MemberMetadata, OneOf, Property, SourceAccessor } from '@dandi/model';
 import {
   DataTransformer,
-  DecoratorModelBuilder,
+  MetadataModelBuilder,
   ModelValidationError,
   OneOfConversionError,
   PrimitiveTypeConverter,
@@ -12,14 +12,14 @@ import { camel } from '@dandi/model-builder/node_modules/change-case';
 import { expect } from 'chai';
 import { createStubInstance, SinonSpy, SinonStubbedInstance, spy, stub } from 'sinon';
 
-describe('DecoratorModelBuilder', () => {
+describe('MetadataModelBuilder', () => {
   let primitiveTypeValidator: SinonStubbedInstance<PrimitiveTypeConverter>;
-  let builder: DecoratorModelBuilder;
+  let builder: MetadataModelBuilder;
 
   beforeEach(() => {
     primitiveTypeValidator = createStubInstance(PrimitiveTypeConverter);
     primitiveTypeValidator.convert.returnsArg(0);
-    builder = new DecoratorModelBuilder(primitiveTypeValidator as any);
+    builder = new MetadataModelBuilder(primitiveTypeValidator as any);
   });
   afterEach(() => {
     builder = undefined;

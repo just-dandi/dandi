@@ -1,6 +1,6 @@
 import { AppError } from '@dandi/common';
 import { Container, Logger, NoopLogger, Resolver } from '@dandi/core';
-import { DecoratorModelBuilder, ModelBuilder } from '@dandi/model-builder';
+import { MetadataModelBuilder, ModelBuilder } from '@dandi/model-builder';
 import { PgDbClient, PgDbPool, TransactionAlreadyInProgressError } from '@dandi/data-pg';
 
 import { expect } from 'chai';
@@ -20,7 +20,7 @@ describe('PgDbClient', () => {
       query: stub().returns({ rows: [] }),
       release: stub(),
     } as any;
-    modelValidator = createStubInstance(DecoratorModelBuilder);
+    modelValidator = createStubInstance(MetadataModelBuilder);
     resolver = createStubInstance(Container);
     logger = createStubInstance(NoopLogger);
     dbClient = new PgDbClient(pool, modelValidator, resolver, logger);
