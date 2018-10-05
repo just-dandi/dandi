@@ -14,10 +14,8 @@ The type of a model member is defined using the `@Property()` decorator:
 import { Property } from '@dandi/model';
 
 class MyModel {
-
-    @Property(String)
-    public name: string;
-
+  @Property(String)
+  public name: string;
 }
 ```
 
@@ -40,17 +38,13 @@ for child models is referenced in the `@Property` decorator:
 import { Property } from '@dandi/model';
 
 class ParentModel {
-
-    @Property(ChildModel)
-    public child: ChildModel;
-
+  @Property(ChildModel)
+  public child: ChildModel;
 }
 
 class ChildModel {
-
-    @Property(String)
-    public name: string;
-
+  @Property(String)
+  public name: string;
 }
 ```
 
@@ -63,22 +57,24 @@ as `string`, `number`, or `boolean`, use the corresponding class:
 import { Property } from '@dandi/model';
 
 class MyModel {
+  @Property(String)
+  public stringProperty: string;
 
-    @Property(String)
-    public stringProperty: string;
+  @Property(Number)
+  public numberProperty: number;
 
-    @Property(Number)
-    public numberProperty: number;
-
-    @Property(Boolean)
-    public booleanProperty: boolean;
-
+  @Property(Boolean)
+  public booleanProperty: boolean;
 }
 ```
 
+In these cases, the class version of the primitive type is only used to
+identify the type. Validators should set the property using the native
+primitive type rather than the class.
+
 ## Arrays
 
-Array properties must use the `@ArrayOf()` decorator to define the type
+`Array<T>` properties must use the `@ArrayOf()` decorator to define the type
 of the array. The `@ArrayOf()` decorator is used in place of
 `@Property()`:
 
@@ -86,17 +82,41 @@ of the array. The `@ArrayOf()` decorator is used in place of
 import { ArrayOf } from '@dandi/model';
 
 class MyModel {
-
-    @ArrayOf(String)
-    public gottaHaveOne: string[];
-
+  @ArrayOf(String)
+  public allMyStrings: string[];
 }
 ```
 
+## Sets
 
-In these cases, the class version of the primitive type is only used to
-identify the type. Validators should set the property using the native
-primitive type rather than the class.
+`Set<T>` properties must use the `@SetOf()` decorator to define the type
+of items contained in the set. The `@SetOf()` decorator is used in place
+of `@Property()`:
+
+```typescript
+import { SetOf } from '@dandi/model';
+
+class MyModel {
+  @SetOf(String)
+  public setMeUp: Set<string>;
+}
+```
+
+## Maps
+
+`Map<TKey, TValue>` properties must use the `@MapOf()` decorator to define the type
+of items contained in the set. The `@MapOf()` decorator is used in place
+of `@Property()`:
+
+```typescript
+import { Uuid } from '@dandi/common';
+import { MapOf } from '@dandi/model';
+
+class MyModel {
+  @MapOf(Uuid, Number)
+  public hereIsAMap: Map<Uuid, Number>[];
+}
+```
 
 ## Required Members
 
@@ -107,11 +127,9 @@ in order to pass validation.
 import { Property, Required } from '@dandi/model';
 
 class MyModel {
-
-    @Property(String)
-    @Required()
-    public youNeedThis: string;
-
+  @Property(String)
+  @Required()
+  public youNeedThis: string;
 }
 ```
 
@@ -125,19 +143,17 @@ type that has a `length` property.
 import { ArrayOf, MaxLength, MinLength, Property } from '@dandi/model';
 
 class MyModel {
+  @Property(String)
+  @MinLength(20)
+  public longString: string;
 
-    @Property(String)
-    @MinLength(20)
-    public longString: string;
+  @Property(String)
+  @MaxLength(5)
+  public shortString: string;
 
-    @Property(String)
-    @MaxLength(5)
-    public shortString: string;
-
-    @ArrayOf(String)
-    @MinLength(1)
-    public gottaHaveOne: string[];
-
+  @ArrayOf(String)
+  @MinLength(1)
+  public gottaHaveOne: string[];
 }
 ```
 
@@ -150,12 +166,10 @@ requirements for number values.
 import { MaxValue, MinValue, Property } from '@dandi/model';
 
 class MyModel {
-
-    @Property(Number)
-    @MinValue(5)
-    @MaxValue(25)
-    public llamaCount: string;
-
+  @Property(Number)
+  @MinValue(5)
+  @MaxValue(25)
+  public llamaCount: string;
 }
 ```
 
@@ -168,10 +182,8 @@ be validated as one of two or more types.
 import { OneOf } from '@dandi/model';
 
 class MyModel {
-
-    @OneOf(Number, String)
-    public key: number | string;
-
+  @OneOf(Number, String)
+  public key: number | string;
 }
 ```
 
@@ -182,20 +194,19 @@ if it failed.
 
 ## Other Decorators
 
-* `@Pattern()` - accepts a `RegExp` pattern that must be matched
-* `@Email()` - a shorthand decorator for `@Property(String)`,
- `@Pattern()` using a built-in email validation pattern,
- `@MinLength(6)`, and `@MaxLength(254)`
- [1](https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address)
-* `@UrlProperty()` - a shorthand decorator for `@Property(Url)`, and
- `@Pattern()` using a built-in url validation pattern
-* `@DateTimeFormat(pattern)` - a shorthand decorator for
- `@Property(DateTime)` that define the specified pattern to be used for
- parsing the Luxon `DateTime` object.
-* `@UrlArray` - similar to `@UrlProperty()`, except it uses
- `@ArrayOf(Url)` instead of `@Property(Url)`
+- `@Pattern()` - accepts a `RegExp` pattern that must be matched
+- `@Email()` - a shorthand decorator for `@Property(String)`,
+  `@Pattern()` using a built-in email validation pattern,
+  `@MinLength(6)`, and `@MaxLength(254)`
+  [1](https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address)
+- `@UrlProperty()` - a shorthand decorator for `@Property(Url)`, and
+  `@Pattern()` using a built-in url validation pattern
+- `@DateTimeFormat(pattern)` - a shorthand decorator for
+  `@Property(DateTime)` that define the specified pattern to be used for
+  parsing the Luxon `DateTime` object.
+- `@UrlArray` - similar to `@UrlProperty()`, except it uses
+  `@ArrayOf(Url)` instead of `@Property(Url)`
 
---------------
+---
 
 1: https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address
-

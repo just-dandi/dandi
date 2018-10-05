@@ -20,6 +20,13 @@ allow developers to use only the features they require.
 - Automatic path parameter, query parameter, and body model mapping and validation
 - Support for automatically generating [HAL](http://stateless.co/hal_specification.html) output
 
+### Model Building and Validation
+
+- Robust set of decorators for defining models and validation metadata
+- Automatically construct model class instances from JSON objects or POJOs
+- Convert from objects using a different property key casing
+  (e.g. `snake_case` to `camelCase`)
+
 ### Misc
 
 - `Disposable` interface and utilities for managing disposable resources
@@ -36,7 +43,7 @@ allow developers to use only the features they require.
 - **[@dandi/config](./config)** 🕸 - Configuration services
 - **[@dandi/hal](./hal)** - 🕸 - Model decorators, basic types and utilities for supporting HAL
 - **[@dandi/model](./model)** 🕸 - Model decorators
-- **[@dandi/model-builder](./model-builder)** 🕸 - Model validation utilities
+- **[@dandi/model-builder](./model-builder)** 🕸 - Utilities for dynamically constructing and validating models
 - **[@dandi/mvc](./mvc)** - MVC decorators and base utilities (not specific to Express)
 - **[@dandi/mvc-hal](./mvc-hal)** - Supports rendering HAL JSON from existing `@dandi/mvc` controllers
 
