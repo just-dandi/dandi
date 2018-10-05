@@ -7,6 +7,7 @@ export * from './src/injectable.decorator';
 export * from './src/injectable.metadata';
 export * from './src/injection.context';
 export * from './src/injection.token';
+export * from './src/injection.token.provider.factory';
 export * from './src/log.level';
 export * from './src/logger';
 export * from './src/manual.scanner';
