@@ -1,6 +1,6 @@
 {
   "name": "@dandi/core-testing",
-  "version": "1.0.0-alpha.27",
+  "version": "1.0.0-alpha.28",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -14,9 +14,9 @@
   "dependencies": {},
   "devDependencies": {},
   "peerDependencies": {
-    "@dandi/common": "1.0.0-alpha.27",
-    "@dandi/core": "1.0.0-alpha.27",
+    "@dandi/common": "1.0.0-alpha.28",
+    "@dandi/core": "1.0.0-alpha.28",
     "sinon": "^6.1.5"
   },
-  "license": "SEE LICENSE IN <LICENSE>"
+  "license": "MIT"
 }

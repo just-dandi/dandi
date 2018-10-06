@@ -1,6 +1,6 @@
 {
   "name": "@dandi/common",
-  "version": "1.0.0-alpha.27",
+  "version": "1.0.0-alpha.28",
   "scripts": {
     "postbuild": "cp src/url.* dist/src"
   },
@@ -19,5 +19,5 @@
     "uuid": "^3.2.0"
   },
   "devDependencies": {},
-  "license": "SEE LICENSE IN <LICENSE>"
+  "license": "MIT"
 }
