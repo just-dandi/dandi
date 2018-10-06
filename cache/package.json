@@ -1,6 +1,6 @@
 {
   "name": "@dandi/cache",
-  "version": "1.0.0-alpha.26",
+  "version": "1.0.0-alpha.27",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -13,7 +13,8 @@
   "homepage": "https://github.com/dandi-mvc/dandi#readme",
   "devDependencies": {},
   "peerDependencies": {
-    "@dandi/common": "1.0.0-alpha.26",
-    "@dandi/core": "1.0.0-alpha.26"
-  }
+    "@dandi/common": "1.0.0-alpha.27",
+    "@dandi/core": "1.0.0-alpha.27"
+  },
+  "license": "SEE LICENSE IN <LICENSE>"
 }

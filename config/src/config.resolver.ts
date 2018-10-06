@@ -8,7 +8,7 @@ import { InvalidConfigClientError } from './invalid.config.client.error';
 
 @Injectable()
 export class ConfigResolver {
-  constructor(@Inject(ModelValidator) private validator: ModelBuilder) {}
+  constructor(@Inject(ModelBuilder) private validator: ModelBuilder) {}
 
   public async resolve<T>(client: ConfigClient, token: ConfigToken<T>): Promise<T> {
     if (token.encrypted && !client.allowsEncryption) {

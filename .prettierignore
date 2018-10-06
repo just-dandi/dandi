@@ -1,0 +1,4 @@
+*/dist
+.prettierignore
+npm.link
+*.sh

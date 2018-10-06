@@ -46,6 +46,7 @@ do
     then
         cp README.md dist
     fi
+    cp ../LICENSE dist
     echo ${bold}  Built.
 
     # run any postbuild

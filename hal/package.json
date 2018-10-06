@@ -1,6 +1,6 @@
 {
   "name": "@dandi/hal",
-  "version": "1.0.0-alpha.26",
+  "version": "1.0.0-alpha.27",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -14,7 +14,8 @@
   "dependencies": {},
   "devDependencies": {},
   "peerDependencies": {
-    "@dandi/common": "1.0.0-alpha.26",
-    "@dandi/model": "1.0.0-alpha.26"
-  }
+    "@dandi/common": "1.0.0-alpha.27",
+    "@dandi/model": "1.0.0-alpha.27"
+  },
+  "license": "SEE LICENSE IN <LICENSE>"
 }

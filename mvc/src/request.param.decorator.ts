@@ -1,8 +1,7 @@
 import { isConstructor, MethodTarget } from '@dandi/common';
 import { getInjectableParamMetadata, InjectionToken, ParamMetadata, Provider, SyncFactoryProvider } from '@dandi/core';
 import { getMemberMetadata, MemberMetadata } from '@dandi/model';
-import { ModelBuilder, ConvertedType, ModelBuilderOptions } from '@dandi/model-builder';
-import { MetadataModelValidator } from '@dandi/model-builder/src/metadata.model.validator';
+import { ModelBuilder, ConvertedType, ModelBuilderOptions, MetadataModelValidator } from '@dandi/model-builder';
 
 import { ConditionDecorators } from './condition.decorator';
 import { conditionWithinByKeyDecorator } from './condition.within';

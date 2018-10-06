@@ -1,6 +1,6 @@
 {
   "name": "@dandi/aws-lambda",
-  "version": "1.0.0-alpha.26",
+  "version": "1.0.0-alpha.27",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -13,14 +13,15 @@
   "homepage": "https://github.com/dandi-mvc/dandi#readme",
   "module": "index.js",
   "peerDependencies": {
-    "@dandi/common": "1.0.0-alpha.26",
-    "@dandi/core": "1.0.0-alpha.26",
-    "@dandi/model-builder": "1.0.0-alpha.26"
+    "@dandi/common": "1.0.0-alpha.27",
+    "@dandi/core": "1.0.0-alpha.27",
+    "@dandi/model-builder": "1.0.0-alpha.27"
   },
   "dependencies": {
     "aws-lambda": "^0.1.2"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.8"
-  }
+  },
+  "license": "SEE LICENSE IN <LICENSE>"
 }

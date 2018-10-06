@@ -4,7 +4,7 @@ for dir in {'common','core','core-node','core-testing','model','model-builder','
 do
     pkgName=$(node -p "require('./${dir%*/}/package.json').name")
 
-    for pre in `seq 16 22`
+    for pre in `seq 22 26`
     do
       echo "${pkgName}@1.0.0-alpha.${pre}"
       npm deprecate "${pkgName}@1.0.0-alpha.${pre}" "outdated prerelease" --registry https://registry.npmjs.org/
