@@ -30,7 +30,7 @@ export class ExpressMvcApplication implements Bootstrapper {
     const config: ExpressMvcApplicationConfig = {
       expressInstanceProvider:
         options.expressInstanceProvider || require('./default.express.provider').DEFAULT_EXPRESS_PROVIDER,
-      routeExecutor: options.routeExecutor || require('@dandi/mvc').DefaultMvcRouteExecutor,
+      routeExecutor: options.routeExecutor || require('@dandi/mvc').DefaultRouteExecutor,
       routeGenerator: options.routeGenerator || require('@dandi/mvc').DecoratorRouteGenerator,
       routeHandler: options.routeHandler || require('@dandi/mvc').DefaultRouteHandler,
       routeInitializer: options.routeInitializer || require('@dandi/mvc').DefaultRouteInitializer,
