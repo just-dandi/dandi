@@ -21,7 +21,7 @@
     "aws-lambda": "^0.1.2"
   },
   "devDependencies": {
-    "@types/aws-lambda": "^8.10.8"
+    "@types/aws-lambda": "^8.10.13"
   },
   "license": "MIT"
 }

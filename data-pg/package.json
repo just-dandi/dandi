@@ -13,10 +13,10 @@
   "homepage": "https://github.com/dandi-mvc/dandi#readme",
   "dependencies": {
     "change-case": "^3.0.2",
-    "pg": "^7.4.3"
+    "pg": "^7.5.0"
   },
   "devDependencies": {
-    "@types/pg": "^7.4.10"
+    "@types/pg": "^7.4.11"
   },
   "peerDependencies": {
     "@dandi/common": "1.0.0-alpha.28",
