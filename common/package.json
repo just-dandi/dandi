@@ -1,6 +1,6 @@
 {
   "name": "@dandi/common",
-  "version": "1.0.0-alpha.28",
+  "version": "1.0.0-alpha.29",
   "scripts": {
     "postbuild": "cp src/url.* dist/src"
   },

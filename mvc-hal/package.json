@@ -1,6 +1,6 @@
 {
   "name": "@dandi/mvc-hal",
-  "version": "1.0.0-alpha.28",
+  "version": "1.0.0-alpha.29",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -14,9 +14,9 @@
   "dependencies": {},
   "devDependencies": {},
   "peerDependencies": {
-    "@dandi/common": "1.0.0-alpha.28",
-    "@dandi/core": "1.0.0-alpha.28",
-    "@dandi/mvc": "1.0.0-alpha.28"
+    "@dandi/common": "1.0.0-alpha.29",
+    "@dandi/core": "1.0.0-alpha.29",
+    "@dandi/mvc": "1.0.0-alpha.29"
   },
   "license": "MIT"
 }
