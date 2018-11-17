@@ -12,7 +12,7 @@
   },
   "homepage": "https://github.com/dandi-mvc/dandi#readme",
   "dependencies": {
-    "firebase-admin": "^6.0.0"
+    "firebase-admin": "^6.1.0"
   },
   "devDependencies": {},
   "peerDependencies": {

@@ -13,7 +13,7 @@
   "homepage": "https://github.com/dandi-mvc/dandi#readme",
   "dependencies": {
     "change-case": "^3.0.2",
-    "pg": "^7.5.0"
+    "pg": "^7.6.1"
   },
   "devDependencies": {
     "@types/pg": "^7.4.11"

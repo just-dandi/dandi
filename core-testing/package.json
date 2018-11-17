@@ -16,7 +16,7 @@
   "peerDependencies": {
     "@dandi/common": "1.0.0-alpha.28",
     "@dandi/core": "1.0.0-alpha.28",
-    "sinon": "^6.1.5"
+    "sinon": "^7.1.1"
   },
   "license": "MIT"
 }
