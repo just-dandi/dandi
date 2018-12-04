@@ -49,11 +49,11 @@ allow developers to use only the features they require.
 
 # 3rd Party Integration Modules
 
-- **[@dandi/aws-lambda](./aws-lambda-wrap)** Helpers for using `@dandi/di-common` with AWS Lambda
-- **[@dandi/config-aws-ssm](./config-aws-ssm)** - `@dandi/config` client for AWS SSM Parameter Store
-- **[@dandi/data-pg](./data-pg)** - `@dandi/data` client implementations for Postgres
-- **[@dandi/mvc-auth-firebase](./mvc-auth-firebase)** - Google Firebase Authorization service implementation for `@dandi/mvc`
-- **[@dandi/mvc-express](./mvc-express)** - Express-specific `@dandi/mvc` service implementations
+- **[@dandi-contrib/aws-lambda](./_contrib/aws-lambda-wrap)** Helpers for using `@dandi/di-common` with AWS Lambda
+- **[@dandi-contrib/config-aws-ssm](./_contrib/config-aws-ssm)** - `@dandi/config` client for AWS SSM Parameter Store
+- **[@dandi-contrib/data-pg](./_contrib/data-pg)** - `@dandi/data` client implementations for Postgres
+- **[@dandi-contrib/mvc-auth-firebase](./_contrib/mvc-auth-firebase)** - Google Firebase Authorization service implementation for `@dandi/mvc`
+- **[@dandi-contrib/mvc-express](./_contrib/mvc-express)** - Express-specific `@dandi/mvc` service implementations
 
 🕸 - web browser compatible/no NodeJS-specific dependencies
 

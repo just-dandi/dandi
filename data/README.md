@@ -15,12 +15,12 @@ extending their functionality with Dandi.
 
 Use a `@dandi/config` configuration provider to supply connection and
 authentication information to the `@dandi/data` client. This example
-uses `AwsSsmConfigClient` and the `@dandi/data-pg` client.
+uses `AwsSsmConfigClient` and the `@dandi-contrib/data-pg` client.
 
 ```typescript
-import { AwsSsmConfigClient } from '@dandi/config-aws-ssm';
+import { AwsSsmConfigClient } from '@dandi-contrib/config-aws-ssm';
 import { Container } from '@dandi/core';
-import { PgDbModule } from '@dandi/data-pg';
+import { PgDbModule } from '@dandi-contrib/data-pg';
 
 const myApp = new Container({
   providers: [
@@ -49,14 +49,14 @@ intention of the interfaces.
 
 A model for describing connection info for a database connection. Used
 with `@dandi/config` to allow retrieving from a configuration provider
-like AWS SSM (see [@dandi/config-aws-ssm](../config-aws-ssm).
+like AWS SSM (see [@dandi-contrib/config-aws-ssm](../config-aws-ssm).
 
 ### DbUserCredentials
 
 A model for describing user credentials for authenticating with a
 database. Used with `@dandi/config` to allow retrieving from a
 configuration provider like AWS SSM (see
-[@dandi/config-aws-ssm](../config-aws-ssm).
+[@dandi-contrib/config-aws-ssm](../config-aws-ssm).
 
 ### DbQueryable
 

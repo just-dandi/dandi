@@ -1,7 +1,7 @@
 import { CascadingCache, MemoryCache, ServiceContextCacheKeyGenerator } from '@dandi/cache';
 import { ConsoleLogger, Container, AmbientInjectableScanner } from '@dandi/core';
 import { Validation } from '@dandi/model-builder';
-import { ExpressMvcApplication } from '@dandi/mvc-express';
+import { ExpressMvcApplication } from '@dandi-contrib/mvc-express';
 import { MvcHal } from '@dandi/mvc-hal';
 
 import { ExampleController } from './example/example.controller';

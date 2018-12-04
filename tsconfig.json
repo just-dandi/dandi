@@ -15,7 +15,8 @@
     ],
     "baseUrl": ".",
     "paths": {
-      "@dandi/*": ["./*"]
+      "@dandi/*": ["./*"],
+      "@dandi-contrib/*": ["./_contrib/*"]
     }
   }
 }

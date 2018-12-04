@@ -11,9 +11,9 @@ data models:
 - `@dandi/mvc` - data binding and validation by `@RequestBody()`,
   `@PathParam()`, and `@QueryParam()`
 - `@dandi/data` - validates integrity of database connection configuration
-- `@dandi/data-pg` - converts data from their database representations
+- `@dandi-contrib/data-pg` - converts data from their database representations
   to their defined models when using `queryModel` and `queryModelSingle`
-- `@dandi/aws-lambda-wrap` - converts incoming AWS event data to Dandi
+- `@dandi-contrib/aws-lambda-wrap` - converts incoming AWS event data to Dandi
   models
 
 ## ModelBuilder
@@ -40,7 +40,7 @@ before construction.
 - **`dataTransformers`:** An array of `DataTransformer` instances that
   will modify the source object before starting construction of the model.
   This can be used to do just about anything, but as an example, it can
-  be used with `@dandi/data-pg` and `NestedKeyTransformer` to convert a
+  be used with `@dandi-contrib/data-pg` and `NestedKeyTransformer` to convert a
   flat POJO with dot notated keys to a complex object with nested
   properties.
 

@@ -1,0 +1,11 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@dandi/*": ["../..*"],
+      "@dandi-contrib/*": ["../*"],
+      "aws-lambda": ["node_modules/aws-lambda"]
+    }
+  }
+}

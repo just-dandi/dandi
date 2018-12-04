@@ -1,6 +1,6 @@
 {
   "name": "@dandi/data",
-  "version": "1.0.0-alpha.29",
+  "version": "1.0.0-alpha.30",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -13,10 +13,10 @@
   "homepage": "https://github.com/dandi-mvc/dandi#readme",
   "devDependencies": {},
   "peerDependencies": {
-    "@dandi/common": "1.0.0-alpha.29",
-    "@dandi/config": "1.0.0-alpha.29",
-    "@dandi/core": "1.0.0-alpha.29",
-    "@dandi/model": "1.0.0-alpha.29"
+    "@dandi/common": "1.0.0-alpha.30",
+    "@dandi/config": "1.0.0-alpha.30",
+    "@dandi/core": "1.0.0-alpha.30",
+    "@dandi/model": "1.0.0-alpha.30"
   },
   "license": "MIT"
 }

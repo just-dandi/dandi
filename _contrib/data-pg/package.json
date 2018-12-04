@@ -1,0 +1,29 @@
+{
+  "name": "@dandi-contrib/data-pg",
+  "version": "1.0.0-alpha.30",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dandi-mvc/dandi.git"
+  },
+  "author": "Daniel Schaffer <dan@dandoes.net>",
+  "bugs": {
+    "url": "https://github.com/dandi-mvc/dandi/issues"
+  },
+  "homepage": "https://github.com/dandi-mvc/dandi#readme",
+  "dependencies": {
+    "change-case": "^3.0.2",
+    "pg": "^7.7.1"
+  },
+  "devDependencies": {
+    "@types/pg": "^7.4.11"
+  },
+  "peerDependencies": {
+    "@dandi/common": "1.0.0-alpha.30",
+    "@dandi/core": "1.0.0-alpha.30",
+    "@dandi/data": "1.0.0-alpha.30",
+    "@dandi/model": "1.0.0-alpha.30",
+    "@dandi/model-builder": "1.0.0-alpha.30"
+  },
+  "license": "MIT"
+}
