@@ -1,11 +1,11 @@
 import { CascadingCache, MemoryCache, ServiceContextCacheKeyGenerator } from '@dandi/cache';
 import { ConsoleLogger, Container, AmbientInjectableScanner } from '@dandi/core';
-import { Validation } from '@dandi/model-builder';
+import { ModelBuilderModule } from '@dandi/model-builder';
 import { MvcHal } from '@dandi/mvc-hal';
 import { MvcViewModule } from '@dandi/mvc-view';
 
-import { MvcViewPugModule } from '@dandi-contrib/mvc-view-pug';
-import { ExpressMvcApplication } from '@dandi-contrib/mvc-express';
+import { MvcExpressModule } from '@dandi-contrib/mvc-express';
+import { PugViewEngine } from '@dandi-contrib/mvc-view-pug';
 
 import { ExampleController } from './example/example.controller';
 import { ListController } from './lists/list.controller';
@@ -22,12 +22,11 @@ export const server = new Container({
     ConsoleLogger,
 
     // MVC
-    ExpressMvcApplication.defaults({ port: parseInt(process.env.PORT, 10) || DEFAULT_SERVER_PORT }),
-    MvcViewModule,
-    MvcViewPugModule,
+    MvcExpressModule.withDefaults().config({ port: parseInt(process.env.PORT, 10) || DEFAULT_SERVER_PORT }),
+    MvcViewModule.engine('pug', PugViewEngine),
 
     // Model Validation
-    Validation,
+    ModelBuilderModule,
 
     // Cache
     CascadingCache,

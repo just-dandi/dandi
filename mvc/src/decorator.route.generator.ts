@@ -12,8 +12,12 @@ import { RouteTransformer } from './route.transformer';
 export class DecoratorRouteGenerator implements RouteGenerator {
   constructor(
     @Inject(Logger) private logger: Logger,
-    @Inject(RouteTransformer) @Optional() private routeTransformers: RouteTransformer[],
-  ) {}
+    @Inject(RouteTransformer) @Optional() private readonly routeTransformers?: RouteTransformer[],
+  ) {
+    if (!this.routeTransformers) {
+      this.routeTransformers = [];
+    }
+  }
 
   public generateRoutes(): Route[] {
     this.logger.debug('generating routes...');

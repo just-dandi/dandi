@@ -1,6 +1,6 @@
 import { Uuid } from '@dandi/common';
 import { Container, FactoryProvider } from '@dandi/core';
-import { Validation } from '@dandi/model-builder';
+import { ModelBuilderModule } from '@dandi/model-builder';
 import {
   AuthorizationAuthProviderFactory,
   AuthorizationCondition,
@@ -80,7 +80,7 @@ describe('ConditionDecorator', () => {
         AuthorizationAuthProviderFactory,
         DecoratorRouteGenerator,
         DefaultRouteInitializer,
-        Validation,
+        ModelBuilderModule,
       ],
     });
     await container.start();
