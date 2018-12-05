@@ -1,3 +1,4 @@
+import { Disposable } from '@dandi/common';
 import { Inject, Injectable } from '@dandi/core';
 import { Resource, SELF_RELATION } from '@dandi/hal';
 import { ControllerResult, ControllerResultTransformer, ParamMap, RequestQueryParamMap, MvcRequest } from '@dandi/mvc';
@@ -17,19 +18,22 @@ export class HalResultTransformer implements ControllerResultTransformer {
   ) {}
 
   public async transform(result: ControllerResult): Promise<ControllerResult> {
+    if (!Resource.isResource(result.resultObject)) {
+      return result;
+    }
+
     const embeddedRels = this.queryParams[EMBED_RELS_KEY];
     const context: CompositionContext = CompositionContext.for(
       SELF_RELATION,
       this.request.path,
       embeddedRels ? (Array.isArray(embeddedRels) ? embeddedRels : embeddedRels.split(',')) : [],
     );
-    if (!Resource.isResource(result.resultObject)) {
-      return result;
-    }
-    const resource = await this.composer.compose(
-      result.resultObject,
-      context,
-    );
-    return new HalControllerResult(resource, result.headers);
+    return Disposable.useAsync(context, async () => {
+      const resource = await this.composer.compose(
+        result.resultObject,
+        context,
+      );
+      return new HalControllerResult(resource, result.headers);
+    });
   }
 }
