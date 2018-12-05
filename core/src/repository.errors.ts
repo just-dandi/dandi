@@ -1,8 +1,19 @@
 import { AppError } from '@dandi/common';
 
-export class InvalidRegistrationTargetError extends AppError {
-  constructor(public readonly target: any, public readonly options: any) {
-    super('Invalid registration target');
+import { Module, ModuleInfo } from './module';
+
+export class RegistrationError extends AppError {
+  public readonly moduleInfo: ModuleInfo;
+
+  constructor(public readonly target: any) {
+    super();
+    this.moduleInfo = Module.moduleInfo(target);
+  }
+}
+
+export class InvalidRegistrationTargetError extends RegistrationError {
+  constructor(target: any, public readonly options: any) {
+    super(target);
   }
 }
 

@@ -3,7 +3,7 @@ import { OpinionatedToken } from './opinionated.token';
 import { InjectionOptions } from './provider';
 import { SymbolToken } from './symbol.token';
 
-const PKG = '@dandi/di-common';
+export const PKG = '@dandi/core';
 
 export function localSymbolToken<T>(target: string): InjectionToken<T> {
   return SymbolToken.local<T>(PKG, target);

@@ -15,5 +15,6 @@
     "**/*.spec.ts",
     "mocha.config.js",
     "test"
-  ]
+  ],
+  "report-dir": ".coverage"
 }
