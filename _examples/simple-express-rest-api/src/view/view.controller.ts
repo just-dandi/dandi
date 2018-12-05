@@ -26,6 +26,12 @@ export class ViewController {
     return { query };
   }
 
+  @HttpGet('explicit-ejs')
+  @View('example-explicit.ejs')
+  public explicitEjs(@Inject(RequestQueryParamMap) query) {
+    return { query };
+  }
+
   /** dynamic template naming -
    * when the template name needs to vary, use the @View decorator with no value, and return the result
    * of ViewResultFactory(name, data).

@@ -55,6 +55,7 @@ allow developers to use only the features they require.
 - **[@dandi-contrib/data-pg](./_contrib/data-pg)** - `@dandi/data` client implementations for Postgres
 - **[@dandi-contrib/mvc-auth-firebase](./_contrib/mvc-auth-firebase)** - Google Firebase Authorization service implementation for `@dandi/mvc`
 - **[@dandi-contrib/mvc-express](./_contrib/mvc-express)** - Express-specific `@dandi/mvc` service implementations
+- **[@dandi-contrib/mvc-view-ejs](./_contrib/mvc-view-ejs)** - [EJS](https://ejs.co) implementation for `@dandi/mvc-view`
 - **[@dandi-contrib/mvc-view-pug](./_contrib/mvc-view-pug)** - [Pug](https://pugjs.org) implementation for `@dandi/mvc-view`
 
 🕸 - web browser compatible/no NodeJS-specific dependencies

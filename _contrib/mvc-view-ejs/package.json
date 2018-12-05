@@ -1,5 +1,5 @@
 {
-  "name": "@dandi-contrib/mvc-view-pug",
+  "name": "@dandi-contrib/mvc-view-ejs",
   "version": "1.0.0-alpha.30",
   "scripts": {},
   "repository": {
@@ -13,15 +13,14 @@
   "homepage": "https://github.com/dandi-mvc/dandi#readme",
   "dependencies": {},
   "devDependencies": {
-    "pug": "^2.0.3"
+    "ejs": "^2.6.1"
   },
   "peerDependencies": {
-    "@dandi/cache": "1.0.0-alpha.30",
     "@dandi/common": "1.0.0-alpha.30",
     "@dandi/core": "1.0.0-alpha.30",
     "@dandi/mvc": "1.0.0-alpha.30",
     "@dandi/mvc-view": "1.0.0-alpha.30",
-    "pug": "^2.0.3"
+    "ejs": "^2.6.1"
   },
   "license": "MIT"
 }
