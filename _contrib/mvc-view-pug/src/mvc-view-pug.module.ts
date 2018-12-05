@@ -6,9 +6,7 @@ export interface MvcViewPugModule extends Array<any> {
   config(options: PugOptions);
 }
 
-export const MvcViewPugModule: MvcViewPugModule = [
-  PugViewEngine,
-] as any;
+export const MvcViewPugModule: MvcViewPugModule = [PugViewEngine] as any;
 
 Object.defineProperty(MvcViewPugModule, 'config', {
   value: function config(options: PugOptions) {

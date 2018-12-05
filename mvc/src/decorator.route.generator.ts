@@ -44,15 +44,18 @@ export class DecoratorRouteGenerator implements RouteGenerator {
               path,
             );
 
-            const route = (this.routeTransformers || []).reduce((route, tranformer) => tranformer.transform(route, meta, controllerMethodMetadata), {
-              httpMethod,
-              siblingMethods: httpMethods,
-              path,
-              cors,
-              controllerCtr,
-              controllerMethod,
-              authorization,
-            });
+            const route = (this.routeTransformers || []).reduce(
+              (route, tranformer) => tranformer.transform(route, meta, controllerMethodMetadata),
+              {
+                httpMethod,
+                siblingMethods: httpMethods,
+                path,
+                cors,
+                controllerCtr,
+                controllerMethod,
+                authorization,
+              },
+            );
 
             routes.push(route);
           });

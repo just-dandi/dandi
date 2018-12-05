@@ -10,12 +10,9 @@ const EXTENSION = 'pug';
 
 @Injectable(ViewEngine(EXTENSION))
 export class PugViewEngine implements ViewEngine {
-
-  constructor(
-    @Inject(PugOptions) @Optional() private readonly defaultOptions: PugOptions,
-  ) {
+  constructor(@Inject(PugOptions) @Optional() private readonly defaultOptions: PugOptions) {
     if (!defaultOptions) {
-      this.defaultOptions = PUG_DEFAULT_OPTIONS
+      this.defaultOptions = PUG_DEFAULT_OPTIONS;
     }
   }
 
@@ -23,5 +20,4 @@ export class PugViewEngine implements ViewEngine {
     const options = Object.assign({}, this.defaultOptions, { basedir: view.context }, data);
     return pug.renderFile(view.path, options);
   }
-
 }

@@ -11,7 +11,6 @@ export const ViewRenderer: InjectionToken<ViewRenderer> = localOpinionatedToken(
 
 function viewRendererFactory(resolver: Resolver) {
   return async (view: ViewMetadata, data?: any): Promise<ViewResult> => {
-
     /**
      * TODO: make this better!
      * - update engines to be multi singleton providers
@@ -28,7 +27,7 @@ function viewRendererFactory(resolver: Resolver) {
     const extension = view.path.substring(view.path.lastIndexOf('.') + 1);
     const engine = (await resolver.resolve(ViewEngine(extension))).singleValue;
     return new ViewResult(engine, view, data);
-  }
+  };
 }
 
 export const VIEW_RENDERER: FactoryProvider<ViewRenderer> = {

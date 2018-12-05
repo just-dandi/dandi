@@ -22,5 +22,5 @@ export function View(name: string, options?: any): MethodDecorator {
       context,
       options: { viewEngineOptions: options },
     };
-  }
+  };
 }

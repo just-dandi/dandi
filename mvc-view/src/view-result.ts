@@ -6,7 +6,6 @@ import { ViewMetadata } from './view-metadata';
 const CONTENT_TYPE = 'text/html';
 
 export class ViewResult implements ControllerResult {
-
   public readonly contentType: string = CONTENT_TYPE;
 
   private _value: string | Promise<string>;
@@ -22,5 +21,4 @@ export class ViewResult implements ControllerResult {
     private readonly view: ViewMetadata,
     public readonly resultObject: any,
   ) {}
-
 }

@@ -6,11 +6,14 @@ import { ViewRoute } from './view-route';
 
 @Injectable(RouteTransformer)
 export class ViewRouteTransformer implements RouteTransformer {
-  public transform(route: ViewRoute, controllerMeta: ControllerMetadata, methodMeta: ControllerViewMethodMetadata): Route {
+  public transform(
+    route: ViewRoute,
+    controllerMeta: ControllerMetadata,
+    methodMeta: ControllerViewMethodMetadata,
+  ): Route {
     if (methodMeta.view) {
       route.view = methodMeta.view;
     }
     return route;
   }
-
 }
