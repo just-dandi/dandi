@@ -1,0 +1,15 @@
+doctype html
+
+html
+  head
+  body
+    h1 Dandi Views with Pug!
+
+    p Set a value in the #[code content] querystring key to test binding pug locals.
+
+    if query.content
+      h2 Your Content
+      p #{query.content}
+    else
+      p
+        a(href='?content=Your+content+here!') For example
