@@ -2,7 +2,7 @@ import { access, constants } from 'fs';
 import { extname, resolve } from 'path';
 
 import { Constructor } from '@dandi/common';
-import { Inject, Injectable, Logger } from '@dandi/core';
+import { Inject, Injectable, Logger, Singleton } from '@dandi/core';
 
 import { ViewEngine } from './view-engine';
 import { ViewMetadata } from './view-metadata';
@@ -33,11 +33,12 @@ function exists(path: string): Promise<boolean> {
   });
 }
 
-@Injectable()
+@Injectable(Singleton)
 export class ViewEngineResolver {
   private engines: Map<Constructor<ViewEngine>, ViewEngine> = new Map<Constructor<ViewEngine>, ViewEngine>();
   private extensions: Map<string, ConfiguredEngine> = new Map<string, ConfiguredEngine>();
   private configured: ConfiguredEngine[] = [];
+  private resolvedViews = new Map<string, ResolvedView>();
 
   constructor(
     @Inject(Logger) private logger: Logger,
@@ -80,31 +81,31 @@ export class ViewEngineResolver {
     });
   }
 
-  public async resolve(view: ViewMetadata): Promise<ResolvedView> {
-    if (view.path) {
-      return {
-        templatePath: view.path,
-        engine: this.extensions.get(extname(view.path).substring(1)).engine,
-      };
+  public async resolve(view: ViewMetadata, name?: string): Promise<ResolvedView> {
+    const knownPath = resolve(view.context, name || view.name);
+    let resolvedView = this.resolvedViews.get(knownPath);
+    if (resolvedView) {
+      return resolvedView;
     }
-    return this.resolveFile(view);
+    resolvedView = await this.resolveFile(knownPath);
+    this.resolvedViews.set(knownPath, resolvedView);
+    return resolvedView;
   }
 
-  private async resolveFile(view: ViewMetadata): Promise<ResolvedView> {
-    const path = resolve(view.context, view.name);
-    const ext = extname(path).substring(1);
+  private async resolveFile(knownPath: string): Promise<ResolvedView> {
+    const ext = extname(knownPath).substring(1);
 
     // if the view name already has a supported extension, check to see if that file exists
     const existingExtConfig = ext && this.extensions.get(ext);
-    if (existingExtConfig && (await exists(path))) {
+    if (existingExtConfig && (await exists(knownPath))) {
       return {
-        templatePath: path,
+        templatePath: knownPath,
         engine: existingExtConfig.engine,
       };
     }
 
     for (const configured of this.configured) {
-      const configuredPath = `${path}.${configured.config.extension}`;
+      const configuredPath = `${knownPath}.${configured.config.extension}`;
       if (await exists(configuredPath)) {
         return {
           templatePath: configuredPath,
