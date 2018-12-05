@@ -48,7 +48,7 @@ export class DefaultRouteHandler implements RouteHandler {
     requestInfo.performance.mark('DefaultRouteHandler.handleRouteRequest', 'beforeSendResponse');
     res
       .contentType(controllerResult.contentType)
-      .send(controllerResult.value)
+      .send(await controllerResult.value)
       .end();
     requestInfo.performance.mark('DefaultRouteHandler.handleRouteRequest', 'afterSendResponse');
 
@@ -69,6 +69,7 @@ export class DefaultRouteHandler implements RouteHandler {
       return initialResult;
     }
     return await resultTransformers.reduce(async (resultPromise, transformer) => {
+      // TODO: persist headers between transformers
       const result = await resultPromise;
       return transformer.transform(result);
     }, Promise.resolve(initialResult));

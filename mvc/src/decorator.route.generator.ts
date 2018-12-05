@@ -1,15 +1,19 @@
-import { ClassProvider, Inject, Injectable, Logger, Repository } from '@dandi/core';
+import { ClassProvider, Inject, Injectable, Logger, Optional, Repository } from '@dandi/core';
 
 import { mergeAuthorization } from './authorization.metadata';
 import { Controller } from './controller.decorator';
 import { getControllerMetadata } from './controller.metadata';
+import { getCorsConfig } from './cors.decorator';
 import { Route } from './route';
 import { RouteGenerator } from './route.generator';
-import { getCorsConfig } from './cors.decorator';
+import { RouteTransformer } from './route.transformer';
 
 @Injectable(RouteGenerator)
 export class DecoratorRouteGenerator implements RouteGenerator {
-  constructor(@Inject(Logger) private logger: Logger) {}
+  constructor(
+    @Inject(Logger) private logger: Logger,
+    @Inject(RouteTransformer) @Optional() private routeTransformers: RouteTransformer[],
+  ) {}
 
   public generateRoutes(): Route[] {
     this.logger.debug('generating routes...');
@@ -40,7 +44,7 @@ export class DecoratorRouteGenerator implements RouteGenerator {
               path,
             );
 
-            routes.push({
+            const route = (this.routeTransformers || []).reduce((route, tranformer) => tranformer.transform(route, meta, controllerMethodMetadata), {
               httpMethod,
               siblingMethods: httpMethods,
               path,
@@ -49,6 +53,8 @@ export class DecoratorRouteGenerator implements RouteGenerator {
               controllerMethod,
               authorization,
             });
+
+            routes.push(route);
           });
         }
       }

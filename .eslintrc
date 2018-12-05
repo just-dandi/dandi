@@ -24,7 +24,7 @@
       }
     },
     {
-      "files": ["*/src/**/*.ts", "test/**/*.ts", "*/test/**/*.ts", "_examples/*/**/*.ts"],
+      "files": ["*/src/**/*.ts", "test/**/*.ts", "*/test/**/*.ts", "_contrib/*/**/*.ts", "_examples/*/**/*.ts"],
       "parserOptions": {
         "sourceType": "module"
       },

@@ -39,5 +39,6 @@ export * from './src/route.handler';
 export * from './src/route.initializer';
 export * from './src/route.initialization.error';
 export * from './src/route.mapper';
+export * from './src/route.transformer';
 export * from './src/routes';
 export * from './src/tokens';
