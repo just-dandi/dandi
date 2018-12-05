@@ -1,12 +1,12 @@
 import { Url, Uuid } from '@dandi/common';
 import { testHarness } from '@dandi/core-testing';
 import { MemberMetadata, Property, UrlProperty } from '@dandi/model';
-import { MetadataModelBuilder, ModelBuilder, Validation } from '@dandi/model-builder';
+import { MetadataModelBuilder, ModelBuilder, ModelBuilderModule } from '@dandi/model-builder';
 
 import { expect } from 'chai';
 
 describe('MetadataModelBuilder', () => {
-  const harness = testHarness(Validation);
+  const harness = testHarness(ModelBuilderModule);
   let builder: ModelBuilder;
 
   class TestModel {

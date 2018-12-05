@@ -11,6 +11,7 @@ export * from './src/injection.token.provider.factory';
 export * from './src/log.level';
 export * from './src/logger';
 export * from './src/manual.scanner';
+export * from './src/module-builder';
 export * from './src/noop.logger';
 export * from './src/opinionated.token';
 export * from './src/optional.decorator';

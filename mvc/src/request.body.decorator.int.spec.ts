@@ -1,7 +1,7 @@
 import { Url } from '@dandi/common';
 import { testHarness } from '@dandi/core-testing';
 import { Required, UrlProperty } from '@dandi/model';
-import { Validation } from '@dandi/model-builder';
+import { ModelBuilderModule } from '@dandi/model-builder';
 import { MvcRequest, RequestBody } from '@dandi/mvc';
 
 import { expect } from 'chai';
@@ -27,7 +27,7 @@ describe('RequestBodyDecorator', () => {
       };
     },
   };
-  const harness = testHarness(Validation, req);
+  const harness = testHarness(ModelBuilderModule, req);
 
   let controller: TestController;
 

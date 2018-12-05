@@ -4,7 +4,7 @@ import { RenderOptions } from './render-options';
 
 export interface ViewMetadata {
   name: string;
-  path: string;
+  path?: string;
   context: string;
   options?: RenderOptions;
 }

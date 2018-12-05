@@ -11,7 +11,7 @@ export class ViewResult implements ControllerResult {
   private _value: string | Promise<string>;
   public get value(): string | Promise<string> {
     if (!this._value) {
-      this._value = this.viewEngine.render(this.view, this.resultObject);
+      this._value = this.viewEngine.render(this.view, this.templatePath, this.resultObject);
     }
     return this._value;
   }
@@ -19,6 +19,7 @@ export class ViewResult implements ControllerResult {
   constructor(
     private readonly viewEngine: ViewEngine,
     private readonly view: ViewMetadata,
+    private readonly templatePath: string,
     public readonly resultObject: any,
   ) {}
 }

@@ -1,24 +1,16 @@
-import { InjectionToken, MappedInjectionToken } from '@dandi/core';
+import { Constructor } from '@dandi/common';
+import { InjectionToken, Provider } from '@dandi/core';
 
 import { localOpinionatedToken } from './local.token';
 import { ViewMetadata } from './view-metadata';
 
 export interface ViewEngine {
-  render(view: ViewMetadata, data?: any): string | Promise<string>;
+  render(view: ViewMetadata, templatePath: string, data?: any): string | Promise<string>;
 }
 
-const tokens = new Map<string, MappedInjectionToken<string, ViewEngine>>();
+export const ViewEngine: InjectionToken<ViewEngine[]> = localOpinionatedToken('ViewEngine', {
+  multi: true,
+  singleton: true,
+});
 
-export function ViewEngine(extension: string): InjectionToken<ViewEngine> {
-  let token: MappedInjectionToken<string, ViewEngine> = tokens.get(extension);
-  if (!token) {
-    token = {
-      provide: localOpinionatedToken<ViewEngine>(`ViewEngine:${extension}`, {
-        multi: false,
-      }),
-      key: extension,
-    };
-    tokens.set(extension, token);
-  }
-  return token;
-}
+export type ConfiguredViewEngine = [Constructor<ViewEngine>, Provider<any>];
