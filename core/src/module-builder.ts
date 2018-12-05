@@ -7,7 +7,7 @@ export class ModuleBuilder<TBuilder extends ModuleBuilder<TBuilder>> extends Mod
     super(pkg, ...entries);
   }
 
-  public add(...entries: Registerable[]): this {
+  protected add(...entries: Registerable[]): this {
     const builder = this.cloneCtr ? new this.cloneCtr(...this) : this;
     (builder as ModuleBuilder<TBuilder>).cloneCtr = undefined;
     this.tag(entries);

@@ -1,7 +1,7 @@
 import { CascadingCache, MemoryCache, ServiceContextCacheKeyGenerator } from '@dandi/cache';
 import { ConsoleLogger, Container, AmbientInjectableScanner } from '@dandi/core';
 import { ModelBuilderModule } from '@dandi/model-builder';
-import { MvcHal } from '@dandi/mvc-hal';
+import { MvcHalModule } from '@dandi/mvc-hal';
 import { MvcViewModule } from '@dandi/mvc-view';
 
 import { MvcExpressModule } from '@dandi-contrib/mvc-express';
@@ -24,6 +24,7 @@ export const server = new Container({
     // MVC
     MvcExpressModule.withDefaults().config({ port: parseInt(process.env.PORT, 10) || DEFAULT_SERVER_PORT }),
     MvcViewModule.engine('pug', PugViewEngine),
+    MvcHalModule,
 
     // Model Validation
     ModelBuilderModule,
@@ -33,7 +34,6 @@ export const server = new Container({
     MemoryCache,
     ServiceContextCacheKeyGenerator,
 
-    MvcHal,
     Db,
 
     // Controllers

@@ -1,6 +1,6 @@
 import { InjectionOptions, InjectionToken, OpinionatedToken, SymbolToken } from '@dandi/core';
 
-const PKG = '@dandi-contrib/data-pg';
+export const PKG = '@dandi-contrib/data-pg';
 
 export function localSymbolToken<T>(target: string): InjectionToken<T> {
   return SymbolToken.local<T>(PKG, target);

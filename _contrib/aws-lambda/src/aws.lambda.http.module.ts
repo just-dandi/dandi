@@ -1,21 +1,21 @@
+import { ModuleBuilder, Registerable } from '@dandi/core';
+
 import { HttpEventOptions } from './http.event.options';
 import { HttpEventTransformer } from './http.event.transformer';
 import { HttpResponder } from './http.responder';
+import { PKG } from './local.token';
 
-export interface AwsLambdaHttpModule extends Array<any> {
-  configure(options: HttpEventOptions): any[];
+export class AwsLambdaModuleBuilder extends ModuleBuilder<AwsLambdaModuleBuilder> {
+  constructor(...entries: Registerable[]) {
+    super(AwsLambdaModuleBuilder, PKG, ...entries);
+  }
+
+  public configure(options: HttpEventOptions): this {
+    return this.add({
+      provide: HttpEventOptions,
+      useValue: options,
+    });
+  }
 }
 
-export const AwsLambdaHttpModule: AwsLambdaHttpModule = [HttpResponder, HttpEventTransformer] as any;
-Object.defineProperty(AwsLambdaHttpModule, 'configure', {
-  value: (options: HttpEventOptions) => {
-    return AwsLambdaHttpModule.concat([
-      {
-        provide: HttpEventOptions,
-        useValue: options,
-      },
-    ]);
-  },
-  configurable: false,
-  writable: false,
-});
+export const AwsLambdaModule = new AwsLambdaModuleBuilder(HttpResponder, HttpEventTransformer);

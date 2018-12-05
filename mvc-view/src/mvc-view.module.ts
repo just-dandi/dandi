@@ -15,15 +15,7 @@ export interface MvcViewModule extends Array<any> {
 
 export class MvcViewModuleBuilder extends ModuleBuilder<MvcViewModuleBuilder> {
   constructor(...entries: Registerable[]) {
-    super(
-      MvcViewModuleBuilder,
-      PKG,
-      ...entries,
-      VIEW_RENDERER,
-      ViewControllerResultTransformer,
-      ViewEngineResolver,
-      ViewRouteTransformer,
-    );
+    super(MvcViewModuleBuilder, PKG, ...entries);
   }
 
   public engine(
@@ -43,4 +35,9 @@ export class MvcViewModuleBuilder extends ModuleBuilder<MvcViewModuleBuilder> {
   }
 }
 
-export const MvcViewModule = new MvcViewModuleBuilder();
+export const MvcViewModule = new MvcViewModuleBuilder(
+  VIEW_RENDERER,
+  ViewControllerResultTransformer,
+  ViewEngineResolver,
+  ViewRouteTransformer,
+);

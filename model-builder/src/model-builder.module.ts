@@ -6,8 +6,8 @@ import { TypeConverters } from './type.converters';
 
 export class ModelBuilderModuleBuilder extends ModuleBuilder<ModelBuilderModuleBuilder> {
   constructor(...entries: Registerable[]) {
-    super(ModelBuilderModuleBuilder, PKG, ...entries, ...TypeConverters, MetadataModelBuilder);
+    super(ModelBuilderModuleBuilder, PKG, ...entries);
   }
 }
 
-export const ModelBuilderModule = new ModelBuilderModuleBuilder();
+export const ModelBuilderModule = new ModelBuilderModuleBuilder(TypeConverters, MetadataModelBuilder);
