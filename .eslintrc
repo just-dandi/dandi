@@ -20,7 +20,8 @@
       "files": ["*/src/**/*.*spec.ts"],
       "rules": {
         "mocha/no-exclusive-tests": "error",
-        "no-magic-numbers": "off"
+        "no-magic-numbers": "off",
+        "no-invalid-this": "off"
       }
     },
     {

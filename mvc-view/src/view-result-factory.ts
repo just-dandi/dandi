@@ -1,10 +1,10 @@
 import { FactoryProvider, InjectionToken } from '@dandi/core';
 import { Route } from '@dandi/mvc';
-import { ViewResultFactoryError } from '@dandi/mvc-view/src/view-result-factory.error';
 
 import { localOpinionatedToken } from './local.token';
 import { ViewEngineResolver } from './view-engine-resolver';
 import { ViewResult } from './view-result';
+import { ViewResultFactoryError } from './view-result-factory.error';
 import { ViewRoute } from './view-route';
 
 export type ViewResultFactory = (name?: string, data?: any) => Promise<ViewResult>;
