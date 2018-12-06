@@ -1,14 +1,7 @@
 import { Disposable, Uuid } from '@dandi/common';
 import { Provider } from '@dandi/core';
 import { testHarnessSingle } from '@dandi/core-testing';
-import {
-  ComposedResource,
-  HalModelBase,
-  ListRelation,
-  Relation,
-  ResourceId,
-  SELF_RELATION,
-} from '@dandi/hal';
+import { ComposedResource, HalModelBase, ListRelation, Relation, ResourceId, SELF_RELATION } from '@dandi/hal';
 import { ModelBuilder } from '@dandi/model-builder';
 import {
   Controller,

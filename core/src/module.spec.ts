@@ -4,17 +4,13 @@ import { expect } from 'chai';
 import { stub } from 'sinon';
 
 describe('Module', function() {
-
   class TestModule extends Module {
-
     constructor(...entries: Registerable[]) {
       super('@dandi/core', ...entries);
     }
-
   }
 
   describe('#ctr', function() {
-
     beforeEach(function() {
       stub(TestModule.prototype as any, 'tag');
     });
@@ -42,7 +38,7 @@ describe('Module', function() {
           super(...entries);
         }
       }
-      const module = new TestModuleBuilder()
+      const module = new TestModuleBuilder();
       expect(module[Module.MODULE_NAME]).to.equal('TestModule');
     });
 
@@ -66,11 +62,9 @@ describe('Module', function() {
       const module = new TestModule(TestClass, testProvider);
       expect((module as any).tag).to.have.been.calledWithExactly([TestClass, testProvider]);
     });
-
   });
 
   describe('#tag', function() {
-
     it('adds module info to class entries', function() {
       class TestClass {}
 
@@ -86,7 +80,6 @@ describe('Module', function() {
       });
       expect(moduleInfo.registeredBy).to.include(module);
       expect(moduleInfo.module).to.equal(module);
-
     });
 
     it('adds module info to provider entries', function() {
@@ -107,7 +100,6 @@ describe('Module', function() {
       });
       expect(moduleInfo.registeredBy).to.include(module);
       expect(moduleInfo.module).to.equal(module);
-
     });
 
     it('adds module info for tokens of provider entries', function() {
@@ -127,9 +119,6 @@ describe('Module', function() {
         package: '@dandi/core',
       });
       expect(moduleInfo.registeredBy).to.include(module);
-
     });
-
   });
-
 });
