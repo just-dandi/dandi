@@ -1,14 +1,17 @@
 import { Inject, Injectable } from '@dandi/core';
-import { ControllerResult, ControllerResultTransformer, Route } from '@dandi/mvc';
+import { ControllerResult, ControllerResultTransformer } from '@dandi/mvc';
 
-import { ViewRenderer } from './render-view';
-import { ViewRoute } from './view-route';
+import { ViewResult } from './view-result';
+import { ViewResultFactory } from './view-result-factory';
 
 @Injectable(ControllerResultTransformer)
 export class ViewControllerResultTransformer implements ControllerResultTransformer {
-  public constructor(@Inject(ViewRenderer) private render: ViewRenderer, @Inject(Route) private route: ViewRoute) {}
+  public constructor(@Inject(ViewResultFactory) private viewResult: ViewResultFactory) {}
 
-  public transform(result: ControllerResult): Promise<ControllerResult> {
-    return this.render(this.route.view, result.resultObject);
+  public async transform(result: ControllerResult): Promise<ControllerResult> {
+    if (result instanceof ViewResult) {
+      return result;
+    }
+    return this.viewResult(null, result.resultObject);
   }
 }

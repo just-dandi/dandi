@@ -2,12 +2,12 @@ import { Constructor } from '@dandi/common';
 import { ModuleBuilder, Registerable } from '@dandi/core';
 
 import { PKG } from './local.token';
-import { VIEW_RENDERER } from './render-view';
 import { ConfiguredViewEngine, ViewEngine } from './view-engine';
+import { ViewEngineConfig } from './view-engine-config';
 import { ViewEngineResolver } from './view-engine-resolver';
 import { ViewControllerResultTransformer } from './view.controller-result-transformer';
 import { ViewRouteTransformer } from './view.route-transformer';
-import { ViewEngineConfig } from './view-engine-config';
+import { VIEW_RESULT_FACTORY } from './view-result-factory';
 
 export interface MvcViewModule extends Array<any> {
   engine(extension: string, engine: Constructor<ViewEngine>): this;
@@ -15,15 +15,7 @@ export interface MvcViewModule extends Array<any> {
 
 export class MvcViewModuleBuilder extends ModuleBuilder<MvcViewModuleBuilder> {
   constructor(...entries: Registerable[]) {
-    super(
-      MvcViewModuleBuilder,
-      PKG,
-      ...entries,
-      VIEW_RENDERER,
-      ViewControllerResultTransformer,
-      ViewEngineResolver,
-      ViewRouteTransformer,
-    );
+    super(MvcViewModuleBuilder, PKG, ...entries);
   }
 
   public engine(
@@ -43,4 +35,9 @@ export class MvcViewModuleBuilder extends ModuleBuilder<MvcViewModuleBuilder> {
   }
 }
 
-export const MvcViewModule = new MvcViewModuleBuilder();
+export const MvcViewModule = new MvcViewModuleBuilder(
+  VIEW_RESULT_FACTORY,
+  ViewControllerResultTransformer,
+  ViewEngineResolver,
+  ViewRouteTransformer,
+);

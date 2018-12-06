@@ -2,8 +2,6 @@ import { Disposable, Uuid } from '@dandi/common';
 import { Provider } from '@dandi/core';
 import { testHarnessSingle } from '@dandi/core-testing';
 import {
-  ResourceAccessor,
-  ResourceListAccessor,
   ComposedResource,
   HalModelBase,
   ListRelation,
@@ -24,7 +22,13 @@ import {
   Route,
   Routes,
 } from '@dandi/mvc';
-import { AccessorResourceId, CompositionContext, ResourceComposer } from '@dandi/mvc-hal';
+import {
+  AccessorResourceId,
+  CompositionContext,
+  ResourceAccessor,
+  ResourceComposer,
+  ResourceListAccessor,
+} from '@dandi/mvc-hal';
 
 import { expect } from 'chai';
 import { createStubInstance, stub } from 'sinon';

@@ -5,7 +5,7 @@ import { getControllerMetadata } from '@dandi/mvc';
 
 import { ControllerViewMethodMetadata } from './view-metadata';
 
-export function View(name: string, options?: any): MethodDecorator {
+export function View(name?: string, options?: any): MethodDecorator {
   const context = dirname(callsite()[1].getFileName());
   return function viewDecorator(target: MethodTarget<any>, propertyKey: string) {
     const meta = getControllerMetadata(target.constructor);

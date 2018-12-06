@@ -34,4 +34,4 @@ _contrib/mvc-auth-firebase/src/**/*.spec.ts
 _contrib/mvc-express/index.ts
 _contrib/mvc-express/src/**/*.spec.ts
 _contrib/mvc-view-pug/index.ts
-_contrib/mvc-view-pug/**/*.spec.ts
+_contrib/mvc-view-pug/src/**/*.spec.ts

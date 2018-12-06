@@ -3,7 +3,7 @@
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {
-      "@dandi/*": ["../..*"],
+      "@dandi/*": ["../../*"],
       "@dandi-contrib/*": ["../*"],
       "aws-lambda": ["node_modules/aws-lambda"]
     }

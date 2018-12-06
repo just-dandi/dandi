@@ -18,11 +18,14 @@ export interface ModuleInfo {
 const MODULE_INFO_REG = new Map<InjectionToken<any>, ModuleInfo>();
 
 export class Module extends Array<Registerable> {
-  private static readonly MODULE_NAME = Symbol.for(`${PKG}#${Module.name}.moduleName`);
-  private static readonly PACKAGE = Symbol.for(`${PKG}#${Module.name}.package`);
-  private static readonly MODULE_INFO = Symbol.for(`${PKG}#${Module.name}.moduleInfo`);
+  public static readonly MODULE_INFO = Symbol.for(`${PKG}#${Module.name}.MODULE_INFO`);
+  public static readonly MODULE_NAME = Symbol.for(`${PKG}#${Module.name}.MODULE_NAME`);
+  public static readonly PACKAGE = Symbol.for(`${PKG}#${Module.name}.PACKAGE`);
 
   public static moduleInfo(target: any): ModuleInfo {
+    if (!target) {
+      return null;
+    }
     if (isInjectionToken(target) && !isConstructor(target)) {
       return MODULE_INFO_REG.get(target);
     }
@@ -42,16 +45,18 @@ export class Module extends Array<Registerable> {
         return this.tag(entry);
       }
 
-      const token: InjectionToken<any> = isProvider(entry) ? entry.provide : (entry as Constructor<any>);
-      this.tagTarget(token);
-      this.tagTarget(entry as Provider<any>);
+      this.tagTarget(entry);
+      if (isProvider(entry)) {
+        this.tagTarget(entry.provide);
+      }
     });
   }
 
   protected tagTarget(target: InjectionToken<any> | Provider<any>): void {
     let info: ModuleInfo;
-    if (isInjectionToken(target) && !isConstructor(target)) {
-      info = MODULE_INFO_REG.get(target);
+    const useMap = isInjectionToken(target) && !isConstructor(target) && !isProvider(target);
+    if (useMap) {
+      info = MODULE_INFO_REG.get(target as InjectionToken<any>);
     } else {
       info = target[Module.MODULE_INFO];
     }
@@ -64,8 +69,8 @@ export class Module extends Array<Registerable> {
       };
     }
     info.registeredBy.push(this);
-    if (isInjectionToken(target) && !isConstructor(target)) {
-      MODULE_INFO_REG.set(target, info);
+    if (useMap) {
+      MODULE_INFO_REG.set(target as InjectionToken<any>, info);
     } else {
       target[Module.MODULE_INFO] = info;
     }

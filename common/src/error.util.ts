@@ -10,7 +10,7 @@ export class ErrorUtil {
       }, {});
   }
 
-  public static getLoggableError(error: Error): void {
+  public static getLoggableError(error: Error): any {
     return Object.assign(ErrorUtil.getCustomProperties(error), {
       message: error.message,
       stack: AppError.stack(error),

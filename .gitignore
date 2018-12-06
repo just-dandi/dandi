@@ -3,7 +3,7 @@ node_modules
 .DS_Store
 out
 reports
-coverage
+.coverage
 .nyc_output
 .out
 dist

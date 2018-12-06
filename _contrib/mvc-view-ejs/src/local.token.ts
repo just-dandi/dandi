@@ -1,6 +1,10 @@
 import { InjectionOptions, InjectionToken, OpinionatedToken, SymbolToken } from '@dandi/core';
 
-export const PKG = '@dandi-contrib/config-aws-ssm';
+const PKG = '@dandi/mvc-view-ejs';
+
+export function localSymbolTokenFor<T>(target: string): InjectionToken<T> {
+  return SymbolToken.forLocal<T>(PKG, target);
+}
 
 export function localSymbolToken<T>(target: string): InjectionToken<T> {
   return SymbolToken.local<T>(PKG, target);

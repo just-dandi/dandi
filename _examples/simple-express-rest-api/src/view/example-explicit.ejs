@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+
+  </head>
+
+  <body>
+
+    <h1>Dandi View with EJS!</h1>
+
+    <ul>
+      <li><a href="/view/dynamic">Dynamic View Resolution</a></li>
+      <li><a href="/view/auto">Automatic View Resolution</a></li>
+      <li><a href="/view/explicit-pug">PUG Explicit View Resolution</a></li>
+      <li><a href="/view/explicit-ejs">EJS Explicit View Resolution</a></li>
+    </ul>
+
+    <p>Set a value in the <code>content</code> querystring key to test binding pug locals.</p>
+
+    <% if (query.content) { %>
+    <h2>Your Content</h2>
+    <p><%= query.content %></p>
+    <% } else { %>
+    <p>
+      <a href="?content=Your+content+here!">For example</a>
+    </p>
+    <% } %>
+
+  </body>
+
+</html>
