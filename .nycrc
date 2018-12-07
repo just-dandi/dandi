@@ -14,7 +14,8 @@
   "exclude": [
     "**/*.spec.ts",
     "mocha.config.js",
-    "test"
+    "test",
+    "**/local.token.ts"
   ],
   "report-dir": ".coverage"
 }

@@ -12,7 +12,7 @@ do
   install ${dir%*/}
 done
 
-for dir in {'config-aws-ssm','data-pg','mvc-express','mvc-auth-firebase','aws-lambda','mvc-view-pug'}
+for dir in {'config-aws-ssm','data-pg','mvc-express','mvc-auth-firebase','aws-lambda','mvc-view-ejs','mvc-view-pug'}
 do
-  install ./_contrib/${dir%*/}
+  install _contrib/${dir%*/}
 done

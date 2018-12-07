@@ -21,6 +21,7 @@ errorHandler() {
 publish() {
 
   path=$1
+  dir=$2
   pkgName=$(node -p "require('${path}/${dir%*/}/package.json').name")
   root=$PWD
 
@@ -85,10 +86,10 @@ pkgVersion=$(node -p "require('./package.json').version")
 echo ${bold} Publishing @dandi suite v${pkgVersion}...${normal}
 for dir in {'common','core','core-node','core-testing','model','model-builder','config','data','cache','mvc','hal','mvc-hal','mvc-view'}
 do
-  publish '.'
+  publish '.' ${dir%*/}
 done
 
-for dir in {'config-aws-ssm','data-pg','mvc-express','mvc-auth-firebase','aws-lambda','mvc-view-pug'}
+for dir in {'config-aws-ssm','data-pg','mvc-express','mvc-auth-firebase','aws-lambda','mvc-view-ejs','mvc-view-pug'}
 do
-  publish './_contrib'
+  publish './_contrib' ${dir%*/}
 done

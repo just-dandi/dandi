@@ -24,7 +24,7 @@ export class MvcViewModuleBuilder extends ModuleBuilder<MvcViewModuleBuilder> {
     priority?: number,
   ): this {
     const engine = Array.isArray(engineInfo) ? engineInfo[0] : engineInfo;
-    return this.add(engine, {
+    return this.add(engineInfo, {
       provide: ViewEngineConfig,
       useValue: {
         engine,

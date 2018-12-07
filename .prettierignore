@@ -1,9 +1,13 @@
 */dist
+.eslintrc
+.eslintignore
 .prettierignore
+.nycrc
+.nvmrc
 npm.link
 *.sh
 *.pug
 *.ejs
 mocha.opts
-.coverage/*
-.nyc_output/*
+.coverage
+.nyc_output
