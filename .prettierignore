@@ -5,3 +5,5 @@ npm.link
 *.pug
 *.ejs
 mocha.opts
+.coverage/*
+.nyc_output/*
