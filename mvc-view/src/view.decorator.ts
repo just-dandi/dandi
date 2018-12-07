@@ -1,24 +1,24 @@
-import { dirname } from 'path';
+import { dirname } from 'path'
 
-import { callsite, MethodTarget } from '@dandi/common';
-import { getControllerMetadata } from '@dandi/mvc';
+import { MethodTarget, callsite } from '@dandi/common'
+import { getControllerMetadata } from '@dandi/mvc'
 
-import { ControllerViewMethodMetadata } from './view-metadata';
+import { ControllerViewMethodMetadata } from './view-metadata'
 
 export function View(name?: string, options?: any): MethodDecorator {
-  const context = dirname(callsite()[1].getFileName());
+  const context = dirname(callsite()[1].getFileName())
   return function viewDecorator(target: MethodTarget<any>, propertyKey: string) {
-    const meta = getControllerMetadata(target.constructor);
+    const meta = getControllerMetadata(target.constructor)
 
-    let controllerMethodMetadata: ControllerViewMethodMetadata = meta.routeMap.get(propertyKey);
+    let controllerMethodMetadata: ControllerViewMethodMetadata = meta.routeMap.get(propertyKey)
     if (!controllerMethodMetadata) {
-      controllerMethodMetadata = {};
-      meta.routeMap.set(propertyKey, controllerMethodMetadata);
+      controllerMethodMetadata = {}
+      meta.routeMap.set(propertyKey, controllerMethodMetadata)
     }
     controllerMethodMetadata.view = {
       name,
       context,
       options: { viewEngineOptions: options },
-    };
-  };
+    }
+  }
 }

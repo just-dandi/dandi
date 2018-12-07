@@ -1,6 +1,6 @@
-import { InjectionToken, Provider } from '@dandi/core';
+import { InjectionToken, Provider } from '@dandi/core'
 
-import { localOpinionatedToken } from './local.token';
+import { localOpinionatedToken } from './local.token'
 
 // TODO: what are the use cases for this?
 //  - appears to provide a method for globally configuring request-level providers, but why did I do this?
@@ -12,4 +12,4 @@ export const RequestProviderRegistrar: InjectionToken<RequestProviderRegistrar> 
   RequestProviderRegistrar
 >('RequestProviderRegistrar', {
   multi: true,
-});
+})

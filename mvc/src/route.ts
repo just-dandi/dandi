@@ -1,10 +1,10 @@
-import { Constructor } from '@dandi/common';
-import { InjectionToken, Provider } from '@dandi/core';
+import { Constructor } from '@dandi/common'
+import { InjectionToken, Provider } from '@dandi/core'
 
-import { AuthorizationCondition } from './authorization.condition';
-import { CorsConfig } from './cors.config';
-import { HttpMethod } from './http.method';
-import { localSymbolToken } from './local.token';
+import { AuthorizationCondition } from './authorization.condition'
+import { CorsConfig } from './cors.config'
+import { HttpMethod } from './http.method'
+import { localSymbolToken } from './local.token'
 
 export interface Route {
   httpMethod: HttpMethod;
@@ -16,4 +16,4 @@ export interface Route {
   authorization?: Array<Provider<AuthorizationCondition>>;
 }
 
-export const Route: InjectionToken<Route> = localSymbolToken<Route>('Route');
+export const Route: InjectionToken<Route> = localSymbolToken<Route>('Route')

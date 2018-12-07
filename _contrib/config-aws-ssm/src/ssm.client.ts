@@ -1,6 +1,6 @@
-import { Inject, Injectable } from '@dandi/core';
+import { Inject, Injectable } from '@dandi/core'
 
-import { AwsSsmClient } from './ssm.client.factory';
+import { AwsSsmClient } from './ssm.client.factory'
 
 @Injectable()
 export class SsmClient {
@@ -12,7 +12,7 @@ export class SsmClient {
         Name: name,
         WithDecryption: encrypted,
       })
-      .promise();
-    return result.Parameter.Value;
+      .promise()
+    return result.Parameter.Value
   }
 }

@@ -1,8 +1,8 @@
-import { InjectionToken } from '@dandi/core';
+import { InjectionToken } from '@dandi/core'
 
-import { localOpinionatedToken } from './local.token';
+import { localOpinionatedToken } from './local.token'
 
-export type PugFilter = (text: string, options?: any) => string;
+export type PugFilter = (text: string, options?: any) => string
 
 export interface PugOptions {
   filename?: string;
@@ -20,4 +20,4 @@ export interface PugOptions {
   [key: string]: any;
 }
 
-export const PugOptions: InjectionToken<PugOptions> = localOpinionatedToken('PugOptions', { multi: false });
+export const PugOptions: InjectionToken<PugOptions> = localOpinionatedToken('PugOptions', { multi: false })

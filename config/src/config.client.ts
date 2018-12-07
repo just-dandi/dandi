@@ -1,4 +1,4 @@
-import { ConfigToken } from './config.token';
+import { ConfigToken } from './config.token'
 
 export interface ConfigClient {
   readonly async: boolean;
@@ -17,5 +17,5 @@ export interface AsyncConfigClient extends ConfigClient {
 }
 
 export function isAsyncConfigClient(obj: ConfigClient): obj is AsyncConfigClient {
-  return obj.async;
+  return obj.async
 }

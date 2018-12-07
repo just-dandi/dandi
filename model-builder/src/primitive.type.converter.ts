@@ -1,14 +1,14 @@
-import { AppError, Constructor } from '@dandi/common';
-import { Inject, Injectable } from '@dandi/core';
-import { MemberMetadata } from '@dandi/model';
+import { AppError, Constructor } from '@dandi/common'
+import { Inject, Injectable } from '@dandi/core'
+import { MemberMetadata } from '@dandi/model'
 
-import { TypeConversionError, TypeConverter } from './type.converter';
+import { TypeConversionError, TypeConverter } from './type.converter'
 
 @Injectable(TypeConverter)
 export class StringTypeConverter implements TypeConverter<String> {
   public readonly type = String;
   public convert(obj: string): string {
-    return obj;
+    return obj
   }
 }
 
@@ -16,11 +16,11 @@ export class StringTypeConverter implements TypeConverter<String> {
 export class NumberTypeConverter implements TypeConverter<Number> {
   public readonly type = Number;
   public convert(obj: string): number {
-    const result = parseInt(obj, 10);
+    const result = parseInt(obj, 10)
     if (isNaN(result)) {
-      throw new TypeConversionError(obj, Number);
+      throw new TypeConversionError(obj, Number)
     }
-    return result;
+    return result
   }
 }
 
@@ -29,23 +29,23 @@ export class BooleanTypeConverter implements TypeConverter<Boolean> {
   public readonly type = Boolean;
   public convert(obj: any): boolean {
     if (obj === true || obj === false) {
-      return obj;
+      return obj
     }
     if (obj === 0) {
-      return false;
+      return false
     }
     if (obj === 1) {
-      return true;
+      return true
     }
     if (typeof obj === 'string') {
       if (obj.toLocaleLowerCase() === 'true') {
-        return true;
+        return true
       }
       if (obj.toLocaleLowerCase() === 'false') {
-        return false;
+        return false
       }
     }
-    throw new TypeConversionError(obj, Boolean);
+    throw new TypeConversionError(obj, Boolean)
   }
 }
 
@@ -55,15 +55,15 @@ export class PrimitiveTypeConverter {
 
   constructor(@Inject(TypeConverter) converters: TypeConverter<any>[]) {
     if (converters) {
-      converters.forEach((converter) => this.primitive.set(converter.type, converter));
+      converters.forEach((converter) => this.primitive.set(converter.type, converter))
     }
   }
 
   public convert(value: any, metadata?: MemberMetadata): any {
-    const primitiveConverter = this.primitive.get(metadata.type);
+    const primitiveConverter = this.primitive.get(metadata.type)
     if (!primitiveConverter) {
-      throw new AppError(`${metadata.type} cannot be converter by ${this.constructor.name}`);
+      throw new AppError(`${metadata.type} cannot be converter by ${this.constructor.name}`)
     }
-    return primitiveConverter.convert(value, metadata);
+    return primitiveConverter.convert(value, metadata)
   }
 }

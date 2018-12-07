@@ -1,2 +1,2 @@
-export * from './child.resource.model';
-export * from './child.resource.relations';
+export * from './child.resource.model'
+export * from './child.resource.relations'

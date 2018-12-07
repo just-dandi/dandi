@@ -1,10 +1,10 @@
-import { Constructor, MethodTarget } from '@dandi/common';
-import { getMemberMetadata } from '@dandi/model';
+import { Constructor, MethodTarget } from '@dandi/common'
+import { getMemberMetadata } from '@dandi/model'
 
-import { getResourceMetadata } from './resource.metadata';
+import { getResourceMetadata } from './resource.metadata'
 
-export const SELF_RELATION = 'self';
-export const ITEMS_RELATION = '_items';
+export const SELF_RELATION = 'self'
+export const ITEMS_RELATION = '_items'
 
 export function relationDecorator(
   resource: Constructor<any>,
@@ -12,34 +12,34 @@ export function relationDecorator(
   list: boolean,
   target: MethodTarget<any>,
   propertyKey: string,
-) {
-  const meta = getResourceMetadata(target.constructor);
-  let relMeta = meta.relations[rel || propertyKey];
+): void {
+  const meta = getResourceMetadata(target.constructor)
+  let relMeta = meta.relations[rel || propertyKey]
   if (!relMeta) {
-    relMeta = { resource, list };
-    meta.relations[rel || propertyKey] = relMeta;
+    relMeta = { resource, list }
+    meta.relations[rel || propertyKey] = relMeta
   } else {
-    relMeta.list = list;
+    relMeta.list = list
     if (!resource) {
-      return;
+      return
     }
     if (relMeta.resource) {
       if (relMeta.resource !== resource) {
-        throw new Error('resource mismatch');
+        throw new Error('resource mismatch')
       }
     } else {
-      relMeta.resource = resource;
+      relMeta.resource = resource
     }
   }
 
-  const memberMeta = getMemberMetadata(target, propertyKey);
-  memberMeta.sourceAccessor = `_embedded.${rel || propertyKey}`;
+  const memberMeta = getMemberMetadata(target, propertyKey)
+  memberMeta.sourceAccessor = `_embedded.${rel || propertyKey}`
 }
 
-export function Relation(resource?: Constructor<any>, rel?: string) {
-  return relationDecorator.bind(null, resource, rel, false);
+export function Relation(resource?: Constructor<any>, rel?: string): MethodDecorator {
+  return relationDecorator.bind(null, resource, rel, false)
 }
 
-export function ListRelation(resource?: Constructor<any>, rel?: string) {
-  return relationDecorator.bind(null, resource, rel, true);
+export function ListRelation(resource?: Constructor<any>, rel?: string): MethodDecorator {
+  return relationDecorator.bind(null, resource, rel, true)
 }

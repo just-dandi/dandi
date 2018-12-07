@@ -1,14 +1,14 @@
-import { getControllerMetadata } from './controller.metadata';
-import { CorsConfig } from './cors.config';
-import { methodDecorator } from './http.method.decorator';
+import { getControllerMetadata } from './controller.metadata'
+import { CorsConfig } from './cors.config'
+import { methodDecorator } from './http.method.decorator'
 
-export type CorsDecorator = (config: CorsConfig | true) => ClassDecorator | MethodDecorator;
+export type CorsDecorator = (config: CorsConfig | true) => ClassDecorator | MethodDecorator
 
 export function Cors(config: CorsConfig | true = true): MethodDecorator & ClassDecorator {
   return (target: any, propertyKey?: string): void => {
     if (typeof target === 'function') {
-      const meta = getControllerMetadata(target);
-      meta.cors = config;
+      const meta = getControllerMetadata(target)
+      meta.cors = config
     } else {
       methodDecorator(
         {
@@ -16,20 +16,20 @@ export function Cors(config: CorsConfig | true = true): MethodDecorator & ClassD
         },
         target,
         propertyKey,
-      );
+      )
     }
-  };
+  }
 }
 
 export function getCorsConfig(controllerCors: CorsConfig | true, methodCors: CorsConfig | true): CorsConfig | true {
   if (!controllerCors) {
-    return methodCors;
+    return methodCors
   }
   if (methodCors === undefined) {
-    return controllerCors;
+    return controllerCors
   }
   if (controllerCors === true && methodCors === true) {
-    return true;
+    return true
   }
-  return Object.assign({}, controllerCors, methodCors);
+  return Object.assign({}, controllerCors, methodCors)
 }

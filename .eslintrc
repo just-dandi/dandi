@@ -1,7 +1,7 @@
 {
-  "extends": "prettier",
+  "extends": "eslint:recommended",
   "parser": "typescript-eslint-parser",
-  "plugins": ["prettier", "import", "typescript", "mocha"],
+  "plugins": ["import", "typescript", "mocha"],
   "parserOptions": {
     "ecmaVersion": 8
   },
@@ -17,11 +17,12 @@
       }
     },
     {
-      "files": ["*/src/**/*.*spec.ts"],
+      "files": ["*/src/**/*.*spec.ts", "_contrib/*/src/**/*.*spec.ts"],
       "rules": {
         "mocha/no-exclusive-tests": "error",
         "no-magic-numbers": "off",
-        "no-invalid-this": "off"
+        "no-invalid-this": "off",
+        "no-new": "off"
       }
     },
     {
@@ -57,7 +58,6 @@
     "curly": ["error", "all"],
     "eqeqeq": ["error", "always"],
     "eol-last": ["error", "always"],
-    "import/order": ["error"],
     "lines-around-comment": [
       "error",
       {
@@ -109,8 +109,21 @@
     "no-whitespace-before-property": ["error"],
     "object-curly-newline": ["error", { "multiline": true, "consistent": true }],
     "one-var-declaration-per-line": ["error", "initializations"],
+    "prefer-const": "error",
+    "prefer-rest-params": "error",
+    "prefer-spread": "error",
+    "quotes": ["error", "single", { "avoidEscape": true, "allowTemplateLiterals": true }],
+    "rest-spread-spacing": ["error", "never"],
+    "semi": ["error", "never"],
     "semi-spacing": ["error", { "before": false, "after": true }],
+    "space-in-parens": ["error", "never"],
+    "spaced-comment": ["error", "always"],
 
+    "import/order": ["error", { "newlines-between":  "always-and-inside-groups" }],
+
+    "typescript/class-name-casing": ["error"],
+    "typescript/explicit-function-return-type": ["error", { "allowExpressions":  true }],
+    "typescript/generic-type-naming": ["error", "^T(?:[A-Z][a-zA-Z]+)*$"],
     "typescript/no-unused-vars": ["error"]
   }
 }

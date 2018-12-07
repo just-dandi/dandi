@@ -1,6 +1,6 @@
-import { InjectionToken } from '@dandi/core';
+import { InjectionToken } from '@dandi/core'
 
-import { localOpinionatedToken } from './local.token';
+import { localOpinionatedToken } from './local.token'
 
 export interface ExpressMvcConfig {
   port: number;
@@ -11,4 +11,4 @@ export const ExpressMvcConfig: InjectionToken<ExpressMvcConfig> = localOpinionat
   {
     multi: false,
   },
-);
+)

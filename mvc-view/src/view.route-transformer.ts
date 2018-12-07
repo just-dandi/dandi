@@ -1,8 +1,8 @@
-import { Injectable } from '@dandi/core';
-import { ControllerMetadata, Route, RouteTransformer } from '@dandi/mvc';
+import { Injectable } from '@dandi/core'
+import { ControllerMetadata, Route, RouteTransformer } from '@dandi/mvc'
 
-import { ControllerViewMethodMetadata } from './view-metadata';
-import { ViewRoute } from './view-route';
+import { ControllerViewMethodMetadata } from './view-metadata'
+import { ViewRoute } from './view-route'
 
 @Injectable(RouteTransformer)
 export class ViewRouteTransformer implements RouteTransformer {
@@ -12,8 +12,8 @@ export class ViewRouteTransformer implements RouteTransformer {
     methodMeta: ControllerViewMethodMetadata,
   ): Route {
     if (methodMeta.view) {
-      route.view = methodMeta.view;
+      route.view = methodMeta.view
     }
-    return route;
+    return route
   }
 }

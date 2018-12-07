@@ -1,7 +1,7 @@
-import { MappedInjectionToken } from '@dandi/core';
-import { Duration } from 'luxon';
+import { MappedInjectionToken } from '@dandi/core'
+import { Duration } from 'luxon'
 
-import { localOpinionatedToken } from './local.token';
+import { localOpinionatedToken } from './local.token'
 
 export enum CacheProviderType {
   cascading = 'cascading',
@@ -19,20 +19,20 @@ export interface Cache {
   delete(key: symbol): Promise<boolean>;
 }
 
-const tokens = new Map<CacheProviderType, MappedInjectionToken<CacheProviderType, Cache>>();
+const tokens = new Map<CacheProviderType, MappedInjectionToken<CacheProviderType, Cache>>()
 
-export const Cache = CacheProvider(CacheProviderType.cascading);
+export const Cache = CacheProvider(CacheProviderType.cascading)
 
-export function CacheProvider(type: CacheProviderType) {
-  let token: MappedInjectionToken<CacheProviderType, Cache> = tokens.get(type);
+export function CacheProvider(type: CacheProviderType): MappedInjectionToken<CacheProviderType, Cache> {
+  let token: MappedInjectionToken<CacheProviderType, Cache> = tokens.get(type)
   if (!token) {
     token = {
       provide: localOpinionatedToken<Cache>(`CacheProvider:${type}`, {
         multi: false,
       }),
       key: type,
-    };
-    tokens.set(type, token);
+    }
+    tokens.set(type, token)
   }
-  return token;
+  return token
 }

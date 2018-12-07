@@ -1,13 +1,13 @@
-import { isConstructor, MethodTarget } from '@dandi/common';
-import { getInjectableParamMetadata, InjectionToken, ParamMetadata, Provider, SyncFactoryProvider } from '@dandi/core';
-import { getMemberMetadata, MemberMetadata } from '@dandi/model';
-import { ModelBuilder, ConvertedType, ModelBuilderOptions, MetadataModelValidator } from '@dandi/model-builder';
+import { MethodTarget, isConstructor } from '@dandi/common'
+import { InjectionToken, ParamMetadata, Provider, SyncFactoryProvider, getInjectableParamMetadata } from '@dandi/core'
+import { MemberMetadata, getMemberMetadata } from '@dandi/model'
+import { ConvertedType, MetadataModelValidator, ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder'
 
-import { ConditionDecorators } from './condition.decorator';
-import { conditionWithinByKeyDecorator } from './condition.within';
-import { localOpinionatedToken, localSymbolTokenFor } from './local.token';
-import { requestParamValidatorFactory } from './request.param.validator';
-import { ParamMap } from './tokens';
+import { ConditionDecorators } from './condition.decorator'
+import { conditionWithinByKeyDecorator } from './condition.within'
+import { localOpinionatedToken, localSymbolTokenFor } from './local.token'
+import { requestParamValidatorFactory } from './request.param.validator'
+import { ParamMap } from './tokens'
 
 export interface RequestParamDecorator<T> extends ParameterDecorator, ConditionDecorators {
   (target: Object, propertyKey: string | symbol, parameterIndex: number): {
@@ -16,8 +16,12 @@ export interface RequestParamDecorator<T> extends ParameterDecorator, ConditionD
   };
 }
 
-export function requestParamToken<T>(mapToken: InjectionToken<ParamMap>, paramName: string, requestParamName: string) {
-  return localSymbolTokenFor<T>(`${mapToken}:${paramName}:${requestParamName}`);
+export function requestParamToken<T>(
+  mapToken: InjectionToken<ParamMap>,
+  paramName: string,
+  requestParamName: string,
+): InjectionToken<T> {
+  return localSymbolTokenFor<T>(`${mapToken}:${paramName}:${requestParamName}`)
 }
 
 export const RequestParamModelBuilderOptions: InjectionToken<ModelBuilderOptions> = localOpinionatedToken(
@@ -25,14 +29,14 @@ export const RequestParamModelBuilderOptions: InjectionToken<ModelBuilderOptions
   {
     multi: false,
   },
-);
+)
 
 export const RequestParamModelBuilderOptionsProvider: SyncFactoryProvider<ModelBuilderOptions> = {
   provide: RequestParamModelBuilderOptions,
   useFactory: () => ({
     validators: [new MetadataModelValidator()],
   }),
-};
+}
 
 export function requestParamProvider(
   mapToken: InjectionToken<ParamMap>,
@@ -46,7 +50,7 @@ export function requestParamProvider(
     useFactory: requestParamValidatorFactory.bind(null, type, paramName, memberMetadata),
     deps: [mapToken, ModelBuilder, RequestParamModelBuilderOptions],
     providers: [RequestParamModelBuilderOptionsProvider],
-  };
+  }
 }
 
 export function makeRequestParamDecorator<T>(
@@ -59,22 +63,22 @@ export function makeRequestParamDecorator<T>(
     memberName: string,
     paramIndex: number,
   ) {
-    const meta = getInjectableParamMetadata(target, memberName, paramIndex);
-    const memberMetadata = getMemberMetadata(target.constructor, memberName, paramIndex);
-    const token = requestParamToken<T>(mapToken, memberName, name || meta.name);
+    const meta = getInjectableParamMetadata(target, memberName, paramIndex)
+    const memberMetadata = getMemberMetadata(target.constructor, memberName, paramIndex)
+    const token = requestParamToken<T>(mapToken, memberName, name || meta.name)
     if (isConstructor(type)) {
-      memberMetadata.type = type;
+      memberMetadata.type = type
     }
-    meta.token = token;
-    meta.providers = [requestParamProvider(mapToken, token, type, name || meta.name, memberMetadata)];
+    meta.token = token
+    meta.providers = [requestParamProvider(mapToken, token, type, name || meta.name, memberMetadata)]
 
     return {
       meta,
       memberMetadata,
-    };
-  } as any;
-  apply.within = conditionWithinByKeyDecorator.bind(null, apply);
-  return apply;
+    }
+  } as any
+  apply.within = conditionWithinByKeyDecorator.bind(null, apply)
+  return apply
 }
 
 export function requestParamDecorator<T>(
@@ -84,13 +88,13 @@ export function requestParamDecorator<T>(
   target: MethodTarget<T>,
   memberName: string,
   paramIndex: number,
-) {
-  const meta = getInjectableParamMetadata(target, memberName, paramIndex);
-  const memberMetadata = getMemberMetadata(target.constructor, memberName, paramIndex);
-  const token = requestParamToken<T>(mapToken, memberName, name || meta.name);
+): void {
+  const meta = getInjectableParamMetadata(target, memberName, paramIndex)
+  const memberMetadata = getMemberMetadata(target.constructor, memberName, paramIndex)
+  const token = requestParamToken<T>(mapToken, memberName, name || meta.name)
   if (isConstructor(type)) {
-    memberMetadata.type = type;
+    memberMetadata.type = type
   }
-  meta.token = token;
-  meta.providers = [requestParamProvider(mapToken, token, type, name || meta.name, memberMetadata)];
+  meta.token = token
+  meta.providers = [requestParamProvider(mapToken, token, type, name || meta.name, memberMetadata)]
 }

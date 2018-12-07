@@ -1,4 +1,4 @@
-import { ClientContext, CognitoIdentity, Context } from 'aws-lambda';
+import { ClientContext, CognitoIdentity, Context } from 'aws-lambda'
 
 export class MockContext implements Context {
   public awsRequestId: string;
@@ -17,7 +17,7 @@ export class MockContext implements Context {
   public fail(error: Error | string): void {}
 
   public getRemainingTimeInMillis(): number {
-    return 0;
+    return 0
   }
 
   public succeed(messageOrObject: any): void;

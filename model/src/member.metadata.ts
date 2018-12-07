@@ -1,8 +1,8 @@
-import { Constructor } from '@dandi/common';
+import { Constructor } from '@dandi/common'
 
-export type SourceAccessorFn = <TSource, TMember>(source: TSource) => TMember;
+export type SourceAccessorFn = <TSource, TMember>(source: TSource) => TMember
 
-export type MemberSourceAccessor = string | SourceAccessorFn;
+export type MemberSourceAccessor = string | SourceAccessorFn
 
 export interface MemberMetadata {
   type?: Constructor<any>;
@@ -24,23 +24,23 @@ export interface ModelMetadata {
   [propertyName: string]: MemberMetadata;
 }
 
-const protoKeys = new Map<Function, Map<Symbol, any>>();
+const protoKeys = new Map<Function, Map<Symbol, any>>()
 
 export function getModelMetadata(target: Function): ModelMetadata {
-  let protoKey = protoKeys.get(target);
+  let protoKey = protoKeys.get(target)
   if (!protoKey) {
-    protoKey = new Map<Symbol, any>();
-    protoKeys.set(target, protoKey);
+    protoKey = new Map<Symbol, any>()
+    protoKeys.set(target, protoKey)
   }
-  const classKey = Symbol.for(target.name);
-  let classTarget = protoKey.get(classKey);
+  const classKey = Symbol.for(target.name)
+  let classTarget = protoKey.get(classKey)
   if (!classTarget) {
-    const superClass = Object.getPrototypeOf(target);
-    const usePrototypeTarget = !!target.prototype && !!superClass.name;
-    classTarget = Object.create(usePrototypeTarget ? getModelMetadata(superClass) : null);
-    protoKey.set(classKey, classTarget);
+    const superClass = Object.getPrototypeOf(target)
+    const usePrototypeTarget = !!target.prototype && !!superClass.name
+    classTarget = Object.create(usePrototypeTarget ? getModelMetadata(superClass) : null)
+    protoKey.set(classKey, classTarget)
   }
-  return classTarget;
+  return classTarget
 }
 
 /**
@@ -48,16 +48,16 @@ export function getModelMetadata(target: Function): ModelMetadata {
  */
 export function getAllKeys(obj: ModelMetadata): string[] {
   if (obj === null) {
-    return [];
+    return []
   }
-  return Object.keys(obj).concat(getAllKeys(Object.getPrototypeOf(obj)));
+  return Object.keys(obj).concat(getAllKeys(Object.getPrototypeOf(obj)))
 }
 
 export function getMemberMetadata(target: any, propertyName: string, paramIndex?: number): MemberMetadata {
-  const modelMetadata = getModelMetadata(target);
-  const key = typeof paramIndex === 'number' ? `${propertyName}__${paramIndex}` : propertyName;
+  const modelMetadata = getModelMetadata(target)
+  const key = typeof paramIndex === 'number' ? `${propertyName}__${paramIndex}` : propertyName
   if (!modelMetadata[key]) {
-    modelMetadata[key] = {} as any;
+    modelMetadata[key] = {} as any
   }
-  return modelMetadata[key];
+  return modelMetadata[key]
 }

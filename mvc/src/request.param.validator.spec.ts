@@ -1,30 +1,29 @@
-import { Container } from '@dandi/core';
-import { MemberMetadata } from '@dandi/model';
-import { MetadataModelBuilder, ModelBuilder, PrimitiveTypeConverter, TypeConverter } from '@dandi/model-builder';
-import { PathParam, RequestPathParamMap } from '@dandi/mvc';
+import { Container } from '@dandi/core'
+import { MemberMetadata } from '@dandi/model'
+import { MetadataModelBuilder, ModelBuilder, PrimitiveTypeConverter, TypeConverter } from '@dandi/model-builder'
+import { PathParam, RequestPathParamMap } from '@dandi/mvc'
+import { expect } from 'chai'
+import { SinonStubbedInstance, createStubInstance, stub } from 'sinon'
 
-import { expect } from 'chai';
-import { SinonStubbedInstance, stub, createStubInstance } from 'sinon';
-
-import { RequestParamModelBuilderOptionsProvider } from './request.param.decorator';
-import { requestParamValidatorFactory } from './request.param.validator';
+import { RequestParamModelBuilderOptionsProvider } from './request.param.decorator'
+import { requestParamValidatorFactory } from './request.param.validator'
 
 describe('requestParamValidatorFactory', () => {
-  let paramMap: { [key: string]: string };
-  let builder: SinonStubbedInstance<ModelBuilder>;
-  let memberMetadata: MemberMetadata;
+  let paramMap: { [key: string]: string }
+  let builder: SinonStubbedInstance<ModelBuilder>
+  let memberMetadata: MemberMetadata
 
   beforeEach(() => {
-    paramMap = { foo: 'bar' };
-    builder = createStubInstance(MetadataModelBuilder);
+    paramMap = { foo: 'bar' }
+    builder = createStubInstance(MetadataModelBuilder)
     memberMetadata = {
       type: String,
-    };
-  });
+    }
+  })
   afterEach(() => {
-    paramMap = undefined;
-    builder = undefined;
-  });
+    paramMap = undefined
+    builder = undefined
+  })
 
   it('calls validators with the value from the param map specified by the key', () => {
     requestParamValidatorFactory(
@@ -34,20 +33,20 @@ describe('requestParamValidatorFactory', () => {
       paramMap,
       builder,
       RequestParamModelBuilderOptionsProvider.useFactory(),
-    );
+    )
 
-    expect(builder.constructMember).to.have.been.calledOnce.calledWith(memberMetadata, 'foo', 'bar');
-  });
+    expect(builder.constructMember).to.have.been.calledOnce.calledWith(memberMetadata, 'foo', 'bar')
+  })
 
   it('works', async () => {
-    const s = stub();
-    const convert = stub();
+    const s = stub()
+    const convert = stub()
     class TestController {
       public testMethod(@PathParam(String) foo: string) {
-        s(foo);
+        s(foo)
       }
     }
-    const controller = new TestController();
+    const controller = new TestController()
     const container = new Container({
       providers: [
         MetadataModelBuilder,
@@ -66,11 +65,11 @@ describe('requestParamValidatorFactory', () => {
           },
         },
       ],
-    });
-    await container.start();
+    })
+    await container.start()
 
-    await container.invoke(controller, controller.testMethod);
+    await container.invoke(controller, controller.testMethod)
 
-    expect(convert).to.have.been.calledWith('bar', { type: String });
-  });
-});
+    expect(convert).to.have.been.calledWith('bar', { type: String })
+  })
+})

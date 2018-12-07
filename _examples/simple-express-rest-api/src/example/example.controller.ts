@@ -1,9 +1,9 @@
-import { Inject } from '@dandi/core';
-import { Controller, HttpPost, QueryParam } from '@dandi/mvc';
+import { Inject } from '@dandi/core'
+import { Controller, HttpPost, QueryParam } from '@dandi/mvc'
 
-import { ListManager } from '../lists/list.manager';
+import { ListManager } from '../lists/list.manager'
 
-import { ExampleManager } from './example.manager';
+import { ExampleManager } from './example.manager'
 
 @Controller('/example')
 export class ExampleController {
@@ -14,6 +14,6 @@ export class ExampleController {
 
   @HttpPost()
   public createExamples(@QueryParam(Number) listCount: number, @QueryParam(Number) tasksPerList): Promise<any> {
-    return this.exampleManager.addExamples(listCount, tasksPerList);
+    return this.exampleManager.addExamples(listCount, tasksPerList)
   }
 }

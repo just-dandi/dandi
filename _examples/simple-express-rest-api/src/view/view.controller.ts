@@ -1,6 +1,6 @@
-import { Inject } from '@dandi/core';
-import { Controller, HttpGet, QueryParam, RequestQueryParamMap } from '@dandi/mvc';
-import { View, ViewResultFactory } from '@dandi/mvc-view';
+import { Inject } from '@dandi/core'
+import { Controller, HttpGet, QueryParam, RequestQueryParamMap } from '@dandi/mvc'
+import { View, ViewResultFactory } from '@dandi/mvc-view'
 
 @Controller('view')
 export class ViewController {
@@ -13,7 +13,7 @@ export class ViewController {
   @HttpGet('auto')
   @View('example-auto')
   public auto(@Inject(RequestQueryParamMap) query) {
-    return { query };
+    return { query }
   }
 
   /** static template naming with explicit engine resolution
@@ -23,13 +23,13 @@ export class ViewController {
   @HttpGet('explicit-pug')
   @View('example-explicit.pug')
   public explicitPug(@Inject(RequestQueryParamMap) query) {
-    return { query };
+    return { query }
   }
 
   @HttpGet('explicit-ejs')
   @View('example-explicit.ejs')
   public explicitEjs(@Inject(RequestQueryParamMap) query) {
-    return { query };
+    return { query }
   }
 
   /** dynamic template naming -
@@ -39,6 +39,6 @@ export class ViewController {
   @HttpGet('dynamic')
   @View()
   public dynamic(@QueryParam(String) mode: string) {
-    return this.view(mode === 'b' ? 'dynamic-b' : 'dynamic-a', { data: { mode } });
+    return this.view(mode === 'b' ? 'dynamic-b' : 'dynamic-a', { data: { mode } })
   }
 }

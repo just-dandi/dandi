@@ -1,4 +1,4 @@
-import { Constructor } from '@dandi/common';
+import { Constructor } from '@dandi/common'
 import {
   AmbientInjectableScanner,
   Container,
@@ -7,19 +7,18 @@ import {
   InjectionToken,
   Optional,
   Repository,
-} from '@dandi/core';
+} from '@dandi/core'
+import { Context } from 'aws-lambda'
 
-import { Context } from 'aws-lambda';
+import { LambdaErrorHandler } from './lambda.error.handler'
+import { LambdaEventTransformer } from './lambda.event.transformer'
+import { LambdaHandler } from './lambda.handler'
+import { LambdaResponder } from './lambda.responder'
+import { localOpinionatedToken } from './local.token'
 
-import { LambdaErrorHandler } from './lambda.error.handler';
-import { LambdaEventTransformer } from './lambda.event.transformer';
-import { LambdaHandler } from './lambda.handler';
-import { LambdaResponder } from './lambda.responder';
-import { localOpinionatedToken } from './local.token';
+const LambdaHandler: InjectionToken<LambdaHandler<any>> = localOpinionatedToken('LambdaHandler', { multi: false })
 
-const LambdaHandler: InjectionToken<LambdaHandler<any>> = localOpinionatedToken('LambdaHandler', { multi: false });
-
-export type HandlerFn<TEvent = any, TResult = any> = (event: TEvent, context: Context) => void | Promise<TResult>;
+export type HandlerFn<TEvent = any, TResult = any> = (event: TEvent, context: Context) => void | Promise<TResult>
 
 @Injectable()
 export class Lambda<TEvent, TEventData, THandler extends LambdaHandler<TEventData>> {
@@ -27,45 +26,47 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler<TEventDat
     handlerServiceType: Constructor<THandler>,
     container: Container,
   ): HandlerFn<TEvent, any>;
+
   public static handler<TEvent, TEventData, THandler extends LambdaHandler<TEventData>>(
     handlerServiceType: Constructor<THandler>,
     ...modulesOrProviders: any[]
   ): HandlerFn<TEvent, any>;
+
   public static handler<TEvent, TEventData, THandler extends LambdaHandler<TEventData>>(
     handlerServiceType: Constructor<THandler>,
     ...modulesOrProviders: any[]
   ): HandlerFn<TEvent, any> {
     const existingContainer =
-      modulesOrProviders.length === 1 && modulesOrProviders[0] instanceof Container && modulesOrProviders[0];
+      modulesOrProviders.length === 1 && modulesOrProviders[0] instanceof Container && modulesOrProviders[0]
 
     const container =
       existingContainer ||
       new Container({
         providers: [AmbientInjectableScanner],
-      });
+      })
 
-    const repo = Repository.for({});
+    const repo = Repository.for({})
     repo.register({
       provide: LambdaHandler,
       useClass: handlerServiceType,
-    });
+    })
     if (!existingContainer) {
-      modulesOrProviders.forEach((p) => repo.register(p));
+      modulesOrProviders.forEach((p) => repo.register(p))
     }
 
-    const ready = existingContainer ? Promise.resolve() : container.start();
+    const ready = existingContainer ? Promise.resolve() : container.start()
 
-    let lambda: Lambda<TEvent, TEventData, THandler>;
+    let lambda: Lambda<TEvent, TEventData, THandler>
 
     return async (event: TEvent, context: Context) => {
-      await ready;
+      await ready
 
       if (!lambda) {
-        lambda = (await container.resolve(Lambda, false, repo)).singleValue;
+        lambda = (await container.resolve(Lambda, false, repo)).singleValue
       }
 
-      return lambda.handleEvent(event, context);
-    };
+      return lambda.handleEvent(event, context)
+    }
   }
 
   constructor(
@@ -78,15 +79,15 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler<TEventDat
   ) {}
 
   public async handleEvent(event: TEvent, context: Context): Promise<any> {
-    const eventData = this.transformer.transform(event, context);
+    const eventData = this.transformer.transform(event, context)
     try {
-      const result = await this.handler.handleEvent(eventData, context);
-      return this.responder.handleResponse(result);
+      const result = await this.handler.handleEvent(eventData, context)
+      return this.responder.handleResponse(result)
     } catch (err) {
       if (this.errorHandlers) {
-        this.errorHandlers.forEach((handler) => handler.handleError(event, err));
+        this.errorHandlers.forEach((handler) => handler.handleError(event, err))
       }
-      return this.responder.handleError(err);
+      return this.responder.handleError(err)
     }
   }
 }

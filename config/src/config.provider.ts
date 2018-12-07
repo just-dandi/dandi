@@ -1,16 +1,16 @@
-import { Constructor } from '@dandi/common';
-import { Provider } from '@dandi/core';
+import { Constructor } from '@dandi/common'
+import { Provider } from '@dandi/core'
 
-import { ConfigClient } from './config.client';
-import { ConfigResolver } from './config.resolver';
-import { ConfigToken } from './config.token';
+import { ConfigClient } from './config.client'
+import { ConfigResolver } from './config.resolver'
+import { ConfigToken } from './config.token'
 
 export function configValueFactory<T>(
   token: ConfigToken<T>,
   client: ConfigClient,
   resolver: ConfigResolver,
 ): Promise<T> {
-  return resolver.resolve(client, token);
+  return resolver.resolve(client, token)
 }
 
 export function configProvider<T>(client: Constructor<ConfigClient>, token: ConfigToken<T>): Provider<T> {
@@ -19,5 +19,5 @@ export function configProvider<T>(client: Constructor<ConfigClient>, token: Conf
     useFactory: configValueFactory.bind(null, token),
     async: true,
     deps: [client, ConfigResolver],
-  };
+  }
 }

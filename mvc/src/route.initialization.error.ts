@@ -1,6 +1,6 @@
-import { RequestError } from './errors';
-import { HttpStatusCode } from './http.status.code';
-import { Route } from './route';
+import { RequestError } from './errors'
+import { HttpStatusCode } from './http.status.code'
+import { Route } from './route'
 
 export class RouteInitializationError extends RequestError {
   constructor(innerError: Error, public readonly route: Route) {
@@ -9,6 +9,6 @@ export class RouteInitializationError extends RequestError {
       'Error initializing route',
       innerError.message,
       innerError,
-    );
+    )
   }
 }

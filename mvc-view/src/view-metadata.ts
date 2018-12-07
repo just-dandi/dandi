@@ -1,6 +1,6 @@
-import { ControllerMethodMetadata } from '@dandi/mvc';
+import { ControllerMethodMetadata } from '@dandi/mvc'
 
-import { RenderOptions } from './render-options';
+import { RenderOptions } from './render-options'
 
 export interface ViewMetadata {
   name: string;

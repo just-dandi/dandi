@@ -1,4 +1,4 @@
-import { CorsConfig } from './cors.config';
+import { CorsConfig } from './cors.config'
 
 export interface MvcMetadata {
   path?: string;

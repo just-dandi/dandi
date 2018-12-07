@@ -1,6 +1,6 @@
-import { Injectable } from './injectable.decorator';
-import { LogLevel } from './log.level';
-import { Logger } from './logger';
+import { Injectable } from './injectable.decorator'
+import { LogLevel } from './log.level'
+import { Logger } from './logger'
 
 @Injectable(Logger)
 export class NoopLogger implements Logger {

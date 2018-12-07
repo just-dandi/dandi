@@ -1,11 +1,11 @@
-import { Constructor } from '@dandi/common';
-import { InjectionToken, Provider } from '@dandi/core';
-import { MemberMetadata } from '@dandi/model';
+import { Constructor } from '@dandi/common'
+import { InjectionToken, Provider } from '@dandi/core'
+import { MemberMetadata } from '@dandi/model'
 
-import { DataTransformer } from './data.transformer';
-import { KeyTransformFn } from './key.transformer';
-import { localOpinionatedToken } from './local.token';
-import { ModelValidator } from './model.validator';
+import { DataTransformer } from './data.transformer'
+import { KeyTransformFn } from './key.transformer'
+import { localOpinionatedToken } from './local.token'
+import { ModelValidator } from './model.validator'
 
 export interface MemberBuilderOptions {
   validators?: ModelValidator[];
@@ -21,9 +21,9 @@ export const ModelBuilderOptions = {
     return {
       provide: token,
       useValue: options,
-    };
+    }
   },
-};
+}
 
 export interface ModelBuilder {
   constructModel<T>(type: Constructor<T>, obj: any, options?: ModelBuilderOptions): T;
@@ -32,4 +32,4 @@ export interface ModelBuilder {
 
 export const ModelBuilder: InjectionToken<ModelBuilder> = localOpinionatedToken<ModelBuilder>('ModelBuilder', {
   multi: false,
-});
+})

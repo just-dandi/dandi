@@ -1,11 +1,10 @@
-import { Inject, Injectable, Optional } from '@dandi/core';
-import { ModelBuilder } from '@dandi/model-builder';
+import { Inject, Injectable, Optional } from '@dandi/core'
+import { ModelBuilder } from '@dandi/model-builder'
+import { APIGatewayEventRequestContext, APIGatewayProxyEvent, Context } from 'aws-lambda'
 
-import { APIGatewayEventRequestContext, APIGatewayProxyEvent, Context } from 'aws-lambda';
-
-import { DandiAwsLambdaError } from './dandi.aws.lambda.error';
-import { HttpEventOptions } from './http.event.options';
-import { LambdaEventTransformer } from './lambda.event.transformer';
+import { DandiAwsLambdaError } from './dandi.aws.lambda.error'
+import { HttpEventOptions } from './http.event.options'
+import { LambdaEventTransformer } from './lambda.event.transformer'
 
 export interface HttpHandlerRequest {
   body: any;
@@ -34,21 +33,21 @@ export class HttpEventTransformer implements LambdaEventTransformer<APIGatewayPr
   ) {}
 
   public transform(event: APIGatewayProxyEvent, context: Context): HttpHandlerRequest {
-    let body: any;
+    let body: any
     if (event.body) {
-      let bodyStr = event.body;
+      let bodyStr = event.body
       if (event.isBase64Encoded) {
-        bodyStr = Buffer.from(bodyStr, 'base64').toString('utf-8');
+        bodyStr = Buffer.from(bodyStr, 'base64').toString('utf-8')
       }
-      body = JSON.parse(bodyStr);
+      body = JSON.parse(bodyStr)
     }
 
     if (this.options && this.options.validateBody) {
       if (!this.builder) {
-        throw new DandiAwsLambdaError('validateBody option is set, but no ModelBuilder is provided');
+        throw new DandiAwsLambdaError('validateBody option is set, but no ModelBuilder is provided')
       }
 
-      body = this.builder.constructModel(this.options.validateBody, body);
+      body = this.builder.constructModel(this.options.validateBody, body)
     }
 
     return {
@@ -64,6 +63,6 @@ export class HttpEventTransformer implements LambdaEventTransformer<APIGatewayPr
       requestContext: event.requestContext,
       resource: event.resource,
       stageVariables: event.stageVariables,
-    };
+    }
   }
 }

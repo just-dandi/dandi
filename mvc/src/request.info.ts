@@ -1,8 +1,8 @@
-import { Uuid } from '@dandi/common';
-import { InjectionToken } from '@dandi/core';
+import { Uuid } from '@dandi/common'
+import { InjectionToken } from '@dandi/core'
 
-import { localOpinionatedToken } from './local.token';
-import { PerfRecorder } from './perf.recorder';
+import { localOpinionatedToken } from './local.token'
+import { PerfRecorder } from './perf.recorder'
 
 export interface RequestInfo {
   requestId: Uuid;
@@ -11,4 +11,4 @@ export interface RequestInfo {
 
 export const RequestInfo: InjectionToken<RequestInfo> = localOpinionatedToken<RequestInfo>('RequestInfo', {
   multi: false,
-});
+})

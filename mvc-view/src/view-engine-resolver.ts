@@ -1,12 +1,12 @@
-import { access, constants } from 'fs';
-import { extname, resolve } from 'path';
+import { access, constants } from 'fs'
+import { extname, resolve } from 'path'
 
-import { Constructor } from '@dandi/common';
-import { Inject, Injectable, Logger, Resolver, Singleton } from '@dandi/core';
+import { Constructor } from '@dandi/common'
+import { Inject, Injectable, Logger, Resolver, Singleton } from '@dandi/core'
 
-import { ViewEngine } from './view-engine';
-import { ViewMetadata } from './view-metadata';
-import { ViewEngineConfig } from './view-engine-config';
+import { ViewEngine } from './view-engine'
+import { ViewMetadata } from './view-metadata'
+import { ViewEngineConfig } from './view-engine-config'
 
 export interface ResolvedView {
   engine: ViewEngine;
@@ -27,11 +27,11 @@ export class ViewEngineResolver {
     return new Promise((resolve, reject) => {
       access(path, constants.R_OK, (err) => {
         if (err) {
-          return reject(false);
+          return reject(false)
         }
-        return resolve(true);
-      });
-    });
+        return resolve(true)
+      })
+    })
   }
 
   constructor(
@@ -39,7 +39,7 @@ export class ViewEngineResolver {
     @Inject(ViewEngineConfig) private configs: ViewEngineIndexedConfig[],
     @Inject(Resolver) private resolver: Resolver,
   ) {
-    this.configs.forEach((config, index) => (config.index = index));
+    this.configs.forEach((config, index) => (config.index = index))
 
     // order the configs by preference:
     // - has a priority
@@ -47,68 +47,68 @@ export class ViewEngineResolver {
     // - ascending index value (0 is first)
     this.configs.sort((a, b) => {
       if (!isNaN(a.priority) && !isNaN(b.priority)) {
-        return a.priority - b.priority || a.index - b.index;
+        return a.priority - b.priority || a.index - b.index
       }
       if (!isNaN(a.priority)) {
-        return -1;
+        return -1
       }
       if (!isNaN(b.priority)) {
-        return 1;
+        return 1
       }
-      return a.index - b.index;
-    });
+      return a.index - b.index
+    })
 
     this.configs.forEach((config) => {
       if (this.extensions.has(config.extension)) {
         this.logger.warn(
           `ignoring duplicate view engine configuration for extension '${config.extension}' (${config.engine.name})`,
-        );
-        config.ignored = true;
-        return;
+        )
+        config.ignored = true
+        return
       }
-      this.extensions.set(config.extension, config.engine);
-    });
+      this.extensions.set(config.extension, config.engine)
+    })
   }
 
   public async resolve(view: ViewMetadata, name?: string): Promise<ResolvedView> {
-    const knownPath = resolve(view.context, name || view.name);
-    let resolvedView = this.resolvedViews.get(knownPath);
+    const knownPath = resolve(view.context, name || view.name)
+    let resolvedView = this.resolvedViews.get(knownPath)
     if (resolvedView) {
-      return resolvedView;
+      return resolvedView
     }
-    resolvedView = await this.resolveFile(knownPath);
-    this.resolvedViews.set(knownPath, resolvedView);
-    return resolvedView;
+    resolvedView = await this.resolveFile(knownPath)
+    this.resolvedViews.set(knownPath, resolvedView)
+    return resolvedView
   }
 
   private async resolveFile(knownPath: string): Promise<ResolvedView> {
-    const ext = extname(knownPath).substring(1);
+    const ext = extname(knownPath).substring(1)
 
     // if the view name already has a supported extension, check to see if that file exists
-    const existingExtConfig = ext && this.extensions.get(ext);
+    const existingExtConfig = ext && this.extensions.get(ext)
     if (existingExtConfig && (await ViewEngineResolver.exists(knownPath))) {
       return {
         templatePath: knownPath,
         engine: await this.getEngineInstance(existingExtConfig),
-      };
+      }
     }
 
     for (const config of this.configs) {
       if (config.ignored) {
-        continue;
+        continue
       }
-      const configuredPath = `${knownPath}.${config.extension}`;
+      const configuredPath = `${knownPath}.${config.extension}`
       if (await ViewEngineResolver.exists(configuredPath)) {
         return {
           templatePath: configuredPath,
           engine: await this.getEngineInstance(config.engine),
-        };
+        }
       }
     }
   }
 
   private async getEngineInstance(engine: Constructor<ViewEngine>): Promise<ViewEngine> {
-    const result = await this.resolver.resolve(engine);
-    return result.singleValue;
+    const result = await this.resolver.resolve(engine)
+    return result.singleValue
   }
 }

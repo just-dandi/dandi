@@ -1,3 +1,3 @@
-import { GlobalSymbolFn, packageGlobalSymbol } from '@dandi/common';
+import { GlobalSymbolFn, packageGlobalSymbol } from '@dandi/common'
 
-export const globalSymbol: GlobalSymbolFn = packageGlobalSymbol.bind(null, '@dandi/core');
+export const globalSymbol: GlobalSymbolFn = packageGlobalSymbol.bind(null, '@dandi/core')

@@ -1,11 +1,10 @@
-import { Bootstrapper, Inject, Injectable, Logger } from '@dandi/core';
-import { Route, RouteMapper, Routes } from '@dandi/mvc';
+import { Bootstrapper, Inject, Injectable, Logger } from '@dandi/core'
+import { Route, RouteMapper, Routes } from '@dandi/mvc'
+import * as bodyParser from 'body-parser'
+import { Express } from 'express'
 
-import * as bodyParser from 'body-parser';
-import { Express } from 'express';
-
-import { ExpressMvcConfig } from './express.mvc.config';
-import { ExpressInstance } from './tokens';
+import { ExpressMvcConfig } from './express.mvc.config'
+import { ExpressInstance } from './tokens'
 
 @Injectable(Bootstrapper)
 export class ExpressMvcApplication implements Bootstrapper {
@@ -20,13 +19,13 @@ export class ExpressMvcApplication implements Bootstrapper {
   public start(): void {
     // TODO: integrate @RequestBody into a reviver?
     // see https://github.com/expressjs/body-parser#reviver
-    this.app.use(bodyParser.json());
+    this.app.use(bodyParser.json())
 
     for (const route of this.routes) {
-      this.routeMapper.mapRoute(route);
+      this.routeMapper.mapRoute(route)
     }
 
-    this.logger.debug('starting on port', this.config.port);
-    this.app.listen(this.config.port, '0.0.0.0');
+    this.logger.debug('starting on port', this.config.port)
+    this.app.listen(this.config.port, '0.0.0.0')
   }
 }

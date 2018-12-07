@@ -1,6 +1,6 @@
-import { InjectionToken } from '@dandi/core';
+import { InjectionToken } from '@dandi/core'
 
-import { localOpinionatedToken } from './local.token';
+import { localOpinionatedToken } from './local.token'
 
 export interface MvcResponse {
   cookie(name: string, value: string): this;
@@ -18,4 +18,4 @@ export interface MvcResponse {
 export const MvcResponse: InjectionToken<MvcResponse> = localOpinionatedToken<MvcResponse>('MvcResponse', {
   multi: false,
   singleton: false,
-});
+})

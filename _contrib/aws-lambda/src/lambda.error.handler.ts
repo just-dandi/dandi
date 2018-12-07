@@ -1,6 +1,6 @@
-import { InjectionToken } from '@dandi/core';
+import { InjectionToken } from '@dandi/core'
 
-import { localOpinionatedToken } from './local.token';
+import { localOpinionatedToken } from './local.token'
 
 export interface LambdaErrorHandler<TEvent> {
   handleError(event: TEvent, error: Error): void;
@@ -8,4 +8,4 @@ export interface LambdaErrorHandler<TEvent> {
 
 export const LambdaErrorHandler: InjectionToken<LambdaErrorHandler<any>> = localOpinionatedToken('LambdaErrorHandler', {
   multi: true,
-});
+})

@@ -1,12 +1,12 @@
-import { ListRelation } from '@dandi/hal';
+import { ListRelation } from '@dandi/hal'
 
-import { Task } from '../tasks/task';
+import { Task } from '../tasks/task'
 
-import { List } from './list';
+import { List } from './list'
 
 export class ListResource extends List {
   constructor(source?: any) {
-    super(source);
+    super(source)
   }
 
   @ListRelation(Task)

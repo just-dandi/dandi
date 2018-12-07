@@ -1,21 +1,21 @@
-import { expect } from 'chai';
+import { expect } from 'chai'
 
-import { ModelBase } from './model.base';
+import { ModelBase } from './model.base'
 
 describe('ModelBase', () => {
   class TestImpl extends ModelBase {
     constructor(source?: any) {
-      super(source);
+      super(source)
     }
   }
 
   describe('ctr', () => {
     it('assigns any properties from the source to the instance', () => {
-      expect(new TestImpl({ foo: 'bar' })).to.include({ foo: 'bar' });
-    });
+      expect(new TestImpl({ foo: 'bar' })).to.include({ foo: 'bar' })
+    })
 
     it('does not require a source object', () => {
-      expect(new TestImpl()).to.be.empty;
-    });
-  });
-});
+      expect(new TestImpl()).to.be.empty
+    })
+  })
+})

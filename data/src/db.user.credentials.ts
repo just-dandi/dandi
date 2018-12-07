@@ -1,5 +1,5 @@
-import { ConfigToken } from '@dandi/config';
-import { ModelBase, Property, Required } from '@dandi/model';
+import { ConfigToken } from '@dandi/config'
+import { ModelBase, Property, Required } from '@dandi/model'
 
 export class DbUserCredentials extends ModelBase {
   public static configToken(key: string): ConfigToken<DbUserCredentials> {
@@ -7,7 +7,7 @@ export class DbUserCredentials extends ModelBase {
       key,
       type: DbUserCredentials,
       encrypted: true,
-    };
+    }
   }
 
   @Property(String)
@@ -19,6 +19,6 @@ export class DbUserCredentials extends ModelBase {
   public password: string;
 
   constructor(source?: any) {
-    super(source);
+    super(source)
   }
 }

@@ -1,7 +1,7 @@
-import { InjectionToken } from '@dandi/core';
+import { InjectionToken } from '@dandi/core'
 
-import { localOpinionatedToken } from './local.token';
-import { Route } from './route';
+import { localOpinionatedToken } from './local.token'
+import { Route } from './route'
 
 export interface RouteMapper {
   mapRoute(route: Route): void;
@@ -9,4 +9,4 @@ export interface RouteMapper {
 
 export const RouteMapper: InjectionToken<RouteMapper> = localOpinionatedToken<RouteMapper>('RouteMapper', {
   multi: false,
-});
+})

@@ -1,12 +1,12 @@
-import { Uuid } from '@dandi/common';
-import { Relation, ResourceId } from '@dandi/hal';
-import { ModelBase, Property, Required } from '@dandi/model';
+import { Uuid } from '@dandi/common'
+import { Relation, ResourceId } from '@dandi/hal'
+import { ModelBase, Property, Required } from '@dandi/model'
 
-import { List } from '../lists/list';
+import { List } from '../lists/list'
 
 export class TaskRequest extends ModelBase {
   constructor(source?: any) {
-    super(source);
+    super(source)
   }
 
   @Property(String)
@@ -19,10 +19,10 @@ export class TaskRequest extends ModelBase {
 
 export class Task extends TaskRequest {
   constructor(source?: any) {
-    super(source);
+    super(source)
 
     if (this.completed === undefined) {
-      this.completed = false;
+      this.completed = false
     }
   }
 
@@ -45,7 +45,7 @@ export class Task extends TaskRequest {
 
 export class TaskResource extends Task {
   constructor(source?: any) {
-    super(source);
+    super(source)
   }
 
   @Property(List)

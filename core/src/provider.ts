@@ -1,7 +1,7 @@
-import { Constructor } from '@dandi/common';
+import { Constructor } from '@dandi/common'
 
-import { InjectionToken } from './injection.token';
-import { localSymbolToken } from './local.token';
+import { InjectionToken } from './injection.token'
+import { localSymbolToken } from './local.token'
 
 export interface InjectionOptions {
   multi?: boolean;
@@ -13,7 +13,7 @@ export interface ProviderOptions<T> extends InjectionOptions {
   provide?: InjectionToken<T>;
 }
 
-export const ProviderOptions = localSymbolToken<ProviderOptions<any>>('ProviderOptions');
+export const ProviderOptions = localSymbolToken<ProviderOptions<any>>('ProviderOptions')
 
 export interface ValueProvider<T> extends ProviderOptions<T> {
   provide: InjectionToken<T>;
@@ -37,12 +37,12 @@ export interface AsyncFactoryProvider<T> extends GeneratorProvider<T> {
   deps?: Array<InjectionToken<any>>;
 }
 
-export type FactoryProvider<T> = SyncFactoryProvider<T> | AsyncFactoryProvider<T>;
+export type FactoryProvider<T> = SyncFactoryProvider<T> | AsyncFactoryProvider<T>
 
 export interface ClassProvider<T> extends GeneratorProvider<T> {
   useClass: Constructor<T>;
 }
 
-export type Provider<T> = ClassProvider<T> | FactoryProvider<T> | ValueProvider<T> | AsyncFactoryProvider<T>;
-export type GeneratingProvider<T> = ClassProvider<T> | FactoryProvider<T> | AsyncFactoryProvider<T>;
-export type MultiProvider<T> = Provider<T> & { multi: true };
+export type Provider<T> = ClassProvider<T> | FactoryProvider<T> | ValueProvider<T> | AsyncFactoryProvider<T>
+export type GeneratingProvider<T> = ClassProvider<T> | FactoryProvider<T> | AsyncFactoryProvider<T>
+export type MultiProvider<T> = Provider<T> & { multi: true }

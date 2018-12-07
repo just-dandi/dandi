@@ -1,12 +1,12 @@
-import { ModuleBuilder, Registerable } from '@dandi/core';
+import { ModuleBuilder, Registerable } from '@dandi/core'
 
-import { AwsSsmClientProvider } from './ssm.client.factory';
-import { PKG } from './local.token';
+import { AwsSsmClientProvider } from './ssm.client.factory'
+import { PKG } from './local.token'
 
 export class ConfigAwsSsmModuleBuilder extends ModuleBuilder<ConfigAwsSsmModuleBuilder> {
   constructor(...entries: Registerable[]) {
-    super(ConfigAwsSsmModuleBuilder, PKG, ...entries);
+    super(ConfigAwsSsmModuleBuilder, PKG, ...entries)
   }
 }
 
-export const ConfigAwsSsmModule = new ConfigAwsSsmModuleBuilder(AwsSsmClientProvider);
+export const ConfigAwsSsmModule = new ConfigAwsSsmModuleBuilder(AwsSsmClientProvider)

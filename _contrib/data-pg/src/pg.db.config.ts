@@ -1,11 +1,11 @@
-import { Inject, Injectable, InjectionToken, OpinionatedToken } from '@dandi/core';
-import { DbConnectionInfo, DbUserCredentials } from '@dandi/data';
-import { PoolConfig } from 'pg';
+import { Inject, Injectable, InjectionToken, OpinionatedToken } from '@dandi/core'
+import { DbConnectionInfo, DbUserCredentials } from '@dandi/data'
+import { PoolConfig } from 'pg'
 
 export const PgDbConfig: InjectionToken<PoolConfig> = OpinionatedToken.local<PoolConfig>('pg', 'PoolConfig', {
   singleton: true,
   multi: false,
-});
+})
 
 @Injectable(PgDbConfig)
 export class PgDbPoolConfig implements PoolConfig {
@@ -19,8 +19,8 @@ export class PgDbPoolConfig implements PoolConfig {
     @Inject(DbConnectionInfo) connectionInfo: DbConnectionInfo,
     @Inject(DbUserCredentials) credentials: DbUserCredentials,
   ) {
-    Object.assign(this, connectionInfo);
-    Object.assign(this, credentials);
-    this.user = credentials.username;
+    Object.assign(this, connectionInfo)
+    Object.assign(this, credentials)
+    this.user = credentials.username
   }
 }

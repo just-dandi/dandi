@@ -1,7 +1,7 @@
-import { InjectionToken } from '@dandi/core';
+import { InjectionToken } from '@dandi/core'
 
-import { HttpMethod } from './http.method';
-import { localOpinionatedToken } from './local.token';
+import { HttpMethod } from './http.method'
+import { localOpinionatedToken } from './local.token'
 
 export interface MvcRequest {
   body: any;
@@ -15,4 +15,4 @@ export interface MvcRequest {
 export const MvcRequest: InjectionToken<MvcRequest> = localOpinionatedToken<MvcRequest>('MvcRequest', {
   multi: false,
   singleton: false,
-});
+})

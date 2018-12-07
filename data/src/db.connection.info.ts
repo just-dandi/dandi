@@ -1,5 +1,5 @@
-import { ConfigToken } from '@dandi/config';
-import { ModelBase, Property } from '@dandi/model';
+import { ConfigToken } from '@dandi/config'
+import { ModelBase, Property } from '@dandi/model'
 
 export class DbConnectionInfo extends ModelBase {
   public static configToken(key: string): ConfigToken<DbConnectionInfo> {
@@ -7,7 +7,7 @@ export class DbConnectionInfo extends ModelBase {
       key,
       type: DbConnectionInfo,
       encrypted: true,
-    };
+    }
   }
 
   @Property(Number)
@@ -20,6 +20,6 @@ export class DbConnectionInfo extends ModelBase {
   public database: string;
 
   constructor(source?: any) {
-    super(source);
+    super(source)
   }
 }

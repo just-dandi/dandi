@@ -1,13 +1,13 @@
-import { Uuid } from '@dandi/common';
-import { Inject } from '@dandi/core';
-import { Controller, HttpGet, PathParam, HttpPost, RequestBody } from '@dandi/mvc';
-import { AccessorResourceId, ResourceAccessor, ResourceListAccessor } from '@dandi/mvc-hal';
+import { Uuid } from '@dandi/common'
+import { Inject } from '@dandi/core'
+import { Controller, HttpGet, HttpPost, PathParam, RequestBody } from '@dandi/mvc'
+import { AccessorResourceId, ResourceAccessor, ResourceListAccessor } from '@dandi/mvc-hal'
 
-import { Task, TaskRequest } from '../tasks/task';
+import { Task, TaskRequest } from '../tasks/task'
 
-import { ListRequest, List } from './list';
-import { ListManager } from './list.manager';
-import { ListResource } from './list.resource';
+import { List, ListRequest } from './list'
+import { ListManager } from './list.manager'
+import { ListResource } from './list.resource'
 
 @Controller('/list')
 export class ListController {
@@ -16,12 +16,12 @@ export class ListController {
   @HttpGet()
   @ResourceListAccessor(ListResource)
   public async getAllLists(): Promise<ListResource[]> {
-    return (await this.listManager.getAllLists()).map((list) => new ListResource(list));
+    return (await this.listManager.getAllLists()).map((list) => new ListResource(list))
   }
 
   @HttpPost()
   public async addList(@RequestBody(ListRequest) listRequest): Promise<ListResource> {
-    return new ListResource(await this.listManager.addList(listRequest));
+    return new ListResource(await this.listManager.addList(listRequest))
   }
 
   @HttpGet(':listId')
@@ -31,7 +31,7 @@ export class ListController {
     @AccessorResourceId()
     listId: Uuid,
   ): Promise<ListResource> {
-    return new ListResource(await this.listManager.getList(listId));
+    return new ListResource(await this.listManager.getList(listId))
   }
 
   @HttpGet(':listId/task')
@@ -41,11 +41,11 @@ export class ListController {
     @AccessorResourceId(List)
     listId: Uuid,
   ): Promise<Task[]> {
-    return this.listManager.getAllTasks(listId);
+    return this.listManager.getAllTasks(listId)
   }
 
   @HttpPost(':listId/task')
   public addTask(@PathParam(Uuid) listId, @RequestBody(TaskRequest) taskRequest): Promise<Task> {
-    return this.listManager.addTask(listId, taskRequest);
+    return this.listManager.addTask(listId, taskRequest)
   }
 }

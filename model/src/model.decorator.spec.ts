@@ -1,10 +1,8 @@
-import { Url, Uuid } from '@dandi/common';
+import { Url, Uuid } from '@dandi/common'
+import { DateTime } from 'luxon'
+import { expect } from 'chai'
 
-import { DateTime } from 'luxon';
-
-import { expect } from 'chai';
-
-import { getMemberMetadata, getModelMetadata, MemberMetadata } from './member.metadata';
+import { MemberMetadata, getMemberMetadata, getModelMetadata } from './member.metadata'
 import {
   ArrayOf,
   DateTimeFormat,
@@ -21,8 +19,8 @@ import {
   SetOf,
   UrlArray,
   UrlProperty,
-} from './model.decorator';
-import { EMAIL_PATTERN, URL_PATTERN } from './pattern';
+} from './model.decorator'
+import { EMAIL_PATTERN, URL_PATTERN } from './pattern'
 
 describe('ModelDecorator', () => {
   describe('@Property', () => {
@@ -31,10 +29,10 @@ describe('ModelDecorator', () => {
         @Property(String)
         public property: string;
       }
-      const meta = getMemberMetadata(TestClass, 'property');
-      expect(meta.type).to.equal(String);
-    });
-  });
+      const meta = getMemberMetadata(TestClass, 'property')
+      expect(meta.type).to.equal(String)
+    })
+  })
 
   describe('@Required', () => {
     it('sets the "required" property on the member\'s metadata', () => {
@@ -42,30 +40,30 @@ describe('ModelDecorator', () => {
         @Required()
         public requiredProperty: string;
       }
-      const meta = getMemberMetadata(TestClass, 'requiredProperty');
-      expect(meta.required).to.be.true;
-    });
+      const meta = getMemberMetadata(TestClass, 'requiredProperty')
+      expect(meta.required).to.be.true
+    })
 
     it('sets the "required" property on the member\'s metadata when decorating a set accessor', () => {
       class TestClass {
         @Required()
         public set requiredProperty(value: string) {}
       }
-      const meta = getMemberMetadata(TestClass, 'requiredProperty');
-      expect(meta.required).to.be.true;
-    });
+      const meta = getMemberMetadata(TestClass, 'requiredProperty')
+      expect(meta.required).to.be.true
+    })
 
     it('sets the "required" property on the member\'s metadata when decorating a get accessor', () => {
       class TestClass {
         @Required()
         public get requiredProperty(): string {
-          return null;
+          return null
         }
       }
-      const meta = getMemberMetadata(TestClass, 'requiredProperty');
-      expect(meta.required).to.be.true;
-    });
-  });
+      const meta = getMemberMetadata(TestClass, 'requiredProperty')
+      expect(meta.required).to.be.true
+    })
+  })
 
   describe('@MinLength', () => {
     it("sets minLength property on the member's metadata", () => {
@@ -73,10 +71,10 @@ describe('ModelDecorator', () => {
         @MinLength(2)
         public property: string;
       }
-      const meta = getMemberMetadata(TestClass, 'property');
-      expect(meta.minLength).to.equal(2);
-    });
-  });
+      const meta = getMemberMetadata(TestClass, 'property')
+      expect(meta.minLength).to.equal(2)
+    })
+  })
 
   describe('@MaxLength', () => {
     it("sets maxLength property on the member's metadata", () => {
@@ -84,10 +82,10 @@ describe('ModelDecorator', () => {
         @MaxLength(3)
         public property: string;
       }
-      const meta = getMemberMetadata(TestClass, 'property');
-      expect(meta.maxLength).to.equal(3);
-    });
-  });
+      const meta = getMemberMetadata(TestClass, 'property')
+      expect(meta.maxLength).to.equal(3)
+    })
+  })
 
   describe('@MinValue', () => {
     it("sets minValue property on the member's metadata", () => {
@@ -95,10 +93,10 @@ describe('ModelDecorator', () => {
         @MinValue(2)
         public property: string;
       }
-      const meta = getMemberMetadata(TestClass, 'property');
-      expect(meta.minValue).to.equal(2);
-    });
-  });
+      const meta = getMemberMetadata(TestClass, 'property')
+      expect(meta.minValue).to.equal(2)
+    })
+  })
 
   describe('@MaxValue', () => {
     it("sets maxLength property on the member's metadata", () => {
@@ -106,10 +104,10 @@ describe('ModelDecorator', () => {
         @MaxValue(3)
         public property: string;
       }
-      const meta = getMemberMetadata(TestClass, 'property');
-      expect(meta.maxValue).to.equal(3);
-    });
-  });
+      const meta = getMemberMetadata(TestClass, 'property')
+      expect(meta.maxValue).to.equal(3)
+    })
+  })
 
   describe('@MinLength', () => {
     it("sets minLength property on the member's metadata", () => {
@@ -117,10 +115,10 @@ describe('ModelDecorator', () => {
         @MinLength(2)
         public property: string;
       }
-      const meta = getMemberMetadata(TestClass, 'property');
-      expect(meta.minLength).to.equal(2);
-    });
-  });
+      const meta = getMemberMetadata(TestClass, 'property')
+      expect(meta.minLength).to.equal(2)
+    })
+  })
 
   describe('@Pattern', () => {
     it('sets the "pattern" property on the member\'s metadata', () => {
@@ -128,10 +126,10 @@ describe('ModelDecorator', () => {
         @Pattern(/foo/)
         public property: string;
       }
-      const meta = getMemberMetadata(TestClass, 'property');
-      expect(meta.pattern).to.deep.equal(/foo/);
-    });
-  });
+      const meta = getMemberMetadata(TestClass, 'property')
+      expect(meta.pattern).to.deep.equal(/foo/)
+    })
+  })
 
   describe('@Email', () => {
     class TestClass {
@@ -139,31 +137,31 @@ describe('ModelDecorator', () => {
       public email: string;
     }
 
-    let meta: MemberMetadata;
+    let meta: MemberMetadata
 
     beforeEach(() => {
-      meta = getMemberMetadata(TestClass, 'email');
-    });
+      meta = getMemberMetadata(TestClass, 'email')
+    })
     afterEach(() => {
-      meta = undefined;
-    });
+      meta = undefined
+    })
 
     it('sets the "pattern" property on the member\'s metadata to EMAIL_PATTERN', () => {
-      expect(meta.pattern).to.equal(EMAIL_PATTERN);
-    });
+      expect(meta.pattern).to.equal(EMAIL_PATTERN)
+    })
 
     it('sets the "minLength" property on the member\'s metadata to 6', () => {
-      expect(meta.minLength).to.equal(6);
-    });
+      expect(meta.minLength).to.equal(6)
+    })
 
     it('sets the "maxLength" property on the member\'s metadata to 254', () => {
-      expect(meta.maxLength).to.equal(254);
-    });
+      expect(meta.maxLength).to.equal(254)
+    })
 
     it('sets the "type" property on the member\'s metadata to String', () => {
-      expect(meta.type).to.equal(String);
-    });
-  });
+      expect(meta.type).to.equal(String)
+    })
+  })
 
   describe('@UrlProperty', () => {
     class TestClass {
@@ -171,23 +169,23 @@ describe('ModelDecorator', () => {
       public url: Url;
     }
 
-    let meta: MemberMetadata;
+    let meta: MemberMetadata
 
     beforeEach(() => {
-      meta = getMemberMetadata(TestClass, 'url');
-    });
+      meta = getMemberMetadata(TestClass, 'url')
+    })
     afterEach(() => {
-      meta = undefined;
-    });
+      meta = undefined
+    })
 
     it('sets the "type" property on the member\'s metadata to Url', () => {
-      expect(meta.type).to.equal(Url);
-    });
+      expect(meta.type).to.equal(Url)
+    })
 
     it('sets the "pattern" property on the member\'s metadata to URL_PATTERN', () => {
-      expect(meta.pattern).to.equal(URL_PATTERN);
-    });
-  });
+      expect(meta.pattern).to.equal(URL_PATTERN)
+    })
+  })
 
   describe('@DateTimeFormat', () => {
     class TestClass {
@@ -195,23 +193,23 @@ describe('ModelDecorator', () => {
       public testOn: DateTime;
     }
 
-    let meta: MemberMetadata;
+    let meta: MemberMetadata
 
     beforeEach(() => {
-      meta = getMemberMetadata(TestClass, 'testOn');
-    });
+      meta = getMemberMetadata(TestClass, 'testOn')
+    })
     afterEach(() => {
-      meta = undefined;
-    });
+      meta = undefined
+    })
 
     it('sets the "type" property on the member\'s metadata to DateTime', () => {
-      expect(meta.type).to.equal(DateTime);
-    });
+      expect(meta.type).to.equal(DateTime)
+    })
 
     it('sets the "format" property on the member\'s metadata to the specified format', () => {
-      expect(meta.format).to.equal('test-format');
-    });
-  });
+      expect(meta.format).to.equal('test-format')
+    })
+  })
 
   describe('@ArrayOf', () => {
     class TestClass {
@@ -219,23 +217,23 @@ describe('ModelDecorator', () => {
       public strings: string[];
     }
 
-    let meta: MemberMetadata;
+    let meta: MemberMetadata
 
     beforeEach(() => {
-      meta = getMemberMetadata(TestClass, 'strings');
-    });
+      meta = getMemberMetadata(TestClass, 'strings')
+    })
     afterEach(() => {
-      meta = undefined;
-    });
+      meta = undefined
+    })
 
     it('sets the "type" property on the member\'s metadata to Array', () => {
-      expect(meta.type).to.equal(Array);
-    });
+      expect(meta.type).to.equal(Array)
+    })
 
     it('sets the "valueType" property on the member\'s metadata to the specified item type', () => {
-      expect(meta.valueType).to.equal(String);
-    });
-  });
+      expect(meta.valueType).to.equal(String)
+    })
+  })
 
   describe('@UrlArray', () => {
     class TestClass {
@@ -243,27 +241,27 @@ describe('ModelDecorator', () => {
       public urls: Url[];
     }
 
-    let meta: MemberMetadata;
+    let meta: MemberMetadata
 
     beforeEach(() => {
-      meta = getMemberMetadata(TestClass, 'urls');
-    });
+      meta = getMemberMetadata(TestClass, 'urls')
+    })
     afterEach(() => {
-      meta = undefined;
-    });
+      meta = undefined
+    })
 
     it('sets the "type" property on the member\'s metadata to Array', () => {
-      expect(meta.type).to.equal(Array);
-    });
+      expect(meta.type).to.equal(Array)
+    })
 
     it('sets the "valueType" property on the member\'s metadata to Url', () => {
-      expect(meta.valueType).to.equal(Url);
-    });
+      expect(meta.valueType).to.equal(Url)
+    })
 
     it('sets the "pattern" property on the member\'s metadata to URL_PATTERN', () => {
-      expect(meta.pattern).to.equal(URL_PATTERN);
-    });
-  });
+      expect(meta.pattern).to.equal(URL_PATTERN)
+    })
+  })
 
   describe('@OneOf', () => {
     class TestClass {
@@ -271,31 +269,31 @@ describe('ModelDecorator', () => {
       public oneOf: Uuid | string;
     }
 
-    let meta: MemberMetadata;
+    let meta: MemberMetadata
 
     beforeEach(() => {
-      meta = getMemberMetadata(TestClass, 'oneOf');
-    });
+      meta = getMemberMetadata(TestClass, 'oneOf')
+    })
     afterEach(() => {
-      meta = undefined;
-    });
+      meta = undefined
+    })
 
     it('sets the "type" property of the member\'s metadata to OneOf', () => {
-      expect(meta.type).to.equal(OneOf);
-    });
+      expect(meta.type).to.equal(OneOf)
+    })
 
     it('sets the "oneOf" property of the member\'s metadata to the array of types passed to the decorator', () => {
-      expect(meta.oneOf).to.deep.equal([Uuid, String]);
-    });
+      expect(meta.oneOf).to.deep.equal([Uuid, String])
+    })
 
     it('sets "oneOf" property on member\'s metadata when used on a method parameter', () => {
       class TestClassMethod {
         public testMethod(@OneOf(Uuid, String) testParam) {}
       }
 
-      expect(getMemberMetadata(TestClassMethod, 'testMethod', 0).oneOf).to.deep.equal([Uuid, String]);
-    });
-  });
+      expect(getMemberMetadata(TestClassMethod, 'testMethod', 0).oneOf).to.deep.equal([Uuid, String])
+    })
+  })
 
   describe('@SetOf', () => {
     class TestClass {
@@ -303,21 +301,21 @@ describe('ModelDecorator', () => {
       public strings: Set<string>;
     }
 
-    let meta: MemberMetadata;
+    let meta: MemberMetadata
 
     beforeEach(() => {
-      meta = getMemberMetadata(TestClass, 'strings');
-    });
+      meta = getMemberMetadata(TestClass, 'strings')
+    })
     afterEach(() => {
-      meta = undefined;
-    });
+      meta = undefined
+    })
     it('sets the "type" property of the member\'s metadata to Set', () => {
-      expect(meta.type).to.equal(Set);
-    });
+      expect(meta.type).to.equal(Set)
+    })
     it('sets the "valueType" property on the member\'s metadata to the specified item type', () => {
-      expect(meta.valueType).to.equal(String);
-    });
-  });
+      expect(meta.valueType).to.equal(String)
+    })
+  })
 
   describe('@MapOf', () => {
     class TestClass {
@@ -325,24 +323,24 @@ describe('ModelDecorator', () => {
       public theMap: Map<Uuid, number>;
     }
 
-    let meta: MemberMetadata;
+    let meta: MemberMetadata
 
     beforeEach(() => {
-      meta = getMemberMetadata(TestClass, 'theMap');
-    });
+      meta = getMemberMetadata(TestClass, 'theMap')
+    })
     afterEach(() => {
-      meta = undefined;
-    });
+      meta = undefined
+    })
     it('sets the "type" property of the member\'s metadata to Map', () => {
-      expect(meta.type).to.equal(Map);
-    });
+      expect(meta.type).to.equal(Map)
+    })
     it('sets the "keyType" property on the member\'s metadata to the specified key type', () => {
-      expect(meta.keyType).to.equal(Uuid);
-    });
+      expect(meta.keyType).to.equal(Uuid)
+    })
     it('sets the "valueType" property on the member\'s metadata to the specified item type', () => {
-      expect(meta.valueType).to.equal(Number);
-    });
-  });
+      expect(meta.valueType).to.equal(Number)
+    })
+  })
 
   describe('subclasses', () => {
     class BaseClass {
@@ -355,29 +353,29 @@ describe('ModelDecorator', () => {
       public subProperty: string;
     }
 
-    let baseMeta;
-    let subMeta;
+    let baseMeta
+    let subMeta
 
     beforeEach(() => {
-      baseMeta = getModelMetadata(BaseClass);
-      subMeta = getModelMetadata(SubClass);
-    });
+      baseMeta = getModelMetadata(BaseClass)
+      subMeta = getModelMetadata(SubClass)
+    })
     afterEach(() => {
-      baseMeta = undefined;
-      subMeta = undefined;
-    });
+      baseMeta = undefined
+      subMeta = undefined
+    })
 
     it('includes properties of self', () => {
-      expect(baseMeta).to.have.property('baseProperty');
-      expect(subMeta).to.have.property('subProperty');
-    });
+      expect(baseMeta).to.have.property('baseProperty')
+      expect(subMeta).to.have.property('subProperty')
+    })
 
     it('does not include properties of subclasses', () => {
-      expect(baseMeta).not.to.have.property('subProperty');
-    });
+      expect(baseMeta).not.to.have.property('subProperty')
+    })
 
     it('includes properties of base classes', () => {
-      expect(subMeta).to.have.property('baseProperty');
-    });
-  });
-});
+      expect(subMeta).to.have.property('baseProperty')
+    })
+  })
+})

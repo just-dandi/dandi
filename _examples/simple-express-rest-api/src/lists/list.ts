@@ -1,10 +1,10 @@
-import { Uuid } from '@dandi/common';
-import { ModelBase, Property, Required } from '@dandi/model';
-import { ResourceId } from '@dandi/hal';
+import { Uuid } from '@dandi/common'
+import { ModelBase, Property, Required } from '@dandi/model'
+import { ResourceId } from '@dandi/hal'
 
 export class ListRequest extends ModelBase {
   constructor(source?: any) {
-    super(source);
+    super(source)
   }
 
   @Property(String)
@@ -14,7 +14,7 @@ export class ListRequest extends ModelBase {
 
 export class List extends ListRequest {
   constructor(source?: any) {
-    super(source);
+    super(source)
   }
 
   @Property(Uuid)

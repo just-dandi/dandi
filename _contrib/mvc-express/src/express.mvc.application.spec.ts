@@ -1,8 +1,8 @@
-import { Repository } from '@dandi/core';
-import { RouteGenerator, RouteInitializer } from '@dandi/mvc';
-import { stub } from 'sinon';
+import { Repository } from '@dandi/core'
+import { RouteGenerator, RouteInitializer } from '@dandi/mvc'
+import { stub } from 'sinon'
 
-import { ExpressInstance, ExpressMvcConfig } from '../';
+import { ExpressInstance, ExpressMvcConfig } from '../'
 
 const TEST_EXPRESS_RESOLVER: any = {
   provide: ExpressInstance,
@@ -10,20 +10,20 @@ const TEST_EXPRESS_RESOLVER: any = {
     use() {},
     listen() {},
   },
-};
+}
 
-Repository.global.register(TEST_EXPRESS_RESOLVER);
+Repository.global.register(TEST_EXPRESS_RESOLVER)
 Repository.global.register({
   provide: ExpressMvcConfig,
   useValue: {},
-});
+})
 Repository.global.register({
   provide: RouteGenerator,
   useValue: {
     generateRoutes: stub().returns([]),
   },
-});
+})
 Repository.global.register({
   provide: RouteInitializer,
   useValue: {},
-});
+})

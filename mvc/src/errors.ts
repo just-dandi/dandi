@@ -1,6 +1,6 @@
-import { AppError } from '@dandi/common';
+import { AppError } from '@dandi/common'
 
-import { HttpStatusCode } from './http.status.code';
+import { HttpStatusCode } from './http.status.code'
 
 export class RequestError extends AppError {
   constructor(
@@ -9,36 +9,36 @@ export class RequestError extends AppError {
     message?: string,
     innerError?: Error,
   ) {
-    super(message || 'Server Error', innerError);
+    super(message || 'Server Error', innerError)
   }
 }
 
 export class ServerError extends RequestError {
   constructor(internalMessage?: string) {
-    super(HttpStatusCode.internalServerError, internalMessage);
+    super(HttpStatusCode.internalServerError, internalMessage)
   }
 }
 
 export class NotFoundError extends RequestError {
   constructor() {
-    super(HttpStatusCode.notFound, null, 'Not Found');
+    super(HttpStatusCode.notFound, null, 'Not Found')
   }
 }
 
 export class UnauthorizedError extends RequestError {
   constructor() {
-    super(HttpStatusCode.unauthorized, null, 'Not Authorized');
+    super(HttpStatusCode.unauthorized, null, 'Not Authorized')
   }
 }
 
 export class ForbiddenError extends RequestError {
   constructor(reason: string) {
-    super(HttpStatusCode.forbidden, reason, 'Forbidden');
+    super(HttpStatusCode.forbidden, reason, 'Forbidden')
   }
 }
 
 export class ModelBindingError extends RequestError {
   constructor(innerError: Error) {
-    super(HttpStatusCode.badRequest, null, innerError.message, innerError);
+    super(HttpStatusCode.badRequest, null, innerError.message, innerError)
   }
 }

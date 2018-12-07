@@ -1,6 +1,6 @@
-import { InjectionToken } from '@dandi/core';
+import { InjectionToken } from '@dandi/core'
 
-import { localOpinionatedToken } from './local.token';
+import { localOpinionatedToken } from './local.token'
 
 export interface LambdaResponder<TResponse> {
   handleResponse(response: TResponse): Promise<any>;
@@ -9,4 +9,4 @@ export interface LambdaResponder<TResponse> {
 
 export const LambdaResponder: InjectionToken<LambdaResponder<any>> = localOpinionatedToken('LambdaResponder', {
   multi: false,
-});
+})

@@ -1,4 +1,4 @@
-import { modelDecorator } from './model.decorator';
+import { modelDecorator } from './model.decorator'
 
 // TODO: this probably belongs in @dandi/data
 // -- nope! putting it in data would require model libraries to reference core
@@ -9,5 +9,5 @@ import { modelDecorator } from './model.decorator';
 export function Json(): PropertyDecorator {
   return modelDecorator.bind(null, {
     json: true,
-  });
+  })
 }

@@ -1,8 +1,8 @@
-import { Constructor } from '@dandi/common';
-import { InjectionToken } from '@dandi/core';
+import { Constructor } from '@dandi/common'
+import { InjectionToken } from '@dandi/core'
 
-import { ViewEngine } from './view-engine';
-import { localOpinionatedToken } from './local.token';
+import { ViewEngine } from './view-engine'
+import { localOpinionatedToken } from './local.token'
 
 export interface ViewEngineConfig {
   engine: Constructor<ViewEngine>;
@@ -12,4 +12,4 @@ export interface ViewEngineConfig {
 
 export const ViewEngineConfig: InjectionToken<ViewEngineConfig> = localOpinionatedToken('ViewEngineConfig', {
   multi: true,
-});
+})

@@ -1,8 +1,8 @@
-import { Inject, Injectable } from '@dandi/core';
-import { ControllerResult, ControllerResultTransformer } from '@dandi/mvc';
+import { Inject, Injectable } from '@dandi/core'
+import { ControllerResult, ControllerResultTransformer } from '@dandi/mvc'
 
-import { ViewResult } from './view-result';
-import { ViewResultFactory } from './view-result-factory';
+import { ViewResult } from './view-result'
+import { ViewResultFactory } from './view-result-factory'
 
 @Injectable(ControllerResultTransformer)
 export class ViewControllerResultTransformer implements ControllerResultTransformer {
@@ -10,8 +10,8 @@ export class ViewControllerResultTransformer implements ControllerResultTransfor
 
   public async transform(result: ControllerResult): Promise<ControllerResult> {
     if (result instanceof ViewResult) {
-      return result;
+      return result
     }
-    return this.viewResult(null, result.resultObject);
+    return this.viewResult(null, result.resultObject)
   }
 }

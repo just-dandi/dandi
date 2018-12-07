@@ -1,8 +1,8 @@
-import { InjectionToken } from './injection.token';
-import { localOpinionatedToken } from './local.token';
-import { Repository } from './repository';
-import { ResolveResult } from './resolve.result';
-import { ResolverContext } from './resolver.context';
+import { InjectionToken } from './injection.token'
+import { localOpinionatedToken } from './local.token'
+import { Repository } from './repository'
+import { ResolveResult } from './resolve.result'
+import { ResolverContext } from './resolver.context'
 
 export interface Resolver {
   invoke(instance: any, member: Function, ...repositories: Repository[]): Promise<any>;
@@ -27,4 +27,4 @@ export interface Resolver {
 export const Resolver = localOpinionatedToken<Resolver>('Resolver', {
   multi: false,
   singleton: true,
-});
+})

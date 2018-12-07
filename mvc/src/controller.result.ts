@@ -6,5 +6,5 @@ export interface ControllerResult {
 }
 
 export function isControllerResult(obj: any): obj is ControllerResult {
-  return obj && typeof obj.value !== 'undefined' && typeof obj.contentType === 'string';
+  return obj && typeof obj.value !== 'undefined' && typeof obj.contentType === 'string'
 }

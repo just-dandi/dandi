@@ -1,9 +1,9 @@
-import { AppError } from './app.error';
-import { globalSymbol } from './global.symbol';
+import { AppError } from './app.error'
+import { globalSymbol } from './global.symbol'
 
-export type DisposeFn = (reason: string) => void;
+export type DisposeFn = (reason: string) => void
 
-export const DISPOSED = globalSymbol('Disposable.DISPOSED');
+export const DISPOSED = globalSymbol('Disposable.DISPOSED')
 
 export interface Disposable {
   dispose(reason: string): void;
@@ -11,45 +11,46 @@ export interface Disposable {
 
 export class DisposableTypeError extends AppError {
   constructor(message?: string) {
-    super(message);
+    super(message)
   }
 }
 
 export class DisposableFunctionError extends AppError {
   constructor(message?: string) {
-    super(message);
+    super(message)
   }
 }
 
 export class InvalidDisposeTargetError extends AppError {
   constructor(message: string) {
-    super(message);
+    super(message)
   }
 }
 
 export class AlreadyDisposedError extends AppError {
   constructor(public readonly target: any, public readonly reason: string) {
-    super(`The target has already been disposed and cannot be used: ${reason}`);
+    super(`The target has already been disposed and cannot be used: ${reason}`)
   }
 }
 
-function throwAlreadyDisposed(target: any, reason: string) {
-  throw new AlreadyDisposedError(target, reason);
+function throwAlreadyDisposed(target: any, reason: string): never {
+  throw new AlreadyDisposedError(target, reason)
 }
 
 /**
  * Provides utility functions for working with {@see Disposable} objects.
  */
 export class Disposable {
+
   /**
    * Returns {true} if the object implements {@see Disposable}; otherwise, {false}.
    */
   public static isDisposable(obj: any): obj is Disposable {
-    return (obj && typeof obj.dispose === 'function') || false;
+    return (obj && typeof obj.dispose === 'function') || false
   }
 
   public static isDisposed(obj: any): boolean {
-    return obj && obj[DISPOSED];
+    return obj && obj[DISPOSED]
   }
 
   /**
@@ -59,52 +60,52 @@ export class Disposable {
    */
   public static makeDisposable<T>(obj: T, dispose: DisposeFn): T & Disposable {
     if (!obj || typeof obj !== 'object') {
-      throw new DisposableTypeError(`Cannot make ${obj} disposable`);
+      throw new DisposableTypeError(`Cannot make ${obj} disposable`)
     }
 
     if (typeof dispose !== 'function') {
-      throw new DisposableFunctionError('dispose must be a function');
+      throw new DisposableFunctionError('dispose must be a function')
     }
 
     if (!Disposable.isDisposable(obj)) {
-      (obj as any).dispose = dispose;
-      return obj as T & Disposable;
+      (obj as any).dispose = dispose
+      return obj as T & Disposable
     }
 
-    const ogDispose = obj.dispose;
+    const ogDispose = obj.dispose
     obj.dispose = (reason: string) => {
-      let ogError: Error;
+      let ogError: Error
       try {
-        ogDispose(reason);
+        ogDispose(reason)
       } catch (err) {
-        ogError = err;
+        ogError = err
       } finally {
-        dispose(reason);
+        dispose(reason)
       }
 
       if (ogError) {
-        throw ogError;
+        throw ogError
       }
-    };
-    return obj;
+    }
+    return obj
   }
 
   /**
    * Invokes the specified function, then disposes the object.
    */
   public static use<T extends Disposable, TResult = void>(obj: T, use: (obj: T) => TResult): TResult {
-    let error: Error;
+    let error: Error
     try {
-      return use(obj);
+      return use(obj)
     } catch (err) {
-      error = err;
+      error = err
     } finally {
       if (Disposable.isDisposable(obj)) {
-        obj.dispose('after Disposable.use()');
+        obj.dispose('after Disposable.use()')
       }
     }
 
-    throw error;
+    throw error
   }
 
   public static async useAsync<T extends Disposable, TResult = void>(
@@ -112,37 +113,37 @@ export class Disposable {
     use: (obj: T) => Promise<TResult>,
   ): Promise<TResult> {
     try {
-      return await use(obj);
+      return await use(obj)
     } catch (err) {
-      throw err;
+      throw err
     } finally {
       if (Disposable.isDisposable(obj)) {
-        await obj.dispose('after Disposable.useAsync()');
+        await obj.dispose('after Disposable.useAsync()')
       }
     }
   }
 
   public static remapDisposed<T>(target: T, reason: string): T {
-    const thrower = throwAlreadyDisposed.bind(target, target, reason);
+    const thrower = throwAlreadyDisposed.bind(target, target, reason)
     for (const prop in target) {
       if (prop === DISPOSED) {
-        continue;
+        continue
       }
       if (typeof target[prop] === 'function') {
-        target[prop] = thrower;
+        target[prop] = thrower
       } else {
         Object.defineProperty(target, prop, {
           get: thrower,
           set: undefined,
           configurable: false,
-        });
+        })
       }
     }
     Object.defineProperty(target, DISPOSED, {
       get: () => true,
       set: undefined,
       configurable: false,
-    });
-    return Object.freeze(target);
+    })
+    return Object.freeze(target)
   }
 }

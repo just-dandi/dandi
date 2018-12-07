@@ -1,9 +1,9 @@
-import { Constructor } from '@dandi/common';
+import { Constructor } from '@dandi/common'
 
-import { InjectionToken } from './injection.token';
-import { localOpinionatedToken } from './local.token';
+import { InjectionToken } from './injection.token'
+import { localOpinionatedToken } from './local.token'
 
-export type InjectionContext = Constructor<any> | Function;
+export type InjectionContext = Constructor<any> | Function
 
 export const InjectionContext: InjectionToken<InjectionContext> = localOpinionatedToken<InjectionContext>(
   'InjectionContext',
@@ -11,4 +11,4 @@ export const InjectionContext: InjectionToken<InjectionContext> = localOpinionat
     multi: false,
     singleton: false,
   },
-);
+)
