@@ -24,13 +24,14 @@ import {
 } from './provider.util'
 
 export interface ContainerConfig {
-  providers?: any[];
+  providers?: any[]
 }
 
 export type Options<T> = { [P in keyof T]?: T[P] }
 
 export class Container<TConfig extends ContainerConfig = ContainerConfig> implements Resolver {
-  protected get repositories(): Repository[] {
+
+  protected get repositories() {
     return [
       ...this.scannedRepositories,
 
@@ -41,17 +42,16 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
   }
 
   protected readonly config: TConfig;
+  protected readonly repository: Repository
 
-  // eslint-disable-next-line no-invalid-this
-  protected readonly repository: Repository = Repository.for(this);
-
-  private initialized: boolean = false;
-  private started: boolean = false;
-  private singletonRequests = new Map<Provider<any>, Promise<any>>();
+  private initialized: boolean = false
+  private started: boolean = false
+  private singletonRequests = new Map<Provider<any>, Promise<any>>()
   private scannedRepositories: Repository[] = [];
 
   constructor(options: Options<TConfig> = {}, defaults?: Options<TConfig>) {
     this.config = Object.assign({} as TConfig, defaults, options)
+    this.repository = Repository.for(this)
   }
 
   public async start(): Promise<any> {
