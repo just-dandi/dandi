@@ -1,6 +1,6 @@
 {
   "name": "@dandi/mvc-view",
-  "version": "1.0.0-alpha.30",
+  "version": "1.0.0-alpha.31",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -14,9 +14,9 @@
   "dependencies": {},
   "devDependencies": {},
   "peerDependencies": {
-    "@dandi/common": "1.0.0-alpha.30",
-    "@dandi/core": "1.0.0-alpha.30",
-    "@dandi/mvc": "1.0.0-alpha.30"
+    "@dandi/common": "1.0.0-alpha.31",
+    "@dandi/core": "1.0.0-alpha.31",
+    "@dandi/mvc": "1.0.0-alpha.31"
   },
   "license": "MIT"
 }

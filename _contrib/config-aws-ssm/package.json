@@ -1,6 +1,6 @@
 {
   "name": "@dandi-contrib/config-aws-ssm",
-  "version": "1.0.0-alpha.30",
+  "version": "1.0.0-alpha.31",
   "scripts": {},
   "repository": {
     "type": "git",
@@ -18,9 +18,9 @@
     "@types/aws-sdk": "^2.7.0"
   },
   "peerDependencies": {
-    "@dandi/common": "1.0.0-alpha.30",
-    "@dandi/config": "1.0.0-alpha.30",
-    "@dandi/core": "1.0.0-alpha.30"
+    "@dandi/common": "1.0.0-alpha.31",
+    "@dandi/config": "1.0.0-alpha.31",
+    "@dandi/core": "1.0.0-alpha.31"
   },
   "license": "MIT"
 }
