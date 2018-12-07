@@ -2,3 +2,6 @@
 .prettierignore
 npm.link
 *.sh
+*.pug
+*.ejs
+mocha.opts

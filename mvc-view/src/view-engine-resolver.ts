@@ -2,7 +2,7 @@ import { access, constants } from 'fs';
 import { extname, resolve } from 'path';
 
 import { Constructor } from '@dandi/common';
-import { Inject, Injectable, Logger, Singleton } from '@dandi/core';
+import { Inject, Injectable, Logger, Resolver, Singleton } from '@dandi/core';
 
 import { ViewEngine } from './view-engine';
 import { ViewMetadata } from './view-metadata';
@@ -15,37 +15,30 @@ export interface ResolvedView {
 
 interface ViewEngineIndexedConfig extends ViewEngineConfig {
   index: number;
-}
-
-interface ConfiguredEngine {
-  config: ViewEngineConfig;
-  engine: ViewEngine;
-}
-
-function exists(path: string): Promise<boolean> {
-  return new Promise((resolve, reject) => {
-    access(path, constants.R_OK, (err) => {
-      if (err) {
-        return reject(false);
-      }
-      return resolve(true);
-    });
-  });
+  ignored: boolean;
 }
 
 @Injectable(Singleton)
 export class ViewEngineResolver {
-  private engines: Map<Constructor<ViewEngine>, ViewEngine> = new Map<Constructor<ViewEngine>, ViewEngine>();
-  private extensions: Map<string, ConfiguredEngine> = new Map<string, ConfiguredEngine>();
-  private configured: ConfiguredEngine[] = [];
+  private extensions: Map<string, Constructor<ViewEngine>> = new Map<string, Constructor<ViewEngine>>();
   private resolvedViews = new Map<string, ResolvedView>();
+
+  private static exists(path: string): Promise<boolean> {
+    return new Promise((resolve, reject) => {
+      access(path, constants.R_OK, (err) => {
+        if (err) {
+          return reject(false);
+        }
+        return resolve(true);
+      });
+    });
+  }
 
   constructor(
     @Inject(Logger) private logger: Logger,
-    @Inject(ViewEngine) engines: ViewEngine[],
     @Inject(ViewEngineConfig) private configs: ViewEngineIndexedConfig[],
+    @Inject(Resolver) private resolver: Resolver,
   ) {
-    engines.forEach((engine) => this.engines.set(engine.constructor as any, engine));
     this.configs.forEach((config, index) => (config.index = index));
 
     // order the configs by preference:
@@ -54,7 +47,7 @@ export class ViewEngineResolver {
     // - ascending index value (0 is first)
     this.configs.sort((a, b) => {
       if (!isNaN(a.priority) && !isNaN(b.priority)) {
-        return a.priority - b.priority;
+        return a.priority - b.priority || a.index - b.index;
       }
       if (!isNaN(a.priority)) {
         return -1;
@@ -68,16 +61,12 @@ export class ViewEngineResolver {
     this.configs.forEach((config) => {
       if (this.extensions.has(config.extension)) {
         this.logger.warn(
-          `'ignoring duplicate view engine configuration for extension '${config.extension}' (${config.engine.name})`,
+          `ignoring duplicate view engine configuration for extension '${config.extension}' (${config.engine.name})`,
         );
+        config.ignored = true;
         return;
       }
-      const result = {
-        config,
-        engine: this.engines.get(config.engine),
-      };
-      this.extensions.set(config.extension, result);
-      this.configured.push(result);
+      this.extensions.set(config.extension, config.engine);
     });
   }
 
@@ -97,21 +86,29 @@ export class ViewEngineResolver {
 
     // if the view name already has a supported extension, check to see if that file exists
     const existingExtConfig = ext && this.extensions.get(ext);
-    if (existingExtConfig && (await exists(knownPath))) {
+    if (existingExtConfig && (await ViewEngineResolver.exists(knownPath))) {
       return {
         templatePath: knownPath,
-        engine: existingExtConfig.engine,
+        engine: await this.getEngineInstance(existingExtConfig),
       };
     }
 
-    for (const configured of this.configured) {
-      const configuredPath = `${knownPath}.${configured.config.extension}`;
-      if (await exists(configuredPath)) {
+    for (const config of this.configs) {
+      if (config.ignored) {
+        continue;
+      }
+      const configuredPath = `${knownPath}.${config.extension}`;
+      if (await ViewEngineResolver.exists(configuredPath)) {
         return {
           templatePath: configuredPath,
-          engine: configured.engine,
+          engine: await this.getEngineInstance(config.engine),
         };
       }
     }
+  }
+
+  private async getEngineInstance(engine: Constructor<ViewEngine>): Promise<ViewEngine> {
+    const result = await this.resolver.resolve(engine);
+    return result.singleValue;
   }
 }

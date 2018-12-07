@@ -9,6 +9,7 @@
     "lint:fix": "prettier --list-different --write \"*/src/**/*.ts\" && eslint . --fix",
     "precoverage": "rimraf coverage .nyc_output",
     "coverage": "nyc npm test",
+    "coverage:watch": "nyc npm test -- --watch",
     "postversion": "sh publish.sh"
   },
   "repository": {

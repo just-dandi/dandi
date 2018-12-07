@@ -3,6 +3,7 @@
 --require ./test/ts-node.js
 --require ts-custom-error-shim
 --require ./test/mocha.config
+test/sandbox.ts
 common/index.ts
 common/src/**/*.spec.ts
 core/index.ts
