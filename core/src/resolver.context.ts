@@ -123,7 +123,7 @@ export class ResolverContext<T> implements Disposable {
     });
     this.instances.length = 0;
     this.children.forEach((child) => {
-      if (!(child as Disposable).disposed) {
+      if (!Disposable.isDisposed(child)) {
         child.dispose(`Disposing parent ResolverContext: ${reason}`);
       }
     });

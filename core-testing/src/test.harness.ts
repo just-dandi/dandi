@@ -2,6 +2,7 @@ import { Constructor, Disposable } from '@dandi/common';
 import { Container, InjectionToken, Provider, Repository, Resolver, ResolverContext, ResolveResult } from '@dandi/core';
 
 import { createStubInstance, SinonStub, SinonStubbedInstance, stub } from 'sinon';
+import { expect } from 'chai';
 
 export function stubProvider<TService extends TToken, TToken = TService>(
   service: Constructor<TService>,
@@ -42,18 +43,31 @@ export class TestHarness implements TestResolver {
    * Allows the use of {AmbientInjectableScanner} within a test context without including injectables leaked from other
    * tests or modules.
    */
-  public static scopeGlobalRepository(): void {
+  public static scopeGlobalRepository(): Repository {
     let repo: Repository;
     let globalRepoStub: SinonStub;
-    beforeEach(() => {
-      repo = Repository.for(this);
+
+    class __TestSanityChecker {}
+
+    beforeEach(function() {
+      repo = Repository.for(Math.random());
+
+      // sanity checking!
+      expect(repo.get(__TestSanityChecker)).not.to.exist;
+      repo.register(__TestSanityChecker);
+      expect(repo.get(__TestSanityChecker)).to.exist;
+
       globalRepoStub = stub(Repository, 'global').get(() => repo);
     });
     afterEach(() => {
       globalRepoStub.restore();
-      repo.dispose('test complete');
+      if (!Disposable.isDisposed(repo)) {
+        repo.dispose('test complete');
+      }
       repo = undefined;
     });
+
+    return Repository.global;
   }
 
   constructor(providers: any[], suite: boolean = true) {

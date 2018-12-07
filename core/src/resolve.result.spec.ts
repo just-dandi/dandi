@@ -5,14 +5,12 @@ import { createStubInstance, SinonStubbedInstance } from 'sinon';
 import { ResolverContext, ResolveResult } from '../';
 
 describe('ResolveResult', () => {
-  let context: { disposed: boolean } & SinonStubbedInstance<Disposable>;
+  let context: SinonStubbedInstance<Disposable>;
   let value: any;
   let result: ResolveResult<any>;
 
   beforeEach(() => {
-    context = (createStubInstance(ResolverContext) as any) as {
-      disposed: boolean;
-    } & SinonStubbedInstance<Disposable>;
+    context = (createStubInstance(ResolverContext) as any) as SinonStubbedInstance<Disposable>;
     value = {};
     result = new ResolveResult<any>(context, value);
   });

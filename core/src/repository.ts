@@ -61,22 +61,20 @@ export class Repository<TContext = any> implements Disposable {
 
     if (typeof target === 'function') {
       const injectableProviderOptions = Reflect.get(target, ProviderOptions.valueOf() as symbol) as ProviderOptions<T>;
-      if (injectableProviderOptions) {
-        this.registerProvider({
-          provide: (options && options.provide) || injectableProviderOptions.provide || target,
+      const effectiveOptions = Object.assign({}, injectableProviderOptions, options);
+      const provide = effectiveOptions.provide || target;
+      const noSelf = effectiveOptions.noSelf;
+      const provider = Object.assign(
+        {
           useClass: target,
-          multi: injectableProviderOptions.multi,
-          singleton: injectableProviderOptions.singleton,
-        });
-        return this;
-      }
+        },
+        effectiveOptions,
+      );
 
-      this.registerProvider({
-        provide: (options && options.provide) || target,
-        useClass: target,
-        multi: options && options.multi,
-        singleton: options && options.singleton,
-      });
+      this.registerProvider(Object.assign({}, provider, { provide }));
+      if (provide !== target && !noSelf) {
+        this.registerProvider(Object.assign({}, provider, { provide: target }));
+      }
       return this;
     }
 

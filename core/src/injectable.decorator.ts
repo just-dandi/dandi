@@ -51,3 +51,4 @@ export class InjectableOption {
 
 export const Singleton = new InjectableOption((options: ProviderOptions<any>) => (options.singleton = true));
 export const Multi = new InjectableOption((options: ProviderOptions<any>) => (options.multi = true));
+export const NoSelf = new InjectableOption((options: ProviderOptions<any>) => (options.noSelf = true));

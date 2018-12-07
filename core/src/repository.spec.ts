@@ -1,4 +1,5 @@
 import { InvalidDisposeTargetError } from '@dandi/common';
+import { TestHarness } from '@dandi/core-testing';
 import { expect } from 'chai';
 import { spy } from 'sinon';
 
@@ -13,14 +14,16 @@ import {
 
 class TestClass {}
 
-describe('Repository', () => {
+describe('Repository', function() {
+  const GLOBAL_REPO = TestHarness.scopeGlobalRepository();
+
   let repo: Repository;
   let token: SymbolToken<any>;
   let value: any;
   let provider: Provider<any>;
 
-  beforeEach(() => {
-    repo = Repository.for('test');
+  beforeEach(function() {
+    repo = Repository.global;
     token = new SymbolToken<any>('test');
     value = {};
     provider = {
@@ -71,20 +74,29 @@ describe('Repository', () => {
       expect((repo as any).providers.get(TestClass)).to.deep.equal({
         provide: TestClass,
         useClass: TestClass,
-        multi: undefined,
-        singleton: undefined,
       });
     });
 
-    it('registers a class using the injection token specified in the options, if specified', () => {
+    it('registers a class using the injection token specified in the options, if specified, as well as the class itself', () => {
       repo.register(TestClass, { provide: token });
 
       expect((repo as any).providers).to.contain.keys(token);
+      // expect((repo as any).providers).to.contain.keys(TestClass);
       expect((repo as any).providers.get(token)).to.deep.equal({
         provide: token,
         useClass: TestClass,
-        multi: undefined,
-        singleton: undefined,
+      });
+    });
+
+    it('registers a class using the injection token specified in the options, if specified, as well as the class itself, unless the noSelf option is specified', () => {
+      repo.register(TestClass, { provide: token, noSelf: true });
+
+      expect((repo as any).providers).to.contain.keys(token);
+      expect((repo as any).providers).not.to.contain.keys(TestClass);
+      expect((repo as any).providers.get(token)).to.deep.equal({
+        provide: token,
+        useClass: TestClass,
+        noSelf: true,
       });
     });
 
@@ -192,7 +204,7 @@ describe('Repository', () => {
 
   describe('dispose', () => {
     it('throws an error if called on the global repository', () => {
-      expect(() => Repository.global.dispose('test')).to.throw(InvalidDisposeTargetError);
+      expect(() => GLOBAL_REPO.dispose('test')).to.throw(InvalidDisposeTargetError);
     });
 
     it('clears local maps', () => {
@@ -214,13 +226,18 @@ describe('Repository', () => {
     });
   });
 
-  describe('for', () => {
+  describe('for', function() {
     it('instantiates a repository with the specified context', () => {
-      expect((repo as any).context).to.equal('test');
+      const localRepo = Repository.for('foo');
+      expect((localRepo as any).context).to.equal('foo');
+      localRepo.dispose('done');
     });
 
     it('returns an existing repository when the same context is used', () => {
-      expect(Repository.for('test')).to.equal(repo);
+      const localRepo = Repository.for('foo');
+      expect(Repository.for('foo')).to.equal(localRepo);
+
+      localRepo.dispose('done');
     });
 
     it('throws an error if a context is not specified', () => {

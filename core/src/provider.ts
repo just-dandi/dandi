@@ -6,6 +6,7 @@ import { localSymbolToken } from './local.token';
 export interface InjectionOptions {
   multi?: boolean;
   singleton?: boolean;
+  noSelf?: boolean;
 }
 
 export interface ProviderOptions<T> extends InjectionOptions {
