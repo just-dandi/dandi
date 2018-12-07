@@ -252,7 +252,7 @@ describe('Disposable', () => {
     it('adds a get accessor disposed property that returns true', () => {
       const obj: any = {};
       Disposable.remapDisposed(obj, '');
-      expect(obj.disposed).to.be.true;
+      expect(Disposable.isDisposed(obj)).to.be.true;
     });
   });
 });

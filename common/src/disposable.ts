@@ -1,9 +1,11 @@
 import { AppError } from './app.error';
+import { globalSymbol } from './global.symbol';
 
 export type DisposeFn = (reason: string) => void;
 
+export const DISPOSED = globalSymbol('Disposable.DISPOSED');
+
 export interface Disposable {
-  disposed?: boolean;
   dispose(reason: string): void;
 }
 
@@ -44,6 +46,10 @@ export class Disposable {
    */
   public static isDisposable(obj: any): obj is Disposable {
     return (obj && typeof obj.dispose === 'function') || false;
+  }
+
+  public static isDisposed(obj: any): boolean {
+    return obj && obj[DISPOSED];
   }
 
   /**
@@ -119,7 +125,7 @@ export class Disposable {
   public static remapDisposed<T>(target: T, reason: string): T {
     const thrower = throwAlreadyDisposed.bind(target, target, reason);
     for (const prop in target) {
-      if (prop === 'disposed') {
+      if (prop === DISPOSED) {
         continue;
       }
       if (typeof target[prop] === 'function') {
@@ -132,7 +138,7 @@ export class Disposable {
         });
       }
     }
-    Object.defineProperty(target, 'disposed', {
+    Object.defineProperty(target, DISPOSED, {
       get: () => true,
       set: undefined,
       configurable: false,
