@@ -1,9 +1,10 @@
 import { access, constants } from 'fs'
-import { extname, resolve } from 'path'
+import { basename, dirname, extname, resolve } from 'path'
 
 import { Constructor } from '@dandi/common'
 import { Inject, Injectable, Logger, Resolver, Singleton } from '@dandi/core'
 
+import { MissingTemplateError } from './missing-template.error'
 import { ViewEngine } from './view-engine'
 import { ViewMetadata } from './view-metadata'
 import { ViewEngineConfig } from './view-engine-config'
@@ -24,10 +25,10 @@ export class ViewEngineResolver {
   private resolvedViews = new Map<string, ResolvedView>();
 
   private static exists(path: string): Promise<boolean> {
-    return new Promise((resolve, reject) => {
+    return new Promise((resolve) => {
       access(path, constants.R_OK, (err) => {
         if (err) {
-          return reject(false)
+          return resolve(false)
         }
         return resolve(true)
       })
@@ -105,6 +106,8 @@ export class ViewEngineResolver {
         }
       }
     }
+
+    throw new MissingTemplateError(dirname(knownPath), basename(knownPath))
   }
 
   private async getEngineInstance(engine: Constructor<ViewEngine>): Promise<ViewEngine> {

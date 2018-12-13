@@ -1,5 +1,6 @@
 import { Container, NoopLogger } from '@dandi/core'
 import { ViewEngineResolver } from '@dandi/mvc-view'
+
 import { expect } from 'chai'
 import { createStubInstance } from 'sinon'
 
