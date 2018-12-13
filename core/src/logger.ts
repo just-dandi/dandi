@@ -1,6 +1,7 @@
-import { InjectionToken } from './injection.token'
+import { InjectionToken } from '@dandi/core'
+
 import { localOpinionatedToken } from './local.token'
-import { LogLevel } from './log.level'
+import { LogLevel } from './log-level'
 
 export type LoggerMethod = (...args: any[]) => void
 
@@ -12,4 +13,7 @@ export interface Logger {
   error(...args: any[]): void;
 }
 
-export const Logger: InjectionToken<Logger> = localOpinionatedToken<Logger>('Logger', { multi: false })
+export const Logger: InjectionToken<Logger> = localOpinionatedToken<Logger>('Logger', {
+  multi: false,
+  singleton: false,
+})

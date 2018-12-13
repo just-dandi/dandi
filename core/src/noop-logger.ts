@@ -1,5 +1,5 @@
 import { Injectable } from './injectable.decorator'
-import { LogLevel } from './log.level'
+import { LogLevel } from './log-level'
 import { Logger } from './logger'
 
 @Injectable(Logger)

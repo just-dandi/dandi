@@ -5,11 +5,11 @@ import { ResolveResult } from './resolve.result'
 import { ResolverContext } from './resolver.context'
 
 export interface Resolver {
-  invoke(instance: any, member: Function, ...repositories: Repository[]): Promise<any>;
+  invoke(instance: object, member: Function, ...repositories: Repository[]): Promise<any>;
 
   invokeInContext(
     context: ResolverContext<any>,
-    instance: any,
+    instance: object,
     member: Function,
     ...repositories: Repository[]
   ): Promise<any>;

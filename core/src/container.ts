@@ -1,13 +1,17 @@
 import { Disposable } from '@dandi/common'
+import { NoopLogger } from '@dandi/core/src/noop-logger'
 
 import { Bootstrapper } from './bootstrapper'
 import { ContainerError, ContainerNotInitializedError, MissingTokenError } from './container.error'
+import { Inject } from './inject.decorator'
 import { ParamMetadata, getInjectableMetadata } from './injectable.metadata'
 import { getInjectionContext } from './injection.context.util'
 import { InjectionToken } from './injection.token'
 import { Logger } from './logger'
 import { MissingProviderError } from './missing.provider.error'
-import { NoopLogger } from './noop.logger'
+import { Optional } from './optional.decorator'
+import { OnConfig } from './on-config'
+import { OnConfigInternal } from './on-config-internal'
 import { ProviderTypeError } from './provider.type.error'
 import { Repository } from './repository'
 import { ResolveResult } from './resolve.result'
@@ -45,26 +49,32 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
   protected readonly repository: Repository
 
   private initialized: boolean = false
+  private startTs: number;
   private started: boolean = false
   private singletonRequests = new Map<Provider<any>, Promise<any>>()
-  private scannedRepositories: Repository[] = [];
+  private scannedRepositories: Repository[] = []
 
   constructor(options: Options<TConfig> = {}, defaults?: Options<TConfig>) {
     this.config = Object.assign({} as TConfig, defaults, options)
     this.repository = Repository.for(this)
+
+    if (!this.config.providers) {
+      this.config.providers = []
+    }
+    this.config.providers.unshift(NoopLogger)
   }
 
-  public async start(): Promise<any> {
+  public async start(ts?: number): Promise<any> {
+    this.startTs = ts || new Date().valueOf()
     if (this.started) {
       throw new ContainerError('start has already been called')
     }
-    await this.init()
+    await this.preInit()
+    await this.invoke(this, this.init)
     this.started = true
 
-    const bootstrapper = await this.resolve<Bootstrapper>(Bootstrapper, true)
-    if (bootstrapper) {
-      bootstrapper.singleValue.start()
-    }
+    await this.invoke(this, this.runConfig)
+    await this.invoke(this, this.bootstrap)
   }
 
   public async resolveInContext<T>(
@@ -104,13 +114,13 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     return this.resolveInContext(null, token, optional, ...repositories)
   }
 
-  public invoke(instance: any, member: Function, ...repositories: Repository[]): Promise<any> {
+  public invoke(instance: object, member: Function, ...repositories: Repository[]): Promise<any> {
     return this.invokeInContext(null, instance, member, ...repositories)
   }
 
   public async invokeInContext(
     context: ResolverContext<any>,
-    instance: any,
+    instance: object,
     member: Function,
     ...repositories: Repository[]
   ): Promise<any> {
@@ -118,12 +128,13 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
       throw new ContainerNotInitializedError()
     }
 
+    const injectionContext = { instance, method: member }
     repositories.unshift(...this.repositories)
     const meta = getInjectableMetadata(member)
-    const invokeContext = context
-      ? context.childContext(null, member, ...repositories)
-      : ResolverContext.create(null, member, ...repositories)
-    return Disposable.useAsync(invokeContext, async (context) => {
+    const resolveContext = context
+      ? context.childContext(null, injectionContext, ...repositories)
+      : ResolverContext.create(null, injectionContext, ...repositories)
+    return Disposable.useAsync(resolveContext, async (context) => {
       const args = meta.params
         ? await Promise.all(meta.params.map((param) => this.resolveParam(param, param.token, param.optional, context)))
         : []
@@ -173,7 +184,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     throw new ProviderTypeError(provider)
   }
 
-  private async init(): Promise<void> {
+  private async preInit(): Promise<void> {
     if (this.initialized) {
       return
     }
@@ -184,34 +195,63 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
       useValue: this,
     })
 
-    this.initialized = true
-
     // register explicitly set providers
     // this must happen before scanning so that scanners can be specified in the providers config
     if (this.config.providers) {
       this.registerProviders(this.config.providers)
     }
 
-    await Disposable.useAsync(await this.resolve(Scanner, true), async (result) => {
-      if (!result) {
-        return
-      }
-      const scanners = result.arrayValue
-      await Promise.all(
-        scanners.map(async (scanner: Scanner) => {
-          this.scannedRepositories.push(await scanner.scan())
-        }),
-      )
-    })
+    this.initialized = true
 
-    // if a logger hasn't already been registered, register the NoopLogger
-    await Disposable.useAsync(await this.resolve(Logger, true), async (result) => {
-      if (!result) {
-        this.repository.register(NoopLogger)
-      }
-    })
+    await this.invoke(this, this.runConfigInternal)
+  }
+
+  private async init(@Inject(Logger) logger: Logger): Promise<void> {
+    // can't log before now because nothing will pick it up - log listener subscriptions happen in OnStartupInternal
+    logger.debug(`application initializing after ${new Date().valueOf() - this.startTs}ms`)
+
+    await this.invoke(this, this.scan)
 
     await this.onInit()
+
+    logger.debug(`application initialized after ${new Date().valueOf() - this.startTs}ms`)
+  }
+
+  private async scan(@Inject(Logger) logger: Logger, @Inject(Scanner) @Optional() scanners?: Scanner[]): Promise<void> {
+    if (!scanners) {
+      logger.debug('No scanners registered')
+      return
+    }
+    await Promise.all(
+      scanners.map(async (scanner: Scanner) => {
+        logger.debug(`Scanning for injectable modules with ${scanner.constructor.name}...`)
+        this.scannedRepositories.push(await scanner.scan())
+      }),
+    )
+  }
+
+  private async runConfig(@Inject(Logger) logger: Logger, @Inject(OnConfig) @Optional() configs?: OnConfig[]): Promise<void> {
+    if (logger) {
+      logger.debug(`application configuring after ${new Date().valueOf() - this.startTs}ms`)
+    }
+    if (configs) {
+      await Promise.all(configs.map(startup => startup()))
+    }
+    if (logger) {
+      logger.debug(`application configured after ${new Date().valueOf() - this.startTs}ms`)
+    }
+  }
+
+  private async runConfigInternal(@Inject(OnConfigInternal) @Optional() configs: OnConfig[]): Promise<void> {
+    return this.runConfig(null, configs)
+  }
+
+  private async bootstrap(@Inject(Logger) logger, @Inject(Bootstrapper) @Optional() bootstrapper?: Bootstrapper): Promise<void> {
+    logger.debug(`Application starting after ${new Date().valueOf() - this.startTs}ms`)
+    if (bootstrapper) {
+      await bootstrapper.start()
+    }
+    logger.debug(`application started after ${new Date().valueOf() - this.startTs}ms`)
   }
 
   private registerProviders(module: any): void {

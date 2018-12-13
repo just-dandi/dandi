@@ -23,8 +23,6 @@ import { CollectionResource } from './condition.decorator'
 import { requestParamToken } from './request.param.decorator'
 
 describe('ConditionDecorator', () => {
-  beforeEach(() => {})
-  afterEach(() => {})
 
   const collection = {
     provide: CollectionResource,

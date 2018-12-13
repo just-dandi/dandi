@@ -1,4 +1,4 @@
-import { AmbientInjectableScanner, Container, Injectable, Repository } from '@dandi/core'
+import { AmbientInjectableScanner, Container, Injectable, NoopLogger, Repository } from '@dandi/core'
 import { TestHarness } from '@dandi/core-testing'
 import { expect } from 'chai'
 
@@ -8,7 +8,7 @@ describe('AmbientInjectableScanner', () => {
 
   describe('scan', () => {
     it('returns the global repository', async () => {
-      const scanner = new AmbientInjectableScanner()
+      const scanner = new AmbientInjectableScanner(new NoopLogger())
       await expect(scanner.scan()).to.eventually.equal(Repository.global)
     })
   })

@@ -1,28 +1,35 @@
-import { TestHarness } from '@dandi/core-testing'
-import { expect } from 'chai'
-import { spy, stub } from 'sinon'
-
 import {
   AmbientInjectableScanner,
+  AsyncFactoryProvider,
   Bootstrapper,
   Container,
+  ContainerError,
+  ContainerNotInitializedError,
   Inject,
   Injectable,
+  InjectionContext,
+  MissingProviderError,
+  MissingTokenError,
+  NoopLogger,
   Optional,
   Provider,
   Scanner,
   Singleton,
   SymbolToken,
-} from '../'
+} from '@dandi/core'
+import { TestHarness } from '@dandi/core-testing'
 
-import { ContainerError, ContainerNotInitializedError, MissingTokenError } from './container.error'
-import { InjectionContext } from './injection.context'
-import { MissingProviderError } from './missing.provider.error'
-import { AsyncFactoryProvider } from './provider'
+import { expect } from 'chai'
+import { spy, stub, createStubInstance } from 'sinon'
+
 import { Repository } from './repository'
 
-describe('Container', () => {
+describe('Container', function() {
   TestHarness.scopeGlobalRepository()
+
+  beforeEach(function() {
+    this.logger = createStubInstance(NoopLogger)
+  })
 
   describe('ctr', () => {
     xit('merges options with defaults', () => {
@@ -30,17 +37,15 @@ describe('Container', () => {
     })
   })
 
-  describe('init', () => {
+  describe('preInit', function() {
     it('does not run more than once', async () => {
       const container = new Container()
-      const onInit = spy(container as any, 'onInit')
 
-      await (container as any).init()
-      await (container as any).init()
-      expect(onInit).to.have.been.calledOnce
+      await (container as any).preInit()
+      await (container as any).preInit()
     })
 
-    it('registers any providers specified in the constructor configuration', async () => {
+    it('registers any providers specified in the constructor configuration', async function() {
       const token1 = new SymbolToken('test-1')
       const token2 = new SymbolToken('test-2')
       const provider1 = {
@@ -55,12 +60,14 @@ describe('Container', () => {
         providers: [provider1, provider2],
       })
 
-      await (container as any).init()
+      await (container as any).preInit()
 
       expect((container as any).repository.providers).to.contain.keys([token1, token2])
     })
 
-    it('runs any scanners registered in the constructor configuration', async () => {
+  describe('init', function() {
+
+    it('runs any scanners registered in the constructor configuration', async function() {
       const repository1 = Repository.for('scanner-1')
       const repository2 = Repository.for('scanner-2')
       const scanner1 = { scan: stub().returns(repository1) }
@@ -80,7 +87,8 @@ describe('Container', () => {
         providers: [provider1, provider2],
       })
 
-      await (container as any).init()
+      await (container as any).preInit()
+      await (container as any).init(this.logger)
 
       const scanners = await container.resolve(Scanner)
       expect(scanners).to.exist
@@ -91,11 +99,12 @@ describe('Container', () => {
       expect((container as any).repositories).to.include.members([repository1, repository2])
     })
   })
+  })
 
   describe('start', () => {
-    it('calls the init function', async () => {
+    it('calls the preInit function', async () => {
       const container = new Container()
-      const init = spy(container as any, 'init')
+      const init = spy(container as any, 'preInit')
 
       await container.start()
 

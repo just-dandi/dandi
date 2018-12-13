@@ -2,9 +2,8 @@ import * as util from 'util'
 
 import { Disposable } from '@dandi/common'
 
-
 import { InjectionContext } from './injection.context'
-import { getInjectionContext } from './injection.context.util'
+import { getInjectionContext, getInjectionContextName } from './injection.context.util'
 import { InjectionToken, getTokenString } from './injection.token'
 import { Provider } from './provider'
 import { isProvider } from './provider.util'
@@ -14,8 +13,8 @@ import { ResolveResult } from './resolve.result'
 export type FindExecFn<T, TResult> = (repo: Repository, entry: RepositoryEntry<T>) => TResult
 
 export interface FindCacheEntry<T> {
-  repo: Repository;
-  entry: RepositoryEntry<T>;
+  repo: Repository
+  entry: RepositoryEntry<T>
 }
 
 export class ResolverContext<T> implements Disposable {
@@ -47,14 +46,14 @@ export class ResolverContext<T> implements Disposable {
     return new ResolverContext(token, repositories, null, context)
   }
 
-  private readonly children: Array<ResolverContext<any>> = [];
-  private readonly instances: any[] = [];
-  private readonly findCache = new Map<InjectionToken<any>, FindCacheEntry<any>>();
-  private readonly contextRepository: Repository;
+  private readonly children: Array<ResolverContext<any>> = []
+  private readonly instances: any[] = []
+  private readonly findCache = new Map<InjectionToken<any>, FindCacheEntry<any>>()
+  private readonly contextRepository: Repository
 
-  private _match: RepositoryEntry<T>;
+  private _match: RepositoryEntry<T>
 
-  private _result: ResolveResult<T>;
+  private _result: ResolveResult<T>
 
   public constructor(
     public readonly target: InjectionToken<T>,
@@ -83,8 +82,8 @@ export class ResolverContext<T> implements Disposable {
     return obj
   }
 
-  public find<T>(token: InjectionToken<T>): RepositoryEntry<T>;
-  public find<T, TResult>(token: InjectionToken<T>, exec: FindExecFn<T, TResult>): TResult;
+  public find<T>(token: InjectionToken<T>): RepositoryEntry<T>
+  public find<T, TResult>(token: InjectionToken<T>, exec: FindExecFn<T, TResult>): TResult
   public find<T, TResult>(token: InjectionToken<T>, exec?: FindExecFn<T, TResult>): TResult | RepositoryEntry<T> {
     const result = this.cachedFind(token)
     if (!result) {
@@ -150,7 +149,7 @@ export class ResolverContext<T> implements Disposable {
 
   public [util.inspect.custom](): string {
     const thisContext = this.context || getInjectionContext(this.match as any)
-    const parts = [(thisContext && thisContext.name) || getTokenString(this.target)]
+    const parts = [(getInjectionContextName(thisContext)) || getTokenString(this.target)]
     if (this.parent) {
       parts.push(this.parent[util.inspect.custom]())
     }

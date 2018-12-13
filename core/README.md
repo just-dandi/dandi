@@ -15,6 +15,9 @@ DI system.
 - **Injection Token** - A value that represents an injectable dependency.
   Can be a class constructor, or a `Symbol` value representing an
   interface or any other concept.
+  
+## Application Lifecycle
+- TODO
 
 ## Describing Injectable Services
 
@@ -215,7 +218,7 @@ const appContainer = new Container({
     providers: [
         MyService,
         MyInterfaceProvider,
-    ];
+    ],
 });
 
 container.start();
@@ -251,3 +254,11 @@ const appContainer = new Container({
 
 container.start();
 ```
+
+## Application Configuration
+- TODO
+
+### OnConfig
+
+## Logging
+- TODO

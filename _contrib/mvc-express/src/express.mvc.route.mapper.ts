@@ -33,7 +33,7 @@ export class ExpressMvcRouteMapper implements RouteMapper {
       route.path,
       'to',
       `${route.controllerCtr.name}.${route.controllerMethod.toString()}`,
-      route.cors,
+      route.cors || '(no cors)',
     )
 
     if (route.cors && !this.corsRoutes.has(route.path)) {
@@ -50,7 +50,7 @@ export class ExpressMvcRouteMapper implements RouteMapper {
           corsConfig || '(default)',
         )
         this.app[HttpMethod.options](route.path, cors(Object.assign({}, corsConfig)), () => {
-          console.log('OPTIONS!')
+          // TODO: CORS implementation
         })
       }
       this.app.use(route.path, cors(corsConfig))

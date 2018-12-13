@@ -6,7 +6,7 @@ import { stub } from 'sinon'
 
 import { DefaultRouteHandler } from './default.route.handler'
 
-describe('DefaultMvcRouteHandler', () => {
+describe('DefaultRouteHandler', () => {
   let container: Container
   let handler: DefaultRouteHandler
 

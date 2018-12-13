@@ -17,7 +17,7 @@
       }
     },
     {
-      "files": ["*/src/**/*.*spec.ts", "_contrib/*/src/**/*.*spec.ts"],
+      "files": ["**/src/**/*.*spec.ts"],
       "rules": {
         "mocha/no-exclusive-tests": "error",
         "no-magic-numbers": "off",
@@ -26,7 +26,7 @@
       }
     },
     {
-      "files": ["*/src/**/*.ts", "test/**/*.ts", "*/test/**/*.ts", "_contrib/*/**/*.ts", "_examples/*/**/*.ts"],
+      "files": ["**/src/**/*.ts", "**/test/**/*.ts", "_examples/*/**/*.ts"],
       "parserOptions": {
         "sourceType": "module"
       },

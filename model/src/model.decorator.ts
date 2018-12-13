@@ -90,7 +90,7 @@ export function UrlArray(): PropertyDecorator {
 }
 
 // TODO: move this into @dandi/common - this could be used for injection too
-export function OneOf(...oneOf: Array<Constructor<any>>): PropertyDecorator {
+export function OneOf(...oneOf: Array<Constructor<any>>): any {
   return modelDecorator.bind(null, {
     type: OneOf,
     oneOf,

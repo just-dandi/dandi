@@ -1,4 +1,5 @@
 import {
+  getInjectableMetadata,
   Inject,
   Injectable,
   Logger,
@@ -6,7 +7,6 @@ import {
   Provider,
   Repository,
   Resolver,
-  getInjectableMetadata,
 } from '@dandi/core'
 
 import { AuthProviderFactory } from './auth.provider.factory'

@@ -2,8 +2,10 @@ import { AppError } from '@dandi/common'
 import { Container, Logger, NoopLogger, Resolver } from '@dandi/core'
 import { MetadataModelBuilder, ModelBuilder } from '@dandi/model-builder'
 import { PgDbClient, PgDbPool, TransactionAlreadyInProgressError } from '@dandi-contrib/data-pg'
-import { expect } from 'chai'
+
 import { PoolClient } from 'pg'
+
+import { expect } from 'chai'
 import { SinonStub, SinonStubbedInstance, createStubInstance, stub } from 'sinon'
 
 describe('PgDbClient', () => {
