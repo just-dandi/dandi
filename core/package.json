@@ -12,8 +12,11 @@
   },
   "homepage": "https://github.com/dandi-mvc/dandi#readme",
   "peerDependencies": {
-    "@dandi/common": "1.0.0-alpha.31"
+    "@dandi/common": "1.0.0-alpha.31",
+    "rxjs": "^6.3.3"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "rxjs": "^6.3.3"
+  },
   "license": "MIT"
 }

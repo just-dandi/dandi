@@ -3,7 +3,8 @@
   "private": true,
   "scripts": {
     "dev": "node $NODE_DEBUG_OPTION --require ts-node/register --require tsconfig-paths/register ./server.ts",
-    "start": "supervisor -e node,js,ts -- --require ts-node/register --require tsconfig-paths/register ./server.ts"
+    "start": "supervisor -e node,js,ts -- --require ts-node/register --require tsconfig-paths/register ./server.ts",
+    "build": "sh ./build.sh"
   },
   "devDependencies": {
     "supervisor": "^0.12.0",
