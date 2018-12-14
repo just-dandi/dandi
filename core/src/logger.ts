@@ -1,5 +1,4 @@
-import { InjectionToken } from '@dandi/core'
-
+import { InjectionToken } from './injection.token'
 import { localOpinionatedToken } from './local.token'
 import { LogLevel } from './log-level'
 

@@ -1,5 +1,4 @@
-import { OnConfig } from '@dandi/core'
-
+import { OnConfig } from './on-config'
 import { InjectionToken } from './injection.token'
 import { localOpinionatedToken } from './local.token'
 

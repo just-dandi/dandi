@@ -1,5 +1,6 @@
 import { OnConfig, Provider } from '@dandi/core'
-import { OnConfigInternal } from '@dandi/core/src/on-config-internal'
+
+import { OnConfigInternal } from '../../src/on-config-internal'
 
 import { LogListener } from './log-listener'
 import { LogStream } from './log-stream'
