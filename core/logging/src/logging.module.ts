@@ -1,7 +1,7 @@
 import { ModuleBuilder, Registerable } from '@dandi/core'
 
 import { PKG } from './local.token'
-import { LoggerConfig } from './logger-config'
+import { LoggerConfig } from './logger.config'
 import { LogStreamSubject } from './log-stream-subject'
 import { ContextualLogger } from './contextual.logger'
 

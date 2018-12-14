@@ -8,6 +8,8 @@ common/index.ts
 common/src/**/*.spec.ts
 core/index.ts
 core/src/**/*.spec.ts
+core/logging/index.ts
+core/logging/**/*.spec.ts
 core-node/index.ts
 core-node/src/**/*.spec.ts
 cache/index.ts

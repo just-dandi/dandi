@@ -1,4 +1,4 @@
-import { Inject, Injectable, InjectionContext, Logger, LoggerMethod, LogLevel } from '@dandi/core'
+import { Inject, Injectable, InjectionContext, Logger, LoggerMethod, LogLevel, Now, NowFn } from '@dandi/core'
 
 import { LogStream } from './log-stream'
 
@@ -13,6 +13,7 @@ export class ContextualLogger implements Logger {
   constructor(
     @Inject(LogStream) private stream: LogStream,
     @Inject(InjectionContext) private context: InjectionContext,
+    @Inject(Now) private now: NowFn,
   ) {
     this.debug = this.log.bind(this, LogLevel.debug)
     this.info = this.log.bind(this, LogLevel.info)
@@ -24,7 +25,7 @@ export class ContextualLogger implements Logger {
     this.stream.next({
       level,
       args,
-      ts: new Date().valueOf(),
+      ts: this.now(),
       context: this.context,
     })
   }

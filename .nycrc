@@ -6,12 +6,13 @@
     "text"
   ],
   "include": [
-    "*/src/**/*.ts"
+    "**/src/**/*.ts"
   ],
   "extension": [
     ".ts"
   ],
   "exclude": [
+    "node_modules",
     "**/*.spec.ts",
     "mocha.config.js",
     "test",

@@ -1,5 +1,4 @@
 import { Disposable } from '@dandi/common'
-import { NoopLogger } from '@dandi/core/src/noop-logger'
 
 import { Bootstrapper } from './bootstrapper'
 import { ContainerError, ContainerNotInitializedError, MissingTokenError } from './container.error'
@@ -9,6 +8,9 @@ import { getInjectionContext } from './injection.context.util'
 import { InjectionToken } from './injection.token'
 import { Logger } from './logger'
 import { MissingProviderError } from './missing.provider.error'
+import { NativeNow } from './native.now'
+import { NoopLogger } from './noop-logger'
+import { Now, NowFn } from './now'
 import { Optional } from './optional.decorator'
 import { OnConfig } from './on-config'
 import { OnConfigInternal } from './on-config-internal'
@@ -61,7 +63,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     if (!this.config.providers) {
       this.config.providers = []
     }
-    this.config.providers.unshift(NoopLogger)
+    this.config.providers.unshift(NativeNow, NoopLogger)
   }
 
   public async start(ts?: number): Promise<any> {
@@ -206,18 +208,22 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     await this.invoke(this, this.runConfigInternal)
   }
 
-  private async init(@Inject(Logger) logger: Logger): Promise<void> {
+  private async init(@Inject(Logger) logger: Logger, @Inject(Now) now: NowFn): Promise<void> {
     // can't log before now because nothing will pick it up - log listener subscriptions happen in OnStartupInternal
-    logger.debug(`application initializing after ${new Date().valueOf() - this.startTs}ms`)
+    logger.debug(`application initializing after ${now() - this.startTs}ms`)
 
     await this.invoke(this, this.scan)
 
     await this.onInit()
 
-    logger.debug(`application initialized after ${new Date().valueOf() - this.startTs}ms`)
+    logger.debug(`application initialized after ${now() - this.startTs}ms`)
   }
 
-  private async scan(@Inject(Logger) logger: Logger, @Inject(Scanner) @Optional() scanners?: Scanner[]): Promise<void> {
+  private async scan(
+    @Inject(Logger) logger: Logger,
+    @Inject(Now) now: NowFn,
+    @Inject(Scanner) @Optional() scanners?: Scanner[],
+  ): Promise<void> {
     if (!scanners) {
       logger.debug('No scanners registered')
       return
@@ -230,28 +236,36 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     )
   }
 
-  private async runConfig(@Inject(Logger) logger: Logger, @Inject(OnConfig) @Optional() configs?: OnConfig[]): Promise<void> {
+  private async runConfig(
+    @Inject(Logger) logger: Logger,
+    @Inject(Now) now: NowFn,
+    @Inject(OnConfig) @Optional() configs?: OnConfig[],
+  ): Promise<void> {
     if (logger) {
-      logger.debug(`application configuring after ${new Date().valueOf() - this.startTs}ms`)
+      logger.debug(`application configuring after ${now() - this.startTs}ms`)
     }
     if (configs) {
       await Promise.all(configs.map(startup => startup()))
     }
     if (logger) {
-      logger.debug(`application configured after ${new Date().valueOf() - this.startTs}ms`)
+      logger.debug(`application configured after ${now() - this.startTs}ms`)
     }
   }
 
   private async runConfigInternal(@Inject(OnConfigInternal) @Optional() configs: OnConfig[]): Promise<void> {
-    return this.runConfig(null, configs)
+    return this.runConfig(null, null, configs)
   }
 
-  private async bootstrap(@Inject(Logger) logger, @Inject(Bootstrapper) @Optional() bootstrapper?: Bootstrapper): Promise<void> {
-    logger.debug(`Application starting after ${new Date().valueOf() - this.startTs}ms`)
+  private async bootstrap(
+    @Inject(Logger) logger,
+    @Inject(Now) now: NowFn,
+    @Inject(Bootstrapper) @Optional() bootstrapper?: Bootstrapper,
+  ): Promise<void> {
+    logger.debug(`Application starting after ${now() - this.startTs}ms`)
     if (bootstrapper) {
       await bootstrapper.start()
     }
-    logger.debug(`application started after ${new Date().valueOf() - this.startTs}ms`)
+    logger.debug(`application started after ${now() - this.startTs}ms`)
   }
 
   private registerProviders(module: any): void {

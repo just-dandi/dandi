@@ -88,7 +88,7 @@ describe('Container', function() {
       })
 
       await (container as any).preInit()
-      await (container as any).init(this.logger)
+      await (container as any).init(this.logger, () => new Date().valueOf())
 
       const scanners = await container.resolve(Scanner)
       expect(scanners).to.exist
