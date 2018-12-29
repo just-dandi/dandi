@@ -1,0 +1,10 @@
+{
+  "name": "@dandi/mvc",
+  "peerDependencies": {
+    "@dandi/cache": "*",
+    "@dandi/common": "*",
+    "@dandi/core": "*",
+    "@dandi/model": "*",
+    "@dandi/model-builder": "*"
+  }
+}

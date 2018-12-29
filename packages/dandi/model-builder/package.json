@@ -1,0 +1,11 @@
+{
+  "name": "@dandi/model-builder",
+  "devDependencies": {
+    "change-case": "^3.0.2"
+  },
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/core": "*",
+    "@dandi/model": "*"
+  }
+}

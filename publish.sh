@@ -36,9 +36,6 @@ publish() {
 
   npm install
 
-  echo ${bold}  Building...
-  rm -rf dist
-  ${root}/node_modules/.bin/tsc -p tsconfig.build.json --outDir dist
   cp package.json dist
   if [[ -e README.md ]]
   then
@@ -82,13 +79,25 @@ publish() {
 
 
 pkgVersion=$(node -p "require('./package.json').version")
+echo ${bold} Building @dandi suite v${pkgVersion}...${normal}
 
+echo ${bold} Updating project references...${normal}
+node_modules/.bin/ts-node ./builder/main.ts .
+
+echo ${bold} Compiling monorepo...${normal}
+tsc -b .tsconfig.builder.json
+
+pushd out
 echo ${bold} Publishing @dandi suite v${pkgVersion}...${normal}
+
+pushd dandi
 for dir in {'common','core','core-node','core-testing','model','model-builder','config','data','cache','mvc','hal','mvc-hal','mvc-view'}
 do
   publish '.' ${dir%*/}
 done
+popd
 
+pushd dandi
 for dir in {'config-aws-ssm','data-pg','mvc-express','mvc-auth-firebase','aws-lambda','mvc-view-ejs','mvc-view-pug'}
 do
   publish './_contrib' ${dir%*/}

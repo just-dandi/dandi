@@ -1,0 +1,15 @@
+{
+  "name": "@dandi-contrib/mvc-auth-firebase",
+  "dependencies": {
+    "firebase-admin": "^6.3.0"
+  },
+  "peerDependencies": {
+    "@dandi-contrib/mvc-express": "*",
+    "@dandi/cache": "*",
+    "@dandi/common": "*",
+    "@dandi/config": "*",
+    "@dandi/core": "*",
+    "@dandi/model": "*",
+    "@dandi/mvc": "*"
+  }
+}

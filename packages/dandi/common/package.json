@@ -1,0 +1,7 @@
+{
+  "name": "@dandi/common",
+  "peerDependencies": {
+    "luxon": "^1.4.3",
+    "uuid": "^3.3.2"
+  }
+}

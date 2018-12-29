@@ -9,3 +9,4 @@ reports
 dist
 .env
 .aws-docker
+.tsconfig.*

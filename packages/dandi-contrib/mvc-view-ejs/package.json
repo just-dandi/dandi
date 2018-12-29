@@ -1,0 +1,13 @@
+{
+  "name": "@dandi-contrib/mvc-view-ejs",
+  "devDependencies": {
+    "ejs": "^2.6.1"
+  },
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/core": "*",
+    "@dandi/mvc": "*",
+    "@dandi/mvc-view": "*",
+    "ejs": "^2.6.1"
+  }
+}

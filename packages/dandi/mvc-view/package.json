@@ -1,0 +1,8 @@
+{
+  "name": "@dandi/mvc-view",
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/core": "*",
+    "@dandi/mvc": "*"
+  }
+}

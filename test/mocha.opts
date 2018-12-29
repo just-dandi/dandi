@@ -28,8 +28,8 @@ mvc-hal/index.ts
 mvc-hal/src/**/*.spec.ts
 mvc-view/index.ts
 mvc-view/src/**/*.spec.ts
-_contrib/aws-lambda-wrap/index.ts
-_contrib/aws-lambda-wrap/src/**/*.spec.ts
+_contrib/aws-lambda/index.ts
+_contrib/aws-lambda/src/**/*.spec.ts
 _contrib/data-pg/index.ts
 _contrib/data-pg/src/**/*.spec.ts
 _contrib/mvc-auth-firebase/index.ts

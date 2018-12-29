@@ -1,0 +1,14 @@
+{
+  "name": "@dandi-contrib/config-aws-ssm",
+  "dependencies": {
+    "aws-sdk": "^2.369.0"
+  },
+  "devDependencies": {
+    "@types/aws-sdk": "^2.7.0"
+  },
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/config": "*",
+    "@dandi/core": "*"
+  }
+}

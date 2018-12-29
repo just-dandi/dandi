@@ -1,0 +1,8 @@
+{
+  "name": "@dandi/core-testing",
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/core": "*",
+    "sinon": "^7.1.1"
+  }
+}

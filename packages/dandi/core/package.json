@@ -1,0 +1,13 @@
+{
+  "name": "@dandi/core",
+  "scripts": {
+    "postbuild": "../node_modules/.bin/tsc --outDir dist/logging -p tsconfig.build.logging.json"
+  },
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "rxjs": "^6.3.3"
+  },
+  "devDependencies": {
+    "rxjs": "^6.3.3"
+  }
+}

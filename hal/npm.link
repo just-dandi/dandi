@@ -1,4 +1,0 @@
-#!/usr/bin/env bash
-
-npm link @dandi/common
-npm link @dandi/model

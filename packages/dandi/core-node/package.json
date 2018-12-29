@@ -1,0 +1,13 @@
+{
+  "name": "@dandi/core-node",
+  "dependencies": {
+    "fs-extra": "^7.0.1"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^5.0.4"
+  },
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/core": "*"
+  }
+}

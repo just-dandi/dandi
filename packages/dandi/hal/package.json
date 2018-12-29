@@ -1,0 +1,7 @@
+{
+  "name": "@dandi/hal",
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/model": "*"
+  }
+}

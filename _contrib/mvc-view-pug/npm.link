@@ -1,6 +1,0 @@
-#!/usr/bin/env bash
-
-npm link @dandi/common
-npm link @dandi/core
-npm link @dandi/mvc
-npm link @dandi/mvc-view

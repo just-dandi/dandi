@@ -1,0 +1,9 @@
+{
+  "name": "@dandi/data",
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/config": "*",
+    "@dandi/core": "*",
+    "@dandi/model": "*"
+  }
+}

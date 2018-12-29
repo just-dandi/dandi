@@ -1,0 +1,14 @@
+{
+  "name": "@dandi-contrib/aws-lambda",
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/core": "*",
+    "@dandi/model-builder": "*"
+  },
+  "dependencies": {
+    "aws-lambda": "^0.1.2"
+  },
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.15"
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "packagesDir": "packages",
+  "scopes": ["dandi", "dandi-contrib"],
+  "licenseFile": "LICENSE",
+  "compilerOptions": {
+    "module": "esnext"
+  }
+}

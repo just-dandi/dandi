@@ -1,0 +1,7 @@
+{
+  "name": "@dandi/cache",
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/core": "*"
+  }
+}

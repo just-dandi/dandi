@@ -1,0 +1,9 @@
+{
+  "name": "@dandi/mvc-hal",
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/core": "*",
+    "@dandi/hal": "*",
+    "@dandi/mvc": "*"
+  }
+}
