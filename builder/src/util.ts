@@ -1,5 +1,7 @@
 import { readFileSync } from 'fs'
 
+import { spawn, SpawnOptions } from 'child_process'
+
 import { readFile, writeFile } from 'fs-extra'
 import * as glob from 'glob'
 
@@ -33,6 +35,17 @@ export class Util {
         }
         return resolve(matches)
       })
+    })
+  }
+
+  public static spawn(command: string, args?: string[], options?: SpawnOptions): Promise<string> {
+    return new Promise<string>((resolve, reject) => {
+      const cmd = spawn(command, args, options)
+      let output: string = ''
+      let error: string = ''
+      cmd.stdout.on('data', chunk => output += chunk)
+      cmd.stderr.on('data', chunk => error += chunk)
+      cmd.on('close', code => code === 0 ? resolve(output) : reject(new Error(output + error)))
     })
   }
 
