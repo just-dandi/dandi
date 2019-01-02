@@ -4,6 +4,7 @@
   "version": "1.0.0-alpha.31",
   "description": "",
   "scripts": {
+    "build": "builder build .",
     "test": "mocha $NODE_DEBUG_OPTION",
     "lint": "eslint . --ext js,ts",
     "lint:fix": "npm run lint -- --fix",
@@ -23,6 +24,7 @@
   "homepage": "https://github.com/dandi-mvc/dandi#readme",
   "license": "MIT",
   "devDependencies": {
+    "@dandi/builder": "file:builder",
     "@types/chai": "^4.1.7",
     "@types/chai-as-promised": "^7.1.0",
     "@types/luxon": "^1.4.1",

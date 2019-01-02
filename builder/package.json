@@ -1,13 +1,17 @@
 {
   "name": "@dandi/builder",
   "version": "0.0.1",
-  "scripts": {},
   "dependencies": {
     "commander": "^2.19.0",
     "fs-extra": "^7.0.1",
     "glob": "^7.1.3"
   },
-  "main": "main.ts",
+  "bin": {
+    "builder": "./main.ts",
+    "builder-build": "./main-build.ts",
+    "builder-update-configs": "./main-update-configs.ts"
+  },
+  "main": "builder.ts",
   "peerDependencies": {
     "typescript": "^3.2.2"
   },
