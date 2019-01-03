@@ -170,11 +170,30 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
 
   }
 
-  public updatePackageConfigs(packages: PackageInfo[]): Promise<any> {
-    return Promise.all(packages.map(info => Promise.all([
+  public async updatePackageConfigs(packages: PackageInfo[]): Promise<void> {
+    await Promise.all(packages.map(info => Promise.all([
       this.updatePackageTsConfig(info),
       this.updatePackageBuildConfig(info),
     ])))
+  }
+
+  public async npmCommand(command: string, args: string[], packages?: PackageInfo[]): Promise<void> {
+    if (!packages) {
+      packages = await this.discoverPackages()
+    }
+
+    await Promise.all(packages.map(info => Util.spawn('npm', [command].concat(args), {
+      cwd: info.path,
+    })))
+  }
+
+  public async installPackageDependencies(packages?: PackageInfo[]): Promise<void> {
+    if (!packages) {
+      packages = await this.discoverPackages()
+    }
+    await Promise.all(packages.map(info => Util.spawn('npm', ['install'], {
+      cwd: info.path,
+    })))
   }
 
   private async findScopedPackages(packagesPath: string, scopes: string[]): Promise<PackageInfo[]> {

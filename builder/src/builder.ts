@@ -1,4 +1,3 @@
-import { spawn } from 'child_process'
 import { resolve } from 'path'
 
 import { copy, pathExists } from 'fs-extra'
@@ -31,14 +30,9 @@ export class Builder {
 
   }
 
-  private compile(): Promise<void> {
-    return new Promise((resolve, reject) => {
-      const tsc = spawn('tsc', ['-b', this.project.buildTsConfigPath])
-      let output: string = ''
-      let error: string = ''
-      tsc.stdout.on('data', chunk => output += chunk)
-      tsc.stderr.on('data', chunk => error += chunk)
-      tsc.on('close', code => code === 0 ? resolve() : reject(new Error(output + error)))
+  private compile(): Promise<any> {
+    return Util.spawn('tsc', ['-b', this.project.buildTsConfigPath], {
+      cwd: this.project.projectPath,
     })
   }
 
