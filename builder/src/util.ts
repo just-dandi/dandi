@@ -5,10 +5,12 @@ import { spawn, SpawnOptions } from 'child_process'
 import { readFile, writeFile } from 'fs-extra'
 import * as glob from 'glob'
 
+const JSON_SPACING = 2
+
 export class Util {
 
   public static async writeJson(path: string, data: any): Promise<void> {
-    return writeFile(path, JSON.stringify(data, null, 2), 'utf-8')
+    return writeFile(path, JSON.stringify(data, null, JSON_SPACING), 'utf-8')
   }
 
   public static async readJson<T>(path: string, defaultValue?: any): Promise<T> {

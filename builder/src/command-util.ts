@@ -1,17 +1,18 @@
+import { dirname, resolve } from 'path'
+
 import { Command } from 'commander'
 
 import { Builder } from './builder'
-
 import { BuilderProject } from './builder-project'
 
-export type Action = () => Promise<void>
-export type ParamAction<T> = (arg: T, cmd?: Command) => Promise<void>
+export type Action = (args?: string[]) => Promise<void>
+export type ParamAction<T> = (arg: T, cmd?: Command, args?: string[]) => Promise<void>
 
-export type Filtered<Type, Condition> = {
-  [key in keyof Type]: Type[key] extends Condition ? key: never
+export type Filtered<TType, TCondition> = {
+  [key in keyof TType]: TType[key] extends TCondition ? key: never
 }
-export type AllowedKeys<Type, Condition> = Filtered<Type, Condition>[keyof Type]
-export type Subset<Type, Condition> = Pick<Type, AllowedKeys<Type, Condition>>
+export type AllowedKeys<TType, TCondition> = Filtered<TType, TCondition>[keyof TType]
+export type Subset<TType, TCondition> = Pick<TType, AllowedKeys<TType, TCondition>>
 
 export type Actions<T> = Subset<T, Action>
 
@@ -25,22 +26,17 @@ function isActionName<T>(ctr: Function, obj: any): obj is Actions<T> {
 
 export class CommandUtil {
 
-  public static projectAction(actionOrActionName: keyof Actions<BuilderProject> | ParamAction<BuilderProject>): (cmdOrProjectPath: string | Command, cmd?: Command) => Promise<void> {
-    return (cmdOrProjectPath: string | Command, cmd?: Command): Promise<void> => {
-      let projectPath: string
-      if (typeof cmdOrProjectPath === 'string') {
-        projectPath = cmdOrProjectPath
-      } else {
-        projectPath = process.cwd()
-        cmd = cmdOrProjectPath
-      }
-
+  public static projectAction(actionOrActionName: keyof Actions<BuilderProject> | ParamAction<BuilderProject>): (...args: [string | Command]) => Promise<void> {
+    return (...args: [string | Command]): Promise<void> => {
+      const cmd = args.pop() as Command
+      const cmdArgs = args as string[]
+      const projectPath = cmd.config ? resolve(process.cwd(), dirname(cmd.config)) : process.cwd()
       const project = new BuilderProject({ projectPath: projectPath, configFile: cmd.config })
       if (isParamAction(actionOrActionName)) {
-        return actionOrActionName(project, cmd)
+        return actionOrActionName(project, cmd, cmdArgs)
       }
       if (isActionName(BuilderProject, actionOrActionName)) {
-        return project[actionOrActionName]()
+        return (<Action>project[actionOrActionName])(cmdArgs)
       }
       throw new Error('Invalid argument for actionOrActionName')
     }

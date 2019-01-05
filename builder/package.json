@@ -9,6 +9,7 @@
   "bin": {
     "builder": "./main.ts",
     "builder-build": "./main-build.ts",
+    "builder-npm": "./main-npm.ts",
     "builder-update-configs": "./main-update-configs.ts"
   },
   "main": "builder.ts",

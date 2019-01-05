@@ -4,7 +4,9 @@
   "version": "1.0.0-alpha.31",
   "description": "",
   "scripts": {
-    "build": "builder build .",
+    "update-packages": "builder npm update",
+    "install-packages": "builder npm install",
+    "build": "builder build",
     "test": "mocha $NODE_DEBUG_OPTION",
     "lint": "eslint . --ext js,ts",
     "lint:fix": "npm run lint -- --fix",

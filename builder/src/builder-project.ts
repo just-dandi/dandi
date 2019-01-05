@@ -177,12 +177,12 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
     ])))
   }
 
-  public async npmCommand(command: string, args: string[], packages?: PackageInfo[]): Promise<void> {
+  public async npmCommand(args: string[], packages?: PackageInfo[]): Promise<void> {
     if (!packages) {
       packages = await this.discoverPackages()
     }
 
-    await Promise.all(packages.map(info => Util.spawn('npm', [command].concat(args), {
+    await Promise.all(packages.map(info => Util.spawn('npm', args, {
       cwd: info.path,
     })))
   }
