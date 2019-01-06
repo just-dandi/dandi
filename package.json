@@ -14,8 +14,7 @@
     "lint:fix": "npm run lint -- --fix",
     "precoverage": "rimraf coverage .nyc_output",
     "coverage": "nyc npm test",
-    "coverage:watch": "nyc npm test -- --watch",
-    "postversion": "sh publish.sh"
+    "coverage:watch": "nyc npm test -- --watch"
   },
   "repository": {
     "type": "git",
