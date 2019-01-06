@@ -7,10 +7,7 @@
     "glob": "^7.1.3"
   },
   "bin": {
-    "builder": "./main.ts",
-    "builder-build": "./main-build.ts",
-    "builder-npm": "./main-npm.ts",
-    "builder-update-configs": "./main-update-configs.ts"
+    "builder": "./main.ts"
   },
   "main": "builder.ts",
   "peerDependencies": {

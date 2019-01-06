@@ -1,5 +1,9 @@
 import { TsConfigCompilerOptions } from './ts-config'
 
+export interface NpmOptions {
+  registry?: string
+}
+
 export interface BuilderConfig {
   packagesDir: string
   tsConfigFileName: string
@@ -8,6 +12,7 @@ export interface BuilderConfig {
   scopes?: string[]
   licenseFile?: string
   compilerOptions?: TsConfigCompilerOptions
+  npmOptions?: NpmOptions
 }
 
 export const BUILD_CONFIG_DEFAULTS: BuilderConfig = {

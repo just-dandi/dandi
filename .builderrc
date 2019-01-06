@@ -4,5 +4,8 @@
   "licenseFile": "LICENSE",
   "compilerOptions": {
     "module": "esnext"
+  },
+  "npmOptions": {
+    "registry": "https://registry.npmjs.org/"
   }
 }

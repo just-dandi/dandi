@@ -2,7 +2,8 @@ import { resolve } from 'path'
 
 import { copy, pathExists } from 'fs-extra'
 
-import { BuilderProject, PackageInfo } from './builder-project'
+import { BuilderProject } from './builder-project'
+import { PackageInfo } from './package-info'
 import { Util } from './util'
 
 export class Builder {

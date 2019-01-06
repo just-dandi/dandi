@@ -1,14 +1,42 @@
 #!/usr/bin/env ts-node
 
-import { program } from './src/program'
+import * as program from 'commander'
+
+import { BUILDER_PROJECT_DEFAULTS } from './src/builder-project'
+import { VERSION } from './src/builder-version'
+import { CommandUtil } from './src/command-util'
 
 program
-  .command('update-configs', 'Creates or updates tsconfig files for the root project and configured package projects')
+  .version(VERSION)
+  .option('-c --config <configFile>', 'A path to the builder config file, relative to the working directory', BUILDER_PROJECT_DEFAULTS.configFile)
 
 program
-  .command('build', 'Updates the config files (see update-configs), then builds the project', { isDefault: true })
+  .command('update-configs')
+  .description('Creates or updates tsconfig files for the root project and configured package projects')
+  .action(CommandUtil.projectAction('updateConfigs'))
 
 program
-  .command('npm <npm-command> [npm-command-args ...]', 'Run an npm command on all configured packages')
+  .command('build')
+  .description('Updates the config files (see update-configs), then builds the project')
+  .action(CommandUtil.builderAction('build'))
+
+program
+  .command('publish')
+  .description('Builds and then publishes all project packages')
+  .action(CommandUtil.publisherAction('publish'))
+
+program
+  .command('unpublish [version]')
+  .description('Unpublishes a specific version of all configured package projects. [version] defaults to the current version defined in the root project package.json')
+  .action(CommandUtil.publisherAction('unpublish'))
+
+program
+  .command('deprecate <message> [version]')
+  .description('Deprecates a specific version of all configured package projects. [version] defaults to the current version defined in the root project package.json')
+  .action(CommandUtil.publisherAction('deprecate'))
+program
+  .command('npm <npm-command> [npm-command-args ...]')
+  .description('Run an npm command on all configured packages')
+  .action(CommandUtil.projectAction('npmCommand'))
 
 program.parse(process.argv)

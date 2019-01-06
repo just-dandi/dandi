@@ -2,7 +2,8 @@ import { dirname, join, relative, resolve } from 'path'
 
 import { pathExists, readdir, readFile } from 'fs-extra'
 
-import { BUILD_CONFIG_DEFAULTS, BuilderConfig } from './builder-config'
+import { BUILD_CONFIG_DEFAULTS, BuilderConfig, NpmOptions } from './builder-config'
+import { PackageInfo } from './package-info'
 import { TsConfig, TsConfigCompilerOptions } from './ts-config'
 import { Util } from './util'
 
@@ -29,28 +30,7 @@ export interface BuilderProjectOptions {
   configFile?: string
 }
 
-export interface PackageInfo {
-  path: string
-  name: string
-  scope?: string
-  outPath: string
-
-  packageConfig: Package
-  packageConfigPath: string
-
-  tsConfig: TsConfig
-  tsConfigPath: string
-
-  buildTsConfig: TsConfig
-  buildTsConfigPath: string
-
-  manifest?: string[]
-  subPackages?: string[]
-
-}
-
 export const BUILDER_PROJECT_DEFAULTS: BuilderProjectOptions = {
-  projectPath: process.cwd(),
   configFile: './.builderrc',
 }
 
@@ -75,6 +55,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   public readonly packageBaseTsConfigFileName: string
   public readonly licenseFile: string
   public readonly compilerOptions: TsConfigCompilerOptions
+  public readonly npmOptions: NpmOptions
 
   private _packages: PackageInfo[]
   public get packages(): PackageInfo[] {
@@ -83,9 +64,10 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
 
   constructor(options?: BuilderProjectOptions) {
 
-    Object.assign(this, BUILDER_PROJECT_DEFAULTS, options)
+    this.configFile = options.configFile || BUILDER_PROJECT_DEFAULTS.configFile
 
-    this.configFilePath = resolve(this.projectPath, this.configFile)
+    this.configFilePath = resolve(process.cwd(), this.configFile)
+    this.projectPath = dirname(this.configFilePath)
 
     Object.assign(this, BUILD_CONFIG_DEFAULTS, Util.readJsonSync(this.configFilePath))
 
@@ -105,7 +87,8 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   }
 
   public async updateConfigs(packages?: PackageInfo[]): Promise<void> {
-    if (!packages) {
+    console.log('Discovering packages and updating configurations...')
+    if (!packages || !packages.length) {
       packages = await this.discoverPackages()
     }
     await Promise.all([
@@ -114,6 +97,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
       this.updateProjectBuildTsConfig(packages),
       this.updatePackageConfigs(packages),
     ])
+    console.log('Updated configurations for packages\n ', packages.map(info => info.fullName).join('\n  '))
   }
 
   public async updateProjectTsConfig(): Promise<void> {
@@ -182,18 +166,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
       packages = await this.discoverPackages()
     }
 
-    await Promise.all(packages.map(info => Util.spawn('npm', args, {
-      cwd: info.path,
-    })))
-  }
-
-  public async installPackageDependencies(packages?: PackageInfo[]): Promise<void> {
-    if (!packages) {
-      packages = await this.discoverPackages()
-    }
-    await Promise.all(packages.map(info => Util.spawn('npm', ['install'], {
-      cwd: info.path,
-    })))
+    await Util.spawnForPackages(packages, 'npm', args)
   }
 
   private async findScopedPackages(packagesPath: string, scopes: string[]): Promise<PackageInfo[]> {
@@ -224,13 +197,19 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
         await this.findSubPackages(packagePath),
       ])
 
+      const projectDependencies = Object.keys(packageConfig.peerDependencies)
+        .filter(dep => this.scopes && this.scopes.find(scope => dep.startsWith(`@${scope}/`)))
+
       return {
         path: resolve(packagesPath, packageDir),
         name: packageDir,
         scope,
+        fullName: scope ? `@${scope}/${packageDir}` : packageDir,
 
         packageConfigPath,
         packageConfig,
+
+        projectDependencies,
 
         tsConfigPath,
         tsConfig,
@@ -280,14 +259,12 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   private async updatePackageBuildConfig(info: PackageInfo): Promise<PackageInfo> {
 
     if (info.packageConfig.peerDependencies) {
-      Object.keys(info.packageConfig.peerDependencies).forEach(dep => {
-        if (this.scopes && this.scopes.find(scope => dep.startsWith(`@${scope}/`))) {
-          if (!info.buildTsConfig.references) {
-            info.buildTsConfig.references = []
-          }
-          const depPath = resolve(this.packagesPath, dep.substring(1))
-          info.buildTsConfig.references.push({ path: join(relative(info.path, depPath), this.buildTsConfigFileName) })
+      info.projectDependencies.forEach(dep => {
+        if (!info.buildTsConfig.references) {
+          info.buildTsConfig.references = []
         }
+        const depPath = resolve(this.packagesPath, dep.substring(1))
+        info.buildTsConfig.references.push({ path: join(relative(info.path, depPath), this.buildTsConfigFileName) })
       })
     }
     info.buildTsConfig.extends = relative(info.path, this.baseTsConfigPath)
