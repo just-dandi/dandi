@@ -166,7 +166,33 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
       packages = await this.discoverPackages()
     }
 
-    await Util.spawnForPackages(packages, 'npm', args)
+    await Util.spawnForPackages(packages, 'npm', args.filter(arg => arg))
+  }
+
+  public async npmOutdated(): Promise<void> {
+    const packages = await this.discoverPackages()
+    const outdated = await Promise.all(packages.map(async info => {
+      return {
+        name: info.fullName,
+        data: await (async () => {
+          try {
+            return await Util.spawnForPackage(info, 'npm', ['outdated'])
+          } catch (err) {
+            return err.message
+          }
+        })(),
+      }
+    }))
+    if (!outdated.length) {
+      console.log('All packages are up to date')
+      return
+    }
+    console.log('')
+    outdated.forEach(info => {
+      if (info.data) {
+        console.log(`${info.name}\n`, info.data)
+      }
+    })
   }
 
   private async findScopedPackages(packagesPath: string, scopes: string[]): Promise<PackageInfo[]> {

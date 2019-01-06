@@ -12,7 +12,7 @@ program
 
 program
   .command('update-configs')
-  .description('Creates or updates tsconfig files for the root project and configured package projects')
+  .description('Creates or updates tsconfig files for the root project and configured project packages')
   .action(CommandUtil.projectAction('updateConfigs'))
 
 program
@@ -27,16 +27,22 @@ program
 
 program
   .command('unpublish [version]')
-  .description('Unpublishes a specific version of all configured package projects. [version] defaults to the current version defined in the root project package.json')
+  .description('Unpublishes a specific version of all configured project packages. [version] defaults to the current version defined in the root project package.json')
   .action(CommandUtil.publisherAction('unpublish'))
 
 program
   .command('deprecate <message> [version]')
-  .description('Deprecates a specific version of all configured package projects. [version] defaults to the current version defined in the root project package.json')
+  .description('Deprecates a specific version of all configured project packages. [version] defaults to the current version defined in the root project package.json')
   .action(CommandUtil.publisherAction('deprecate'))
+
 program
   .command('npm <npm-command> [npm-command-args ...]')
   .description('Run an npm command on all configured packages')
   .action(CommandUtil.projectAction('npmCommand'))
+
+program
+  .command('outdated')
+  .description('Displays data from npm outdated for all configured project packages')
+  .action(CommandUtil.projectAction('npmOutdated'))
 
 program.parse(process.argv)
