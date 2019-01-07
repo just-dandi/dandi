@@ -2,6 +2,7 @@
 
 [![Build Status](https://travis-ci.org/dandi-mvc/dandi.svg?branch=master)](https://travis-ci.org/dandi-mvc/dandi)
 [![Coverage Status](https://coveralls.io/repos/github/dandi-mvc/dandi/badge.svg)](https://coveralls.io/github/dandi-mvc/dandi)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 Dandi is a modular DI and MVC framework designed to make it easier to write
 RESTful APIs and other services for NodeJS. It is split into modules to
@@ -18,7 +19,7 @@ allow developers to use only the features they require.
 ### MVC
 
 - Modeled after [ASP.NET Core MVC](https://docs.microsoft.com/en-us/aspnet/core/mvc/overview)
-- Built on top of [Express 4](https://expressjs.com/)
+- Web framework agnostic - Built for [Express 4](https://expressjs.com/), but can be used with other frameworks if desired
 - Decorator-based route configuration
 - Automatic path parameter, query parameter, and body model mapping and validation
 - Support for automatically generating [HAL](http://stateless.co/hal_specification.html) output
