@@ -7,4 +7,8 @@ install:
   - "npm run install-packages"
 
 script:
+  - "npm run build"
+
+after_success:
   - "npm run coverage"
+  - "npm run coverage-report"

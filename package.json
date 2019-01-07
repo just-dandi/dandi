@@ -14,6 +14,7 @@
     "lint:fix": "npm run lint -- --fix",
     "precoverage": "rimraf coverage .nyc_output",
     "coverage": "nyc npm test",
+    "coverage-report": "nyc report --reporter=text-lcov | coveralls",
     "coverage:watch": "nyc npm test -- --watch"
   },
   "repository": {
@@ -37,6 +38,7 @@
     "acorn": "^6.0.5",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
+    "coveralls": "^3.0.2",
     "eslint": "^5.12.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-mocha": "^5.2.0",
