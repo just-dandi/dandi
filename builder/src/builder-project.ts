@@ -226,7 +226,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
       const projectDependencies = Object.keys(packageConfig.peerDependencies)
         .filter(dep => this.scopes && this.scopes.find(scope => dep.startsWith(`@${scope}/`)))
 
-      return {
+      return <PackageInfo>{
         path: resolve(packagesPath, packageDir),
         name: packageDir,
         scope,
