@@ -202,7 +202,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
 
   private async findPackages(packagesPath: string, scope?: string): Promise<PackageInfo[]> {
     const packageDirs = await readdir(packagesPath)
-    return Promise.all(packageDirs.map(async packageDir => {
+    return Promise.all<PackageInfo>(packageDirs.map(async packageDir => {
 
       const packagePath = resolve(packagesPath, packageDir)
       const packageConfigPath = resolve(packagePath, 'package.json')
@@ -226,7 +226,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
       const projectDependencies = Object.keys(packageConfig.peerDependencies)
         .filter(dep => this.scopes && this.scopes.find(scope => dep.startsWith(`@${scope}/`)))
 
-      return <PackageInfo>{
+      return {
         path: resolve(packagesPath, packageDir),
         name: packageDir,
         scope,
