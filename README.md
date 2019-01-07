@@ -1,5 +1,8 @@
 # @dandi
 
+[![Build Status](https://travis-ci.org/dandi-mvc/dandi.svg?branch=master)](https://travis-ci.org/dandi-mvc/dandi)
+[![Coverage Status](https://coveralls.io/repos/github/dandi-mvc/dandi/badge.svg)](https://coveralls.io/github/dandi-mvc/dandi)
+
 Dandi is a modular DI and MVC framework designed to make it easier to write
 RESTful APIs and other services for NodeJS. It is split into modules to
 allow developers to use only the features they require.
