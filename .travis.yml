@@ -2,6 +2,8 @@ language: node_js
 
 install:
   - "npm install"
+  - "tsc --version"
+  - "ts-node --version"
   - "npm run install-packages"
 
 script:
