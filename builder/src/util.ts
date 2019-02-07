@@ -44,6 +44,9 @@ export class Util {
 
   public static spawn(command: string, args?: string[], options?: SpawnOptions): Promise<string> {
     return new Promise<string>((resolve, reject) => {
+      options = Object.assign(options || {}, {
+        env: process.env,
+      }, options)
       console.debug('Spawning', command, ...args, 'in', options && options.cwd || process.cwd())
       const cmd = spawn(command, args, options)
       let output: string = ''

@@ -93,7 +93,7 @@ export class Publisher {
       return packageInfo
     }
 
-    console.debug(`${publishTarget}: publishing...`)
+    console.debug(`${publishTarget}: publishing${registry ? ` to ${registry}` : ''}...`)
     const publishArgs = ['publish']
     if (registry) {
       infoArgs.push('--registry', registry)
