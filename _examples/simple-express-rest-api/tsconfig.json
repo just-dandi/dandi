@@ -11,8 +11,8 @@
     "lib": ["es2015", "es2016", "es2017"],
     "baseUrl": ".",
     "paths": {
-      "@dandi/*": ["../../*"],
-      "@dandi-contrib/*": ["../../_contrib/*"]
+      "@dandi/*": ["../../packages/dandi/*"],
+      "@dandi-contrib/*": ["../../packages/dandi-contrib/*"]
     }
   }
 }
