@@ -5,6 +5,6 @@
     "rxjs": "^6.3.3"
   },
   "devDependencies": {
-    "rxjs": "^6.3.3"
+    "rxjs": "^6.4.0"
   }
 }
