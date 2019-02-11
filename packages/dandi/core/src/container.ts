@@ -94,12 +94,15 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     }
 
     const resolveContext = context
-      ? context.childContext(token, null, ...this.repositories, ...repositories)
+      ? context.childContext(token, null, ...repositories)
       : ResolverContext.create<T>(token, null, ...this.repositories, ...repositories)
     try {
       const result = await this.resolveInternal(token, optional, resolveContext)
-      if (!result) {
-        return null
+      if (result === undefined) {
+        if (!context) {
+          resolveContext.dispose('Disposed after resolving to undefined')
+        }
+        return undefined
       }
       return resolveContext.resolveValue(result)
     } catch (err) {
@@ -323,7 +326,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
       if (!optional) {
         throw new MissingProviderError(token, context)
       }
-      return null
+      return undefined
     }
 
     if (Array.isArray(entry)) {

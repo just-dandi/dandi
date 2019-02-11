@@ -17,6 +17,9 @@ export interface FindCacheEntry<T> {
   entry: RepositoryEntry<T>
 }
 
+/**
+ * A context object containing references to the set of repositories used to resolve an injection token to a provider.
+ */
 export class ResolverContext<T> implements Disposable {
   public get match(): RepositoryEntry<T> {
     if (!this._match) {
@@ -186,6 +189,15 @@ export class ResolverContext<T> implements Disposable {
   }
 
   private findSingletonRepo(fromRepo: Repository): Repository {
+    if (this.parent) {
+      const fromParent = this.parent.findSingletonRepo(fromRepo)
+      if (fromParent) {
+        return fromParent
+      }
+    }
+    if (!this.repositories.length) {
+      return undefined
+    }
     const repos = this.repositories.slice(0).reverse()
     const availableRepos = repos.slice(repos.indexOf(fromRepo) + 1)
     return availableRepos.find((repo) => repo.allowSingletons)

@@ -51,6 +51,9 @@ export class TestHarness implements TestResolver {
 
     beforeEach(function() {
       repo = Repository.for(Math.random())
+      Object.assign(repo, {
+        _allowSingletons: false,
+      })
 
       // sanity checking!
       expect(repo.get(__TestSanityChecker)).not.to.exist
