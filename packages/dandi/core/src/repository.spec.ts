@@ -1,4 +1,4 @@
-import { InvalidDisposeTargetError } from '@dandi/common'
+import { Disposable, InvalidDisposeTargetError } from '@dandi/common';
 import { TestHarness } from '@dandi/core-testing'
 import { expect } from 'chai'
 import { spy } from 'sinon'
@@ -186,19 +186,25 @@ describe('Repository', function() {
 
   describe('addSingleton', () => {
     it('adds the value to the singletons set', () => {
-      repo.addSingleton(provider, value)
-      expect((repo as any).singletons.get(provider)).to.equal(value)
+      Disposable.use(Repository.for({}), (repo) => {
+        repo.addSingleton(provider, value)
+        expect((repo as any).singletons.get(provider)).to.equal(value)
+      })
     })
 
     it('throws an error if called without a valid provider', () => {
-      expect(() => repo.addSingleton({} as any, value)).to.throw(ProviderTypeError)
+      Disposable.use(Repository.for({}), (repo) => {
+        expect(() => repo.addSingleton({} as any, value)).to.throw(ProviderTypeError)
+      })
     })
   })
 
   describe('getSingleton', () => {
     it('returns the value of a registered singleton', () => {
-      repo.addSingleton(provider, value)
-      expect(repo.getSingleton(provider)).to.equal(value)
+      Disposable.use(Repository.for({}), (repo) => {
+        repo.addSingleton(provider, value)
+        expect(repo.getSingleton(provider)).to.equal(value)
+      })
     })
   })
 

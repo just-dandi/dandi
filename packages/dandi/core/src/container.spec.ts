@@ -12,7 +12,7 @@ import {
   MissingTokenError,
   NoopLogger,
   Optional,
-  Provider,
+  Provider, Resolver,
   Scanner,
   Singleton,
   SymbolToken,
@@ -210,6 +210,78 @@ describe('Container', function() {
       expect(result2.value).to.equal(1)
     })
 
+    it('does not create multiple instances of singletons when required by different dependents', async () => {
+      @Injectable(Singleton)
+      class Singlejon {}
+      @Injectable()
+      class TestA {
+        constructor(@Inject(Singlejon) public jon: Singlejon) {}
+      }
+      @Injectable()
+      class TestB {
+        constructor(@Inject(Singlejon) public jon: Singlejon) {}
+      }
+
+      const container = new Container({ providers: [Singlejon, TestA, TestB] })
+      await container.start()
+
+      const result1 = await container.resolve(TestA)
+      const result2 = await container.resolve(TestB)
+
+      expect(result1.singleValue.jon).to.equal(result2.singleValue.jon)
+
+    })
+
+    it('does not create multiple instances of singletons when explicitly resolving', async () => {
+      @Injectable(Singleton)
+      class Singlejon {}
+      @Injectable()
+      class Test {
+        constructor(@Inject(Singlejon) public jon: Singlejon) {}
+      }
+      @Injectable()
+      class TestFactory {
+        constructor(@Inject(Singlejon) public jon: Singlejon, @Inject(Resolver) private resolver: Resolver) {}
+
+        public async createTest(): Promise<Test> {
+          return (await this.resolver.resolve(Test)).singleValue
+        }
+      }
+
+      const container = new Container({ providers: [Singlejon, Test, TestFactory] })
+      await container.start()
+
+      const factory = (await container.resolve(TestFactory)).singleValue
+      const test = await factory.createTest()
+      expect(factory.jon).to.equal(test.jon)
+
+    })
+
+    it('does not create multiple instances of singletons when invoking', async () => {
+      @Injectable(Singleton)
+      class Singlejon {}
+      @Injectable()
+      class Test {
+        constructor(@Inject(Singlejon) public jon: Singlejon) {}
+      }
+      @Injectable()
+      class TestFactory {
+        constructor(@Inject(Singlejon) public jon: Singlejon) {}
+
+        public async getJon(@Inject(Singlejon) jon: Singlejon): Promise<Singlejon> {
+          return jon
+        }
+      }
+
+      const container = new Container({ providers: [Singlejon, Test, TestFactory] })
+      await container.start()
+
+      const factory = (await container.resolve(TestFactory)).singleValue
+      const jon = await container.invoke(factory, factory.getJon)
+      expect(jon).to.equal(factory.jon)
+
+    })
+
     it('can resolve dependencies configured with additional providers on a provider', async () => {
       const token = new SymbolToken('test')
       const dep1 = new SymbolToken('test-dep1')
@@ -312,7 +384,7 @@ describe('Container', function() {
 
       const result = await container.resolve(TestConstructorParams)
       expect(result.value).to.be.instanceOf(TestConstructorParams)
-      expect(result.singleValue.param).to.be.null
+      expect(result.singleValue.param).to.be.undefined
     })
 
     it('can resolve constructor parameters whose providers define their own providers', async () => {
@@ -498,7 +570,7 @@ describe('Container', function() {
       const instance = new TestClass()
       await container.invoke(instance, instance.method)
       expect(method).to.have.been.called
-      expect(method).to.have.been.calledWith('foo', null)
+      expect(method).to.have.been.calledWith('foo', undefined)
     })
   })
 })

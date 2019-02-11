@@ -20,8 +20,12 @@ export interface RegisterOptions<T> extends ProviderOptions<T> {
 
 export type RepositoryEntry<T> = Provider<T> | Array<Provider<T>>
 
+// TODO: Move global repo to AmbientInjectionScanner - it's the only one that uses it
 const GLOBAL_CONTEXT = globalSymbol('Repository:GLOBAL_CONTEXT')
 
+/**
+ * Contains mappings of injection tokens to providers, and stores instances of singletons.
+ */
 export class Repository<TContext = any> implements Disposable {
   public static for(context: any): Repository {
     if (!context) {
