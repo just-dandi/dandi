@@ -49,14 +49,14 @@ intention of the interfaces.
 
 A model for describing connection info for a database connection. Used
 with `@dandi/config` to allow retrieving from a configuration provider
-like AWS SSM (see [@dandi-contrib/config-aws-ssm](../config-aws-ssm).
+like AWS SSM (see [@dandi-contrib/config-aws-ssm](../../dandi-contrib/config-aws-ssm).
 
 ### DbUserCredentials
 
 A model for describing user credentials for authenticating with a
 database. Used with `@dandi/config` to allow retrieving from a
 configuration provider like AWS SSM (see
-[@dandi-contrib/config-aws-ssm](../config-aws-ssm).
+[@dandi-contrib/config-aws-ssm](../../dandi-contrib/config-aws-ssm).
 
 ### DbQueryable
 
