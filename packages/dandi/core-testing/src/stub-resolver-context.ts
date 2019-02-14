@@ -29,9 +29,9 @@ export class StubResolverContext<T> extends ResolverContext<T> {
       return result
     }
 
-    if (isConstructor(this.target)) {
+    if (isConstructor(token)) {
       return {
-        entry: stubProvider(this.target as any) as RepositoryEntry<T>,
+        entry: stubProvider(token) as RepositoryEntry<T>,
         repo: { allowSingletons: false } as any,
       }
     }

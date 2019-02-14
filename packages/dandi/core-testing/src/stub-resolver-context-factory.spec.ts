@@ -3,7 +3,7 @@ import { stubHarness, stubHarnessSingle } from '@dandi/core-testing'
 
 import { expect } from 'chai'
 
-describe.only('StubResolverContextFactory (stubHarnessSingle)', () => {
+describe('StubResolverContextFactory (stubHarnessSingle)', () => {
 
   it('resolves missing dependencies with stub instances', async () => {
     class TestDep {
@@ -15,25 +15,40 @@ describe.only('StubResolverContextFactory (stubHarnessSingle)', () => {
     const harness = await stubHarnessSingle(TestHost)
     const host = await harness.inject(TestHost)
 
-    expect(host.dep).not.to.be.undefined
+    expect(host.dep).to.be.instanceof(TestDep)
   })
 
 })
 
-describe.only('StubResolverContextFactory (stubHarness)', () => {
+describe('StubResolverContextFactory (stubHarness)', () => {
 
-  class TestDep {
+  class TestDepA {
+  }
+  class TestDepB {
   }
   @Injectable()
   class TestHost {
-    constructor(@Inject(TestDep) public dep: TestDep) {}
+    constructor(@Inject(TestDepA) public depA: TestDepA, @Inject(TestDepB) public depB: TestDepB) {}
   }
   const harness = stubHarness(TestHost)
 
   it('resolves missing dependencies with stub instances', async () => {
     const host = await harness.inject(TestHost)
 
-    expect(host.dep).not.to.be.undefined
+    expect(host.depA).to.be.instanceof(TestDepA)
+  })
+
+  it('continues working on a subsequent test', async () => {
+    const host = await harness.inject(TestHost)
+
+    expect(host.depA).to.be.instanceof(TestDepA)
+  })
+
+  it('injects the correct dependencies', async () => {
+    const host = await harness.inject(TestHost)
+
+    expect(host.depA).to.be.instanceof(TestDepA)
+    expect(host.depB).to.be.instanceof(TestDepB)
   })
 
 })
