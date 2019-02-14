@@ -1,7 +1,7 @@
 {
   "name": "dandi",
   "private": true,
-  "version": "1.0.0-alpha.34",
+  "version": "1.0.0-alpha.35",
   "description": "",
   "scripts": {
     "install-packages": "builder npm install",
