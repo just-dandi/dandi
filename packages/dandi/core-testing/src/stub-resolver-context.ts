@@ -1,5 +1,13 @@
 import { isConstructor } from '@dandi/common'
-import { InjectionContext, InjectionToken, Provider, Repository, RepositoryEntry, ResolverContext } from '@dandi/core'
+import {
+  FindCacheEntry,
+  InjectionContext,
+  InjectionToken,
+  Provider,
+  Repository,
+  RepositoryEntry,
+  ResolverContext,
+} from '@dandi/core'
 
 import { stubProvider } from './stub-provider'
 
@@ -15,18 +23,28 @@ export class StubResolverContext<T> extends ResolverContext<T> {
     super(target, repositories, parent, context, providers)
   }
 
-  public get match(): RepositoryEntry<T> {
-    const result = super.match
+  protected doFind<T>(token: InjectionToken<T>): FindCacheEntry<T> {
+    const result = super.doFind(token)
     if (result) {
       return result
     }
 
     if (isConstructor(this.target)) {
-      return stubProvider(this.target) as RepositoryEntry<T>
+      return {
+        entry: stubProvider(this.target as any) as RepositoryEntry<T>,
+        repo: { allowSingletons: false } as any,
+      }
     }
 
     return result
 
+  }
+
+  protected findSingletonRepo(fromRepo: Repository): Repository {
+    const baseResult = super.findSingletonRepo(fromRepo)
+    if (baseResult) {
+      return baseResult
+    }
   }
 
 }

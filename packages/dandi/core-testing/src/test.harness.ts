@@ -122,7 +122,7 @@ export class TestHarness implements TestResolver {
 
   public async inject<T>(token: InjectionToken<T>, optional?: boolean, ...repositories: Repository[]): Promise<T> {
     return await Disposable.use(await this.resolve<T>(token, optional, ...repositories), (result) => {
-      return result.value as T
+      return result && result.value as T || undefined
     })
   }
 

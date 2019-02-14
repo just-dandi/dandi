@@ -156,13 +156,13 @@ declare const resolver: Resolver;
 
 function doSomething(@Inject(MyService) myService: MyService): void {}
 
-resolver.invoke(null, doSomething); // returns a Promise
+resolver.invoke(undefined, doSomething); // returns a Promise
 ```
 
 ### Optional Dependencies
 
 Dependencies can be marked as option using the `@Optional()` decorator.
-Optional dependencies that cannot be resolved will be passed as `null`.
+Optional dependencies that cannot be resolved will be passed as `undefined`.
 
 ```typescript
 class MyService {

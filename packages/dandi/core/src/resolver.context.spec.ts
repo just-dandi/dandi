@@ -124,7 +124,7 @@ describe('ResolverContext', () => {
 
   describe('match', () => {
     it('returns null if no token is found', () => {
-      expect(new ResolverContext(new SymbolToken('test'), [], null, null).match).to.be.null
+      expect(new ResolverContext(new SymbolToken('test'), [], null, null).match).to.be.undefined
     })
 
     it('returns the entry if one is found', () => {

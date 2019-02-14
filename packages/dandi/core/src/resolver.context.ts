@@ -81,7 +81,7 @@ export class ResolverContext<T> implements Disposable {
   public find<T, TResult>(token: InjectionToken<T>, exec?: FindExecFn<T, TResult>): TResult | RepositoryEntry<T> {
     const result = this.cachedFind(token)
     if (!result) {
-      return null
+      return undefined
     }
     if (exec) {
       return exec(result.repo, result.entry as RepositoryEntry<T>)
@@ -165,7 +165,7 @@ export class ResolverContext<T> implements Disposable {
       return this.parent.cachedFind(token)
     }
 
-    return null
+    return undefined
   }
 
   protected cachedFind<T>(token: InjectionToken<T>): FindCacheEntry<T> {
@@ -179,7 +179,11 @@ export class ResolverContext<T> implements Disposable {
     return cacheEntry as FindCacheEntry<T>
   }
 
-  private findSingletonRepo(fromRepo: Repository): Repository {
+  // FIXME: this seem really arbitrary
+  // singletons should be stored in the repo their provider is defined in
+  // if that repo does not allow singletons, use the container's repo
+  // the current implementation will usually end up with that same result, but it should be more clearly and efficiently codified
+  protected findSingletonRepo(fromRepo: Repository): Repository {
     if (this.parent) {
       const fromParent = this.parent.findSingletonRepo(fromRepo)
       if (fromParent) {
