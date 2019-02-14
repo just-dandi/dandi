@@ -11,6 +11,8 @@ import {
 
 import { stubProvider } from './stub-provider'
 
+const stubProviders = new Map<InjectionToken<any>, RepositoryEntry<any>>()
+
 export class StubResolverContext<T> extends ResolverContext<T> {
 
   constructor(
@@ -30,8 +32,13 @@ export class StubResolverContext<T> extends ResolverContext<T> {
     }
 
     if (isConstructor(token)) {
+      let provider = stubProviders.get(token)
+      if (!provider) {
+        provider = stubProvider(token)
+        stubProviders.set(token, provider)
+      }
       return {
-        entry: stubProvider(token) as RepositoryEntry<T>,
+        entry: provider,
         repo: { allowSingletons: false } as any,
       }
     }

@@ -51,4 +51,12 @@ describe('StubResolverContextFactory (stubHarness)', () => {
     expect(host.depB).to.be.instanceof(TestDepB)
   })
 
+  it('injects the same stub instance', async () => {
+    const host = await harness.inject(TestHost)
+    const dep = await harness.injectStub(TestDepA)
+
+    expect(host.depA).to.equal(dep)
+
+  })
+
 })
