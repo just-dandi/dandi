@@ -19,13 +19,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dandi-mvc/dandi.git"
+    "url": "git+https://github.com/just-dandi/dandi.git"
   },
   "author": "Daniel Schaffer <dan@dandoes.net>",
   "bugs": {
-    "url": "https://github.com/dandi-mvc/dandi/issues"
+    "url": "https://github.com/just-dandi/dandi/issues"
   },
-  "homepage": "https://github.com/dandi-mvc/dandi#readme",
+  "homepage": "https://github.com/just-dandi/dandi#readme",
   "license": "MIT",
   "devDependencies": {
     "@dandi/builder": "file:builder",

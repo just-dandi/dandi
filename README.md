@@ -1,10 +1,10 @@
 # @dandi
 
-![](https://img.shields.io/github/release-pre/dandi-mvc/dandi.svg)
-[![Build Status](https://travis-ci.org/dandi-mvc/dandi.svg?branch=master)](https://travis-ci.org/dandi-mvc/dandi)
-[![Coverage Status](https://coveralls.io/repos/github/dandi-mvc/dandi/badge.svg)](https://coveralls.io/github/dandi-mvc/dandi)
+![](https://img.shields.io/github/release-pre/just-dandi/dandi.svg)
+[![Build Status](https://travis-ci.org/just-dandi/dandi.svg?branch=master)](https://travis-ci.org/just-dandi/dandi)
+[![Coverage Status](https://coveralls.io/repos/github/just-dandi/dandi/badge.svg)](https://coveralls.io/github/just-dandi/dandi)
 [![License: MIT](https://img.shields.io/badge/license-MIT-green.svg)](https://opensource.org/licenses/MIT)
-![](https://img.shields.io/snyk/vulnerabilities/github/dandi-mvc/dandi.svg)
+![](https://img.shields.io/snyk/vulnerabilities/github/just-dandi/dandi.svg)
 
 Dandi is a modular DI and MVC framework designed to make it easier to write
 RESTful APIs and other services for NodeJS. It is split into modules to
