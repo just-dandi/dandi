@@ -1,6 +1,6 @@
 import * as util from 'util'
 
-import { Disposable } from '@dandi/common'
+import { Disposable, Constructor } from '@dandi/common'
 
 import { InjectionContext } from './injection.context'
 import { getInjectionContext, getInjectionContextName } from './injection.context.util'
@@ -40,23 +40,14 @@ export class ResolverContext<T> implements Disposable {
     return this.parent.context || getInjectionContext(this.parent.match as any) || this.context
   }
 
-  public static create<T>(
-    token: InjectionToken<T>,
-    context?: InjectionContext,
-    ...repositories: Repository[]
-  ): ResolverContext<T> {
-    repositories.reverse()
-    return new ResolverContext(token, repositories, null, context)
-  }
+  private readonly children: Array<ResolverContext<any>> = [];
+  private readonly instances: any[] = [];
+  private readonly findCache = new Map<InjectionToken<any>, FindCacheEntry<any>>();
+  private readonly contextRepository: Repository;
 
-  private readonly children: Array<ResolverContext<any>> = []
-  private readonly instances: any[] = []
-  private readonly findCache = new Map<InjectionToken<any>, FindCacheEntry<any>>()
-  private readonly contextRepository: Repository
+  private _match: RepositoryEntry<T>;
 
-  private _match: RepositoryEntry<T>
-
-  private _result: ResolveResult<T>
+  private _result: ResolveResult<T>;
 
   public constructor(
     public readonly target: InjectionToken<T>,
@@ -145,7 +136,7 @@ export class ResolverContext<T> implements Disposable {
     const providers = providersOrRepositories.filter(isProvider)
     const repositories = providersOrRepositories.filter((entry) => entry instanceof Repository) as Repository[]
 
-    const cloned = new ResolverContext(token, repositories, this, context, providers)
+    const cloned = new (this.constructor as Constructor<ResolverContext<T>>)(token, repositories, this, context, providers)
     this.children.push(cloned)
     return cloned
   }

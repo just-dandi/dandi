@@ -19,6 +19,7 @@ import { Repository } from './repository'
 import { ResolveResult } from './resolve.result'
 import { Resolver } from './resolver'
 import { ResolverContext } from './resolver.context'
+import { ResolverContextFactory } from './resolver-context-factory'
 import { Scanner } from './scanner'
 import { GeneratingProvider, Provider } from './provider'
 import {
@@ -55,6 +56,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
   private started: boolean = false
   private singletonRequests = new Map<Provider<any>, Promise<any>>()
   private scannedRepositories: Repository[] = []
+  private resolverContextFactory: ResolverContextFactory
 
   constructor(options: Options<TConfig> = {}, defaults?: Options<TConfig>) {
     this.config = Object.assign({} as TConfig, defaults, options)
@@ -63,7 +65,8 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     if (!this.config.providers) {
       this.config.providers = []
     }
-    this.config.providers.unshift(NativeNow, NoopLogger)
+    this.config.providers.unshift(NativeNow, NoopLogger, ResolverContextFactory)
+    this.resolverContextFactory = new ResolverContextFactory()
   }
 
   public async start(ts?: number): Promise<any> {
@@ -95,7 +98,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
 
     const resolveContext = context
       ? context.childContext(token, null, ...repositories)
-      : ResolverContext.create<T>(token, null, ...this.repositories, ...repositories)
+      : this.resolverContextFactory.create<T>(token, null, ...this.repositories, ...repositories)
     try {
       const result = await this.resolveInternal(token, optional, resolveContext)
       if (result === undefined) {
@@ -138,7 +141,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     const meta = getInjectableMetadata(member)
     const resolveContext = context
       ? context.childContext(null, injectionContext, ...repositories)
-      : ResolverContext.create(null, injectionContext, ...repositories)
+      : this.resolverContextFactory.create(null, injectionContext, ...repositories)
     return Disposable.useAsync(resolveContext, async (context) => {
       const args = meta.params
         ? await Promise.all(meta.params.map((param) => this.resolveParam(param, param.token, param.optional, context)))
@@ -215,11 +218,16 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     // can't log before now because nothing will pick it up - log listener subscriptions happen in OnStartupInternal
     logger.debug(`application initializing after ${now() - this.startTs}ms`)
 
+    await this.invoke(this, this.initResolverContextFactory)
     await this.invoke(this, this.scan)
 
     await this.onInit()
 
     logger.debug(`application initialized after ${now() - this.startTs}ms`)
+  }
+
+  private async initResolverContextFactory(@Inject(ResolverContextFactory) resolverContextFactory: ResolverContextFactory) {
+    this.resolverContextFactory = resolverContextFactory
   }
 
   private async scan(

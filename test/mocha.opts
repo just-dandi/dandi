@@ -12,6 +12,8 @@ packages/dandi/core/logging/index.ts
 packages/dandi/core/logging/**/*.spec.ts
 packages/dandi/core-node/index.ts
 packages/dandi/core-node/src/**/*.spec.ts
+packages/dandi/core-testing/index.ts
+packages/dandi/core-testing/src/**/*.spec.ts
 packages/dandi/cache/index.ts
 packages/dandi/cache/src/**/*.spec.ts
 packages/dandi/data/index.ts

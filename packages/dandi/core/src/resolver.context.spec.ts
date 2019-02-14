@@ -59,7 +59,7 @@ describe('ResolverContext', () => {
     })
     parentRepo1.register(parentProvider1)
     parentRepo2.register(parentProvider2)
-    parentContext = ResolverContext.create(parentToken1, null, parentRepo1, parentRepo2)
+    parentContext = new ResolverContext(parentToken1, [parentRepo2, parentRepo1], null, context)
     childContext = parentContext.childContext(childToken1, null, childProvider1, childProvider2)
   })
 
@@ -124,7 +124,7 @@ describe('ResolverContext', () => {
 
   describe('match', () => {
     it('returns null if no token is found', () => {
-      expect(ResolverContext.create(new SymbolToken('test')).match).to.be.null
+      expect(new ResolverContext(new SymbolToken('test'), [], null, null).match).to.be.null
     })
 
     it('returns the entry if one is found', () => {

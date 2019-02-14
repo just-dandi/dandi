@@ -20,7 +20,7 @@ describe('DefaultRouteHandler', () => {
   beforeEach(async () => {
     container = new Container()
     await container.start()
-    resolverContext = ResolverContext.create(null)
+    resolverContext = new ResolverContext(null, [], null, null)
     handler = new DefaultRouteHandler(container, new NoopLogger())
     route = {
       controllerCtr: class TestClass {},

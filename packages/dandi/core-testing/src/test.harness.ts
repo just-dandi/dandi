@@ -1,18 +1,10 @@
-import { Constructor, Disposable } from '@dandi/common'
-import { Container, InjectionToken, Provider, Repository, ResolveResult, Resolver, ResolverContext } from '@dandi/core'
-import { SinonStub, SinonStubbedInstance, createStubInstance, stub } from 'sinon'
+import { Disposable } from '@dandi/common'
+import { Container, InjectionToken, Repository, ResolveResult, Resolver, ResolverContext } from '@dandi/core'
+
+import { SinonStub, SinonStubbedInstance, stub } from 'sinon'
 import { expect } from 'chai'
 
-export function stubProvider<TService extends TToken, TToken = TService>(
-  service: Constructor<TService>,
-  token?: InjectionToken<TToken>,
-): Provider<TToken> {
-  return {
-    provide: token || service,
-    useFactory: () => createStubInstance(service) as any,
-    singleton: true,
-  }
-}
+import { StubResolverContextFactory } from './stub-resolver-context-factory'
 
 export interface TestResolver extends Resolver {
   readonly container: Container;
@@ -73,7 +65,10 @@ export class TestHarness implements TestResolver {
     return Repository.global
   }
 
-  constructor(providers: any[], suite: boolean = true) {
+  constructor(providers: any[], suite: boolean = true, stubMissing: boolean = false) {
+    if (stubMissing) {
+      providers.push(StubResolverContextFactory)
+    }
     if (suite) {
       beforeEach(async () => {
         this._container = new Container({ providers })
@@ -144,8 +139,18 @@ export function testHarness(...providers: any[]): TestResolver {
   return new TestHarness(providers)
 }
 
+export function stubHarness(...providers: any[]): TestResolver {
+  return new TestHarness(providers, true, true)
+}
+
 export async function testHarnessSingle(...providers: any[]): Promise<TestResolver> {
   const harness = new TestHarness(providers, false)
+  await harness.container.start()
+  return harness
+}
+
+export async function stubHarnessSingle(...providers: any[]): Promise<TestResolver> {
+  const harness = new TestHarness(providers, false, true)
   await harness.container.start()
   return harness
 }
