@@ -15,9 +15,6 @@ DI system.
 - **Injection Token** - A value that represents an injectable dependency.
   Can be a class constructor, or a `Symbol` value representing an
   interface or any other concept.
-  
-## Application Lifecycle
-- TODO
 
 ## Describing Injectable Services
 
@@ -127,23 +124,23 @@ Use the `@Inject()` decorator to describe dependencies in a constructor:
 @Injectable()
 class ServiceA {
 
-    public getSomething(): Promise<Something> {
-        ...
-    }
+  public getSomething(): Promise<Something> {
+    ...
+  }
 
 }
 
 @Injectable()
 class ServiceB {
 
-    constructor(
-        @Inject(ServiceA) private serviceA: ServiceA,
-    ) {}
+  constructor(
+    @Inject(ServiceA) private serviceA: ServiceA,
+  ) {}
 
-    public async doSomething(): Promise<void> {
-        const something = await this.serviceA.getSomething();
-        console.log(something);
-    }
+  public async doSomething(): Promise<void> {
+    const something = await this.serviceA.getSomething();
+    console.log(something);
+  }
 
 }
 ```
@@ -186,10 +183,10 @@ the container at startup:
 import { Container } from '@dandi/core';
 
 const appContainer = new Container({
-    providers: [
-        MyService,
-        MyInterfaceProvider,
-    ];
+  providers: [
+    MyService,
+    MyInterfaceProvider,
+  ],
 });
 ```
 
@@ -206,6 +203,13 @@ marked with `@Injectable()` that located in any module loaded by NodeJS.
 `AmbientInjectableScanner` to automatically load modules from paths
 defined in its configuration.
 
+## Application Lifecycle
+* `container.start()`
+* **Pre-Init** - Providers defined in container configuration are registered with the internal provider repository
+* **Init** - `ResolverContextFactory` is bound, scanners are run
+* **Config** - Provided implementations of `OnConfig` are invoked
+* **Bootstrap** - The `Bootstrapper` implementation, if provided, is instantiated and invoked
+
 ## Application Startup and Bootstrapping
 
 The container's `start()` method must be called to initialize the
@@ -215,10 +219,10 @@ container and start the application.
 import { Container } from '@dandi/core';
 
 const appContainer = new Container({
-    providers: [
-        MyService,
-        MyInterfaceProvider,
-    ],
+  providers: [
+    MyService,
+    MyInterfaceProvider,
+  ],
 });
 
 container.start();
@@ -233,23 +237,23 @@ import { Bootstrapper, Container, Inject, Injectable } from '@dandi/core';
 @Injectable(Bootstrapper)
 class AppBootstrapper implements Bootstrapper {
 
-    constructor(
-        @Inject(MyService) private myService: MyService,
-    ) {}
+  constructor(
+    @Inject(MyService) private myService: MyService,
+  ) {}
 
-    public start(): void {
-        // start the app
-        this.myService.listen();
-    }
+  public start(): void {
+    // start the app
+    this.myService.listen();
+  }
 
 }
 
 const appContainer = new Container({
-    providers: [
-        AppBootstrapper,
-        MyService,
-        MyInterfaceProvider,
-    ];
+  providers: [
+    AppBootstrapper,
+    MyService,
+    MyInterfaceProvider,
+  ],
 });
 
 container.start();

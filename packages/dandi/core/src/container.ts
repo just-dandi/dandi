@@ -150,8 +150,6 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     })
   }
 
-  protected async onInit(): Promise<void> {}
-
   protected async generate<T>(provider: GeneratingProvider<T>, context: ResolverContext<T>): Promise<T> {
     if (provider.providers) {
       context = context.childContext(provider.provide, context.context, ...provider.providers)
@@ -221,8 +219,6 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     await this.invoke(this, this.initResolverContextFactory)
     await this.invoke(this, this.scan)
 
-    await this.onInit()
-
     logger.debug(`application initialized after ${now() - this.startTs}ms`)
   }
 
@@ -256,7 +252,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
       logger.debug(`application configuring after ${now() - this.startTs}ms`)
     }
     if (configs) {
-      await Promise.all(configs.map(startup => startup()))
+      await Promise.all(configs.map(config => config()))
     }
     if (logger) {
       logger.debug(`application configured after ${now() - this.startTs}ms`)
