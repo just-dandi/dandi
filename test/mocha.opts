@@ -20,6 +20,8 @@ packages/dandi/data/index.ts
 packages/dandi/data/src/**/*.spec.ts
 packages/dandi/hal/index.ts
 packages/dandi/hal/src/**/*.spec.ts
+packages/dandi/logging/index.ts
+packages/dandi/logging/src/**/*.spec.ts
 packages/dandi/model/index.ts
 packages/dandi/model/src/**/*.spec.ts
 packages/dandi/model-builder/index.ts

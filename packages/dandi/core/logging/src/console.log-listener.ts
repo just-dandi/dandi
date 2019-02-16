@@ -52,8 +52,11 @@ export class ConsoleLogListener implements LogListener {
       return
     }
 
-    const hasModifiers = !!(entry.options && (entry.options.context || entry.options.level || entry.options.timestamp))
-    if (this.tagDisabled(this.config.tag, hasModifiers)) {
+    const modifiersDisabled = entry.options &&
+      entry.options.context === false &&
+      entry.options.level === false &&
+      entry.options.timestamp === false
+    if (this.tagDisabled(this.config.tag, modifiersDisabled ? false : undefined)) {
       return console[entry.level](...entry.args)
     }
 
@@ -106,14 +109,7 @@ export class ConsoleLogListener implements LogListener {
   }
 
   private tagDisabled(configValue: any, entryValue: boolean): boolean {
-    // tags are used by default, unless explicitly disabled by configuration
-    let tagDisabled = configValue === false
-
-    // configuration can be explicitly overridden on a per-entry basis
-    if (typeof entryValue === 'boolean') {
-      tagDisabled = tagDisabled && entryValue
-    }
-    return tagDisabled
+    return entryValue === false || configValue === false
   }
 
   private getTagInfo(options: ConsoleLogListenerOptions, entryInfo: ConsoleLogListenerEntryInfo): LogEntryTagInfo {

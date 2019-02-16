@@ -19,7 +19,7 @@ export class App implements Bootstrapper {
     await this.fakeWork(50)
     this.logger.warn('Hey maybe look into this okay')
     this.logger.error('Okay stop everything, something is wrong')
-    this.logger.error.noTags(new Error('FIXME'))
+    this.logger.error(new Error('FIXME'))
   }
 
   private fakeWork(timeout: number): Promise<void> {

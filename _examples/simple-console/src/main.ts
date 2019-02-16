@@ -1,6 +1,6 @@
 import { AmbientInjectableScanner, Container } from '@dandi/core'
 import { ConsoleLogListener, consoleLogListenerConfigProvider, LoggingModule } from '@dandi/core/logging'
-import { PrettyColorsLogging } from '@dandi/core-node/logging'
+import { PrettyColorsLogging } from '@dandi/logging'
 
 import { App } from './app'
 import { appConfigProvider } from './app-options'

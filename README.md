@@ -7,7 +7,7 @@
 ![](https://img.shields.io/snyk/vulnerabilities/github/just-dandi/dandi.svg)
 
 Dandi is a modular DI and MVC framework designed to make it easier to write
-RESTful APIs and other services for NodeJS. It is split into modules to
+RESTful APIs, console applications,  and other services for NodeJS. It is split into modules to
 allow developers to use only the features they require.
 
 ## Features
