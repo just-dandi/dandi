@@ -3,11 +3,16 @@
   "dependencies": {
     "fs-extra": "^7.0.1"
   },
-  "devDependencies": {
-    "@types/fs-extra": "^5.0.4"
-  },
   "peerDependencies": {
     "@dandi/common": "*",
-    "@dandi/core": "*"
+    "@dandi/core": "*",
+    "colors": "^1.3.0"
+  },
+  "optionalDependencies": {
+    "colors": "^1.3.0"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^5.0.4",
+    "colors": "^1.3.3"
   }
 }

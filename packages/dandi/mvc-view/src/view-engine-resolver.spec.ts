@@ -1,4 +1,5 @@
-import { Container, NoopLogger } from '@dandi/core'
+import { Container } from '@dandi/core'
+import { LoggerFixture } from '@dandi/core-testing'
 import { ViewEngineResolver } from '@dandi/mvc-view'
 
 import { expect } from 'chai'
@@ -7,7 +8,7 @@ import { createStubInstance } from 'sinon'
 describe('ViewEngineResolver', function() {
   beforeEach(function() {
     this.exists = this.sandbox.stub(ViewEngineResolver as any, 'exists')
-    this.logger = createStubInstance(NoopLogger)
+    this.logger = new LoggerFixture()
     this.configA = {
       engine: class EngineA {},
       priority: 3,
@@ -58,7 +59,7 @@ describe('ViewEngineResolver', function() {
       ])
     })
 
-    it('it logs warning when encountering configurations with duplicate extensions, and marks the config as ignored', function() {
+    it('it logs a warning when encountering configurations with duplicate extensions, and marks the config as ignored', function() {
       expect(this.logger.warn).to.have.been.calledWithExactly(
         `ignoring duplicate view engine configuration for extension 'e' (EngineE)`,
       )

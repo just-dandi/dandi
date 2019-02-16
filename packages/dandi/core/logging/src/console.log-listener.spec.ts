@@ -1,16 +1,17 @@
-import { InjectionContext, LogLevel } from '@dandi/core'
+import { InjectionContext, LogCallOptions, LogLevel } from '@dandi/core'
 import { ConsoleLogListener, LogEntry } from '@dandi/core/logging'
 
 import { expect } from 'chai'
 
 describe('ConsoleLogListener', function() {
 
-  function entry(level: LogLevel, context?: InjectionContext, ts?: number): (...args: any[]) => LogEntry {
+  function entry(level: LogLevel, context?: InjectionContext, ts?: number, options: LogCallOptions = {}): (...args: any[]) => LogEntry {
     return (...args: any[]) => ({
       level,
       context,
       ts,
       args,
+      options,
     })
   }
 
@@ -42,24 +43,33 @@ describe('ConsoleLogListener', function() {
       expect(console.error).to.have.been.calledOnce
     })
 
-    it('correctly formats the log entry data', function() {
-      const ts = new Date().valueOf()
-      this.logger.log(entry(LogLevel.info, 'test', ts)('eyyy'))
-      expect(console.info).to.have.been
-        .calledOnce
-        .calledWithExactly(`[${ts} test]`, 'eyyy')
-    })
+    describe('with context', function() {
 
-    it('pads the context tag from the remaining arguments for increasingly long context tags', function() {
-      const ts = new Date().valueOf()
+      beforeEach(function() {
+        this.logger = new ConsoleLogListener({
+          contextTag: true,
+        })
+      })
 
-      this.logger.log(entry(LogLevel.info, 'aaaa', ts)('eyyy'))
-      expect(console.info).to.have.been.calledWithExactly(`[${ts} aaaa]`, 'eyyy')
-      this.info.reset()
+      it('correctly formats the log entry data', function() {
+        const ts = new Date().valueOf()
+        this.logger.log(entry(LogLevel.info, 'test', ts)('eyyy'))
+        expect(console.info).to.have.been
+          .calledOnce
+          .calledWithExactly(`[INFO  ${ts} test]`, 'eyyy')
+      })
 
-      this.logger.log(entry(LogLevel.info, 'a', ts)('eyyy'))
-      expect(console.info).to.have.been.calledWithExactly(`[${ts} a]   `, 'eyyy')
+      it('pads the context tag from the remaining arguments for increasingly long context tags', function() {
+        const ts = new Date().valueOf()
 
+        this.logger.log(entry(LogLevel.info, 'aaaa', ts)('eyyy'))
+        expect(console.info).to.have.been.calledWithExactly(`[INFO  ${ts} aaaa]`, 'eyyy')
+        this.info.reset()
+
+        this.logger.log(entry(LogLevel.info, 'a', ts)('eyyy'))
+        expect(console.info).to.have.been.calledWithExactly(`[INFO  ${ts} a]   `, 'eyyy')
+
+      })
     })
   })
 })

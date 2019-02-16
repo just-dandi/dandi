@@ -13,11 +13,11 @@ describe('ContextualLogger', function() {
     this.logger = new ContextualLogger(this.stream, 'test', this.now)
   })
 
-  describe('#log', function() {
+  describe('#info', function() {
 
     it('calls next() on the LogStream instance with a LogEntry object', function() {
 
-      this.logger.log(LogLevel.info, 'test message')
+      this.logger.info('test message')
 
       expect(this.stream.next).to.have.been
         .calledOnce
@@ -26,6 +26,7 @@ describe('ContextualLogger', function() {
           ts: this.ts,
           context: 'test',
           args: ['test message'],
+          options: {},
         })
 
     })

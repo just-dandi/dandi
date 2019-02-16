@@ -71,9 +71,9 @@ export function getParamNames<T>(target: Function, memberName?: string): string[
   if (sigStr.indexOf('...') >= 0) {
     throw new UnsupportedParamTypeError('Rest parameters are not supported', target)
   }
-  if (sigStr.indexOf('=') >= 0) {
-    throw new UnsupportedParamTypeError('Default values are not supported', target)
-  }
+  // if (sigStr.indexOf('=') >= 0) {
+  //   throw new UnsupportedParamTypeError('Default values are not supported', target)
+  // }
 
   if (sigStr === '()') {
     return storeResult(cacheKey, [])
