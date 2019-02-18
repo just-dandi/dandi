@@ -21,12 +21,33 @@ describe('ConsoleLogListener', function() {
     this.info = this.sandbox.stub(console, 'info')
     this.warn = this.sandbox.stub(console, 'warn')
     this.error = this.sandbox.stub(console, 'error')
-    this.logger = new ConsoleLogListener()
+    this.config = {}
+    this.logger = new ConsoleLogListener(this.config)
   })
 
   describe('log', function() {
+
+    it('does not log filtered levels', function() {
+      this.config.filter = LogLevel.warn
+      this.logger.log({ level: LogLevel.debug, args: ['test'] })
+      expect(console.debug).not.to.have.been.called
+    })
+
     it('calls the debug method for debug level entries', function() {
       this.logger.log(entry(LogLevel.debug)('debug!'))
+      expect(console.debug).to.have.been.calledOnce
+    })
+
+    it('short-circuits the tagging logic if the entry metadata disabled all tags', function() {
+      this.sandbox.stub(this.logger, 'getContextName')
+
+      this.logger.log({ level: LogLevel.debug, args: ['test'], options: { context: false, level: false, timestamp: false }})
+
+      expect(this.logger.getContextName).not.to.have.been.called
+      expect(console.debug).to.have.been
+        .calledOnce
+        .calledWithExactly('test')
+
     })
 
     it('calls the info method for info level entries', function() {

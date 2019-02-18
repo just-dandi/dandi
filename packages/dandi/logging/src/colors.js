@@ -1,9 +1,10 @@
 try {
   const colors = require('colors/safe')
   Object.defineProperty(colors, '__loaded', {
-    value: true,
-    configurable: false,
-    writable: false,
+    get() {
+      return true
+    },
+    configurable: true,
   })
   module.exports = colors
 } catch (err) {
@@ -13,4 +14,5 @@ try {
     configurable: false,
     writable: false,
   })
+  module.exports = colors
 }

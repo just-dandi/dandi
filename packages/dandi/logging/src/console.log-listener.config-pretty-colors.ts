@@ -10,17 +10,18 @@ import { ColorsNotLoadedError } from './colors-not-loaded-error'
 
 import * as colors from './colors'
 
-let initColors = function() {
-  colors.setTheme({
-    debug: 'cyan',
-    info: 'grey',
-    warn: 'yellow',
-    error: 'red',
-  })
-  initColors = () => {}
+export function initColors(): void {
+  if (!colors['debug']) {
+    colors.setTheme({
+      debug: 'cyan',
+      info: 'grey',
+      warn: 'yellow',
+      error: 'red',
+    })
+  }
 }
 
-function checkColors() {
+function checkColors(): void {
   if (!colors.__loaded) {
     throw new ColorsNotLoadedError()
   }

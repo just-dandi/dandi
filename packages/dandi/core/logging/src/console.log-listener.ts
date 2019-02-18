@@ -43,7 +43,6 @@ export class ConsoleLogListener implements LogListener {
 
   constructor(@Inject(ConsoleLogListenerConfig) @Optional() private config: ConsoleLogListenerConfig = DEFAULT_CONFIG) {
     this.longestAllowedLevelTag = this.getLongestAllowedLevelTag()
-    console.log('longestAllowedLevelTag', this.longestAllowedLevelTag)
   }
 
   public log(entry: LogEntry): void {

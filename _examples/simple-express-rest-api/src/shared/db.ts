@@ -12,9 +12,7 @@ function delayedDo(fn: () => any): Promise<any> {
 export class Db {
   private storage: Map<string, any> = new Map<string, any>();
 
-  constructor() {
-    console.log('new db')
-  }
+  constructor() {}
 
   public set(key: string, value: any): Promise<any> {
     return delayedDo(() => {
