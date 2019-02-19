@@ -7,9 +7,5 @@
   },
   "optionalDependencies": {
     "colors": "^1.3.0"
-  },
-  "devDependencies": {
-    "@types/colors": "^1.2.1",
-    "colors": "^1.3.3"
   }
 }
