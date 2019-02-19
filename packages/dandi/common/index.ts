@@ -1,5 +1,6 @@
 export * from './src/app.error'
 export * from './src/call-site'
+export * from './src/clone'
 export * from './src/constructor'
 export * from './src/currency'
 export * from './src/disposable'

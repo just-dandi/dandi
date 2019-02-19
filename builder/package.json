@@ -1,6 +1,9 @@
 {
   "name": "@dandi/builder",
   "version": "0.0.1",
+  "scripts": {
+    "build": "tsc --outDir dist"
+  },
   "dependencies": {
     "commander": "^2.19.0",
     "fs-extra": "^7.0.1",
@@ -11,7 +14,10 @@
   },
   "main": "builder.ts",
   "peerDependencies": {
-    "typescript": "^3.2.2"
+    "typescript": "^3.2.2",
+    "@dandi/core": "*",
+    "@dandi/common": "*",
+    "@dandi/logging": "*"
   },
   "devDependencies": {
     "@types/commander": "^2.12.2",

@@ -85,11 +85,13 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   }
 
   public async discoverPackages(): Promise<PackageInfo[]> {
+    this.logger.debug('discoverPackages')
     this._packages = this.scopes ? await this.findScopedPackages(this.packagesPath, this.scopes) : await this.findPackages(this.packagesPath)
     return this._packages
   }
 
   public async updateConfigs(packages?: PackageInfo[]): Promise<void> {
+    this.logger.debug('updateConfigs', packages)
     this.logger.info('Discovering packages and updating configurations...')
     if (!packages || !packages.length) {
       packages = await this.discoverPackages()
@@ -104,6 +106,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   }
 
   public async updateProjectTsConfig(): Promise<void> {
+    this.logger.debug('updateProjectTsConfig')
     if (this.scopes) {
       this.tsConfig.compilerOptions.baseUrl = '.'
       this.tsConfig.compilerOptions.paths = this.scopes.reduce((result, scope) => {
@@ -115,6 +118,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   }
 
   public async updateProjectBuildTsConfig(packages: PackageInfo[]): Promise<void> {
+    this.logger.debug('updateProjectBuildTsConfig', packages)
 
     const buildTsExtends = relative(this.projectPath, this.baseTsConfigPath)
     const buildTsExtendsPrefix = buildTsExtends.match(/^(?:\.?\/)/) ? '' : './'
@@ -143,6 +147,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   }
 
   public async updateProjectPackageBaseTsConfig(): Promise<void> {
+    this.logger.debug('updateProjectPackageBaseTsConfig')
 
     const baseTsExtends = relative(this.projectPath, this.tsConfigPath)
     const baseTsExtendsPrefix = baseTsExtends.match(/^(?:\.?\/)/) ? '' : './'
@@ -158,6 +163,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   }
 
   public async updatePackageConfigs(packages: PackageInfo[]): Promise<void> {
+    this.logger.debug('updatePackageConfigs', packages)
     await Promise.all(packages.map(info => Promise.all([
       this.updatePackageTsConfig(info),
       this.updatePackageBuildConfig(info),
@@ -165,6 +171,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   }
 
   public async npmCommand(args: string[], packages?: PackageInfo[]): Promise<void> {
+    this.logger.debug('npmCommand', ...args, packages)
     if (!packages) {
       packages = await this.discoverPackages()
     }
@@ -173,6 +180,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   }
 
   public async npmOutdated(): Promise<void> {
+    this.logger.debug('npmOutdated')
     const packages = await this.discoverPackages()
     const outdated = await Promise.all(packages.map(async info => {
       return {

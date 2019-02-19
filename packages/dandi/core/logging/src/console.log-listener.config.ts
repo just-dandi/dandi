@@ -1,4 +1,5 @@
-import { LogCallOptions, LogLevel, Provider } from '@dandi/core'
+import { cloneObject } from '@dandi/common'
+import { LogCallOptions, LogLevel, ValueProvider } from '@dandi/core'
 import { DateTimeFormatOptions } from 'luxon'
 
 import { localOpinionatedToken } from './local.token'
@@ -51,9 +52,31 @@ export const ConsoleLogListenerConfig = localOpinionatedToken('ConsoleLogListene
   multi: false,
 })
 
-export function consoleLogListenerConfigProvider(config: ConsoleLogListenerConfig): Provider<ConsoleLogListenerConfig> {
-  return {
-    provide: ConsoleLogListenerConfig,
-    useValue: config,
+export function consoleLogListenerConfigProvider(config: ConsoleLogListenerConfig): ConsoleLogListenerConfigProvider {
+  return new ConsoleLogListenerConfigProvider(config)
+}
+
+export class ConsoleLogListenerConfigProvider implements ValueProvider<ConsoleLogListenerConfig> {
+
+  private readonly config: ConsoleLogListenerConfig
+
+  public readonly provide = ConsoleLogListenerConfig
+
+  public get useValue(): ConsoleLogListenerConfig {
+    return this.config
   }
+
+  constructor(config: ConsoleLogListenerConfig) {
+    this.config = cloneObject(config)
+  }
+
+  public set(config: ConsoleLogListenerConfig): this {
+    Object.assign(this.config, config)
+    return this
+  }
+
+  public clone(): ConsoleLogListenerConfigProvider {
+    return new ConsoleLogListenerConfigProvider(this.config)
+  }
+
 }

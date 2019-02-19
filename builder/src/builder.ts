@@ -23,6 +23,7 @@ export class Builder {
     await this.project.updateConfigs(packages)
 
     try {
+      this.logger.debug('')
       await this.compile()
     } catch (err) {
       this.logger.error('compile failed', err)

@@ -21,21 +21,20 @@ export class CommandRunner<THost extends any> implements Bootstrapper {
   }
 
   private async doRun(): Promise<void> {
-    await this.run()
-    this.logger.info(`${this.actionName} complete.`)
-  }
-
-  private async run(): Promise<void> {
     try {
-      if (isActionName<THost>(this.host.constructor, this.actionName)) {
-        return await (<Action>this.host[this.actionName])(...this.info.args)
-      }
-      throw new Error('Invalid argument for actionOrActionName')
+      await this.run()
+      this.logger.info(`${this.actionName} complete.`)
     } catch (err) {
       this.logger.error(err.message, err.stack)
       process.exit(-1)
     }
+  }
 
+  private async run(): Promise<void> {
+    if (isActionName<THost>(this.host.constructor, this.actionName)) {
+      return await (<Action>this.host[this.actionName])(this.info.args)
+    }
+    throw new Error('Invalid argument for actionName')
   }
 
 }

@@ -1,10 +1,9 @@
-import { Provider } from '@dandi/core'
 import {
   ConsoleLogListenerConfig,
-  consoleLogListenerConfigProvider,
+  ConsoleLogListenerConfigProvider,
   ConsoleLogListenerEntryInfo,
   ConsoleLogListenerFormatter,
-  PRETTY_LOGGING_CONFIG,
+  PrettyLogging,
 } from '@dandi/core/logging'
 
 import { ColorsNotLoadedError } from './colors-not-loaded-error'
@@ -39,13 +38,13 @@ export const PRETTY_COLORS_LEVEL_TAG: ConsoleLogListenerFormatter = (entry: Cons
   return `[${colors[entry.level](entry.level.toLocaleUpperCase())}]`.padEnd(entry.levelTagHighWater, ' ')
 }
 
-export const PRETTY_COLORS_LOGGING_CONFIG: ConsoleLogListenerConfig = Object.assign({}, PRETTY_LOGGING_CONFIG, {
+export const PRETTY_COLORS_LOGGING_CONFIG: ConsoleLogListenerConfig = {
   contextTag: PRETTY_COLORS_CONTEXT_TAG,
   levelTag: PRETTY_COLORS_LEVEL_TAG,
   tag: {
     suffix: '',
     prefix: '',
   },
-})
+}
 
-export const PrettyColorsLogging: Provider<ConsoleLogListenerConfig> = consoleLogListenerConfigProvider(PRETTY_COLORS_LOGGING_CONFIG)
+export const PrettyColorsLogging: ConsoleLogListenerConfigProvider = PrettyLogging.clone().set(PRETTY_COLORS_LOGGING_CONFIG)

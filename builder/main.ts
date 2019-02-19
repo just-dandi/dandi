@@ -1,5 +1,7 @@
 #!/usr/bin/env ts-node
-import 'tsconfig-paths/register'
+const start = new Date().valueOf()
+
+require('tsconfig-paths/register')
 
 import * as program from 'commander'
 
@@ -10,40 +12,41 @@ import { CommandUtil } from './src/command-util'
 program
   .version(VERSION)
   .option('-c --config <configFile>', 'A path to the builder config file, relative to the working directory', BUILDER_PROJECT_DEFAULTS.configFile)
+  .option('--verbose', 'Enables verbose/debug level logging')
 
 program
   .command('update-configs')
   .description('Creates or updates tsconfig files for the root project and configured project packages')
-  .action(CommandUtil.projectAction('updateConfigs'))
+  .action(CommandUtil.projectAction('updateConfigs', start))
 
 program
   .command('build')
   .description('Updates the config files (see update-configs), then builds the project')
-  .action(CommandUtil.builderAction('build'))
+  .action(CommandUtil.builderAction('build', start))
 
 program
   .command('publish')
   .description('Builds and then publishes all project packages')
-  .action(CommandUtil.publisherAction('publish'))
+  .action(CommandUtil.publisherAction('publish', start))
 
 program
   .command('unpublish [version]')
   .description('Unpublishes a specific version of all configured project packages. [version] defaults to the current version defined in the root project package.json')
-  .action(CommandUtil.publisherAction('unpublish'))
+  .action(CommandUtil.publisherAction('unpublish', start))
 
 program
   .command('deprecate <message> [version]')
   .description('Deprecates a specific version of all configured project packages. [version] defaults to the current version defined in the root project package.json')
-  .action(CommandUtil.publisherAction('deprecate'))
+  .action(CommandUtil.publisherAction('deprecate', start))
 
 program
   .command('npm <npm-command> [npm-command-args ...]')
   .description('Run an npm command on all configured packages')
-  .action(CommandUtil.projectAction('npmCommand'))
+  .action(CommandUtil.projectAction('npmCommand', start))
 
 program
   .command('outdated')
   .description('Displays data from npm outdated for all configured project packages')
-  .action(CommandUtil.projectAction('npmOutdated'))
+  .action(CommandUtil.projectAction('npmOutdated', start))
 
 program.parse(process.argv)

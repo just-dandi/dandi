@@ -1,7 +1,7 @@
 import { dirname, resolve } from 'path'
 
 import { Constructor } from '@dandi/common'
-import { AmbientInjectableScanner, Container } from '@dandi/core'
+import { AmbientInjectableScanner, Container, LogLevel } from '@dandi/core'
 import { ConsoleLogListener, LoggingModule } from '@dandi/core/logging'
 import { PrettyColorsLogging } from '@dandi/logging'
 
@@ -18,19 +18,19 @@ export type CommanderArgs = (string | Command)[]
 
 export class CommandUtil {
 
-  public static projectAction(actionName: keyof Actions<BuilderProject>): (...args: CommanderArgs) => Promise<void> {
-    return this.action(BuilderProject, actionName)
+  public static projectAction(actionName: keyof Actions<BuilderProject>, start: number): (...args: CommanderArgs) => Promise<void> {
+    return this.action(BuilderProject, actionName, start)
   }
 
-  public static builderAction(actionName: keyof Actions<Builder>): (...args: CommanderArgs) => Promise<void> {
-    return this.action(Builder, actionName)
+  public static builderAction(actionName: keyof Actions<Builder>, start: number): (...args: CommanderArgs) => Promise<void> {
+    return this.action(Builder, actionName, start)
   }
 
-  public static publisherAction(actionName: keyof Actions<Publisher>): (...args: CommanderArgs) => Promise<void> {
-    return this.action(Publisher, actionName)
+  public static publisherAction(actionName: keyof Actions<Publisher>, start: number): (...args: CommanderArgs) => Promise<void> {
+    return this.action(Publisher, actionName, start)
   }
 
-  private static action<THost>(hostType: Constructor<THost>, actionName: CommandAction<THost>):
+  private static action<THost>(hostType: Constructor<THost>, actionName: CommandAction<THost>, start: number):
     (...args: CommanderArgs) => Promise<void> {
     return async (...args: [string | Command]): Promise<void> => {
       const cmd = args.pop() as Command
@@ -46,7 +46,10 @@ export class CommandUtil {
         providers: [
           AmbientInjectableScanner,
           CommandRunner,
-          LoggingModule.use(ConsoleLogListener, PrettyColorsLogging),
+          LoggingModule.use(
+            ConsoleLogListener,
+            PrettyColorsLogging.set({ filter: cmd.parent.verbose ? LogLevel.debug : LogLevel.info }),
+          ),
           {
             provide: ActionHost,
             useClass: hostType,
@@ -65,7 +68,7 @@ export class CommandUtil {
           },
         ],
       })
-      await container.start()
+      await container.start(start)
     }
   }
 
