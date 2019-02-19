@@ -19,16 +19,16 @@ import { LogEntry } from './log-entry'
 import { LogLevelFilter, LogLevelValue } from './log-level-filter'
 import { LogListener } from './log-listener'
 import {
-  DefaultLogging,
   DEFAULT_CONTEXT_TAG,
   DEFAULT_LEVEL_TAG,
+  DEFAULT_LOGGING_CONFIG,
   DEFAULT_TIMESTAMP_FORMATTER,
 } from './console.log-listener.config-default'
 
 const LUXON_TIMESTAMP_FORMATTER = (entry: ConsoleLogListenerEntryInfo, format: string): string => entry.ts ? DateTime.fromMillis(entry.ts).toFormat(format) : undefined
 const LOCALE_TIMESTAMP_FORMATTER = (entry: ConsoleLogListenerEntryInfo, options: DateTimeFormatOptions): string => entry.ts ? DateTime.fromMillis(entry.ts).toLocaleString(options) : undefined
 
-const DEFAULT_CONFIG = DefaultLogging
+const DEFAULT_CONFIG = DEFAULT_LOGGING_CONFIG
 const DEFAULT_TAG_FORMAT_OPTIONS: TagFormatOptions = DEFAULT_CONFIG.tag as TagFormatOptions
 
 function coalesceByDefined<T>(a: T, b: T): T {

@@ -1,5 +1,5 @@
 import { AmbientInjectableScanner, Container } from '@dandi/core'
-import { ConsoleLogListener, consoleLogListenerConfigProvider, LoggingModule } from '@dandi/core/logging'
+import { ConsoleLogListener, LoggingModule } from '@dandi/core/logging'
 import { PrettyColorsLogging } from '@dandi/logging'
 
 import { App } from './app'
@@ -9,8 +9,7 @@ export function run(startTs: number, options: any): Promise<void> {
   const container = new Container({
     providers: [
       AmbientInjectableScanner,
-      LoggingModule.use(ConsoleLogListener),
-      consoleLogListenerConfigProvider(PrettyColorsLogging),
+      LoggingModule.use(ConsoleLogListener, PrettyColorsLogging),
 
       appConfigProvider(options),
 

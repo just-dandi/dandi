@@ -1,8 +1,10 @@
-import { LogCallOptions, LogLevel } from '@dandi/core'
+import { LogCallOptions, LogLevel, Provider } from '@dandi/core'
 
 import {
   ConsoleLogListenerConfig,
-  ConsoleLogListenerEntryInfo, ConsoleLogListenerFormatter, ConsoleLogListenerTagFormatter,
+  consoleLogListenerConfigProvider,
+  ConsoleLogListenerEntryInfo,
+  ConsoleLogListenerFormatter,
   LogEntryTagInfo,
   TagFormatOptions,
 } from './console.log-listener.config'
@@ -53,10 +55,12 @@ const DEFAULT_TAG_FORMAT_OPTIONS: TagFormatOptions = {
   partOrder: DEFAULT_TAG_PART_ORDER,
 }
 
-export const DefaultLogging: ConsoleLogListenerConfig = {
+export const DEFAULT_LOGGING_CONFIG: ConsoleLogListenerConfig = {
   contextTag: false,
   levelTag: DEFAULT_LEVEL_TAG,
   timestampTag: DEFAULT_TIMESTAMP_FORMATTER,
   filter: LogLevel.debug,
   tag: DEFAULT_TAG_FORMAT_OPTIONS,
 }
+
+export const DefaultLogging: Provider<ConsoleLogListenerConfig> = consoleLogListenerConfigProvider(DEFAULT_LOGGING_CONFIG)

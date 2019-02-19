@@ -1,5 +1,6 @@
 import { InjectionContext, LogCallOptions, LogLevel } from '@dandi/core'
 import { ConsoleLogListener, LogEntry } from '@dandi/core/logging'
+import { DateTime } from 'luxon'
 
 import { expect } from 'chai'
 
@@ -92,5 +93,96 @@ describe('ConsoleLogListener', function() {
 
       })
     })
+  })
+
+  describe('conditional tags and configuration', function() {
+
+    beforeEach(function() {
+      this.ts = new Date().valueOf()
+      this.entry = {
+        level: LogLevel.info,
+        context: 'test-context',
+        ts: this.ts,
+        args: ['test message'],
+        options: {},
+      }
+    })
+
+    it('disabled context', function() {
+      this.entry.options.context = false
+      this.logger.log(this.entry)
+
+      expect(console.info).to.have.been
+        .calledOnce
+        .calledWithExactly(`[INFO  ${this.ts}]`, 'test message')
+    })
+
+    it('disabled level', function() {
+      this.entry.options.level = false
+      this.logger.log(this.entry)
+
+      expect(console.info).to.have.been
+        .calledOnce
+        .calledWithExactly(`[${this.ts} ${this.entry.context}]`, 'test message')
+
+    })
+
+    it('disabled timestamp', function() {
+      this.entry.options.timestamp = false
+      this.logger.log(this.entry)
+
+      expect(console.info).to.have.been
+        .calledOnce
+        .calledWithExactly(`[INFO  ${this.entry.context}]`, 'test message')
+
+    })
+
+    it('custom timestamp tag', function() {
+      this.config.timestampTag = 'yyyy'
+      this.entry.options.context = false
+      this.entry.options.level = false
+
+      this.logger.log(this.entry)
+
+      expect(console.info).to.have.been
+        .calledOnce
+        .calledWithExactly(`[${new Date(this.ts).getFullYear()}]`, 'test message')
+    })
+
+    it('custom timestamp formatter', function() {
+      this.config.timestampTag = () => 'foo'
+      this.entry.options.context = false
+      this.entry.options.level = false
+
+      this.logger.log(this.entry)
+
+      expect(console.info).to.have.been
+        .calledOnce
+        .calledWithExactly(`[foo]`, 'test message')
+    })
+
+    it('custom timestamp format options', function() {
+      this.config.timestampTag = DateTime.TIME_24_SIMPLE
+      this.entry.options.context = false
+      this.entry.options.level = false
+
+      this.logger.log(this.entry)
+      const time = new Date(this.ts)
+
+      expect(console.info).to.have.been
+        .calledOnce
+        .calledWithExactly(`[${time.getHours()}:${time.getMinutes()}]`, 'test message')
+    })
+
+    it('custom tag formatter', function() {
+      this.config.tag = () => `I won't do what you tell me`
+
+      this.logger.log(this.entry)
+
+      expect(console.info).to.have.been
+        .calledOnce
+        .calledWithExactly(`I won't do what you tell me`, 'test message')
+    })
+
   })
 })
