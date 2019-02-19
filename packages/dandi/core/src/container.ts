@@ -271,8 +271,10 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     logger.debug(`Application starting after ${now() - this.startTs}ms`)
     if (bootstrapper) {
       await bootstrapper.start()
+    } else {
+      logger.debug('No Bootstrapper implementation found.')
     }
-    logger.debug(`application started after ${now() - this.startTs}ms`)
+    logger.debug(`Application started after ${now() - this.startTs}ms`)
   }
 
   private registerProviders(module: any): void {

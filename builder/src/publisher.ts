@@ -1,3 +1,5 @@
+import { Inject, Injectable, Logger } from '@dandi/core'
+
 import { Builder } from './builder'
 import { BuilderProject } from './builder-project'
 import { PackageInfo } from './package-info'
@@ -8,13 +10,15 @@ interface PublishState {
   remaining: PackageInfo[]
 }
 
+@Injectable()
 export class Publisher {
 
-  private readonly builder: Builder
-
-  constructor(private readonly project: BuilderProject) {
-    this.builder = new Builder(this.project)
-  }
+  constructor(
+    @Inject(BuilderProject) private project: BuilderProject,
+    @Inject(Builder) private builder: Builder,
+    @Inject(Util) private util: Util,
+    @Inject(Logger) private logger: Logger,
+  ) { }
 
   public async publish(): Promise<void> {
     const packages = await this.project.discoverPackages()
@@ -49,7 +53,7 @@ export class Publisher {
       if (registry) {
         unpublishArgs.push('--registry', registry)
       }
-      return Util.spawn('npm', unpublishArgs)
+      return this.util.spawn('npm', unpublishArgs)
     }))
   }
 
@@ -64,7 +68,7 @@ export class Publisher {
       if (registry) {
         deprecateArgs.push('--registry', registry)
       }
-      return Util.spawn('npm', deprecateArgs)
+      return this.util.spawn('npm', deprecateArgs)
     }))
   }
 
@@ -82,32 +86,32 @@ export class Publisher {
   private async checkInfoAndPublish(info: PackageInfo, registry?: string): Promise<string> {
     const publishTarget = `${info.fullName}@${this.project.mainPkg.version}`
 
-    console.debug(`${publishTarget}: checking for existing package...`)
+    this.logger.debug(`${publishTarget}: checking for existing package...`)
     const infoArgs = ['info', publishTarget, 'dist-tags.latest']
     if (registry) {
       infoArgs.push('--registry', registry)
     }
-    let packageInfo = await Util.spawn('npm', infoArgs)
+    let packageInfo = await this.util.spawn('npm', infoArgs)
     if (packageInfo) {
-      console.warn(`${publishTarget}: skipping publish, already exists`, packageInfo.trim())
+      this.logger.warn(`${publishTarget}: skipping publish, already exists`, packageInfo.trim())
       return packageInfo
     }
 
-    console.debug(`${publishTarget}: publishing${registry ? ` to ${registry}` : ''}...`)
+    this.logger.debug(`${publishTarget}: publishing${registry ? ` to ${registry}` : ''}...`)
     const publishArgs = ['publish']
     if (registry) {
       infoArgs.push('--registry', registry)
     }
-    await Util.spawn('npm', publishArgs, {
+    await this.util.spawn('npm', publishArgs, {
       cwd: info.outPath,
     })
-    console.debug(`${publishTarget}: publish complete`)
+    this.logger.debug(`${publishTarget}: publish complete`)
 
     while(!packageInfo) {
-      console.debug(`${publishTarget}: waiting for package to become available...`)
-      packageInfo = await Util.spawn('npm', infoArgs)
+      this.logger.debug(`${publishTarget}: waiting for package to become available...`)
+      packageInfo = await this.util.spawn('npm', infoArgs)
     }
-    console.debug(`${publishTarget}: done.`)
+    this.logger.debug(`${publishTarget}: done.`)
   }
 
 }

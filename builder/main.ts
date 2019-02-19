@@ -1,4 +1,5 @@
 #!/usr/bin/env ts-node
+import 'tsconfig-paths/register'
 
 import * as program from 'commander'
 

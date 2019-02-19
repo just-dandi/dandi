@@ -1,8 +1,11 @@
 import { dirname, join, relative, resolve } from 'path'
 
+import { Inject, Injectable, Logger, Optional } from '@dandi/core'
+
 import { pathExists, readdir, readFile } from 'fs-extra'
 
 import { BUILD_CONFIG_DEFAULTS, BuilderConfig, NpmOptions } from './builder-config'
+import { BuilderProjectOptions } from './builder-project-options'
 import { PackageInfo } from './package-info'
 import { TsConfig, TsConfigCompilerOptions } from './ts-config'
 import { Util } from './util'
@@ -25,15 +28,11 @@ export interface Package {
   license?: any
 }
 
-export interface BuilderProjectOptions {
-  projectPath?: string
-  configFile?: string
-}
-
 export const BUILDER_PROJECT_DEFAULTS: BuilderProjectOptions = {
   configFile: './.builderrc',
 }
 
+@Injectable()
 export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
 
   private readonly tsConfigPath: string
@@ -62,23 +61,27 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
     return this._packages
   }
 
-  constructor(options?: BuilderProjectOptions) {
+  constructor(
+    @Inject(BuilderProjectOptions) @Optional() options: BuilderProjectOptions,
+    @Inject(Util) private util: Util,
+    @Inject(Logger) private logger: Logger,
+  ) {
 
     this.configFile = options.configFile || BUILDER_PROJECT_DEFAULTS.configFile
 
     this.configFilePath = resolve(process.cwd(), this.configFile)
     this.projectPath = dirname(this.configFilePath)
 
-    Object.assign(this, BUILD_CONFIG_DEFAULTS, Util.readJsonSync(this.configFilePath))
+    Object.assign(this, BUILD_CONFIG_DEFAULTS, this.util.readJsonSync(this.configFilePath))
 
     this.tsConfigPath = resolve(this.projectPath, this.tsConfigFileName)
     this.buildTsConfigPath = resolve(this.projectPath, this.buildTsConfigFileName)
     this.baseTsConfigPath = resolve(this.projectPath, this.packageBaseTsConfigFileName)
     this.packagesPath = resolve(this.projectPath, this.packagesDir)
 
-    this.tsConfig = Util.readJsonSync(this.tsConfigPath)
+    this.tsConfig = this.util.readJsonSync(this.tsConfigPath)
 
-    this.mainPkg = Util.readJsonSync(resolve(this.projectPath, 'package.json'))
+    this.mainPkg = this.util.readJsonSync(resolve(this.projectPath, 'package.json'))
   }
 
   public async discoverPackages(): Promise<PackageInfo[]> {
@@ -87,7 +90,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   }
 
   public async updateConfigs(packages?: PackageInfo[]): Promise<void> {
-    console.log('Discovering packages and updating configurations...')
+    this.logger.info('Discovering packages and updating configurations...')
     if (!packages || !packages.length) {
       packages = await this.discoverPackages()
     }
@@ -97,7 +100,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
       this.updateProjectBuildTsConfig(packages),
       this.updatePackageConfigs(packages),
     ])
-    console.log('Updated configurations for packages\n ', packages.map(info => info.fullName).join('\n  '))
+    this.logger.info('Updated configurations for packages\n ', packages.map(info => info.fullName).join('\n  '))
   }
 
   public async updateProjectTsConfig(): Promise<void> {
@@ -107,7 +110,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
         result[`@${scope}/*`] = ['./' + join(this.packagesDir, scope, '*')]
         return result
       }, {})
-      await Util.writeJson(this.tsConfigPath, this.tsConfig)
+      await this.util.writeJson(this.tsConfigPath, this.tsConfig)
     }
   }
 
@@ -136,7 +139,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
       })),
     }
 
-    await Util.writeJson(this.buildTsConfigPath, buildTsConfig)
+    await this.util.writeJson(this.buildTsConfigPath, buildTsConfig)
   }
 
   public async updateProjectPackageBaseTsConfig(): Promise<void> {
@@ -150,7 +153,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
         rootDir: this.packagesDir,
       }),
     }
-    await Util.writeJson(this.baseTsConfigPath, baseTsConfig)
+    await this.util.writeJson(this.baseTsConfigPath, baseTsConfig)
 
   }
 
@@ -166,7 +169,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
       packages = await this.discoverPackages()
     }
 
-    await Util.spawnForPackages(packages, 'npm', args.filter(arg => arg))
+    await this.util.spawnForPackages(packages, 'npm', args.filter(arg => arg))
   }
 
   public async npmOutdated(): Promise<void> {
@@ -176,7 +179,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
         name: info.fullName,
         data: await (async () => {
           try {
-            return await Util.spawnForPackage(info, 'npm', ['outdated'])
+            return await this.util.spawnForPackage(info, 'npm', ['outdated'])
           } catch (err) {
             return err.message
           }
@@ -184,13 +187,13 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
       }
     }))
     if (!outdated.length) {
-      console.log('All packages are up to date')
+      this.logger.info('All packages are up to date')
       return
     }
-    console.log('')
+    this.logger.info('')
     outdated.forEach(info => {
       if (info.data) {
-        console.log(`${info.name}\n`, info.data)
+        this.logger.info(`${info.name}\n`, info.data)
       }
     })
   }
@@ -217,8 +220,8 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
         manifest,
         subPackages,
       ] = await Promise.all([
-        await Util.readJson<Package>(packageConfigPath),
-        await Util.readJson<TsConfig>(tsConfigPath, {}),
+        await this.util.readJson<Package>(packageConfigPath),
+        await this.util.readJson<TsConfig>(tsConfigPath, {}),
         await this.loadPackageManifest(packagePath),
         await this.findSubPackages(packagePath),
       ])
@@ -251,7 +254,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   }
 
   private async findSubPackages(packagePath: string): Promise<string[]> {
-    const configs = await Util.glob('*/**/tsconfig.json', { cwd: packagePath, ignore: 'node_modules/**' })
+    const configs = await this.util.glob('*/**/tsconfig.json', { cwd: packagePath, ignore: 'node_modules/**' })
     if (!configs.length) {
       return undefined
     }
@@ -264,7 +267,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
     if (await pathExists(manifestPath)) {
       globs.push(...(await readFile(manifestPath, 'utf-8')).split('\n'))
     }
-    const results = await Promise.all(globs.map(glob => Util.glob(glob, {
+    const results = await Promise.all(globs.map(glob => this.util.glob(glob, {
       cwd: packagePath,
       ignore: 'node_modules/**',
     })))
@@ -277,7 +280,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   private async updatePackageTsConfig(info: PackageInfo): Promise<PackageInfo> {
     info.tsConfig.extends = relative(info.path, this.tsConfigPath)
 
-    await Util.writeJson(info.tsConfigPath, info.tsConfig)
+    await this.util.writeJson(info.tsConfigPath, info.tsConfig)
 
     return info
   }
@@ -311,7 +314,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
       'node_modules',
       '**/*.spec.ts',
     ]
-    await Util.writeJson(info.buildTsConfigPath, info.buildTsConfig)
+    await this.util.writeJson(info.buildTsConfigPath, info.buildTsConfig)
 
     return info
   }
