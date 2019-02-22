@@ -24,6 +24,7 @@ describe('PgDbClient', () => {
     modelValidator = createStubInstance(MetadataModelBuilder)
     resolver = createStubInstance(Container)
     logger = createStubInstance(NoopLogger)
+    // @ts-ignore
     dbClient = new PgDbClient(pool, modelValidator, resolver, logger)
   })
   afterEach(() => {

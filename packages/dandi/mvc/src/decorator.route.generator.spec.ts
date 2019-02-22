@@ -62,6 +62,7 @@ describe('DecoratorRouteGenerator', () => {
 
   beforeEach(() => {
     logger = createStubInstance(NoopLogger)
+    // @ts-ignore
     generator = new DecoratorRouteGenerator(logger)
     repository = Repository.for(Controller)
 

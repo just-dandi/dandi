@@ -1,6 +1,15 @@
 import { Uuid } from '@dandi/common'
 import { Container, NoopLogger, ResolverContext } from '@dandi/core'
-import { HttpMethod, JsonControllerResult, RequestInfo, Route } from '@dandi/mvc'
+import { ModelBuilderModule } from '@dandi/model-builder'
+import {
+  HttpMethod,
+  JsonControllerResult,
+  MissingPathParamError,
+  PathParam,
+  RequestInfo,
+  RequestPathParamMap,
+  Route,
+} from '@dandi/mvc'
 import { expect } from 'chai'
 import { stub } from 'sinon'
 
@@ -18,10 +27,6 @@ describe('DefaultRouteHandler', () => {
   let res: any
 
   beforeEach(async () => {
-    container = new Container()
-    await container.start()
-    resolverContext = new ResolverContext(null, [], null, null)
-    handler = new DefaultRouteHandler(container, new NoopLogger())
     route = {
       controllerCtr: class TestClass {},
       controllerMethod: 'method',
@@ -47,6 +52,20 @@ describe('DefaultRouteHandler', () => {
         mark: stub(),
       },
     }
+    container = new Container({
+      providers: [
+        {
+          provide: RequestPathParamMap,
+          useFactory() {
+            return req.params
+          },
+        },
+        ModelBuilderModule,
+      ],
+    })
+    resolverContext = new ResolverContext(null, [], null, 'test')
+    handler = new DefaultRouteHandler(container, new NoopLogger())
+    await container.start()
   })
   afterEach(() => {
     handler = undefined
@@ -99,6 +118,20 @@ describe('DefaultRouteHandler', () => {
       await handler.handleRouteRequest(resolverContext, controller, route, req, res, requestInfo)
 
       expect(res.setHeader).to.have.been.calledWith('x-fizzle-bizzle', 'okay')
+    })
+
+    it('throws an error if one of the path params is missing', async function() {
+
+      class TestController {
+        public method(@PathParam(String) someParam) {
+          return { message: 'OK' }
+        }
+      }
+      controller = new TestController()
+
+      expect(handler.handleRouteRequest(resolverContext, controller, route, req, res, requestInfo))
+        .to.be.rejectedWith(MissingPathParamError)
+
     })
   })
 })

@@ -24,6 +24,7 @@ describe('PgDbTransactionClient', () => {
       constructModel: stub(),
     }
     logger = createStubInstance(NoopLogger)
+    // @ts-ignore
     transactionClient = new PgDbTransactionClient(client, modelValidator, logger)
   })
   afterEach(() => {

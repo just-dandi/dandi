@@ -143,6 +143,10 @@ export class ResolverContext<T> implements Disposable {
 
   public [util.inspect.custom](): string {
     const thisContext = this.context || getInjectionContext(this.match as any)
+    if (!thisContext && !this.target && !this.parent) {
+      return '???'
+    }
+
     const parts = [(getInjectionContextName(thisContext)) || getTokenString(this.target)]
     if (this.parent) {
       parts.push(this.parent[util.inspect.custom]())

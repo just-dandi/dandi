@@ -57,6 +57,7 @@ export function makeRequestParamDecorator<T>(
   mapToken: InjectionToken<ParamMap>,
   type: ConvertedType,
   name: string,
+  optional: boolean,
 ): RequestParamDecorator<T> {
   const apply: ParameterDecorator & RequestParamDecorator<T> = function(
     target: MethodTarget<any>,
@@ -70,6 +71,7 @@ export function makeRequestParamDecorator<T>(
       memberMetadata.type = type
     }
     meta.token = token
+    meta.optional = optional
     meta.providers = [requestParamProvider(mapToken, token, type, name || meta.name, memberMetadata)]
 
     return {

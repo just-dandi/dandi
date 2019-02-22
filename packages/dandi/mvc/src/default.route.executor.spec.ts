@@ -11,7 +11,7 @@ describe('DefaultMvcRouteExecutor', () => {
   let resolver: SinonStubbedInstance<Resolver>
   let routeInit: SinonStubbedInstance<RouteInitializer>
   let routeHandler: SinonStubbedInstance<RouteHandler>
-  let logger: Logger
+  let logger: SinonStubbedInstance<Logger>
 
   let route: Route
   let requestInfo: RequestInfo
@@ -60,6 +60,7 @@ describe('DefaultMvcRouteExecutor', () => {
       },
     }
     logger = createStubInstance(NoopLogger)
+    // @ts-ignore
     routeExec = new DefaultRouteExecutor(resolver, routeInit, routeHandler, logger)
   })
   afterEach(() => {
