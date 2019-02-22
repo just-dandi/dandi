@@ -44,10 +44,12 @@ allow developers to use only the features they require.
 
 - **[@dandi/common](./packages/dandi/common)** 🕸 - Common types and utilities
 - **[@dandi/core](./packages/dandi/core)** 🕸 - Dependency Injection
+- **[@dandi/core/logging](./packages/dandi/core/logging)** 🕸 - Core logging and configuration
 - **[@dandi/core-node](./packages/dandi/core-node)** - Additional DI utilities specific to NodeJS
 - **[@dandi/data](./packages/dandi/data)** 🕸 - Base types and utilities for working with data services
 - **[@dandi/config](./packages/dandi/config)** 🕸 - Configuration services
 - **[@dandi/hal](./packages/dandi/hal)** - 🕸 - Model decorators, basic types and utilities for supporting HAL
+- **[@dandi/logging](./packages/dandi/logging)** - 🕸 - Additional logging utilities for logging and logging configuration
 - **[@dandi/model](./packages/dandi/model)** 🕸 - Model decorators
 - **[@dandi/model-builder](./packages/dandi/model-builder)** 🕸 - Utilities for dynamically constructing and validating models
 - **[@dandi/mvc](./packages/dandi/mvc)** - MVC decorators and base utilities (not specific to Express)

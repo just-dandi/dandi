@@ -263,6 +263,7 @@ container.start();
 - TODO
 
 ### OnConfig
+- TODO
 
 ## Logging
-- TODO
+See documentation for [@dandi/core/logging](./logging)
