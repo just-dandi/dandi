@@ -77,7 +77,11 @@ export class DefaultRouteInitializer implements RouteInitializer {
     requestInfo: RequestInfo,
     res: MvcResponse,
   ): void {
-    repo.register(route.controllerCtr, { provide: RequestController })
+    const source = {
+      constructor: this.constructor,
+      tag: '.registerRequestProviders',
+    }
+    repo.register(source, route.controllerCtr, { provide: RequestController })
     repo.registerProviders(
       { provide: MvcRequest, useValue: req },
       { provide: MvcResponse, useValue: res },

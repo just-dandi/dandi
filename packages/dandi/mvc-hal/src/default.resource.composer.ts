@@ -241,8 +241,12 @@ export class DefaultResourceComposer implements ResourceComposer {
 
     const requestInfo = (await this.resolver.resolveInContext(this.resolverContext, RequestInfo)).singleValue
     const embedRepo = await this.routeInitializer.initRouteRequest(route, req, requestInfo, res)
+    const source = {
+      constructor: this.constructor,
+      tag: '.executeEmbed',
+    }
 
-    embedRepo.register({
+    embedRepo.register(source, {
       provide: CompositionContext,
       useValue: context.childFor(rel),
     })

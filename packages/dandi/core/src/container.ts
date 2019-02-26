@@ -1,4 +1,5 @@
 import { Disposable } from '@dandi/common'
+import { RepositoryRegistrationSource } from '@dandi/core/src/repository-registration'
 
 import { Bootstrapper } from './bootstrapper'
 import { ContainerError, ContainerNotInitializedError, MissingTokenError } from './container.error'
@@ -196,7 +197,11 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     }
 
     // register self as the Resolver
-    this.repository.register({
+    const source = {
+      constructor: this.constructor,
+      tag: '.preInit',
+    }
+    this.repository.register(source, {
       provide: Resolver,
       useValue: this,
     })
@@ -204,7 +209,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     // register explicitly set providers
     // this must happen before scanning so that scanners can be specified in the providers config
     if (this.config.providers) {
-      this.registerProviders(this.config.providers)
+      this.registerProviders(source, this.config.providers)
     }
 
     this.initialized = true
@@ -277,12 +282,24 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     logger.debug(`Application started after ${now() - this.startTs}ms`)
   }
 
-  private registerProviders(module: any): void {
+  private registerProviders(parentSource: RepositoryRegistrationSource, module: any): void {
     if (Array.isArray(module)) {
-      module.forEach((provider) => this.registerProviders(provider))
+      const source = module.constructor === Array ?
+        // use parentSource if the "module" is just a plain array to avoid an extra useless entry in the source chain
+        parentSource :
+        {
+          constructor: module.constructor,
+          parent: parentSource,
+        }
+      module.forEach((provider) => this.registerProviders(source, provider))
       return
     }
-    this.repository.register(module)
+    const source = {
+      constructor: this.constructor,
+      parent: parentSource,
+      tag: '.config.providers',
+    }
+    this.repository.register(source, module)
   }
 
   private async resolveParam<T>(

@@ -49,7 +49,7 @@ export class TestHarness implements TestResolver {
 
       // sanity checking!
       expect(repo.get(__TestSanityChecker)).not.to.exist
-      repo.register(__TestSanityChecker)
+      repo.register(this, __TestSanityChecker)
       expect(repo.get(__TestSanityChecker)).to.exist
 
       globalRepoStub = stub(Repository, 'global').get(() => repo)

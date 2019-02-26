@@ -11,6 +11,7 @@ import {
   InvalidRegistrationTargetError,
   InvalidRepositoryContextError,
 } from './repository.errors'
+import { RepositoryRegistrationSource } from './repository-registration'
 
 const REPOSITORIES = new Map<any, Repository>()
 
@@ -57,7 +58,7 @@ export class Repository<TContext = any> implements Disposable {
 
   private constructor(private context: any, private readonly _allowSingletons: boolean) {}
 
-  public register<T>(target: Constructor<T> | Provider<T>, options?: RegisterOptions<T>): this {
+  public register<T>(source: RepositoryRegistrationSource, target: Constructor<T> | Provider<T>, options?: RegisterOptions<T>): this {
     if (isProvider(target)) {
       this.registerProvider(target)
       return this
@@ -82,11 +83,12 @@ export class Repository<TContext = any> implements Disposable {
       return this
     }
 
-    throw new InvalidRegistrationTargetError(target, options)
+    throw new InvalidRegistrationTargetError(source, target, options)
   }
 
-  public registerProviders(...providers: Provider<any>[]): void {
+  public registerProviders(...providers: Provider<any>[]): this {
     providers.forEach((provider) => this.registerProvider(provider))
+    return this
   }
 
   public get<T>(token: InjectionToken<T>): RepositoryEntry<T> {
@@ -142,7 +144,7 @@ export class Repository<TContext = any> implements Disposable {
     let entry: Provider<T> | Array<Provider<T>> = this.providers.get(provider.provide)
 
     if (entry) {
-      const entryIsMulti = entry && Array.isArray(entry)
+      const entryIsMulti = Array.isArray(entry)
 
       if (provider.multi && !entryIsMulti) {
         throw new ConflictingRegistrationOptionsError(

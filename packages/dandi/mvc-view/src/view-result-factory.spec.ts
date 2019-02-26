@@ -17,7 +17,7 @@ describe('ViewResultFactory', function() {
   })
 
   it('is injectable', async function() {
-    this.repo.register({
+    this.repo.register(this, {
       provide: Route,
       useValue: {},
     })
@@ -27,7 +27,7 @@ describe('ViewResultFactory', function() {
   })
 
   it('throws an error if the route has no view metadata', async function() {
-    this.repo.register({
+    this.repo.register(this, {
       provide: Route,
       useValue: {},
     })
@@ -39,7 +39,7 @@ describe('ViewResultFactory', function() {
     const view = {
       name: 'test',
     }
-    this.repo.register({
+    this.repo.register(this, {
       provide: Route,
       useValue: {
         view,
@@ -65,7 +65,7 @@ describe('ViewResultFactory', function() {
       name: 'test',
     }
     const data = {}
-    this.repo.register({
+    this.repo.register(this, {
       provide: Route,
       useValue: {
         view,

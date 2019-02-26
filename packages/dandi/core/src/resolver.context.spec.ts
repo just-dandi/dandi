@@ -1,13 +1,11 @@
+import { InjectionToken, Provider, Repository, ResolverContext, SymbolToken } from '@dandi/core'
+
 import { expect } from 'chai'
 import { spy, stub } from 'sinon'
 
-import { InjectionToken, Provider, Repository, SymbolToken } from '../'
-
-import { ResolverContext } from './resolver.context'
-
 const chaiInspect = Symbol.for('chai/inspect')
 
-describe('ResolverContext', () => {
+describe('ResolverContext', function() {
   function provider<T, TProvider extends Provider<T>>(obj: TProvider): TProvider {
     obj[chaiInspect] = () => `Provider[provide: ${obj.provide}]`
     return obj
@@ -57,8 +55,8 @@ describe('ResolverContext', () => {
       provide: childToken2,
       useValue: childValue2,
     })
-    parentRepo1.register(parentProvider1)
-    parentRepo2.register(parentProvider2)
+    parentRepo1.register(this, parentProvider1)
+    parentRepo2.register(this, parentProvider2)
     parentContext = new ResolverContext(parentToken1, [parentRepo2, parentRepo1], null, context)
     childContext = parentContext.childContext(childToken1, null, childProvider1, childProvider2)
   })
@@ -122,7 +120,7 @@ describe('ResolverContext', () => {
     })
   })
 
-  describe('match', () => {
+  describe('match', function() {
     it('returns null if no token is found', () => {
       expect(new ResolverContext(new SymbolToken('test'), [], null, null).match).to.be.undefined
     })
@@ -136,13 +134,13 @@ describe('ResolverContext', () => {
       expect(parentContext.match).to.equal(parentProvider2)
     })
 
-    it('returns the first match entry when the same token is defined in multiple repositories', () => {
+    it('returns the first match entry when the same token is defined in multiple repositories', function() {
       const overridingValue = {}
       const overridingProvider = provider({
         provide: parentToken1,
         useValue: overridingValue,
       })
-      parentRepo2.register(overridingProvider)
+      parentRepo2.register(this, overridingProvider)
 
       expect(parentContext.match).to.equal(overridingProvider)
     })

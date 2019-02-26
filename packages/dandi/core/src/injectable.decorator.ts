@@ -4,7 +4,12 @@ import { ProviderOptions } from './provider'
 import { Repository } from './repository'
 import { InjectionToken, InjectionTokenTypeError, isInjectionToken } from './injection.token'
 
-export interface InjectableDecorator<T> {
+export const INJECTABLE_REGISTRATION_SOURCE = {
+  constructor: Injectable,
+  tag: '.global',
+}
+
+export interface InjectableDecorator<T> extends ClassDecorator {
   (options?: InjectionToken<T>): ClassDecorator;
   new (options?: InjectionToken<T>): InjectionToken<T>;
 }
@@ -22,7 +27,7 @@ export function injectableDecorator<T>(
     providerOptions.provide = injectable
   }
   injectableOptions.forEach((option) => option.setOptions(providerOptions))
-  Repository.global.register(target, providerOptions)
+  Repository.global.register(INJECTABLE_REGISTRATION_SOURCE, target, providerOptions)
   Reflect.set(target, ProviderOptions.valueOf() as symbol, providerOptions)
 }
 

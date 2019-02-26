@@ -1,9 +1,11 @@
 import { Repository } from '@dandi/core'
+import { INJECTABLE_REGISTRATION_SOURCE } from '@dandi/core/testing'
+import { Controller, MissingControllerPathError } from '@dandi/mvc'
+
 import { expect } from 'chai'
 import { SinonSpy, spy } from 'sinon'
 
-import { Controller, MissingControllerPathError } from '../'
-
+import { CONTROLLER_REGISTRATION_SOURCE } from './controller.decorator'
 import { getControllerMetadata } from './controller.metadata'
 
 describe('@Controller', () => {
@@ -26,7 +28,7 @@ describe('@Controller', () => {
     Controller('/test')(TestClass)
 
     expect(injectableRegister).to.have.been.calledOnce
-    expect(injectableRegister).to.have.been.calledWith(TestClass, {})
+    expect(injectableRegister).to.have.been.calledWith(INJECTABLE_REGISTRATION_SOURCE, TestClass, {})
   })
 
   it('registers the class in the Controller repository', () => {
@@ -35,7 +37,7 @@ describe('@Controller', () => {
     Controller('/test')(TestClass)
 
     expect(controllerRegister).to.have.been.calledOnce
-    expect(controllerRegister).to.have.been.calledWith(TestClass)
+    expect(controllerRegister).to.have.been.calledWith(CONTROLLER_REGISTRATION_SOURCE, TestClass)
   })
 
   it('sets the path on the controller metadata', () => {

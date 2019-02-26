@@ -46,12 +46,12 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler<TEventDat
       })
 
     const repo = Repository.for({})
-    repo.register({
+    repo.registerProviders({
       provide: LambdaHandler,
       useClass: handlerServiceType,
     })
     if (!existingContainer) {
-      modulesOrProviders.forEach((p) => repo.register(p))
+      modulesOrProviders.forEach((p) => repo.register(container, p))
     }
 
     const ready = existingContainer ? Promise.resolve() : container.start()

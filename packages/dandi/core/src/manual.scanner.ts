@@ -16,10 +16,14 @@ export class ManualScanner implements Scanner {
 
   public async scan(): Promise<Repository> {
     const repo = Repository.for(this)
+    const source = {
+      constructor: this.constructor,
+      tag: '.scan',
+    }
     this.config.forEach((config) => {
       const modules = config()
       modules.forEach((module) => {
-        repo.register(module)
+        repo.register(source, module)
       })
     })
     return repo

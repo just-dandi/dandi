@@ -1,3 +1,5 @@
+import { INJECTABLE_REGISTRATION_SOURCE } from '@dandi/core/testing'
+
 import { expect } from 'chai'
 import { SinonSpy, spy } from 'sinon'
 
@@ -19,7 +21,7 @@ describe('@Injectable', () => {
     Injectable()(TestClass)
 
     expect(register).to.have.been.calledOnce
-    expect(register).to.have.been.calledWith(TestClass, {})
+    expect(register).to.have.been.calledWith(INJECTABLE_REGISTRATION_SOURCE, TestClass, {})
   })
 
   it('registers the decorated class for the specified token', () => {
@@ -31,7 +33,7 @@ describe('@Injectable', () => {
     Injectable(FooClass)(TestClass)
 
     expect(register).to.have.been.calledOnce
-    expect(register).to.have.been.calledWith(TestClass, { provide: FooClass })
+    expect(register).to.have.been.calledWith(INJECTABLE_REGISTRATION_SOURCE, TestClass, { provide: FooClass })
   })
 
   it('throws if the specified token is not a valid InjectionToken', () => {
@@ -46,7 +48,7 @@ describe('@Injectable', () => {
     Injectable(Singleton, Multi)(TestClass)
 
     expect(register).to.have.been.calledOnce
-    expect(register).to.have.been.calledWith(TestClass, {
+    expect(register).to.have.been.calledWith(INJECTABLE_REGISTRATION_SOURCE, TestClass, {
       multi: true,
       singleton: true,
     })

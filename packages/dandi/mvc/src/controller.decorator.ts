@@ -1,7 +1,11 @@
 import { AppError, Constructor } from '@dandi/common'
-import { Repository, injectableDecorator } from '@dandi/core'
+import { Repository, injectableDecorator, RepositoryRegistrationSource } from '@dandi/core'
 
 import { getControllerMetadata } from './controller.metadata'
+
+export const CONTROLLER_REGISTRATION_SOURCE: RepositoryRegistrationSource = {
+  constructor: Controller,
+}
 
 export interface Controller<T> {
   multi?: false | null | undefined;
@@ -9,16 +13,11 @@ export interface Controller<T> {
   path?: string;
 }
 
-export interface ControllerDecorator<T> {
-  (options?: Controller<T>): ClassDecorator;
-  new (options?: Controller<T>): Controller<T>;
-}
-
 export function controllerDecorator<T>(options: Controller<T>, target: Constructor<T>): void {
   injectableDecorator(null, [], target)
   const meta = getControllerMetadata(target)
   meta.path = options.path
-  Repository.for(Controller).register(target)
+  Repository.for(Controller).register(CONTROLLER_REGISTRATION_SOURCE, target)
 }
 
 export function Controller<T>(path: string | Controller<T>): ClassDecorator {

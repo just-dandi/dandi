@@ -169,9 +169,18 @@ describe('ConsoleLogListener', function() {
       this.logger.log(this.entry)
       const time = new Date(this.ts)
 
+      const hours = time
+        .getHours()
+        .toString()
+        .padStart(2, '0')
+      const minutes = time
+        .getMinutes()
+        .toString()
+        .padStart(2, '0')
+
       expect(console.info).to.have.been
         .calledOnce
-        .calledWithExactly(`[${time.getHours()}:${time.getMinutes()}]`, 'test message')
+        .calledWithExactly(`[${hours}:${minutes}]`, 'test message')
     })
 
     it('custom tag formatter', function() {

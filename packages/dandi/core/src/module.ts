@@ -24,7 +24,7 @@ export class Module extends Array<Registerable> {
 
   public static moduleInfo(target: any): ModuleInfo {
     if (!target) {
-      return null
+      return undefined
     }
     if (isInjectionToken(target) && !isConstructor(target)) {
       return MODULE_INFO_REG.get(target)

@@ -56,18 +56,22 @@ export class ResolverContext<T> implements Disposable {
     public readonly context: InjectionContext,
     providers: Array<Provider<any>> = [],
   ) {
+    const source = {
+      constructor: this.constructor,
+      tag: '.ctr',
+    }
     this.contextRepository = Repository.for(this)
-    this.contextRepository.register({
+    this.contextRepository.register(source, {
       provide: ResolverContext,
       useValue: this,
     })
     if (this.parent) {
-      this.contextRepository.register({
+      this.contextRepository.register(source, {
         provide: InjectionContext,
         useValue: parent.injectionContext,
       })
     }
-    providers.forEach((provider) => this.contextRepository.register(provider))
+    providers.forEach((provider) => this.contextRepository.register(source, provider))
     this.repositories.unshift(this.contextRepository)
   }
 

@@ -23,7 +23,7 @@ export class FileSystemScanner implements Scanner {
     await Promise.all(
       this.config.map(async (config) => {
         const modules = await this.scanDir(config, process.cwd())
-        modules.forEach((module) => repo.register(module))
+        modules.forEach((module) => repo.register(this, module))
       }),
     )
     return repo
