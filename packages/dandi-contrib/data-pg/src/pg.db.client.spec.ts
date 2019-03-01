@@ -1,87 +1,72 @@
 import { AppError } from '@dandi/common'
-import { Container, Logger, NoopLogger, Resolver } from '@dandi/core'
-import { MetadataModelBuilder, ModelBuilder } from '@dandi/model-builder'
-import { PgDbClient, PgDbPool, TransactionAlreadyInProgressError } from '@dandi-contrib/data-pg'
-
-import { PoolClient } from 'pg'
+import { stubHarness } from '@dandi/core-testing'
+import { PgDbClient, PgDbPoolClient, TransactionAlreadyInProgressError } from '@dandi-contrib/data-pg'
 
 import { expect } from 'chai'
-import { SinonStub, SinonStubbedInstance, createStubInstance, stub } from 'sinon'
+import { SinonStub, stub } from 'sinon'
 
-describe('PgDbClient', () => {
-  let pool: PgDbPool & SinonStubbedInstance<PgDbPool>
-  let poolClient: SinonStubbedInstance<PoolClient>
-  let modelValidator: SinonStubbedInstance<ModelBuilder>
-  let resolver: SinonStubbedInstance<Resolver>
-  let logger: SinonStubbedInstance<Logger>
-  let dbClient: PgDbClient
+describe('PgDbClient', function() {
 
-  beforeEach(() => {
-    poolClient = {
-      query: stub().returns({ rows: [] }),
-      release: stub(),
-    } as any
-    modelValidator = createStubInstance(MetadataModelBuilder)
-    resolver = createStubInstance(Container)
-    logger = createStubInstance(NoopLogger)
-    // @ts-ignore
-    dbClient = new PgDbClient(pool, modelValidator, resolver, logger)
-  })
-  afterEach(() => {
-    pool = undefined
-    poolClient = undefined
-    modelValidator = undefined
-    resolver = undefined
-    logger = undefined
-    dbClient = undefined
+  const harness = stubHarness(PgDbClient,
+    {
+      provide: PgDbPoolClient,
+      useFactory: () => ({
+        query: stub().returns({ rows: [] }),
+        release: stub(),
+      }),
+    },
+  )
+
+  beforeEach(async function () {
+    this.dbClient = await harness.inject(PgDbClient)
   })
 
-  xdescribe('transaction', () => {
-    it('throws if a transaction is already in progress', async () => {
-      dbClient.transaction(async () => {})
-      await expect(dbClient.transaction(async () => {})).to.be.rejectedWith(TransactionAlreadyInProgressError)
+  xdescribe('transaction', function() {
+    it('throws if a transaction is already in progress', async function() {
+      this.dbClient.transaction(async () => {})
+      await expect(this.dbClient.transaction(async () => {})).to.be.rejectedWith(TransactionAlreadyInProgressError)
     })
 
-    it('calls the transactionFn and then automatically disposes the transaction', async () => {
+    it('calls the transactionFn and then automatically disposes the transaction', async function() {
       let transactionDispose: SinonStub
       const transactionFn = stub().callsFake((transaction) => (transactionDispose = stub(transaction, 'dispose')))
 
-      await dbClient.transaction(transactionFn)
+      await this.dbClient.transaction(transactionFn)
 
       expect(transactionFn).to.have.been.calledBefore(transactionDispose)
     })
 
-    it('can be used to call multiple serial transactions', async () => {
-      await dbClient.transaction(async () => {})
-      await dbClient.transaction(async () => {})
+    it('can be used to call multiple serial transactions', async function() {
+      await this.dbClient.transaction(async () => {})
+      await this.dbClient.transaction(async () => {})
     })
 
-    it('rethrows errors', async () => {
+    it('rethrows errors', async function() {
       const err = new AppError()
       await expect(
-        dbClient.transaction(() => {
+        this.dbClient.transaction(() => {
           throw err
         }),
       ).to.be.rejectedWith(err)
     })
 
-    it('can be used to call subsequent transactions after one that throws an error', async () => {
+    it('can be used to call subsequent transactions after one that throws an error', async function() {
       const err = new AppError()
       const second = stub()
 
       await expect(
-        dbClient.transaction(() => {
+        this.dbClient.transaction(() => {
           throw err
         }),
       ).to.be.rejectedWith(err)
-      await dbClient.transaction(second)
+      await this.dbClient.transaction(second)
 
       expect(second).to.have.been.called
     })
   })
 
-  xdescribe('dispose', () => {
-    it('calls dispose() on the current transaction, if there is one', async () => {
+  xdescribe('dispose', function() {
+    it('calls dispose() on the current transaction, if there is one', async function() {
       let waiter
       const transactionDisposePromise = new Promise<SinonStub>((resolve) => {
         waiter = resolve
@@ -90,10 +75,10 @@ describe('PgDbClient', () => {
         waiter(stub(transaction, 'dispose'))
       })
 
-      dbClient.transaction(transactionFn)
+      this.dbClient.transaction(transactionFn)
       const transactionDispose = await transactionDisposePromise
       expect(transactionDispose).not.to.have.been.called
-      dbClient.dispose('')
+      this.dbClient.dispose('')
       expect(transactionDispose).to.have.been.called
     })
   })

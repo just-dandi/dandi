@@ -168,15 +168,13 @@ export class TestHarness implements TestResolver, Disposable {
   }
 
   public async inject<T>(token: InjectionToken<T>, optional?: boolean, ...repositories: Repository[]): Promise<T> {
-    return await Disposable.use(await this.resolve<T>(token, optional, ...repositories), (result) => {
-      return result && result.singleValue || undefined
-    })
+    const result = await this.resolve<T>(token, optional, ...repositories)
+    return result && result.singleValue || undefined
   }
 
   public async injectMulti<T>(token: InjectionToken<T>, optional?: boolean, ...repositories: Repository[]): Promise<T[]> {
-    return await Disposable.use(await this.resolve<T>(token, optional, ...repositories), (result) => {
-      return result && result.arrayValue || undefined
-    })
+    const result = await this.resolve<T>(token, optional, ...repositories)
+    return result && result.arrayValue || undefined
   }
 
   public async injectStub<T>(
@@ -207,6 +205,11 @@ export function testHarness(...providers: any[]): TestResolver {
   return new TestHarness(providers)
 }
 
+/**
+ * Creates an instance of {TestResolver} that automatically creates stub instances of classes it does not already
+ * have registered providers for
+ * @param providers
+ */
 export function stubHarness(...providers: any[]): TestResolver {
   return new TestHarness(providers, true, true)
 }
