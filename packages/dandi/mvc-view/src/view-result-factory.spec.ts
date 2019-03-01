@@ -86,6 +86,6 @@ describe('ViewResultFactory', function() {
     expect(viewResult.viewEngine).to.equal(engine)
     expect(viewResult.view).to.equal(view)
     expect(viewResult.templatePath).to.equal(templatePath)
-    expect(viewResult.resultObject).to.equal(data)
+    expect(viewResult.data).to.equal(data)
   })
 })

@@ -5,7 +5,7 @@ import { PKG } from './local.token'
 import { ConfiguredViewEngine, ViewEngine } from './view-engine'
 import { ViewEngineConfig } from './view-engine-config'
 import { ViewEngineResolver } from './view-engine-resolver'
-import { ViewControllerResultTransformer } from './view.controller-result-transformer'
+import { MvcViewRenderer } from './mvc-view-renderer'
 import { ViewRouteTransformer } from './view.route-transformer'
 import { VIEW_RESULT_FACTORY } from './view-result-factory'
 
@@ -37,7 +37,7 @@ export class MvcViewModuleBuilder extends ModuleBuilder<MvcViewModuleBuilder> {
 
 export const MvcViewModule = new MvcViewModuleBuilder(
   VIEW_RESULT_FACTORY,
-  ViewControllerResultTransformer,
+  MvcViewRenderer,
   ViewEngineResolver,
   ViewRouteTransformer,
 )

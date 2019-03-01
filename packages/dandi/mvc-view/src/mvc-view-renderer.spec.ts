@@ -1,17 +1,18 @@
 import { ProviderOptions } from '@dandi/core'
 import { ControllerResultTransformer } from '@dandi/mvc'
-import { ViewControllerResultTransformer, ViewResult } from '@dandi/mvc-view'
+import { MvcViewRenderer, ViewResult } from '@dandi/mvc-view'
+
 import { stub } from 'sinon'
 import { expect } from 'chai'
 
-describe('ViewControllerResultTransformer', function() {
+xdescribe('MvcViewRenderer', function() {
   beforeEach(function() {
     this.viewResult = stub()
-    this.transformer = new ViewControllerResultTransformer(this.viewResult)
+    this.transformer = new MvcViewRenderer(this.viewResult, undefined)
   })
 
   it('is decorated with @Injectable(ControllerResultTransformer)', function() {
-    expect(Reflect.get(ViewControllerResultTransformer, ProviderOptions.valueOf() as symbol).provide).to.equal(
+    expect(Reflect.get(MvcViewRenderer, ProviderOptions.valueOf() as symbol).provide).to.equal(
       ControllerResultTransformer,
     )
   })
