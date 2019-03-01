@@ -38,7 +38,7 @@ export class HalObjectRenderer extends ObjectRendererBase {
         },
       )
 
-      return Disposable.useAsync(await this.resolver.resolve(MvcResponseRenderer, false, repo), async resolveResult => {
+      return Disposable.useAsync(this.resolver.resolve(MvcResponseRenderer, false, repo), async resolveResult => {
         const renderer = resolveResult.singleValue
         const result = await renderer.render(subRendererMimeType, controllerResult)
         return result.renderedOutput

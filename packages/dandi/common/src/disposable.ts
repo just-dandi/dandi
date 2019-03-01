@@ -1,5 +1,6 @@
 import { AppError } from './app.error'
 import { globalSymbol } from './global.symbol'
+import { isPromise } from './promise'
 
 export type DisposeFn = (reason: string) => void
 
@@ -109,16 +110,17 @@ export class Disposable {
   }
 
   public static async useAsync<T extends Disposable, TResult = void>(
-    obj: T,
+    obj: T | Promise<T>,
     use: (obj: T) => Promise<TResult>,
   ): Promise<TResult> {
+    const resolvedObj = isPromise(obj) ? await obj : obj
     try {
-      return await use(obj)
+      return await use(resolvedObj)
     } catch (err) {
       throw err
     } finally {
-      if (Disposable.isDisposable(obj)) {
-        await obj.dispose('after Disposable.useAsync()')
+      if (Disposable.isDisposable(resolvedObj)) {
+        await resolvedObj.dispose('after Disposable.useAsync()')
       }
     }
   }

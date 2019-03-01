@@ -464,7 +464,7 @@ describe('DefaultResourceComposer', function() {
           },
         },
       )
-      await Disposable.useAsync(await harness.resolve(ResourceComposer), async (composerResult) => {
+      await Disposable.useAsync(harness.resolve(ResourceComposer), async (composerResult) => {
         const composer = composerResult.singleValue
         const result = await composer.compose(
           new TestModel(42, 7),
@@ -608,7 +608,7 @@ describe('DefaultResourceComposer', function() {
         },
       )
 
-      await Disposable.useAsync(await harness.resolve(ResourceComposer), async (composerResult) => {
+      await Disposable.useAsync(harness.resolve(ResourceComposer), async (composerResult) => {
         const composer = composerResult.singleValue
         const result = await composer.compose(
           new TestModelParent(42),
@@ -778,7 +778,7 @@ describe('DefaultResourceComposer', function() {
         },
       )
 
-      await Disposable.useAsync(await harness.resolve(ResourceComposer), async (composerResult) => {
+      await Disposable.useAsync(harness.resolve(ResourceComposer), async (composerResult) => {
         const composer = composerResult.singleValue
         const result = await composer.compose(
           new LevelThreeModel(21, 42),
@@ -962,7 +962,7 @@ describe('DefaultResourceComposer', function() {
           },
         },
       )
-      await Disposable.useAsync(await harness.resolve(ResourceComposer), async (composerResult) => {
+      await Disposable.useAsync(harness.resolve(ResourceComposer), async (composerResult) => {
         const composer = composerResult.singleValue
         const result = await composer.compose(
           new TestModelParent(42),
@@ -1159,7 +1159,7 @@ describe('DefaultResourceComposer', function() {
           },
         },
       )
-      await Disposable.useAsync(await harness.resolve(ResourceComposer), async (composerResult) => {
+      await Disposable.useAsync(harness.resolve(ResourceComposer), async (composerResult) => {
         const composer = composerResult.singleValue
         const result = await composer.compose(
           new Me(),

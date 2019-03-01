@@ -26,7 +26,7 @@ export class MvcViewRenderer extends ObjectRendererBase {
     if (controllerResult instanceof ViewResult) {
       return controllerResult.value
     }
-    return Disposable.useAsync(await this.resolver.resolveInContext(this.resolverContext, ViewResultFactory), async factoryResult => {
+    return Disposable.useAsync(this.resolver.resolveInContext(this.resolverContext, ViewResultFactory), async factoryResult => {
       const factory = factoryResult.singleValue
       const viewResult = await factory(undefined, controllerResult.data)
       return viewResult.value
