@@ -8,6 +8,7 @@ import { MvcResponseRendererProvider } from './mvc-response-renderer'
 import { NativeJsonObjectRenderer } from './native-json-object-renderer'
 import { DefaultObjectRenderer } from './object-renderer'
 import { RequestAcceptTypesProvider } from './request-accept-types'
+import { ROUTES_PROVIDER } from './routes'
 
 export class MvcModuleBuilder extends ModuleBuilder<MvcModuleBuilder> {
   constructor(...entries: Registerable[]) {
@@ -16,6 +17,7 @@ export class MvcModuleBuilder extends ModuleBuilder<MvcModuleBuilder> {
 }
 
 export const MvcModule = new MvcModuleBuilder(
+  ROUTES_PROVIDER,
   DefaultRouteExecutor,
   DefaultRouteHandler,
   DefaultRouteInitializer,
