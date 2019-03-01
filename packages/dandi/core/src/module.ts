@@ -5,7 +5,7 @@ import { Provider } from './provider'
 import { isProvider } from './provider.util'
 import { InjectionToken, isInjectionToken } from './injection.token'
 
-export type RegisterableTypes = Constructor<any> | Provider<any> | Array<Constructor<any>> | Array<Provider<any>>
+export type RegisterableTypes = Constructor<any> | Provider<any> | Array<Constructor<any>> | Array<Provider<any>> | Module
 export type Registerable = RegisterableTypes | RegisterableTypes[]
 
 export interface ModuleInfo {

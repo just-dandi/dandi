@@ -1,5 +1,4 @@
 import { Disposable } from '@dandi/common'
-import { RepositoryRegistrationSource } from '@dandi/core/src/repository-registration'
 
 import { Bootstrapper } from './bootstrapper'
 import { ContainerError, ContainerNotInitializedError, MissingTokenError } from './container.error'
@@ -17,6 +16,7 @@ import { OnConfig } from './on-config'
 import { OnConfigInternal } from './on-config-internal'
 import { ProviderTypeError } from './provider.type.error'
 import { Repository } from './repository'
+import { RepositoryRegistrationSource } from './repository-registration'
 import { ResolveResult } from './resolve.result'
 import { Resolver } from './resolver'
 import { ResolverContext } from './resolver.context'
@@ -83,6 +83,14 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     await this.invoke(this, this.bootstrap)
   }
 
+  public canResolve(
+    token: InjectionToken<any>,
+    ...repositories: Repository[]
+  ): boolean {
+    const context = this.resolverContextFactory.create(token, undefined, ...this.repositories, ...repositories)
+    return !!context.match
+  }
+
   public async resolveInContext<T>(
     context: ResolverContext<T>,
     token: InjectionToken<T>,
@@ -98,8 +106,8 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     }
 
     const resolveContext = context
-      ? context.childContext(token, null, ...repositories)
-      : this.resolverContextFactory.create<T>(token, null, ...this.repositories, ...repositories)
+      ? context.childContext(token, undefined, ...repositories)
+      : this.resolverContextFactory.create<T>(token, undefined, ...this.repositories, ...repositories)
     try {
       const result = await this.resolveInternal(token, optional, resolveContext)
       if (result === undefined) {
@@ -120,11 +128,11 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     optional: boolean = false,
     ...repositories: Repository[]
   ): Promise<ResolveResult<T>> {
-    return this.resolveInContext(null, token, optional, ...repositories)
+    return this.resolveInContext(undefined, token, optional, ...repositories)
   }
 
   public invoke(instance: object, member: Function, ...repositories: Repository[]): Promise<any> {
-    return this.invokeInContext(null, instance, member, ...repositories)
+    return this.invokeInContext(undefined, instance, member, ...repositories)
   }
 
   public async invokeInContext(
@@ -141,8 +149,8 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     repositories.unshift(...this.repositories)
     const meta = getInjectableMetadata(member)
     const resolveContext = context
-      ? context.childContext(null, injectionContext, ...repositories)
-      : this.resolverContextFactory.create(null, injectionContext, ...repositories)
+      ? context.childContext(undefined, injectionContext, ...repositories)
+      : this.resolverContextFactory.create(undefined, injectionContext, ...repositories)
     return Disposable.useAsync(resolveContext, async (context) => {
       const args = meta.params
         ? await Promise.all(meta.params.map((param) => this.resolveParam(param, param.token, param.optional, context)))
@@ -163,7 +171,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
             provider.deps.map((paramToken, paramIndex) => {
               const paramMeta = meta.params && meta.params[paramIndex]
               const optional = paramMeta && paramMeta.optional === true
-              return this.resolveParam(null, paramToken, optional, context)
+              return this.resolveParam(undefined, paramToken, optional, context)
             }),
           )
         : []
@@ -265,7 +273,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
   }
 
   private async runConfigInternal(@Inject(OnConfigInternal) @Optional() configs: OnConfig[]): Promise<void> {
-    return this.runConfig(null, null, configs)
+    return this.runConfig(undefined, undefined, configs)
   }
 
   private async bootstrap(
@@ -311,7 +319,7 @@ export class Container<TConfig extends ContainerConfig = ContainerConfig> implem
     return await this.resolveInternal(
       token,
       optional,
-      context.childContext(token, null, ...((param && param.providers) || [])),
+      context.childContext(token, undefined, ...((param && param.providers) || [])),
     )
   }
 

@@ -5,6 +5,15 @@ import { ResolveResult } from './resolve.result'
 import { ResolverContext } from './resolver.context'
 
 export interface Resolver {
+
+  /**
+   * Performs a shallow check (not checking dependencies or other parameters) to see if a matching provider
+   * has been configured for the specified injection token.
+   * @param token - the injection token
+   * @param repositories - any additional {Repository} instances to use for resolving the token
+   */
+  canResolve(token: InjectionToken<any>, ...repositories: Repository[]): boolean
+
   invoke(instance: object, member: Function, ...repositories: Repository[]): Promise<any>;
 
   invokeInContext(
