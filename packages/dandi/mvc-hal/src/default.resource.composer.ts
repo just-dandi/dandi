@@ -263,7 +263,7 @@ export class DefaultResourceComposer implements ResourceComposer {
     @Inject(CompositionContext) compositionContext: CompositionContext,
   ): Promise<ComposedResource<any> | ComposedResource<any>[]> {
     const result = await this.resolver.invokeInContext(resolverContext, controller, controller[route.controllerMethod])
-    const resultResource: any = isControllerResult(result) ? result.resultObject : result
+    const resultResource: any = isControllerResult(result) ? result.data : result
     if (Array.isArray(resultResource)) {
       return Promise.all(
         resultResource.map((resource) =>

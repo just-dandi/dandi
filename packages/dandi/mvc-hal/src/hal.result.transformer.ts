@@ -4,7 +4,6 @@ import { Resource, SELF_RELATION } from '@dandi/hal'
 import { ControllerResult, ControllerResultTransformer, MvcRequest, ParamMap, RequestQueryParamMap } from '@dandi/mvc'
 
 import { CompositionContext } from './composition.context'
-import { HalControllerResult } from './hal.controller.result'
 import { ResourceComposer } from './resource.composer'
 
 export const EMBED_RELS_KEY = '_embedded'
@@ -18,7 +17,7 @@ export class HalResultTransformer implements ControllerResultTransformer {
   ) {}
 
   public async transform(result: ControllerResult): Promise<ControllerResult> {
-    if (!Resource.isResource(result.resultObject)) {
+    if (!Resource.isResource(result.data)) {
       return result
     }
 
@@ -30,10 +29,13 @@ export class HalResultTransformer implements ControllerResultTransformer {
     )
     return Disposable.useAsync(context, async () => {
       const resource = await this.composer.compose(
-        result.resultObject,
+        result.data,
         context,
       )
-      return new HalControllerResult(resource, result.headers)
+      return {
+        data: resource,
+        headers: result.headers,
+      }
     })
   }
 }

@@ -18,18 +18,18 @@ import {
 import {
   AccessorResourceId,
   CompositionContext,
+  DefaultResourceComposer,
   ResourceAccessor,
   ResourceComposer,
   ResourceListAccessor,
 } from '@dandi/mvc-hal'
+
 import { expect } from 'chai'
 import { createStubInstance, stub } from 'sinon'
 
-import { DefaultResourceComposer } from './default.resource.composer'
-
-describe('DefaultResourceComposer', () => {
-  describe('compose', () => {
-    it('adds the self link on models with no other relations', async () => {
+describe('DefaultResourceComposer', function() {
+  describe('compose', function() {
+    it('adds the self link on models with no other relations', async function() {
       class TestModel {
         constructor(id?: number) {
           this.id = id
@@ -76,7 +76,7 @@ describe('DefaultResourceComposer', () => {
       expect(result.getLink(SELF_RELATION)).to.include({ href: '/test/42' })
     })
 
-    it('adds self link on models with no relations and no identifier', async () => {
+    it('adds self link on models with no relations and no identifier', async function() {
       class TestModel {
         constructor() {}
       }
@@ -114,7 +114,7 @@ describe('DefaultResourceComposer', () => {
       expect(result.getLink(SELF_RELATION)).to.include({ href: '/test' })
     })
 
-    it('adds self link on models with relations, but no identifier', async () => {
+    it('adds self link on models with relations, but no identifier', async function() {
       class Resource {
         @ResourceId()
         resourceId: number;
@@ -179,7 +179,7 @@ describe('DefaultResourceComposer', () => {
       expect(result.getLink(SELF_RELATION)).to.include({ href: '/index' })
     })
 
-    it('adds links for non-array relations specified by the @Relation() decorator', async () => {
+    it('adds links for non-array relations specified by the @Relation() decorator', async function() {
       class TestModelParent {
         constructor(id?: number) {
           this.id = id
@@ -261,7 +261,7 @@ describe('DefaultResourceComposer', () => {
       expect(result.getLink('parent')).to.include({ href: '/parent/7' })
     })
 
-    it('adds links for array relations specified by the @ListRelation() decorator', async () => {
+    it('adds links for array relations specified by the @ListRelation() decorator', async function() {
       class TestModel {
         constructor(id?: number) {
           this.id = id
@@ -357,7 +357,7 @@ describe('DefaultResourceComposer', () => {
       expect(result.getLink('children')).to.include({ href: '/parent/42/test-model' })
     })
 
-    it('embeds links for non-array relations', async () => {
+    it('embeds links for non-array relations', async function() {
       class TestModelParent {
         constructor(id?: number) {
           this.id = id
@@ -480,7 +480,7 @@ describe('DefaultResourceComposer', () => {
       })
     })
 
-    it('embeds links for array relations', async () => {
+    it('embeds links for array relations', async function() {
       class TestModel {
         constructor(id?: number) {
           this.id = id
@@ -634,7 +634,7 @@ describe('DefaultResourceComposer', () => {
       })
     })
 
-    it('embeds nested links for non-array relations', async () => {
+    it('embeds nested links for non-array relations', async function() {
       class LevelOneModel {
         constructor(id?: number) {
           this.id = id
@@ -799,7 +799,7 @@ describe('DefaultResourceComposer', () => {
       })
     })
 
-    it('embeds nested links for array relations', async () => {
+    it('embeds nested links for array relations', async function() {
       class OtherModel {
         constructor(id?: number) {
           this.id = id
@@ -994,7 +994,7 @@ describe('DefaultResourceComposer', () => {
       })
     })
 
-    it('embeds nested links for array relations on an index model', async () => {
+    it('embeds nested links for array relations on an index model', async function() {
       class Item extends HalModelBase {
         constructor(source?: any) {
           super(source)
