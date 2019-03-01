@@ -1,33 +1,48 @@
-import { Disposable } from '@dandi/common'
-import { Container, InjectionToken, Repository, ResolveResult, Resolver, ResolverContext } from '@dandi/core'
+import { Constructor, Disposable, isConstructor } from '@dandi/common'
+import { Container, InjectionToken, Repository, ResolveResult, Resolver, ResolverContext, Provider } from '@dandi/core'
+import { isFactoryProvider } from '@dandi/core/testing'
 
 import { SinonStub, SinonStubbedInstance, stub } from 'sinon'
 import { expect } from 'chai'
 
 import { StubResolverContextFactory } from './stub-resolver-context-factory'
 
+export type TestProvider<T> = Provider<T> & { underTest?: boolean }
+
 export interface TestResolver extends Resolver {
-  readonly container: Container;
+  readonly container: Container
+  readonly repository: Repository
 
   resolveStub<T>(
     token: InjectionToken<T>,
     optional?: boolean,
     ...repositories: Repository[]
-  ): Promise<ResolveResult<SinonStubbedInstance<T>>>;
+  ): Promise<ResolveResult<SinonStubbedInstance<T>>>
 
-  inject<T>(token: InjectionToken<T>, optional?: boolean, ...repositories: Repository[]): Promise<T>;
+  inject<T>(token: InjectionToken<T>, optional?: boolean, ...repositories: Repository[]): Promise<T>
+
+  injectMulti<T>(token: InjectionToken<T>, optional?: boolean, ...repositories: Repository[]): Promise<T[]>
 
   injectStub<T>(
     token: InjectionToken<T>,
     optional?: boolean,
     ...repositories: Repository[]
-  ): Promise<SinonStubbedInstance<T>>;
+  ): Promise<SinonStubbedInstance<T>>
+
+  register(...providers: Constructor<any>[]): void
+
+  registerProviders(...providers: Provider<any>[]): void
 }
 
-export class TestHarness implements TestResolver {
+export class TestHarness implements TestResolver, Disposable {
   private _container: Container;
   public get container(): Container {
     return this._container
+  }
+
+  private _repository: Repository
+  public get repository(): Repository {
+    return this._repository
   }
 
   /**
@@ -49,6 +64,7 @@ export class TestHarness implements TestResolver {
 
       // sanity checking!
       expect(repo.get(__TestSanityChecker)).not.to.exist
+      // eslint-disable-next-line no-invalid-this
       repo.register(this, __TestSanityChecker)
       expect(repo.get(__TestSanityChecker)).to.exist
 
@@ -71,19 +87,41 @@ export class TestHarness implements TestResolver {
     }
     if (suite) {
       beforeEach(async () => {
-        this._container = new Container({ providers })
+        const singletonedProviders = this.singletonizeProviders(providers)
+        this._container = new Container({ providers: singletonedProviders })
+        this._repository = Repository.for(this._container)
         await this._container.start()
       })
       afterEach(() => {
-        this._container = undefined
+        this.dispose()
       })
     } else {
-      this._container = new Container({ providers })
+      const singletonedProviders = this.singletonizeProviders(providers)
+      this._container = new Container({ providers: singletonedProviders })
+      this._repository = Repository.for(this._container)
     }
   }
 
+  private singletonizeProviders(providers: any[]) {
+    return providers.map(provider => {
+      // allow forcing singletons for providers that don't allow singletons
+      if (!isFactoryProvider(provider) || provider.singleton || (provider as TestProvider<any>).underTest) {
+        return provider
+      }
+      let instance
+      return Object.assign({}, provider, {
+        useFactory(...args: any[]) {
+          if (!instance) {
+            instance = provider.useFactory(...args)
+          }
+          return instance
+        },
+      })
+    })
+  }
+
   public invoke(instance: any, member: Function, ...repositories: Repository[]): Promise<any> {
-    return this._container.invoke(instance, member, ...repositories)
+    return this._container.invoke(instance, member, this.repository, ...repositories)
   }
 
   public invokeInContext(
@@ -92,7 +130,14 @@ export class TestHarness implements TestResolver {
     member: Function,
     ...repositories: Repository[]
   ): Promise<any> {
-    return this._container.invokeInContext(context, instance, member, ...repositories)
+    return this._container.invokeInContext(context, instance, member, this.repository, ...repositories)
+  }
+
+  public canResolve(
+    token: InjectionToken<any>,
+    ...repositories: Repository[]
+  ): boolean {
+    return this._container.canResolve(token, ...repositories)
   }
 
   public resolve<T>(
@@ -100,7 +145,9 @@ export class TestHarness implements TestResolver {
     optional?: boolean,
     ...repositories: Repository[]
   ): Promise<ResolveResult<T>> {
-    return this._container.resolve(token, optional, ...repositories)
+    expect(this).to.be.instanceof(TestHarness)
+    expect(this.repository).to.exist
+    return this._container.resolve(token, optional, this.repository, ...repositories)
   }
 
   public resolveInContext<T>(
@@ -109,7 +156,7 @@ export class TestHarness implements TestResolver {
     optional?: boolean,
     ...repositories: Repository[]
   ): Promise<ResolveResult<T>> {
-    return this._container.resolveInContext(context, token, optional, ...repositories)
+    return this._container.resolveInContext(context, token, optional, this.repository, ...repositories)
   }
 
   public resolveStub<T>(
@@ -117,12 +164,18 @@ export class TestHarness implements TestResolver {
     optional?: boolean,
     ...repositories: Repository[]
   ): Promise<ResolveResult<SinonStubbedInstance<T>>> {
-    return this._container.resolve(token, optional, ...repositories) as Promise<ResolveResult<SinonStubbedInstance<T>>>
+    return this._container.resolve(token, optional, this.repository, ...repositories) as Promise<ResolveResult<SinonStubbedInstance<T>>>
   }
 
   public async inject<T>(token: InjectionToken<T>, optional?: boolean, ...repositories: Repository[]): Promise<T> {
     return await Disposable.use(await this.resolve<T>(token, optional, ...repositories), (result) => {
-      return result && result.value as T || undefined
+      return result && result.singleValue || undefined
+    })
+  }
+
+  public async injectMulti<T>(token: InjectionToken<T>, optional?: boolean, ...repositories: Repository[]): Promise<T[]> {
+    return await Disposable.use(await this.resolve<T>(token, optional, ...repositories), (result) => {
+      return result && result.arrayValue || undefined
     })
   }
 
@@ -132,6 +185,21 @@ export class TestHarness implements TestResolver {
     ...repositories: Repository[]
   ): Promise<SinonStubbedInstance<T>> {
     return (await this.inject(token, optional, ...repositories)) as any
+  }
+
+  public registerProviders(...providers: Provider<any>[]): void {
+    this.repository.registerProviders(...providers)
+  }
+
+  public register(...providers: Constructor<any>[]): void {
+    const source = { constructor: this.constructor }
+    providers.forEach(p => this.repository.register(source, p))
+  }
+
+  public dispose() {
+    this.repository.dispose('test complete')
+    this._container = undefined
+    this._repository = undefined
   }
 }
 
@@ -153,4 +221,17 @@ export async function stubHarnessSingle(...providers: any[]): Promise<TestResolv
   const harness = new TestHarness(providers, false, true)
   await harness.container.start()
   return harness
+}
+
+export function underTest<T>(provider: Provider<T>): TestProvider<any> {
+  if (isConstructor(provider)) {
+    return {
+      provide: provider,
+      useClass: provider,
+      underTest: true,
+    }
+  }
+  return Object.assign({
+    underTest: true,
+  }, provider)
 }
