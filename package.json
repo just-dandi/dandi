@@ -9,11 +9,11 @@
     "update-package-configs": "builder update-configs",
     "update-packages": "builder npm update",
     "build": "builder build",
-    "test": "mocha $NODE_DEBUG_OPTION",
+    "test": "mocha",
     "lint": "eslint . --ext js,ts",
     "lint:fix": "npm run lint -- --fix",
     "precoverage": "rimraf coverage .nyc_output",
-    "coverage": "nyc npm test",
+    "coverage": "nyc mocha",
     "coverage-report": "nyc report --reporter=text-lcov | coveralls",
     "coverage:watch": "nyc npm test -- --watch"
   },

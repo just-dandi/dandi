@@ -23,7 +23,7 @@ export const server = new Container({
     LoggingModule.use(ConsoleLogListener),
 
     // MVC
-    MvcExpressModule.withDefaults().config({ port: parseInt(process.env.PORT, 10) || DEFAULT_SERVER_PORT }),
+    MvcExpressModule.config({ port: parseInt(process.env.PORT, 10) || DEFAULT_SERVER_PORT }),
     MvcViewModule
       .engine('pug', PugViewEngine)
       .engine('ejs', EjsViewEngine),
