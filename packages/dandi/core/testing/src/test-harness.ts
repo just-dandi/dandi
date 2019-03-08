@@ -99,8 +99,8 @@ export class TestHarness implements TestInjector, Disposable {
         this._application = new DandiApplication({ injector: injectorFactory, providers: singletonedProviders })
         await this._application.start()
       })
-      afterEach(() => {
-        this.dispose()
+      afterEach(async () => {
+        await this.dispose()
       })
     } else {
       const singletonedProviders = this.singletonizeProviders(providers)
@@ -159,8 +159,8 @@ export class TestHarness implements TestInjector, Disposable {
     this.appContext.register(source, ...providers)
   }
 
-  public dispose() {
-    this._application.dispose('test complete')
+  public async dispose(): Promise<void> {
+    await this._application.dispose('test complete')
     this._application = undefined
   }
 
@@ -237,7 +237,7 @@ export async function stubHarnessSingle(...providers: any[]): Promise<TestInject
   return harness
 }
 
-export function underTest<T>(provider: Provider<T>): TestProvider<any> {
+export function underTest(provider: Provider<any>): TestProvider<any> {
   if (isConstructor(provider)) {
     return {
       provide: provider,

@@ -196,10 +196,10 @@ export class DandiApplicationInit<TConfig extends DandiApplicationConfig> implem
     this.appInjectorContext.register(source, module)
   }
 
-  public dispose(reason: string): void {
-    this.appInjectorContext.dispose(reason)
+  public async dispose(reason: string): Promise<void> {
+    await this.appInjectorContext.dispose(reason)
     if (Disposable.isDisposable(this.injector)) {
-      this.injector.dispose(reason)
+      await this.injector.dispose(reason)
     }
   }
 }

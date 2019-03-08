@@ -34,7 +34,7 @@ export class DandiApplication<TConfig extends DandiApplicationConfig = DandiAppl
     return this.initHost.start(ts)
   }
 
-  public dispose(reason: string) {
-    this.initHost.dispose(reason)
+  public async dispose(reason: string): Promise<void> {
+    await this.initHost.dispose(reason)
   }
 }

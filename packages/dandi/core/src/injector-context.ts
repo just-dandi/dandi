@@ -86,15 +86,15 @@ export class InjectorContext implements Disposable {
     })
   }
 
-  public dispose(reason: string): void {
-    this.children.forEach((child) => {
+  public async dispose(reason: string): Promise<void> {
+    await Promise.all(this.children.map((child) => {
       if (!Disposable.isDisposed(child)) {
-        child.dispose(`Disposing parent ResolverContext: ${reason}`)
+        return child.dispose(`Disposing parent ResolverContext: ${reason}`)
       }
-    })
+    }))
     this.children.length = 0
     this.findCache.clear()
-    this.repository.dispose(`Disposed owner ResolverContext: ${reason}`)
+    await this.repository.dispose(`Disposed owner ResolverContext: ${reason}`)
     Disposable.remapDisposed(this, reason)
   }
 

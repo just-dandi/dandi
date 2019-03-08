@@ -90,7 +90,7 @@ export class DandiInjector implements Injector, Disposable {
 
     if (!injectorContext.match) {
       if (this.shouldDisposeResolverContext(injectorContext)) {
-       injectorContext.dispose('Disposed after resolving to an undefined provider')
+       await injectorContext.dispose('Disposed after resolving to an undefined provider')
       }
       return undefined
     }
@@ -100,13 +100,13 @@ export class DandiInjector implements Injector, Disposable {
       const result = await this.generator.generateInstance(injectorContext)
       if (result === undefined || result === null) {
         if (this.shouldDisposeResolverContext(injectorContext)) {
-          injectorContext.dispose('Disposed after generating a null or undefined instance value')
+          await injectorContext.dispose('Disposed after generating a null or undefined instance value')
         }
         return undefined
       }
       return injectorContext.resolveValue(result)
     } catch (err) {
-      injectorContext.dispose(`Container error during inject: ${err.message}`)
+      await injectorContext.dispose(`Container error during inject: ${err.message}`)
       throw err
     }
   }
@@ -169,9 +169,9 @@ export class DandiInjector implements Injector, Disposable {
     return this.generator.generateInstance(paramInjectorContext)
   }
 
-  public dispose(reason: string): void {
+  public async dispose(reason: string): Promise<void> {
     if (!Disposable.isDisposed(this.rootInjectorContext)) {
-      this.rootInjectorContext.dispose(reason)
+      await this.rootInjectorContext.dispose(reason)
     }
   }
 

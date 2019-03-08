@@ -58,14 +58,14 @@ export class ResolverContext<T> extends InjectorContext {
     return this._result
   }
 
-  public dispose(reason: string): void {
-    this.instances.forEach((instance) => {
+  public async dispose(reason: string): Promise<void> {
+    await Promise.all(this.instances.map((instance) => {
       if (Disposable.isDisposable(instance)) {
-        instance.dispose(`Disposing ResolverContext: ${reason}`)
+        return instance.dispose(`Disposing ResolverContext: ${reason}`)
       }
-    })
+    }))
     this.instances.length = 0
-    super.dispose(reason)
+    return super.dispose(reason)
   }
 
   protected getCustomInspectorString(): string {

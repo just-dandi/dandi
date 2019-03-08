@@ -8,7 +8,7 @@ export type DisposeFn = (reason: string) => void
 export const DISPOSED = globalSymbol('Disposable.DISPOSED')
 
 export interface Disposable {
-  dispose(reason: string): void;
+  dispose(reason: string): void | Promise<void>
 }
 
 export class DisposableTypeError extends AppError {

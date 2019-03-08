@@ -147,19 +147,19 @@ describe('ResolverContext', function() {
       expect(() => (this.childContext as any).findCache).to.throw
     })
 
-    it('disposes all disposable instances', function() {
+    it('disposes all disposable instances', async function() {
       const childInstanceDispose = stub()
       this.childContext.addInstance({ dispose: childInstanceDispose })
 
-      this.childContext.dispose('test')
+      await this.childContext.dispose('test')
 
       expect(childInstanceDispose).to.have.been.calledOnce
     })
 
-    it('disposes all child contexts', function() {
+    it('disposes all child contexts', async function() {
       const childDispose = spy(this.childContext, 'dispose')
 
-      this.parentContext.dispose('test')
+      await this.parentContext.dispose('test')
 
       expect(childDispose).to.have.been.calledOnce
     })
