@@ -3,6 +3,7 @@ import {
   Inject,
   Injectable,
   InjectionContext,
+  LogEntry,
   LogLevel,
   Optional,
   Singleton,
@@ -15,7 +16,6 @@ import {
   ConsoleLogListenerOptions,
   LogEntryTagInfo, TagFormatOptions,
 } from './console.log-listener.config'
-import { LogEntry } from './log-entry'
 import { LogLevelFilter, LogLevelValue } from './log-level-filter'
 import { LogListener } from './log-listener'
 import {

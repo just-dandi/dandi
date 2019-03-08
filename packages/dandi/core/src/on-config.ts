@@ -1,5 +1,5 @@
-import { InjectionToken } from './injection.token'
-import { localOpinionatedToken } from './local.token'
+import { InjectionToken } from './injection-token'
+import { localOpinionatedToken } from './local-token'
 
 export type OnConfig = (...args: any[]) => void
 

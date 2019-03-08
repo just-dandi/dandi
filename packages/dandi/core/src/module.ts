@@ -1,9 +1,9 @@
 import { Constructor, isConstructor } from '@dandi/common'
 
-import { PKG } from './local.token'
+import { PKG } from './local-token'
 import { Provider } from './provider'
-import { isProvider } from './provider.util'
-import { InjectionToken, isInjectionToken } from './injection.token'
+import { isProvider } from './provider-util'
+import { InjectionToken, isInjectionToken } from './injection-token'
 
 export type RegisterableTypes = Constructor<any> | Provider<any> | Array<Constructor<any>> | Array<Provider<any>> | Module
 export type Registerable = RegisterableTypes | RegisterableTypes[]

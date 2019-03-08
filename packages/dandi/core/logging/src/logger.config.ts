@@ -1,8 +1,7 @@
-import { OnConfig, Provider } from '@dandi/core'
+import { LogStream, OnConfig, Provider } from '@dandi/core'
 import { OnConfigInternal } from '@dandi/core/src/on-config-internal'
 
 import { LogListener } from './log-listener'
-import { LogStream } from './log-stream'
 
 export const LoggerConfig: Provider<OnConfig> = {
   provide: OnConfigInternal,

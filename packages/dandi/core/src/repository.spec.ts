@@ -12,7 +12,7 @@ import {
   Repository,
   SymbolToken,
 } from '@dandi/core'
-import { TestHarness } from '@dandi/core-testing'
+import { TestHarness } from '@dandi/core/testing'
 
 import { expect } from 'chai'
 import { spy } from 'sinon'
@@ -184,7 +184,7 @@ describe('Repository', function() {
       repo.register(this, additionalProvider)
 
       expect((repo as any).providers).to.contain.keys(provider.provide)
-      expect((repo as any).providers.get(provider.provide)).to.deep.equal([provider, additionalProvider])
+      expect([...(repo as any).providers.get(provider.provide)]).to.deep.equal([provider, additionalProvider])
     })
 
     it('throws an error when registering a multi provider if a non-multi provider already exists', function() {

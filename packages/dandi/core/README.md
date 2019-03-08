@@ -6,7 +6,7 @@ DI system.
 ## Concepts
 
 - **Resolver** - responsible for resolving and instantiating dependencies
-- **Container** - in Dandi, the main `Resolver` implementation, which
+- **DandiApplication** - in Dandi, the main `Resolver` implementation, which
   also includes logic for discovering injectable services, as well as
   storing references of singleton dependencies
 - **Provider** - An object which describes how a request for a dependency
@@ -26,7 +26,7 @@ encounters a dependency of the decorated class, it will instantiate a
 new instance of that class:
 
 ```typescript
-import { Injectable } from '@dandi/core';
+import { Injectable } from '@dandi/core'
 
 @Injectable()
 class MyService {}
@@ -36,11 +36,11 @@ The `@Injectable()` decorator can also be used to register a service for
 a different injection token, such as a token representing an interface:
 
 ```typescript
-import { InjectionToken, Provider, SymbolToken } from '@dandi/core';
+import { InjectionToken, Provider, SymbolToken } from '@dandi/core'
 
 export interface MyInterface {}
 
-export const MyInterface: InjectionToken<MyInterface> = SymbolToken.for<MyInterface>('MyInterface');
+export const MyInterface: InjectionToken<MyInterface> = SymbolToken.for<MyInterface>('MyInterface')
 
 @Injectable(MyInterface)
 export class MyService implements MyInterface {}
@@ -65,14 +65,14 @@ implementations of interfaces.
 A value provider allows mapping an existing value to an injection token.
 
 ```typescript
-import { InjectionToken, Provider, SymbolToken } from '@dandi/core';
+import { InjectionToken, Provider, SymbolToken } from '@dandi/core'
 
-const SomeValue: InjectionToken<string> = SymbolToken.for<string>('SomeValue');
+const SomeValue: InjectionToken<string> = SymbolToken.for<string>('SomeValue')
 
 const SomeValueProvider: Provider<string> = {
   provide: SomeValue,
   useValue: 'any-value-you-like-here',
-};
+}
 ```
 
 #### Factory Providers
@@ -81,17 +81,17 @@ A factory provider allows mapping a factory function to an injection
 token. This can be helpful for making 3rd party classes injectable.
 
 ```typescript
-import { InjectionToken, Provider, SymbolToken } from '@dandi/core';
-import { S3 } from 'aws-sdk';
+import { InjectionToken, Provider, SymbolToken } from '@dandi/core'
+import { S3 } from 'aws-sdk'
 
 export function s3Factory(): S3 {
-  return new S3({ endpoint: 'http://local-dev-endpoint' });
+  return new S3({ endpoint: 'http://local-dev-endpoint' })
 }
 
 export const S3Provider: Provider<S3> = {
   provide: S3,
   useFactory: s3Factory,
-};
+}
 ```
 
 #### Class Providers
@@ -99,18 +99,18 @@ export const S3Provider: Provider<S3> = {
 A class provider allows mapping a class constructor to an injection token.
 
 ```typescript
-import { InjectionToken, Provider, SymbolToken } from '@dandi/core';
+import { InjectionToken, Provider, SymbolToken } from '@dandi/core'
 
 export interface MyInterface {}
 
-export const MyInterface: InjectionToken<MyInterface> = SymbolToken.for<MyInterface>('MyInterface');
+export const MyInterface: InjectionToken<MyInterface> = SymbolToken.for<MyInterface>('MyInterface')
 
 export class MyService implements MyInterface {}
 
 export const MyInterfaceProvider: Provider<MyInterface> = {
   provide: MyInterface,
   useClass: MyService,
-};
+}
 ```
 
 In the above example, `MyInterfaceProvider` allows requests for
@@ -138,8 +138,8 @@ class ServiceB {
   ) {}
 
   public async doSomething(): Promise<void> {
-    const something = await this.serviceA.getSomething();
-    console.log(something);
+    const something = await this.serviceA.getSomething()
+    console.log(something)
   }
 
 }
@@ -147,16 +147,22 @@ class ServiceB {
 
 The `@Inject()` decorator can also be used to describe dependencies for
 a function or method. While Dandi does not automatically wrap function
-calls, decorated functions can be invoked by a `Resolver`'s `invoke` and
-`invokeInContext` methods:
+calls, decorated functions can be invoked by an `Injector`'s `invoke` method:
 
 ```typescript
-// assigned elsewhere
-declare const resolver: Resolver;
+@Injectable()
+class MyService {
+  
+  constructor(@Inject(Injector) private injector: Injector) {}
+  
+  public async doSomething(): Promise<void> {
+    await this.injector.invoke(this, 'invokableMethod') // returns a Promise
+  }
+  
+  public invokableMethod(@Inject(MyDependency) myDep: MyDependency): void {
+  }
+} 
 
-function doSomething(@Inject(MyService) myService: MyService): void {}
-
-resolver.invoke(undefined, doSomething); // returns a Promise
 ```
 
 ### Optional Dependencies
@@ -180,14 +186,14 @@ Classes and providers that are used by an application must be passed to
 the container at startup:
 
 ```typescript
-import { Container } from '@dandi/core';
+import { DandiApplication } from '@dandi/core'
 
-const appContainer = new Container({
+const app = new DandiApplication({
   providers: [
     MyService,
     MyInterfaceProvider,
   ],
-});
+})
 ```
 
 Values passed to the `providers` property can be class constructors,
@@ -204,59 +210,64 @@ marked with `@Injectable()` that located in any module loaded by NodeJS.
 defined in its configuration.
 
 ## Application Lifecycle
-* `container.start()`
+* `app.start()` or `app.run()`
 * **Pre-Init** - Providers defined in container configuration are registered with the internal provider repository
-* **Init** - `ResolverContextFactory` is bound, scanners are run
+* **Init** - `InjectorContextFactory` is bound, scanners are run
 * **Config** - Provided implementations of `OnConfig` are invoked
-* **Bootstrap** - The `Bootstrapper` implementation, if provided, is instantiated and invoked
+* **Bootstrap** - The `EntryPoint` implementation, if provided, is instantiated and invoked
 
 ## Application Startup and Bootstrapping
 
-The container's `start()` method must be called to initialize the
+The container's `start()` or `run()` method must be called to initialize the
 container and start the application.
 
 ```typescript
-import { Container } from '@dandi/core';
+import { DandiApplication } from '@dandi/core'
 
-const appContainer = new Container({
+const app = new DandiApplication({
   providers: [
     MyService,
     MyInterfaceProvider,
   ],
-});
+})
 
-container.start();
+app.run()
 ```
 
-Startup logic is defined by providing an implementation of the
-`Bootstrapper` interface:
+* **`app.start()`** returns a `Promise` that resolves to the `Injector` instance create by the application.
+  The injector can then be used to invoke or inject objects configured in the application.
+  
+* **`app.run()`** returns a `Promise` that resolves to the value returned by the configured `EntryPoint`
+  implementation.
+
+Startup logic is defined by providing an implementation of the `EntryPoint` interface:
 
 ```typescript
-import { Bootstrapper, Container, Inject, Injectable } from '@dandi/core';
+import { EntryPoint, DandiApplication, Inject, Injectable } from '@dandi/core'
 
-@Injectable(Bootstrapper)
-class AppBootstrapper implements Bootstrapper {
+@Injectable(EntryPoint)
+class MyApp implements EntryPoint {
 
   constructor(
     @Inject(MyService) private myService: MyService,
   ) {}
 
-  public start(): void {
+  public run(): void {
     // start the app
-    this.myService.listen();
+    this.myService.listen()
   }
 
 }
 
-const appContainer = new Container({
+const app = new DandiApplication({
   providers: [
-    AppBootstrapper,
+    MyApp,
     MyService,
     MyInterfaceProvider,
   ],
-});
+})
 
-container.start();
+app.run()
 ```
 
 ## Application Configuration

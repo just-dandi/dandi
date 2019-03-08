@@ -1,16 +1,15 @@
 import { Constructor } from '@dandi/common'
 
-import { InjectionToken } from './injection.token'
-import { localOpinionatedToken, localSymbolToken } from './local.token'
-import { MultiProvider } from './provider'
-import { Repository } from './repository'
+import { InjectionToken } from './injection-token'
+import { localOpinionatedToken, localSymbolToken } from './local-token'
+import { MultiProvider, Provider } from './provider'
 
 export interface ScannerContructor {
   new (config: any[]): Scanner;
 }
 
 export interface Scanner {
-  scan(): Promise<Repository>;
+  scan(): Promise<Array<Provider<any> | Constructor<any>>>
 }
 
 export const Scanner: InjectionToken<Scanner> = localOpinionatedToken<Scanner>('Scanner', { multi: true })

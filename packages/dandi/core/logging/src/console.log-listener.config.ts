@@ -1,9 +1,8 @@
 import { cloneObject } from '@dandi/common'
-import { LogCallOptions, LogLevel, ValueProvider } from '@dandi/core'
+import { LogCallOptions, LogEntry, LogLevel, ValueProvider } from '@dandi/core'
 import { DateTimeFormatOptions } from 'luxon'
 
 import { localOpinionatedToken } from './local.token'
-import { LogEntry } from './log-entry'
 
 export interface ConsoleLogListenerEntryInfo extends LogEntry {
   levelTagHighWater: number

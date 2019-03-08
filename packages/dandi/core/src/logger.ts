@@ -1,6 +1,6 @@
 import { LoggerMethod } from './logger-method'
-import { InjectionToken } from './injection.token'
-import { localOpinionatedToken } from './local.token'
+import { InjectionToken } from './injection-token'
+import { localOpinionatedToken } from './local-token'
 
 export interface Logger {
   debug: LoggerMethod

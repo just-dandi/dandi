@@ -1,5 +1,5 @@
-import { InjectionContext, LogCallOptions, LogLevel } from '@dandi/core'
-import { ConsoleLogListener, LogEntry } from '@dandi/core/logging'
+import { InjectionContext, LogCallOptions, LogEntry, LogLevel } from '@dandi/core'
+import { ConsoleLogListener } from '@dandi/core/logging'
 import { DateTime } from 'luxon'
 
 import { expect } from 'chai'

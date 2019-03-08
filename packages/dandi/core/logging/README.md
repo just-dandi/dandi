@@ -29,10 +29,10 @@ package and not `@dandi/core/logging`.
 
 ```typescript
 // main.ts
-import { Container } from '@dandi/core'
+import { DandiApplication } from '@dandi/core'
 import { LoggingModule } from '@dandi/core/logging' // includes ContextualLogger
 
-const container = new Container({
+const container = new DandiApplication({
   providers: [
     LoggingModule,
     /* other providers */
@@ -69,10 +69,10 @@ When no `Logger` implementation is configured, `NoopLogger` is used by default.
 Include `ConsoleLogListener` by calling the `use` method on `LoggingModule`. 
 
 ```typescript
-import { Container } from '@dandi/core'
+import { DandiApplication } from '@dandi/core'
 import { ConsoleLogListener, LoggingModule } from '@dandi/core/logging'
 
-const container = new Container({
+const container = new DandiApplication({
   providers: [
     LoggingModule.use(ConsoleLogListener),
     /* other providers */

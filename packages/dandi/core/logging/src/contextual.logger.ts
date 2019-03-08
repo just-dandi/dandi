@@ -2,15 +2,15 @@ import {
   createLoggerMethodChain,
   Inject,
   Injectable,
-  InjectionContext, LogCallOptions,
+  InjectionContext,
+  LogCallOptions,
   Logger,
   LoggerMethod,
   LogLevel,
+  LogStream,
   Now,
   NowFn,
 } from '@dandi/core'
-
-import { LogStream } from './log-stream'
 
 @Injectable(Logger)
 export class ContextualLogger implements Logger {

@@ -1,4 +1,4 @@
-import { Injectable } from './injectable.decorator'
+import { Injectable } from './injectable-decorator'
 import { Logger } from './logger'
 import { createLoggerMethodChain, LoggerMethod } from './logger-method'
 
