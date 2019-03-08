@@ -1,32 +1,87 @@
-import { ProviderOptions } from '@dandi/core'
-import { ControllerResultTransformer } from '@dandi/mvc'
-import { MvcViewRenderer, ViewResult } from '@dandi/mvc-view'
+import { testHarness } from '@dandi/core/testing'
+import {
+  DefaultObjectRenderer,
+  MimeTypes,
+  MvcRequest,
+  MvcResponseRenderer,
+  MvcResponseRendererProvider,
+  parseMimeTypes,
+  RequestAcceptTypes,
+  Route,
+} from '@dandi/mvc'
+import { MvcViewRenderer, ViewResult, ViewResultFactory } from '@dandi/mvc-view'
+import { TestApplicationJsonRenderer } from '@dandi/mvc/testing'
 
-import { stub } from 'sinon'
+import { SinonStub, stub } from 'sinon'
 import { expect } from 'chai'
 
-xdescribe('MvcViewRenderer', function() {
-  beforeEach(function() {
+describe('MvcViewRenderer', function() {
+
+  const harness = testHarness(
+    MvcViewRenderer,
+    MvcResponseRendererProvider,
+    DefaultObjectRenderer.use(TestApplicationJsonRenderer),
+    {
+      provide: Route,
+      useValue: {
+        path: '/test',
+      },
+    },
+    {
+      provide: MvcRequest,
+      useValue: {
+        get: stub().returns(MimeTypes.textHtml),
+      },
+    },
+    {
+      provide: RequestAcceptTypes,
+      useValue: parseMimeTypes(MimeTypes.textHtml),
+    },
+    {
+      provide: ViewResultFactory,
+      useFactory: () => stub(),
+    },
+  )
+
+  beforeEach(async function() {
     this.viewResult = stub()
     this.transformer = new MvcViewRenderer(this.viewResult, undefined)
+    this.renderer = await harness.inject(MvcResponseRenderer)
   })
 
-  it('is decorated with @Injectable(ControllerResultTransformer)', function() {
-    expect(Reflect.get(MvcViewRenderer, ProviderOptions.valueOf() as symbol).provide).to.equal(
-      ControllerResultTransformer,
+  it('is registered as a Renderer for text/html', function() {
+
+    expect(this.renderer).to.be.instanceof(MvcViewRenderer)
+
+  })
+
+  it('passes through the rendered value of an existing ViewResult', async function() {
+
+    const viewResult = new ViewResult(
+      {
+        render: stub().returns('foo!'),
+      },
+      undefined,
+      undefined,
+      undefined,
     )
+
+    expect(await this.renderer.render(parseMimeTypes(MimeTypes.textHtml), viewResult))
+      .to.deep.equal({
+      contentType: MimeTypes.textHtml,
+      renderedOutput: 'foo!',
+    })
+
   })
 
-  it('returns ControllerResults that are ViewResult instances without attempting to re-transform them', async function() {
-    const result = new ViewResult(null, null, null, null)
-    expect(await this.transformer.transform(result)).to.equal(result)
-    expect(this.viewResult).not.to.have.been.called
-  })
+  it('returns a ViewResult containing the output of calling the provided ViewResultFactory', async function() {
+    const viewResultFactory = await harness.inject(ViewResultFactory) as SinonStub
+    viewResultFactory.resolves({ value: 'foo!' })
 
-  it('returns the result of calling the provided ViewResultFactory', async function() {
-    const result = {}
-    const viewResult = new ViewResult(null, null, null, null)
-    this.viewResult.resolves(viewResult)
-    expect(await this.transformer.transform(result)).to.equal(viewResult)
+    expect(await this.renderer.render(parseMimeTypes(MimeTypes.textHtml), {}))
+      .to.deep.equal({
+        contentType: MimeTypes.textHtml,
+        renderedOutput: 'foo!',
+      })
   })
 })

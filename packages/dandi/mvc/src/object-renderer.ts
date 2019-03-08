@@ -29,7 +29,3 @@ export class DefaultObjectRenderer {
     ]
   }
 }
-// export const DefaultObjectRenderer: InjectionToken<Constructor<ObjectRenderer>> = localOpinionatedToken('DefaultObjectRenderer', {
-//   multi: false,
-//   singleton: false,
-// })
