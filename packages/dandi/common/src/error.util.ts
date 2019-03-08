@@ -1,4 +1,4 @@
-import { AppError } from './app.error'
+import { AppError } from './app-error'
 
 export class ErrorUtil {
   public static getCustomProperties(error: Error): any {

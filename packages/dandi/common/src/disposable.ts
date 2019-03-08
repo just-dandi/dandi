@@ -1,4 +1,5 @@
-import { AppError } from './app.error'
+import { AppError } from './app-error'
+import { DISABLE_REMAP } from './disposable-flags'
 import { globalSymbol } from './global.symbol'
 import { isPromise } from './promise'
 
@@ -51,7 +52,7 @@ export class Disposable {
   }
 
   public static isDisposed(obj: any): boolean {
-    return obj && obj[DISPOSED]
+    return obj && obj[DISPOSED] || false
   }
 
   /**
@@ -126,6 +127,14 @@ export class Disposable {
   }
 
   public static remapDisposed<T>(target: T, reason: string): T {
+    Object.defineProperty(target, DISPOSED, {
+      get: () => true,
+      set: undefined,
+      configurable: false,
+    })
+    if (Disposable[DISABLE_REMAP]) {
+      return target
+    }
     const thrower = throwAlreadyDisposed.bind(target, target, reason)
     for (const prop in target) {
       if (prop === DISPOSED) {
@@ -141,11 +150,6 @@ export class Disposable {
         })
       }
     }
-    Object.defineProperty(target, DISPOSED, {
-      get: () => true,
-      set: undefined,
-      configurable: false,
-    })
     return Object.freeze(target)
   }
 }

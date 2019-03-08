@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import { stub } from 'sinon'
 
-import { AppError } from './app.error'
+import { AppError } from './app-error'
 
 describe('AppError', () => {
   let appError: AppError

@@ -1,11 +1,9 @@
-// eslint-disable-next-line no-new-func
-const isBrowser = new Function(
-  'try { return this === window; } catch(err) { return false; }',
-)
+const { isBrowser } = require('./is-browser')
 
 /*
  * export the native URL implementation, depending on the platform
  */
+
 if (isBrowser()) {
   module.exports.Url = URL
 } else {
