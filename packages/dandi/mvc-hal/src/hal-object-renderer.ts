@@ -1,11 +1,13 @@
 import { Disposable } from '@dandi/common'
-import { Inject, Repository, Resolver } from '@dandi/core'
+import { Inject, Injector } from '@dandi/core'
 import {
   ControllerResult,
   ObjectRendererBase,
   parseMimeTypes,
   Renderer,
-  MvcRequest, RequestAcceptTypes, MvcResponseRenderer,
+  MvcRequest,
+  RequestAcceptTypes,
+  MvcResponseRenderer,
 } from '@dandi/mvc'
 
 import { HalMimeTypes } from './hal-mime-types'
@@ -16,7 +18,7 @@ export class HalObjectRenderer extends ObjectRendererBase {
   public readonly defaultContentType: string = HalMimeTypes.halJson
 
   constructor(
-    @Inject(Resolver) private resolver: Resolver,
+    @Inject(Injector) private injector: Injector,
   ) {
     super()
   }
@@ -24,26 +26,24 @@ export class HalObjectRenderer extends ObjectRendererBase {
   public async renderControllerResult(contentType: string, controllerResult: ControllerResult): Promise<string> {
     const halMimeType = parseMimeTypes(contentType)[0]
     const subRendererMimeType = parseMimeTypes(`${halMimeType.type}/${halMimeType.subtypeBase}`)
-    return Disposable.useAsync(Repository.for(controllerResult), async (repo) => {
-      repo.registerProviders(
-        {
-          provide: MvcRequest,
-          useValue: {
-            get: () => subRendererMimeType[0].fullType,
-          },
+    const providers = [
+      {
+        provide: MvcRequest,
+        useValue: {
+          get: () => subRendererMimeType[0].fullType,
         },
-        {
-          provide: RequestAcceptTypes,
-          useValue: subRendererMimeType,
-        },
-      )
+      },
+      {
+        provide: RequestAcceptTypes,
+        useValue: subRendererMimeType,
+      },
+    ]
 
-      return Disposable.useAsync(this.resolver.resolve(MvcResponseRenderer, false, repo), async resolveResult => {
-        const renderer = resolveResult.singleValue
-        const result = await renderer.render(subRendererMimeType, controllerResult)
-        return result.renderedOutput
+    return Disposable.useAsync(this.injector.inject(MvcResponseRenderer, ...providers), async resolveResult => {
+      const renderer = resolveResult.singleValue
+      const result = await renderer.render(subRendererMimeType, controllerResult)
+      return result.renderedOutput
 
-      })
     })
   }
 

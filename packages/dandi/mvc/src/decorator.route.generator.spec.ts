@@ -1,5 +1,5 @@
 import { Repository } from '@dandi/core'
-import { stubHarness } from '@dandi/core-testing'
+import { stubHarness } from '@dandi/core/testing'
 import {
   Authorized,
   Controller,

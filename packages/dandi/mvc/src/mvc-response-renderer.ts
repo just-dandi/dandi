@@ -1,5 +1,5 @@
 import { Constructor } from '@dandi/common'
-import { InjectionToken, Provider, Resolver, ResolverContext } from '@dandi/core'
+import { InjectionToken, Provider, Injector, InjectorContext, ResolverContext } from '@dandi/core'
 
 import { localOpinionatedToken } from './local.token'
 import { isRenderableMimeType } from './mime-type'
@@ -89,17 +89,17 @@ const SelectedRendererProvider: Provider<Constructor<ObjectRenderer>> = {
 export const MvcResponseRendererProvider: Provider<ObjectRenderer> = {
   provide: MvcResponseRenderer,
   async useFactory(
-    resolver: Resolver,
-    resolverContext: ResolverContext<ObjectRenderer>,
+    injector: Injector,
+    injectorContext: ResolverContext<ObjectRenderer>,
     SelectedRenderer: Constructor<ObjectRenderer>,
   ): Promise<ObjectRenderer> {
-    const resolveResult = await resolver.resolveInContext(resolverContext, SelectedRenderer)
+    const resolveResult = await injector.inject(SelectedRenderer, injectorContext)
     return resolveResult.singleValue
   },
   async: true,
   deps: [
-    Resolver,
-    ResolverContext,
+    Injector,
+    InjectorContext,
     SelectedRenderer,
   ],
   providers: [

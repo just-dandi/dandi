@@ -1,5 +1,5 @@
 import { AppError } from '@dandi/common'
-import { stubHarness } from '@dandi/core-testing'
+import { stubHarness } from '@dandi/core/testing'
 import { PgDbClient, PgDbPoolClient, TransactionAlreadyInProgressError } from '@dandi-contrib/data-pg'
 
 import { expect } from 'chai'

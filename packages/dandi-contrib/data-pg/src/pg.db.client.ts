@@ -1,5 +1,5 @@
 import { AppError, Disposable } from '@dandi/common'
-import { Inject, Injectable, Logger, Optional, Resolver } from '@dandi/core'
+import { Inject, Injectable, Logger, Optional, Injector } from '@dandi/core'
 import { DbClient, DbTransactionClient, TransactionFn } from '@dandi/data'
 import { ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder'
 
@@ -20,7 +20,7 @@ export class PgDbClient extends PgDbQueryableBase<PgDbPool> implements DbClient,
   constructor(
     @Inject(PgDbPool) pool: PgDbPool,
     @Inject(ModelBuilder) modelValidator: ModelBuilder,
-    @Inject(Resolver) private resolver: Resolver,
+    @Inject(Injector) private injector: Injector,
     @Inject(Logger) private logger: Logger,
     @Inject(PgDbModelBuilderOptions)
     @Optional()
@@ -30,7 +30,7 @@ export class PgDbClient extends PgDbQueryableBase<PgDbPool> implements DbClient,
   }
 
   public async transaction<T>(transactionFn: TransactionFn<T>): Promise<T> {
-    const transaction = (await this.resolver.resolve(DbTransactionClient)).singleValue
+    const transaction = (await this.injector.inject(DbTransactionClient)).singleValue
     try {
       this.activeTransactions.push(transaction)
 

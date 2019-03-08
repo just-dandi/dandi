@@ -1,5 +1,5 @@
 import { Disposable } from '@dandi/common'
-import { Inject, Resolver, ResolverContext } from '@dandi/core'
+import { Inject, Injector, InjectorContext, ResolverContext } from '@dandi/core'
 import {
   ControllerResult,
   MimeTypes,
@@ -16,8 +16,8 @@ export class MvcViewRenderer extends ObjectRendererBase {
   protected readonly defaultContentType: string = MimeTypes.textHtml
 
   constructor(
-    @Inject(Resolver) private resolver: Resolver,
-    @Inject(ResolverContext) private resolverContext: ResolverContext<any>,
+    @Inject(Injector) private injector: Injector,
+    @Inject(InjectorContext) private injectorContext: ResolverContext<any>,
   ) {
     super()
   }
@@ -26,7 +26,7 @@ export class MvcViewRenderer extends ObjectRendererBase {
     if (controllerResult instanceof ViewResult) {
       return controllerResult.value
     }
-    return Disposable.useAsync(this.resolver.resolveInContext(this.resolverContext, ViewResultFactory), async factoryResult => {
+    return Disposable.useAsync(this.injector.inject(ViewResultFactory, this.injectorContext), async factoryResult => {
       const factory = factoryResult.singleValue
       const viewResult = await factory(undefined, controllerResult.data)
       return viewResult.value

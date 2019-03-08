@@ -1,4 +1,4 @@
-import { Bootstrapper, Inject, Injectable, Logger } from '@dandi/core'
+import { EntryPoint, Inject, Injectable, Logger } from '@dandi/core'
 
 import { Action, ActionHost, Actions, CommandAction, CommandInfo } from './command-action'
 
@@ -6,8 +6,8 @@ function isActionName<T>(ctr: Function, obj: any): obj is Actions<T> {
   return typeof obj === 'string' && typeof ctr.prototype[obj] === 'function'
 }
 
-@Injectable(Bootstrapper)
-export class CommandRunner<THost extends any> implements Bootstrapper {
+@Injectable(EntryPoint)
+export class CommandRunner<THost extends any> implements EntryPoint {
 
   constructor(
     @Inject(CommandAction) private actionName: CommandAction<THost>,
@@ -16,13 +16,13 @@ export class CommandRunner<THost extends any> implements Bootstrapper {
     @Inject(Logger) private logger: Logger,
   ) {}
 
-  public start(): void {
-    this.doRun()
+  public run(): void {
+    this.safeRun()
   }
 
-  private async doRun(): Promise<void> {
+  private async safeRun(): Promise<void> {
     try {
-      await this.run()
+      await this.runAction()
       this.logger.info(`${this.actionName} complete.`)
     } catch (err) {
       this.logger.error(err.message, err.stack)
@@ -30,7 +30,7 @@ export class CommandRunner<THost extends any> implements Bootstrapper {
     }
   }
 
-  private async run(): Promise<void> {
+  private async runAction(): Promise<void> {
     if (isActionName<THost>(this.host.constructor, this.actionName)) {
       return await (<Action>this.host[this.actionName])(this.info.args)
     }

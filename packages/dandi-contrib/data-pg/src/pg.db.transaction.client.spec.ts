@@ -1,5 +1,5 @@
 import { PgDbPoolClient, PgDbTransactionClient, TransactionRollbackError } from '@dandi-contrib/data-pg'
-import { stubHarness } from '@dandi/core-testing'
+import { stubHarness } from '@dandi/core/testing'
 import { ModelBuilder } from '@dandi/model-builder'
 
 import { expect } from 'chai'

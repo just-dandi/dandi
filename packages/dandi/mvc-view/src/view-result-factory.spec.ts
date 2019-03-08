@@ -1,5 +1,4 @@
-import { Repository } from '@dandi/core'
-import { TestHarness, testHarness } from '@dandi/core-testing'
+import { TestHarness, testHarness } from '@dandi/core/testing'
 import { Route } from '@dandi/mvc'
 import { VIEW_RESULT_FACTORY, ViewEngineResolver, ViewResultFactory, ViewResultFactoryError } from '@dandi/mvc-view'
 import { expect } from 'chai'
@@ -12,26 +11,22 @@ describe('ViewResultFactory', function() {
     useValue: createStubInstance(ViewEngineResolver),
   })
 
-  beforeEach(async function() {
-    this.repo = Repository.for(this)
-  })
-
   it('is injectable', async function() {
-    this.repo.register(this, {
+    harness.register({
       provide: Route,
       useValue: {},
     })
-    const factory = await harness.inject(ViewResultFactory, false, this.repo)
+    const factory = await harness.inject(ViewResultFactory, false)
     expect(factory).to.exist
     expect(factory).to.be.a('function')
   })
 
   it('throws an error if the route has no view metadata', async function() {
-    this.repo.register(this, {
+    harness.register({
       provide: Route,
       useValue: {},
     })
-    const factory = await harness.inject(ViewResultFactory, false, this.repo)
+    const factory = await harness.inject(ViewResultFactory, false)
     await expect(factory()).to.be.rejectedWith(ViewResultFactoryError)
   })
 
@@ -39,14 +34,14 @@ describe('ViewResultFactory', function() {
     const view = {
       name: 'test',
     }
-    this.repo.register(this, {
+    harness.register({
       provide: Route,
       useValue: {
         view,
       } as any,
     })
-    const resolver = await harness.injectStub(ViewEngineResolver, false, this.repo)
-    const factory = await harness.inject(ViewResultFactory, false, this.repo)
+    const resolver = await harness.injectStub(ViewEngineResolver, false)
+    const factory = await harness.inject(ViewResultFactory, false)
     const engine = {}
     const templatePath = '/template/path'
 
@@ -65,14 +60,14 @@ describe('ViewResultFactory', function() {
       name: 'test',
     }
     const data = {}
-    this.repo.register(this, {
+    harness.register({
       provide: Route,
       useValue: {
         view,
       } as any,
     })
-    const resolver = await harness.injectStub(ViewEngineResolver, false, this.repo)
-    const factory = await harness.inject(ViewResultFactory, false, this.repo)
+    const resolver = await harness.injectStub(ViewEngineResolver, false)
+    const factory = await harness.inject(ViewResultFactory, false)
     const engine = {}
     const templatePath = '/template/path'
 

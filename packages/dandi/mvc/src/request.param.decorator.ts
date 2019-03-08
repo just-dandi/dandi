@@ -47,7 +47,7 @@ export function requestParamProvider(
 ): Provider<any> {
   return {
     provide: token,
-    useFactory: requestParamValidatorFactory.bind(null, type, paramName, memberMetadata),
+    useFactory: requestParamValidatorFactory.bind(undefined, type, paramName, memberMetadata),
     deps: [mapToken, ModelBuilder, RequestParamModelBuilderOptions],
     providers: [RequestParamModelBuilderOptionsProvider],
   }

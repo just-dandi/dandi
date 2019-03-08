@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger, Optional, Resolver, ResolverContext } from '@dandi/core'
+import { Inject, Injectable, Logger, Optional, Injector, InjectorContext, ResolverContext } from '@dandi/core'
 
 import { ControllerResult, isControllerResult } from './controller.result'
 import { ControllerResultTransformer } from './controller.result.transformer'
@@ -14,10 +14,10 @@ import { RequestController } from './tokens'
 
 @Injectable(RouteHandler)
 export class DefaultRouteHandler implements RouteHandler {
-  constructor(@Inject(Resolver) private resolver: Resolver, @Inject(Logger) private logger: Logger) {}
+  constructor(@Inject(Injector) private injector: Injector, @Inject(Logger) private logger: Logger) {}
 
   public async handleRouteRequest(
-    @Inject(ResolverContext) resolverContext: ResolverContext<any>,
+    @Inject(InjectorContext) injectorContext: ResolverContext<any>,
     @Inject(RequestController) controller: any,
     @Inject(Route) route: Route,
     @Inject(MvcRequest) req: MvcRequest,
@@ -38,7 +38,7 @@ export class DefaultRouteHandler implements RouteHandler {
     )
 
     requestInfo.performance.mark('DefaultRouteHandler.handleRouteRequest', 'beforeInvokeController')
-    const result = await this.resolver.invokeInContext(resolverContext, controller, controller[route.controllerMethod])
+    const result = await this.injector.invoke(controller, route.controllerMethod as any, injectorContext)
     requestInfo.performance.mark('DefaultRouteHandler.handleRouteRequest', 'afterInvokeController')
 
     const initialResult: ControllerResult = isControllerResult(result) ?

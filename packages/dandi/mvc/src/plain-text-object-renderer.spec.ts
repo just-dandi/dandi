@@ -1,4 +1,4 @@
-import { stubHarness } from '@dandi/core-testing'
+import { stubHarness } from '@dandi/core/testing'
 import { MimeTypes, PlainTextObjectRenderer } from '@dandi/mvc'
 import { expect } from 'chai'
 

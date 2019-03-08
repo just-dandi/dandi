@@ -19,10 +19,10 @@ uses `AwsSsmConfigClient` and the `@dandi-contrib/data-pg` client.
 
 ```typescript
 import { AwsSsmConfigClient } from '@dandi-contrib/config-aws-ssm';
-import { Container } from '@dandi/core';
+import { DandiApplication } from '@dandi/core';
 import { PgDbModule } from '@dandi-contrib/data-pg';
 
-const myApp = new Container({
+const myApp = new DandiApplication({
   providers: [
 
     ...

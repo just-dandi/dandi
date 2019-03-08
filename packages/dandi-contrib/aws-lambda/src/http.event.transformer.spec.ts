@@ -1,4 +1,4 @@
-import { stubProvider, testHarness } from '@dandi/core-testing'
+import { stubProvider, testHarness } from '@dandi/core/testing'
 import { MetadataModelBuilder, ModelBuilder } from '@dandi/model-builder'
 import { APIGatewayProxyEvent, Context } from 'aws-lambda'
 import { expect } from 'chai'

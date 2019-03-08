@@ -1,11 +1,10 @@
 import { Constructor, getMetadata } from '@dandi/common'
 import {
   ClassProvider,
-  injectableDecorator,
   InjectionToken,
   Provider,
   Repository,
-  RepositoryRegistrationSource, Resolver,
+  RepositoryRegistrationSource, Injector,
 } from '@dandi/core'
 
 import { localOpinionatedToken } from './local.token'
@@ -35,9 +34,9 @@ export const RendererInfo: InjectionToken<RendererInfo[]> = localOpinionatedToke
 
 export const RendererInfoProvider: Provider<RendererInfo[]> = {
   provide: RendererInfo,
-  useFactory(resolver: Resolver) {
+  useFactory(injector: Injector) {
     const rendererEntries = [...Repository.for(Renderer).entries() as IterableIterator<ClassProvider<ObjectRenderer>>]
-      .filter(entry => resolver.canResolve(entry.useClass))
+      .filter(entry => injector.canResolve(entry.useClass))
     return rendererEntries.map((entry: ClassProvider<ObjectRenderer>) => {
       return {
         constructor: entry.useClass,
@@ -46,7 +45,7 @@ export const RendererInfoProvider: Provider<RendererInfo[]> = {
     })
   },
   deps: [
-    Resolver,
+    Injector,
   ],
 }
 

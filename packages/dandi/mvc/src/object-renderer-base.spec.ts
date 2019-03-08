@@ -1,4 +1,4 @@
-import { stubHarness } from '@dandi/core-testing'
+import { stubHarness } from '@dandi/core/testing'
 import {
   MimeTypes,
   ObjectRendererBase,

@@ -31,7 +31,7 @@ From a command line in the
 This file is used as the entry point for the application. It loads and
 starts the container.
 
-### src/server.container.ts
+### src/server.dandi-application.ts
 
 This file is used to construct the `@dandi` DI container used to run
 the application. It pulls in the MVC service implementations from

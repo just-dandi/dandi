@@ -1,5 +1,5 @@
 import { Url, Uuid } from '@dandi/common'
-import { testHarness } from '@dandi/core-testing'
+import { testHarness } from '@dandi/core/testing'
 import { MemberMetadata, Property, UrlProperty } from '@dandi/model'
 import { MetadataModelBuilder, ModelBuilder, ModelBuilderModule } from '@dandi/model-builder'
 import { expect } from 'chai'

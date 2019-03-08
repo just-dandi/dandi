@@ -1,4 +1,4 @@
-import { Inject, Injectable, Provider, Resolver } from '@dandi/core'
+import { Inject, Injectable, Provider, Injector } from '@dandi/core'
 
 import { AuthProviderFactory } from './auth.provider.factory'
 import { AuthorizationService } from './authorization.service'
@@ -10,9 +10,9 @@ import { Route } from './route'
 
 @Injectable(AuthProviderFactory)
 export class AuthorizationAuthProviderFactory implements AuthProviderFactory {
-  constructor(@Inject(Resolver) private resolver: Resolver) {}
+  constructor(@Inject(Injector) private injector: Injector) {}
 
-  public async createAuthProviders(route: Route, req: MvcRequest): Promise<Array<Provider<any>>> {
+  public async generateAuthProviders(route: Route, req: MvcRequest): Promise<Provider<any>[]> {
     const authHeader = req.get('Authorization')
 
     if (!authHeader) {
@@ -20,20 +20,18 @@ export class AuthorizationAuthProviderFactory implements AuthProviderFactory {
         throw new UnauthorizedError()
       }
 
-      return [
-        {
-          provide: AuthorizedUser,
-          useValue: null,
-        },
-      ]
+      return [{
+        provide: AuthorizedUser,
+        useValue: null,
+      }]
     }
 
     const authSchemeEndIndex = authHeader.indexOf(' ')
     const authScheme = authHeader.substring(0, authSchemeEndIndex > 0 ? authSchemeEndIndex : undefined)
-    const authServiceResult = await this.resolver.resolve(AuthorizationService(authScheme), !route.authorization)
-    const result: Array<Provider<any>> = []
+    const authServiceResult = await this.injector.inject(AuthorizationService(authScheme), !route.authorization)
+    const providers: Provider<any>[] = []
     if (authServiceResult) {
-      result.push(
+      providers.push(
         {
           provide: RequestAuthorizationService,
           useValue: authServiceResult.singleValue,
@@ -43,9 +41,9 @@ export class AuthorizationAuthProviderFactory implements AuthProviderFactory {
     }
 
     if (Array.isArray(route.authorization) && route.authorization.length) {
-      route.authorization.forEach((condition) => result.push(condition))
+      providers.push(...route.authorization)
     }
 
-    return result
+    return providers
   }
 }

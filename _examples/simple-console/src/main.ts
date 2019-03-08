@@ -1,22 +1,21 @@
-import { AmbientInjectableScanner, Container } from '@dandi/core'
+import { AmbientInjectableScanner, DandiApplication } from '@dandi/core'
 import { ConsoleLogListener, LoggingModule } from '@dandi/core/logging'
 import { PrettyColorsLogging } from '@dandi/logging'
 
-import { App } from './app'
+import { SimpleConsoleApp } from './app'
 import { appConfigProvider } from './app-options'
 
 export function run(startTs: number, options: any): Promise<void> {
-  const container = new Container({
+  const app = new DandiApplication({
     providers: [
       AmbientInjectableScanner,
       LoggingModule.use(ConsoleLogListener, PrettyColorsLogging),
 
       appConfigProvider(options),
 
-      App,
+      SimpleConsoleApp,
     ],
   })
 
-  return container.start(startTs)
-
+  return app.run(startTs)
 }

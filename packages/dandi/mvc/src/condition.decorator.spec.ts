@@ -1,5 +1,6 @@
 import { Uuid } from '@dandi/common'
-import { Container, FactoryProvider } from '@dandi/core'
+import { FactoryProvider } from '@dandi/core'
+import { testHarnessSingle } from '@dandi/core/testing'
 import { ModelBuilderModule } from '@dandi/model-builder'
 import {
   AuthorizationAuthProviderFactory,
@@ -22,7 +23,7 @@ import { stub } from 'sinon'
 import { CollectionResource } from './condition.decorator'
 import { requestParamToken } from './request.param.decorator'
 
-describe('ConditionDecorator', () => {
+describe('ConditionDecorator', function() {
 
   const collection = {
     provide: CollectionResource,
@@ -49,7 +50,7 @@ describe('ConditionDecorator', () => {
     expect(condition.useFactory).to.be.instanceOf(Function)
   })
 
-  it('resolves to an AuthorizationCondition', async () => {
+  it('resolves to an AuthorizationCondition', async function() {
     const req: any = {
       get: stub()
         .withArgs('Authorization')
@@ -70,26 +71,23 @@ describe('ConditionDecorator', () => {
         mark: stub(),
       },
     }
-    const container = new Container({
-      providers: [
-        authService,
-        TestController,
-        AuthorizationAuthProviderFactory,
-        DecoratorRouteGenerator,
-        DefaultRouteInitializer,
-        ModelBuilderModule,
-      ],
-    })
-    await container.start()
+    const harness = await testHarnessSingle(
+      authService,
+      TestController,
+      AuthorizationAuthProviderFactory,
+      DecoratorRouteGenerator,
+      DefaultRouteInitializer,
+      ModelBuilderModule,
+    )
 
-    const generator = (await container.resolve(RouteGenerator)).singleValue
+    const generator = await harness.inject(RouteGenerator)
     const routes = generator.generateRoutes()
 
-    const initializer = (await container.resolve(RouteInitializer)).singleValue
+    const initializer = await harness.inject(RouteInitializer)
 
-    const repo = await initializer.initRouteRequest(routes[0], req, info, res)
+    const providers = await initializer.initRouteRequest(routes[0], req, info, res)
 
-    const conditions = (await container.resolve(AuthorizationCondition, false, repo)).arrayValue
+    const conditions = await harness.injectMulti(AuthorizationCondition, false, ...providers)
     expect(conditions).to.exist
     expect(conditions).to.deep.equal([
       { allowed: true }, // first for IsAuthorized, included by default

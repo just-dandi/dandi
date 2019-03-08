@@ -9,13 +9,13 @@ See [@dandi/data](../data) for basic usage and configuration.
 
 In addition to setting up the connection and authentication data
 described in [@dandi/data](../data#Configuration), include `PgDbModule`
-in your `Container` providers:
+in your `DandiApplication` providers:
 
 ```typescript
-import { Container } from '@dandi/core';
+import { DandiApplication } from '@dandi/core';
 import { PgDbModule } from '@dandi-contrib/data-pg';
 
-const myApp = new Container({
+const myApp = new DandiApplication({
   providers: [
 
     ...
@@ -32,16 +32,16 @@ const myApp = new Container({
 ## Configuring ModelBuilder
 
 Include a `Provider<ModelBuilderOptions>` for `PgDbModelBuilderOptions`
-in your `Container` providers:
+in your `DandiApplication` providers:
 
 ```typescript
-import { Container } from '@dandi/core';
+import { DandiApplication } from '@dandi/core';
 import { PgDbModelBuilderOptions, PgDbModule } from '@dandi-contrib/data-pg';
 import { ModelBuilderOptions } from '@dandi/model-builder';
 
 import { camel } from 'change-case';
 
-const myApp = new Container({
+const myApp = new DandiApplication({
   providers: [
 
     ...

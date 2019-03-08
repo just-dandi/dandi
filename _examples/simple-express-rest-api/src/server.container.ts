@@ -1,5 +1,5 @@
 import { CascadingCache, MemoryCache, ServiceContextCacheKeyGenerator } from '@dandi/cache'
-import { AmbientInjectableScanner, Container } from '@dandi/core'
+import { AmbientInjectableScanner, DandiApplication } from '@dandi/core'
 import { ConsoleLogListener, LoggingModule } from '@dandi/core/logging'
 import { ModelBuilderModule } from '@dandi/model-builder'
 import { MvcHalModule } from '@dandi/mvc-hal'
@@ -16,7 +16,7 @@ import { ViewController } from './view/view.controller'
 
 const DEFAULT_SERVER_PORT = 7080
 
-export const server = new Container({
+export const server = new DandiApplication({
   providers: [
     // DI
     AmbientInjectableScanner,

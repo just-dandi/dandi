@@ -1,5 +1,5 @@
 import { Url } from '@dandi/common'
-import { testHarness } from '@dandi/core-testing'
+import { testHarness } from '@dandi/core/testing'
 import { Required, UrlProperty } from '@dandi/model'
 import { ModelBuilderModule } from '@dandi/model-builder'
 import { MvcRequest, RequestBody } from '@dandi/mvc'
@@ -38,7 +38,7 @@ describe('RequestBodyDecorator', () => {
   })
 
   it('constructs and validates the body', async () => {
-    const result = await harness.invoke(controller, controller.test)
+    const result: TestModel = await harness.invoke(controller, 'test')
     expect(result).to.be.instanceof(TestModel)
     expect(result.url).to.be.instanceof(Url)
   })

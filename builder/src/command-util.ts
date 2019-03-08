@@ -1,7 +1,7 @@
 import { dirname, resolve } from 'path'
 
 import { Constructor } from '@dandi/common'
-import { AmbientInjectableScanner, Container, LogLevel } from '@dandi/core'
+import { AmbientInjectableScanner, DandiApplication, LogLevel } from '@dandi/core'
 import { ConsoleLogListener, LoggingModule } from '@dandi/core/logging'
 import { PrettyColorsLogging } from '@dandi/logging'
 
@@ -10,7 +10,7 @@ import { Command } from 'commander'
 import { Builder } from './builder'
 import { BuilderProject } from './builder-project'
 import { BuilderProjectOptions } from './builder-project-options'
-import { ActionHost, Actions, CommandAction, CommandInfo } from './command-action'
+import { ActionHost, CommandAction, CommandInfo } from './command-action'
 import { CommandRunner } from './command-runner'
 import { Publisher } from './publisher'
 
@@ -18,15 +18,15 @@ export type CommanderArgs = (string | Command)[]
 
 export class CommandUtil {
 
-  public static projectAction(actionName: keyof Actions<BuilderProject>, start: number): (...args: CommanderArgs) => Promise<void> {
+  public static projectAction(actionName: CommandAction<BuilderProject>, start: number): (...args: CommanderArgs) => Promise<void> {
     return this.action(BuilderProject, actionName, start)
   }
 
-  public static builderAction(actionName: keyof Actions<Builder>, start: number): (...args: CommanderArgs) => Promise<void> {
+  public static builderAction(actionName: CommandAction<Builder>, start: number): (...args: CommanderArgs) => Promise<void> {
     return this.action(Builder, actionName, start)
   }
 
-  public static publisherAction(actionName: keyof Actions<Publisher>, start: number): (...args: CommanderArgs) => Promise<void> {
+  public static publisherAction(actionName: CommandAction<Publisher>, start: number): (...args: CommanderArgs) => Promise<void> {
     return this.action(Publisher, actionName, start)
   }
 
@@ -42,7 +42,7 @@ export class CommandUtil {
         args: cmdArgs,
       }
 
-      const container = new Container({
+      const container = new DandiApplication({
         providers: [
           AmbientInjectableScanner,
           CommandRunner,

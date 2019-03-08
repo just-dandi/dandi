@@ -1,9 +1,9 @@
 import { AppError, Uuid } from '@dandi/common'
-import { Repository, Resolver, ResolverContext } from '@dandi/core'
-import { stubHarness } from '@dandi/core-testing'
+import { Repository, Injector, InjectorContext } from '@dandi/core'
+import { stubHarness } from '@dandi/core/testing'
 import {
   DefaultRouteExecutor,
-  HttpMethod,
+  HttpMethod, HttpStatusCode,
   MvcRequest,
   MvcResponse,
   RequestInfo,
@@ -72,19 +72,19 @@ describe('DefaultRouteExecutor', function() {
   )
 
   beforeEach(async function() {
+    this.injector = await harness.inject(Injector)
     this.routeExec = await harness.inject(DefaultRouteExecutor)
     this.route = await harness.inject(Route)
     this.routeInit = await harness.inject(RouteInitializer)
     this.req = await harness.inject(MvcRequest)
     this.res = await harness.inject(MvcResponse)
-    this.resolver = await harness.inject(Resolver)
     this.routeHandler = await harness.inject(RouteHandler)
   })
 
   describe('execRoute', function() {
 
     beforeEach(function() {
-      stub(this.resolver, 'invoke')
+      stub(this.injector, 'invoke')
     })
 
     it('calls initRouteRequest on the provided RouteInitializer', async function() {
@@ -92,13 +92,19 @@ describe('DefaultRouteExecutor', function() {
       expect(this.routeInit.initRouteRequest).to.have.been.calledWith(this.route, this.req)
     })
 
-    it('uses the repo from initRouteRequest to invoke the routeHandler', async function() {
-      const repo = createStubInstance(Repository as any)
-      this.routeInit.initRouteRequest.returns(repo)
+    it('uses the providers from initRouteRequest to invoke the routeHandler', async function() {
+
+      const providers = [
+        {
+          provide: 'Foo',
+          useValue: 'foo',
+        },
+      ]
+      this.routeInit.initRouteRequest.resolves(providers)
 
       await this.routeExec.execRoute(this.route, this.req, this.res)
 
-      expect(this.resolver.invoke).to.have.been.calledWith(this.routeHandler, this.routeHandler.handleRouteRequest, repo)
+      expect(this.injector.invoke).to.have.been.calledWith(this.routeHandler, 'handleRouteRequest', ...providers)
     })
 
     it('catches errors and sends a JSON response with the message of the object', async function() {
@@ -107,7 +113,8 @@ describe('DefaultRouteExecutor', function() {
           super('oh no')
         }
       }
-      this.resolver.invoke.throws(new SomeKindOfError())
+      this.routeInit.initRouteRequest.resolves([])
+      this.injector.invoke.callsFake(() => Promise.reject(new SomeKindOfError()))
 
       await this.routeExec.execRoute(this.route, this.req, this.res)
 
@@ -118,20 +125,21 @@ describe('DefaultRouteExecutor', function() {
 
     it('uses the status code from thrown errors if present', async function() {
       class SomeKindOfError extends AppError {
-        public statusCode = 418;
+        public statusCode = HttpStatusCode.teapot
 
         constructor() {
-          super('oh no')
+          super('oh no, not again!')
         }
       }
 
-      this.resolver.invoke.throws(new SomeKindOfError())
+      this.routeInit.initRouteRequest.resolves([])
+      this.injector.invoke.throws(new SomeKindOfError())
 
       await this.routeExec.execRoute(this.route, this.req, this.res)
 
-      expect(this.res.status).to.have.been.calledWith(418)
+      expect(this.res.status).to.have.been.calledWith(HttpStatusCode.teapot)
       expect(this.res.json).to.have.been.calledWith({
-        error: { message: 'oh no', type: 'SomeKindOfError' },
+        error: { message: 'oh no, not again!', type: 'SomeKindOfError' },
       })
     })
 
@@ -141,20 +149,12 @@ describe('DefaultRouteExecutor', function() {
           super('oh no')
         }
       }
-      this.resolver.invoke.throws(new SomeKindOfError())
+      this.injector.invoke.throws(new SomeKindOfError())
 
       await this.routeExec.execRoute(this.route, this.req, this.res)
 
       expect(this.res.status).to.have.been.calledWith(500)
     })
 
-    it('calls the dispose() method on the repository', async function() {
-      const repo: SinonStubbedInstance<Repository> = createStubInstance(Repository as any)
-      this.routeInit.initRouteRequest.returns(repo)
-
-      await this.routeExec.execRoute(this.route, this.req, this.res)
-
-      expect(repo.dispose).to.have.been.called
-    })
   })
 })

@@ -1,11 +1,11 @@
-import { Bootstrapper, Inject, Injectable, Logger } from '@dandi/core'
+import { EntryPoint, Inject, Injectable, Logger } from '@dandi/core'
 
-@Injectable(Bootstrapper)
-export class App implements Bootstrapper {
+@Injectable(EntryPoint)
+export class SimpleConsoleApp implements EntryPoint {
 
   constructor(@Inject(Logger) private logger: Logger) {}
 
-  public async start(): Promise<void> {
+  public async run(): Promise<void> {
     this.logger.debug('Just starting up here')
 
     await this.fakeWork(5)

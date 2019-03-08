@@ -1,4 +1,4 @@
-import { testHarness, underTest } from '@dandi/core-testing'
+import { testHarness, underTest } from '@dandi/core/testing'
 import {
   DefaultObjectRenderer,
   MimeTypes,

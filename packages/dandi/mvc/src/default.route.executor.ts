@@ -1,5 +1,5 @@
-import { AppError, Disposable, Uuid } from '@dandi/common'
-import { Inject, Injectable, Logger, Repository, Resolver } from '@dandi/core'
+import { AppError, Uuid } from '@dandi/common'
+import { Inject, Injectable, Logger, Injector } from '@dandi/core'
 
 import { HttpStatusCode } from './http.status.code'
 import { MvcRequest } from './mvc.request'
@@ -13,7 +13,7 @@ import { RouteHandler } from './route.handler'
 @Injectable(RouteExecutor)
 export class DefaultRouteExecutor implements RouteExecutor {
   constructor(
-    @Inject(Resolver) private resolver: Resolver,
+    @Inject(Injector) private injector: Injector,
     @Inject(RouteInitializer) private routeInitializer: RouteInitializer,
     @Inject(RouteHandler) private routeHandler: RouteHandler,
     @Inject(Logger) private logger: Logger,
@@ -37,7 +37,7 @@ export class DefaultRouteExecutor implements RouteExecutor {
       )
 
       performance.mark('ExpressRouteExecutor.execRoute', 'beforeInitRouteRequest')
-      const requestRepo = await this.routeInitializer.initRouteRequest(route, req, { requestId, performance }, res)
+      const requestProviders = await this.routeInitializer.initRouteRequest(route, req, { requestId, performance }, res)
       performance.mark('ExpressRouteExecutor.execRoute', 'afterInitRouteRequest')
 
       this.logger.debug(
@@ -46,23 +46,21 @@ export class DefaultRouteExecutor implements RouteExecutor {
         route.path,
       )
 
-      await Disposable.useAsync(requestRepo, async (reqRepo: Repository) => {
-        this.logger.debug(
-          `before handleRouteRequest ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
-          route.httpMethod.toUpperCase(),
-          route.path,
-        )
+      this.logger.debug(
+        `before handleRouteRequest ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
+        route.httpMethod.toUpperCase(),
+        route.path,
+      )
 
-        performance.mark('ExpressRouteExecutor.execRoute', 'beforeHandleRouteRequest')
-        await this.resolver.invoke(this.routeHandler, this.routeHandler.handleRouteRequest, reqRepo)
-        performance.mark('ExpressRouteExecutor.execRoute', 'afterHandleRouteRequest')
+      performance.mark('ExpressRouteExecutor.execRoute', 'beforeHandleRouteRequest')
+      await this.injector.invoke(this.routeHandler, 'handleRouteRequest', ...requestProviders)
+      performance.mark('ExpressRouteExecutor.execRoute', 'afterHandleRouteRequest')
 
-        this.logger.debug(
-          `after handleRouteRequest ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
-          route.httpMethod.toUpperCase(),
-          route.path,
-        )
-      })
+      this.logger.debug(
+        `after handleRouteRequest ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
+        route.httpMethod.toUpperCase(),
+        route.path,
+      )
     } catch (err) {
       this.logger.warn(
         `error serving ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,

@@ -1,6 +1,6 @@
 import { Uuid } from '@dandi/common'
-import { Repository, ResolverContext } from '@dandi/core'
-import { stubHarness } from '@dandi/core-testing'
+import { Repository, InjectorContext } from '@dandi/core'
+import { stubHarness } from '@dandi/core/testing'
 import { ModelBuilderModule } from '@dandi/model-builder'
 import {
   DefaultRouteHandler,
@@ -85,7 +85,6 @@ describe('DefaultRouteHandler', function() {
   )
 
   beforeEach(async function() {
-    this.resolverContext = new ResolverContext(null, [], null, 'test')
     this.handler = await harness.inject(DefaultRouteHandler)
     this.route = await harness.inject(Route)
     this.req = await harness.inject(MvcRequest)
@@ -96,22 +95,14 @@ describe('DefaultRouteHandler', function() {
       contentType: 'text/plain',
       renderedOutput: '',
     })
-    this.repo = Repository.for(this)
-    this.repo.registerProviders({
-      provide: ResolverContext,
-      useValue: this.resolverContext,
-    })
     this.registerController = (controller: any) => {
-      this.repo.registerProviders({
+      harness.register({
         provide: RequestController,
         useValue: controller,
       })
       this.route.controllerCtr = controller.constructor
     }
-    this.invokeHandler = () => harness.invoke(this.handler, this.handler.handleRouteRequest, this.repo)
-  })
-  afterEach(function() {
-    this.repo.dispose('test over')
+    this.invokeHandler = () => harness.invoke(this.handler, 'handleRouteRequest')
   })
 
   describe('handleRouteRequest', function() {
