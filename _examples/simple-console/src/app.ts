@@ -1,5 +1,8 @@
 import { EntryPoint, Inject, Injectable, Logger } from '@dandi/core'
 
+const RUN_FAKE_WORK_TIMEOUT = 5
+const SIM_FAKE_WORK_TIMEOUT = 50
+
 @Injectable(EntryPoint)
 export class SimpleConsoleApp implements EntryPoint {
 
@@ -8,7 +11,7 @@ export class SimpleConsoleApp implements EntryPoint {
   public async run(): Promise<void> {
     this.logger.debug('Just starting up here')
 
-    await this.fakeWork(5)
+    await this.fakeWork(RUN_FAKE_WORK_TIMEOUT)
 
     this.logger.info('Ready to go!')
 
@@ -16,7 +19,7 @@ export class SimpleConsoleApp implements EntryPoint {
   }
 
   private async simulateDoingStuff(): Promise<void> {
-    await this.fakeWork(50)
+    await this.fakeWork(SIM_FAKE_WORK_TIMEOUT)
     this.logger.warn('Hey maybe look into this okay')
     this.logger.error('Okay stop everything, something is wrong')
     this.logger.error(new Error('FIXME'))
