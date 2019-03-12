@@ -6,9 +6,14 @@ import { isPromise } from './promise'
 export type DisposeFn = (reason: string) => void
 
 export const DISPOSED = globalSymbol('Disposable.DISPOSED')
+export const DISPOSED_REASON = globalSymbol('Disposable.DISPOSED_REASON')
 
 export interface Disposable {
   dispose(reason: string): void | Promise<void>
+}
+
+export interface RemapOptions {
+  retainProperties?: string[]
 }
 
 export class DisposableTypeError extends AppError {
@@ -53,6 +58,10 @@ export class Disposable {
 
   public static isDisposed(obj: any): boolean {
     return obj && obj[DISPOSED] || false
+  }
+
+  public static getDisposedReason(obj: any): string {
+    return obj[DISPOSED_REASON]
   }
 
   /**
@@ -126,10 +135,14 @@ export class Disposable {
     }
   }
 
-  public static remapDisposed<T>(target: T, reason: string): T {
+  public static remapDisposed<T>(target: T, reason: string, options?: RemapOptions): T {
     Object.defineProperty(target, DISPOSED, {
       get: () => true,
       set: undefined,
+      configurable: false,
+    })
+    Object.defineProperty(target, DISPOSED_REASON, {
+      get: () => reason,
       configurable: false,
     })
     if (Disposable[DISABLE_REMAP]) {
@@ -137,7 +150,7 @@ export class Disposable {
     }
     const thrower = throwAlreadyDisposed.bind(target, target, reason)
     for (const prop in target) {
-      if (prop === DISPOSED) {
+      if (prop === DISPOSED || (options && options.retainProperties && options.retainProperties.includes(prop))) {
         continue
       }
       if (typeof target[prop] === 'function') {
