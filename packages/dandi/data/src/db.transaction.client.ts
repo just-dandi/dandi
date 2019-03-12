@@ -5,8 +5,8 @@ import { DbQueryable } from './db.queryable'
 import { localOpinionatedToken } from './local.token'
 
 export interface DbTransactionClient extends DbQueryable, Disposable {
-  commit(): Promise<void>;
-  rollback(): Promise<void>;
+  commit(): Promise<void>
+  rollback(): Promise<void>
 }
 
 export const DbTransactionClient: InjectionToken<DbTransactionClient> = localOpinionatedToken<DbTransactionClient>(

@@ -9,11 +9,11 @@ export const PgDbConfig: InjectionToken<PoolConfig> = OpinionatedToken.local<Poo
 
 @Injectable(PgDbConfig)
 export class PgDbPoolConfig implements PoolConfig {
-  public readonly user: string;
-  public readonly password: string;
-  public readonly port: number;
-  public readonly host: string;
-  public readonly database: string;
+  public readonly user: string
+  public readonly password: string
+  public readonly port: number
+  public readonly host: string
+  public readonly database: string
 
   constructor(
     @Inject(DbConnectionInfo) connectionInfo: DbConnectionInfo,

@@ -2,9 +2,9 @@ import { Disposable } from '@dandi/common'
 import { InjectionToken, Provider } from '@dandi/core'
 import { PoolClient } from 'pg'
 
-import { localOpinionatedToken } from './local.token'
-import { PgDbPool } from './pg.db.pool'
-import { PgDbQueryableClient } from './pg.db.queryable'
+import { localOpinionatedToken } from './local-token'
+import { PgDbPool } from './pg-db-pool'
+import { PgDbQueryableClient } from './pg-db-queryable'
 
 export interface PgDbPoolClient extends Disposable, PgDbQueryableClient {}
 

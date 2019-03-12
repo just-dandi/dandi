@@ -2,23 +2,26 @@ import { Constructor, Url, Uuid } from '@dandi/common'
 import { DbQueryable } from '@dandi/data'
 import { DataPropertyMetadata, ModelUtil } from '@dandi/model'
 import { ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder'
+
 import { snakeCase } from 'change-case'
 import { QueryResult } from 'pg'
 
-import { PgDbMultipleResultsError, PgDbQueryError } from './pg.db.query.error'
+import { PgDbMultipleResultsError, PgDbQueryError } from './pg-db-query-error'
 
 export interface PgDbQueryableClient {
-  query(cmd: string, args: any[]): Promise<QueryResult>;
+  query(cmd: string, args: any[]): Promise<QueryResult>
 }
 
-export class PgDbQueryableBase<TClient extends PgDbQueryableClient> implements DbQueryable {
+/**
+ * @internal
+ */
+export class PgDbQueryableBase<TClient extends PgDbQueryableClient> {
   constructor(
-    protected client: TClient,
     protected modelBuilder: ModelBuilder,
     protected modelBuilderOptions?: ModelBuilderOptions,
   ) {}
 
-  public async query(cmd: string, ...args: any[]): Promise<any[]> {
+  protected async baseQuery(client: TClient, cmd: string, args: any[] = []): Promise<any[]> {
     let result: QueryResult
     if (args) {
       args.forEach((arg, index) => {
@@ -26,26 +29,26 @@ export class PgDbQueryableBase<TClient extends PgDbQueryableClient> implements D
       })
     }
     try {
-      result = await this.client.query(cmd, args)
+      result = await client.query(cmd, args)
     } catch (err) {
       throw new PgDbQueryError(err)
     }
     return result.rows
   }
 
-  public async queryModel<T>(model: Constructor<T>, cmd: string, ...args: any[]): Promise<T[]> {
+  protected async baseQueryModel<T>(client: TClient, model: Constructor<T>, cmd: string, args: any[]): Promise<T[]> {
     cmd = this.replaceSelectList(model, cmd)
-    const result = await this.query(cmd, ...args)
+    const result = await this.baseQuery(client, cmd, args)
     if (!result || !result.length) {
-      return result
+      return []
     }
     return result.map((item) => this.modelBuilder.constructModel(model, item, this.modelBuilderOptions))
   }
 
-  public async queryModelSingle<T>(model: Constructor<T>, cmd: string, ...args: any[]): Promise<T> {
-    const result = await this.queryModel(model, cmd, ...args)
+  protected async baseQueryModelSingle<T>(client: TClient, model: Constructor<T>, cmd: string, ...args: any[]): Promise<T> {
+    const result = await this.baseQueryModel(client, model, cmd, args)
     if (!result || !result.length) {
-      return null
+      return undefined
     }
     if (result.length > 1) {
       throw new PgDbMultipleResultsError(cmd)
@@ -59,10 +62,10 @@ export class PgDbQueryableBase<TClient extends PgDbQueryableClient> implements D
       return cmd
     }
     const ogSelect = ogSelectMatch[1].split(',').map((field) => field.trim())
-    const tableMatch = cmd.match(/from\s+[\w._]+\s+(?:as\s+)?(\w+)/)
+    const tableMatch = cmd.match(/from\s+[\w._]+\s+(?:as\s+)?(\w+)/i)
     const table = tableMatch ? tableMatch[1] : null
-    const joinMatches = cmd.match(/join\s+[\w._]+\s+(?:as\s+)?(\w+)\s+on/g)
-    const joins = joinMatches ? joinMatches.map((join) => join.match(/join\s+[\w._]+\s+(?:as\s+)?(\w+)/)[1]) : []
+    const joinMatches = cmd.match(/join\s+[\w._]+\s+(?:as\s+)?(\w+)\s+on/gi)
+    const joins = joinMatches ? joinMatches.map((join) => join.match(/join\s+[\w._]+\s+(?:as\s+)?(\w+)/i)[1]) : []
     const aliases = (table ? [table] : []).concat(joins)
     if (!aliases.length) {
       return cmd
