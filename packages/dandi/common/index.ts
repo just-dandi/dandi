@@ -1,4 +1,6 @@
 export * from './src/app-error'
+export * from './src/async-mutex'
+export * from './src/async-mutex-lock-already-released-error'
 export * from './src/call-site'
 export * from './src/clone'
 export * from './src/constructor'
