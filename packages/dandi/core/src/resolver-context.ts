@@ -60,7 +60,7 @@ export class ResolverContext<T> extends InjectorContext {
 
   public async dispose(reason: string): Promise<void> {
     await Promise.all(this.instances.map((instance) => {
-      if (Disposable.isDisposable(instance)) {
+      if (Disposable.isDisposable(instance) && !Disposable.isDisposed(instance)) {
         return instance.dispose(`Disposing ResolverContext: ${reason}`)
       }
     }))

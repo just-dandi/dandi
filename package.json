@@ -4,6 +4,7 @@
   "version": "1.0.0-alpha.38",
   "description": "",
   "scripts": {
+    "setup": "pushd builder && npm install && npm link && popd && npm link builder && npm run install-packages",
     "install-packages": "builder npm install",
     "publish-packages": "builder publish",
     "update-package-configs": "builder update-configs",
