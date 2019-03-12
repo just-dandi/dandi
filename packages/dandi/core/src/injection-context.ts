@@ -35,11 +35,11 @@ export class DependencyInjectionContext {
         }
       } else {
         this.value += this.target.constructor.name
+        if (this.methodName !== false) {
+          this.value += `.${this.methodName}`
+        }
       }
 
-      if (this.methodName !== false) {
-        this.value += `.${this.methodName}`
-      }
     }
   }
 
