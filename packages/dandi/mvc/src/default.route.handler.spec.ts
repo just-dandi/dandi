@@ -1,11 +1,10 @@
 import { Uuid } from '@dandi/common'
-import { Repository, InjectorContext } from '@dandi/core'
 import { stubHarness } from '@dandi/core/testing'
 import { ModelBuilderModule } from '@dandi/model-builder'
 import {
   DefaultRouteHandler,
   HttpMethod, MimeTypes,
-  MissingPathParamError,
+  MissingParamError,
   MvcRequest,
   MvcResponse,
   MvcResponseRenderer,
@@ -195,7 +194,7 @@ describe('DefaultRouteHandler', function() {
       this.registerController(new TestController())
 
       await expect(this.invokeHandler())
-        .to.be.rejectedWith(MissingPathParamError)
+        .to.be.rejectedWith(MissingParamError)
 
     })
   })

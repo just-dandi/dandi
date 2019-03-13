@@ -1,3 +1,4 @@
+import { ParamMetadata } from '@dandi/core'
 import { testHarnessSingle } from '@dandi/core/testing'
 import { MemberMetadata } from '@dandi/model'
 import { MetadataModelBuilder, ModelBuilder, PrimitiveTypeConverter, TypeConverter } from '@dandi/model-builder'
@@ -10,11 +11,13 @@ import { requestParamValidatorFactory } from './request.param.validator'
 
 describe('requestParamValidatorFactory', () => {
   let paramMap: { [key: string]: string }
+  let paramMeta: ParamMetadata<any>
   let builder: SinonStubbedInstance<ModelBuilder>
   let memberMetadata: MemberMetadata
 
   beforeEach(() => {
     paramMap = { foo: 'bar' }
+    paramMeta = {} as any
     builder = createStubInstance(MetadataModelBuilder)
     memberMetadata = {
       type: String,
@@ -29,6 +32,7 @@ describe('requestParamValidatorFactory', () => {
     requestParamValidatorFactory(
       String,
       'foo',
+      paramMeta,
       memberMetadata,
       paramMap,
       builder,

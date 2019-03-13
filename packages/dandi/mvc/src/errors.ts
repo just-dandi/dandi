@@ -43,8 +43,8 @@ export class ModelBindingError extends RequestError {
   }
 }
 
-export class MissingPathParamError extends RequestError {
+export class MissingParamError extends RequestError {
   constructor(paramName: string, innerError?: Error) {
-    super(HttpStatusCode.badRequest, null, `Missing required path param ${paramName}`, innerError)
+    super(HttpStatusCode.badRequest, null, `Missing required param ${paramName}`, innerError)
   }
 }

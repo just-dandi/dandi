@@ -43,11 +43,12 @@ export function requestParamProvider(
   token: InjectionToken<any>,
   type: ConvertedType,
   paramName: string,
+  paramMeta: ParamMetadata<any>,
   memberMetadata: MemberMetadata,
 ): Provider<any> {
   return {
     provide: token,
-    useFactory: requestParamValidatorFactory.bind(undefined, type, paramName, memberMetadata),
+    useFactory: requestParamValidatorFactory.bind(undefined, type, paramName, paramMeta, memberMetadata),
     deps: [mapToken, ModelBuilder, RequestParamModelBuilderOptions],
     providers: [RequestParamModelBuilderOptionsProvider],
   }
@@ -72,7 +73,7 @@ export function makeRequestParamDecorator<T>(
     }
     meta.token = token
     meta.optional = optional
-    meta.providers = [requestParamProvider(mapToken, token, type, name || meta.name, memberMetadata)]
+    meta.providers = [requestParamProvider(mapToken, token, type, name || meta.name, meta, memberMetadata)]
 
     return {
       meta,
@@ -81,22 +82,4 @@ export function makeRequestParamDecorator<T>(
   } as any
   apply.within = conditionWithinByKeyDecorator.bind(null, apply)
   return apply
-}
-
-export function requestParamDecorator<T>(
-  mapToken: InjectionToken<ParamMap>,
-  type: ConvertedType,
-  name: string,
-  target: MethodTarget<T>,
-  memberName: string,
-  paramIndex: number,
-): void {
-  const meta = getInjectableParamMetadata(target, memberName, paramIndex)
-  const memberMetadata = getMemberMetadata(target.constructor, memberName, paramIndex)
-  const token = requestParamToken<T>(mapToken, memberName, name || meta.name)
-  if (isConstructor(type)) {
-    memberMetadata.type = type
-  }
-  meta.token = token
-  meta.providers = [requestParamProvider(mapToken, token, type, name || meta.name, memberMetadata)]
 }

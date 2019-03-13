@@ -1,12 +1,14 @@
+import { ParamMetadata } from '@dandi/core'
 import { MemberMetadata } from '@dandi/model'
 import { MemberBuilderOptions, ModelBuilder } from '@dandi/model-builder'
 
-import { MissingPathParamError } from './errors'
+import { MissingParamError } from './errors'
 import { ParamMap } from './tokens'
 
 export function requestParamValidatorFactory(
   type: any,
   paramName: string,
+  paramMeta: ParamMetadata<any>,
   memberMetadata: MemberMetadata,
   paramMap: ParamMap,
   builder: ModelBuilder,
@@ -14,7 +16,10 @@ export function requestParamValidatorFactory(
 ): any {
   const value = paramMap[paramName]
   if (typeof value === 'undefined') {
-    throw new MissingPathParamError(paramName)
+    if (paramMeta.optional) {
+      return undefined
+    }
+    throw new MissingParamError(paramName)
   }
   return builder.constructMember(memberMetadata, paramName, value, options)
 }

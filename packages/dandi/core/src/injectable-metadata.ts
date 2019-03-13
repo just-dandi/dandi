@@ -12,15 +12,15 @@ export function methodTarget<T>(target: Constructor<T>): MethodTarget<T> {
 }
 
 export interface ParamMetadata<T> {
-  name: string;
-  token?: InjectionToken<T>;
-  providers?: Array<Provider<any>>;
-  optional?: boolean;
+  name: string
+  token?: InjectionToken<T>
+  providers?: Array<Provider<any>>
+  optional?: boolean
 }
 
 export interface InjectableMetadata {
-  paramNames?: string[];
-  params: Array<ParamMetadata<any>>;
+  paramNames?: string[]
+  params: Array<ParamMetadata<any>>
 }
 
 export const getInjectableMetadata: MetadataAccessor<InjectableMetadata> = getMetadata.bind(null, META_KEY, () => ({
