@@ -18,9 +18,9 @@ authentication information to the `@dandi/data` client. This example
 uses `AwsSsmConfigClient` and the `@dandi-contrib/data-pg` client.
 
 ```typescript
-import { AwsSsmConfigClient } from '@dandi-contrib/config-aws-ssm';
-import { DandiApplication } from '@dandi/core';
-import { PgDbModule } from '@dandi-contrib/data-pg';
+import { AwsSsmConfigClient } from '@dandi-contrib/config-aws-ssm'
+import { DandiApplication } from '@dandi/core'
+import { PgDbModule } from '@dandi-contrib/data-pg'
 
 const myApp = new DandiApplication({
   providers: [
@@ -36,7 +36,7 @@ const myApp = new DandiApplication({
     ...
 
   ],
-});
+})
 ```
 
 ## API Reference
@@ -103,9 +103,9 @@ export class MyModelManager {
 
   public addModel(model: MyModelRequest): Promise<MyModel> {
     return this.dbClient.transaction(async (tran) => {
-      const query1 = await tran.queryModelSingle(MyModel, INSERT_QUERY, model.name);
-      const query2 = await tran.query(INSERT_MODEL_PERMISSION);
-      return query1;
+      const query1 = await tran.queryModelSingle(MyModel, INSERT_QUERY, model.name)
+      const query2 = await tran.query(INSERT_MODEL_PERMISSION)
+      return query1
     });
   }
 }
