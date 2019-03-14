@@ -26,7 +26,7 @@
       }
     },
     {
-      "files": ["**/src/**/*.ts", "**/test/**/*.ts", "_examples/*/**/*.ts"],
+      "files": ["**/src/**/*.ts", "**/test/**/*.ts", "_examples/*/**/*.ts", "util/typedoc/typedoc-plugin-module-name-by-package/**/*.js"],
       "parserOptions": {
         "sourceType": "module"
       },

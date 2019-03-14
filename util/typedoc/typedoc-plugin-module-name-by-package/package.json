@@ -1,0 +1,11 @@
+{
+  "name": "typedoc-plugin-module-name-by-package",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc"
+  },
+  "devDependencies": {
+    "typescript": "^3.3.3333"
+  }
+}

@@ -129,6 +129,14 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
           relative(this.projectPath, resolve(pkg.path, 'index.ts')),
           relative(this.projectPath, resolve(pkg.path, 'src/**/*.ts')),
         )
+        if (pkg.subPackages) {
+          pkg.subPackages.forEach(subPkg => {
+            result.push(
+              relative(this.projectPath, resolve(pkg.path, subPkg, 'index.ts')),
+              relative(this.projectPath, resolve(pkg.path, subPkg, 'src/**/*.ts')),
+            )
+          })
+        }
         return result
       }, []),
       exclude: packages.reduce((result, pkg) => {
@@ -136,6 +144,14 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
           relative(this.projectPath, resolve(pkg.path, 'node_modules')),
           relative(this.projectPath, resolve(pkg.path, '**/*.spec.ts')),
         )
+        if (pkg.subPackages) {
+          pkg.subPackages.forEach(subPkg => {
+            result.push(
+              relative(this.projectPath, resolve(pkg.path, subPkg, 'node_modules')),
+              relative(this.projectPath, resolve(pkg.path, subPkg, '**/*.spec.ts')),
+            )
+          })
+        }
         return result
       }, []),
       references: packages.map(pkg => ({

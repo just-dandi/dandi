@@ -16,7 +16,9 @@
     "precoverage": "rimraf .coverage .nyc_output",
     "coverage": "nyc mocha",
     "coverage-report": "nyc report --reporter=text-lcov | coveralls",
-    "coverage:watch": "nyc npm test -- --watch"
+    "coverage:watch": "nyc npm test -- --watch",
+    "prebuild-docs": "rimraf ./docs && builder update-configs",
+    "build-docs": "typedoc --options ./typedoc.json"
   },
   "repository": {
     "type": "git",
@@ -42,6 +44,7 @@
     "chai-as-promised": "^7.1.1",
     "colors": "^1.3.3",
     "coveralls": "^3.0.2",
+    "docfx": "^1.0.5",
     "eslint": "^5.12.0",
     "eslint-plugin-import": "^2.14.0",
     "eslint-plugin-mocha": "^5.2.0",
@@ -57,6 +60,7 @@
     "ts-custom-error-shim": "^1.0.0",
     "ts-node": "^7.0.1",
     "tsconfig-paths": "^3.7.0",
+    "typedoc": "^0.14.2",
     "typescript": "^3.2.2",
     "typescript-eslint-parser": "^21.0.2",
     "uuid": "^3.3.2"
