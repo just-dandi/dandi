@@ -2,6 +2,9 @@ const CURRENCY_PATTERN = /^(\D+)?(\d+\.\d{0,2})$/
 
 const values = new Map<string, Currency>()
 
+/**
+ * @ignore
+ */
 export class Currency extends Number {
   public static parse(value: string): Currency {
     if (value === null || value === undefined) {

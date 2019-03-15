@@ -1,5 +1,9 @@
-import CallSite = NodeJS.CallSite;
+import CallSite = NodeJS.CallSite
 
+/**
+ * @internal
+ * @ignore
+ */
 export function callsite(): CallSite[] {
   const ogPrep = Error.prepareStackTrace
   Error.prepareStackTrace = (_, stack) => stack

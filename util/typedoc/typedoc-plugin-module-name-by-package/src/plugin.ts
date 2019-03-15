@@ -1,15 +1,16 @@
-import { dirname } from 'path'
+import { readFileSync } from 'fs'
+import { dirname, resolve } from 'path'
 
 import { Component, ConverterComponent } from 'typedoc/dist/lib/converter/components'
 import { Converter } from 'typedoc/dist/lib/converter/converter'
 import { Context } from 'typedoc/dist/lib/converter/context'
 import { ContainerReflection } from 'typedoc/dist/lib/models/reflections/container'
-import { Reflection, ReflectionKind } from 'typedoc/dist/lib/models/reflections/abstract'
+import { Reflection } from 'typedoc/dist/lib/models/reflections/abstract'
 import { DeclarationReflection } from 'typedoc/dist/lib/models/reflections/declaration'
 
 export const PLUGIN_NAME = 'module-name-by-package'
 
-const MODULE_REFORMAT_PREFIX = 'packages/'
+const MODULE_REFORMAT_PREFIX = ''
 const MODULE_REFORMAT_SUFFIX = '/index'
 
 @Component({ name: PLUGIN_NAME })
@@ -56,7 +57,20 @@ export class ModuleNameByPackagePlugin extends ConverterComponent {
   onResolveBegin() {
     const packageModules = [...this.packageModules.values()]
     packageModules.forEach(module => {
+      const ogName = module.name
       module.name = `@${module.name.substring(MODULE_REFORMAT_PREFIX.length + 1, module.name.length - MODULE_REFORMAT_SUFFIX.length - 1)}`
+
+      // auto-import README.md content for each package
+      if (module.comment && module.comment.tags && module.comment.tags.length) {
+        module.comment.tags.forEach(tag => {
+          tag.text = tag.text.replace(/\[\[include:[\w.-_/]+?\.md]]/g, (include) => {
+            const includePath = resolve(dirname(module.originalName), include.match(/include:(.+\.md)/)[1])
+            const mdContent = readFileSync(includePath, 'utf-8')
+            return mdContent.replace(/`[\w@./]+?`/g, (codeRef) => `[[${codeRef.substring(1, codeRef.length - 1)}]]`)
+          })
+        })
+      }
+      console.log(`${ogName} -> ${module.name}`)
     })
 
     this.modules.forEach((module: DeclarationReflection) => {
@@ -69,10 +83,17 @@ export class ModuleNameByPackagePlugin extends ConverterComponent {
         packageModule.children = []
       }
 
+      // move the exports from each module file into the package declaration
+      // results in the exports being listed under the package instead of their declaring file
+      while(module.children && module.children.length) {
+        const ref = module.children.shift()
+        ref.parent = packageModule
+        packageModule.children.push(ref)
+      }
+
+      // remove the now empty individual module file declaration
       const originalParent = module.parent as ContainerReflection
       originalParent.children.splice(originalParent.children.indexOf(module), 1)
-      packageModule.children.push(module)
-      module.parent = packageModule
 
     })
   }

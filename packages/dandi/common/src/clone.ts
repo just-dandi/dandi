@@ -1,3 +1,8 @@
+/**
+ * @internal
+ * @ignore
+ * @param obj
+ */
 export function cloneObject<T extends any>(obj: T): T {
   if (!obj) {
     return obj

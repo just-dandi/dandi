@@ -1,3 +1,11 @@
+/**
+ * @module
+ * [[include:README.md]]
+ */
+
+/**
+ *
+ */
 export * from './src/app-error'
 export * from './src/async-mutex'
 export * from './src/async-mutex-lock-already-released-error'

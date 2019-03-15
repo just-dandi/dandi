@@ -5,7 +5,11 @@
   "scripts": {
     "build": "tsc"
   },
+  "peerDependencies": {
+    "typedoc": "^0.14.2"
+  },
   "devDependencies": {
-    "typescript": "^3.3.3333"
+    "typedoc": "^0.14.2",
+    "typescript": "3.3.3"
   }
 }

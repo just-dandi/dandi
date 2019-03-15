@@ -3,7 +3,6 @@
   "mode": "modules",
   "out": "docs",
   "tsconfig": "./.tsconfig.builder.json",
-  "exclude": "_examples",
   "includeDeclarations": true,
   "excludeExternals": true,
   "excludePrivate": true,
