@@ -10,4 +10,4 @@ dist
 .env
 .aws-docker
 .tsconfig.*
-docs
+./docs

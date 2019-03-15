@@ -3,7 +3,7 @@
   "private": true,
   "main": "index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "node_modules/typescript/bin/tsc"
   },
   "peerDependencies": {
     "typedoc": "^0.14.2"

@@ -4,7 +4,7 @@
  */
 
 /**
- *
+ * @ignore - this placeholder required so that typedoc uses the above module comment
  */
 export * from './src/app-error'
 export * from './src/async-mutex'

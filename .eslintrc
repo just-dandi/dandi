@@ -1,7 +1,7 @@
 {
   "extends": "eslint:recommended",
   "parser": "typescript-eslint-parser",
-  "plugins": ["import", "typescript", "mocha"],
+  "plugins": ["import", "typescript", "mocha" , "no-null"],
   "parserOptions": {
     "ecmaVersion": 8
   },
@@ -103,6 +103,7 @@
     "no-new-func": ["error"],
     "no-lonely-if": ["error"],
     "no-multi-assign": ["error"],
+    "no-null/no-null": ["warn"],
     "no-redeclare": "off", // doesn't play nice with decorators in constructors
     "no-unneeded-ternary": ["error"],
     "no-var": ["error"],

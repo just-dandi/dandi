@@ -1,6 +1,8 @@
 import { readFileSync } from 'fs'
 import { dirname, resolve } from 'path'
 
+import { ProjectReflection } from 'typedoc'
+
 import { Component, ConverterComponent } from 'typedoc/dist/lib/converter/components'
 import { Converter } from 'typedoc/dist/lib/converter/converter'
 import { Context } from 'typedoc/dist/lib/converter/context'
@@ -54,23 +56,43 @@ export class ModuleNameByPackagePlugin extends ConverterComponent {
     return this.getPackageModule(dir)
   }
 
-  onResolveBegin() {
+  renamePackageModule(module: DeclarationReflection): void {
+    const ogName = module.name
+    module.name = `@${module.name.substring(MODULE_REFORMAT_PREFIX.length + 1, module.name.length - MODULE_REFORMAT_SUFFIX.length - 1)}`
+    console.log(`${ogName} -> ${module.name}`)
+  }
+
+  importIncludedMarkdown(module: DeclarationReflection): void {
+    // auto-import README.md content for each package
+    if (module.comment && module.comment.tags && module.comment.tags.length) {
+      module.comment.tags.forEach(tag => {
+        tag.text = tag.text.replace(/\[\[include:[\w.-_/]+?\.md]]/g, (include) => {
+          const includePath = resolve(dirname(module.originalName), include.match(/include:(.+\.md)/)[1])
+          const mdContent = readFileSync(includePath, 'utf-8')
+
+          // convert `code` to symbol references for README files
+          if (includePath.endsWith('README.md')) {
+            return mdContent.replace(/`[\w@./]+?`/g, (codeRef) => `[[${codeRef.substring(1, codeRef.length - 1)}]]`)
+          }
+          return mdContent
+        })
+      })
+    }
+  }
+
+  fixProjectMarkdownPaths(project: ProjectReflection): void {
+    project.readme = project.readme.replace(/\[[@\w./-]+]\(\.\/packages\/[\w./-]+\)/g, link => {
+      const packageName = link.match(/\.\/packages\/([\w./-]+)/)[1]
+      return `[[@${packageName}]]`
+    })
+  }
+
+  onResolveBegin(context: Context) {
+    this.fixProjectMarkdownPaths(context.project)
     const packageModules = [...this.packageModules.values()]
     packageModules.forEach(module => {
-      const ogName = module.name
-      module.name = `@${module.name.substring(MODULE_REFORMAT_PREFIX.length + 1, module.name.length - MODULE_REFORMAT_SUFFIX.length - 1)}`
-
-      // auto-import README.md content for each package
-      if (module.comment && module.comment.tags && module.comment.tags.length) {
-        module.comment.tags.forEach(tag => {
-          tag.text = tag.text.replace(/\[\[include:[\w.-_/]+?\.md]]/g, (include) => {
-            const includePath = resolve(dirname(module.originalName), include.match(/include:(.+\.md)/)[1])
-            const mdContent = readFileSync(includePath, 'utf-8')
-            return mdContent.replace(/`[\w@./]+?`/g, (codeRef) => `[[${codeRef.substring(1, codeRef.length - 1)}]]`)
-          })
-        })
-      }
-      console.log(`${ogName} -> ${module.name}`)
+      this.renamePackageModule(module)
+      this.importIncludedMarkdown(module)
     })
 
     this.modules.forEach((module: DeclarationReflection) => {

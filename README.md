@@ -72,3 +72,5 @@ allow developers to use only the features they require.
 
 [Simple Express REST API](./_examples/simple-express-rest-api) - An
 implementation of a very simple REST API using `@dandi`
+[Simple Console](./_examples/simple-console) - A simple console
+application demonstrating using `@dandi` with `commander`

@@ -1,0 +1,61 @@
+#!/usr/bin/env bash
+set -e
+
+function install_dependencies {
+  log "Installing Dandi local dependencies..." &&
+  npm install &&
+  log "Done installing Dandi local dependencies"
+}
+
+function setup_builder {
+  log "Setting up builder dependencies..." &&
+  pushd builder &&
+  npm install &&
+  npm link &&
+  popd &&
+  npm link builder &&
+  log "Builder setup complete"
+}
+
+function install_package_dependencies {
+  log "Installing Dandi package dependencies..."
+  npm run install-packages
+  log "Done installing Dandi package dependencies"
+}
+
+function setup_typedoc {
+  log "Setting up Typedoc..."
+  pushd ./util/typedoc/typedoc-plugin-module-name-by-package
+  npm install
+  npm link
+  popd
+  npm link typedoc-plugin-module-name-by-package
+  log "Done setting up Typedoc"
+}
+
+function install_example_dependencies {
+  pushd _examples &&
+  for dir in ./*
+  do
+    pushd ${dir} &&
+    log "Installing dependencies for example project ${dir%*/}..." &&
+    npm install &&
+    log "Done installing dependencies for example project ${dir%*/}" &&
+    popd
+  done &&
+  popd
+}
+
+function log {
+  echo ""
+  # prints the $1 arg in a magenta color:
+  echo -e "\033[0;35m$1\033[0m"
+  echo ""
+}
+
+install_dependencies &&
+setup_builder &&
+install_package_dependencies &&
+setup_typedoc &&
+install_example_dependencies &&
+log "Done."

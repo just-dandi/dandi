@@ -8,5 +8,6 @@
   "excludePrivate": true,
   "excludeNotExported": true,
   "listInvalidSymbolLinks": true,
-  "readme": "./README.md"
+  "readme": "./README.md",
+  "exclude": "_examples"
 }

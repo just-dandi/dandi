@@ -3,3 +3,6 @@ dist
 out
 coverage
 update.package.ts
+util/typedoc/typedoc-plugin-module-name-by-package/src/*.js
+util/typedoc/typedoc-plugin-module-name-by-package/src/*.d.ts
+docs

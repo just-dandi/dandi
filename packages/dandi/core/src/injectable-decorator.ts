@@ -31,6 +31,11 @@ export function injectableDecorator<T>(
   Reflect.set(target, ProviderOptions.valueOf() as symbol, providerOptions)
 }
 
+/**
+ * @param injectableOrOption
+ * @param options
+ * @decorator
+ */
 export function Injectable<T>(
   injectableOrOption: InjectionToken<T> | InjectableOption = null,
   ...options: InjectableOption[]

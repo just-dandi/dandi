@@ -1,3 +1,18 @@
+/**
+ * @module
+ * [[include:README.md]]
+ * [[include:docs/CONCEPTS.md]]
+ * [[include:docs/DESCRIBING_INJECTABLES.md]]
+ * [[include:docs/DESCRIBING_DEPENDENCIES.md]]
+ * [[include:docs/INJECTABLE_DISCOVERY.md]]
+ * [[include:docs/APPLICATION_LIFECYCLE.md]]
+ * [[include:docs/APPLICATION_CONFIGURATION.md]]
+ * [[include:docs/LOGGING.md]]
+ */
+
+/**
+ * @ignore - this placeholder required so that typedoc uses the above module comment
+ */
 export * from './src/ambient-injectable-scanner'
 export * from './src/entry-point'
 export * from './src/dandi-application'
