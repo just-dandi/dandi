@@ -7,6 +7,9 @@ import { NativeNow } from './native-now'
 import { NoopLogger } from './noop-logger'
 import { QueueingLogger } from './queueing-logger'
 
+/**
+ * @ignore
+ */
 export type Options<T> = { [P in keyof T]?: T[P] }
 
 /**

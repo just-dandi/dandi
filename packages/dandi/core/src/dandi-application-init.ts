@@ -30,6 +30,7 @@ function defaultGeneratorFactory(injector: Injector): InstanceGenerator {
 
 /**
  * @internal
+ * @ignore
  */
 export class DandiApplicationInit<TConfig extends DandiApplicationConfig> implements Disposable {
 

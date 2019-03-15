@@ -20,6 +20,8 @@ export class ModuleNameByPackagePlugin extends ConverterComponent {
 
   private modules: DeclarationReflection[]
   private packageModules = new Map<string, DeclarationReflection>()
+  private loadedFiles = new Map<string, string>()
+  private loadedSections = new Map<string, string>()
 
   initialize() {
     this.listenTo(this.owner, {
@@ -62,27 +64,82 @@ export class ModuleNameByPackagePlugin extends ConverterComponent {
     console.log(`${ogName} -> ${module.name}`)
   }
 
-  importIncludedMarkdown(module: DeclarationReflection): void {
-    // auto-import README.md content for each package
-    if (module.comment && module.comment.tags && module.comment.tags.length) {
-      module.comment.tags.forEach(tag => {
-        tag.text = tag.text.replace(/\[\[include:[\w.-_/]+?\.md]]/g, (include) => {
-          const includePath = resolve(dirname(module.originalName), include.match(/include:(.+\.md)/)[1])
-          const mdContent = readFileSync(includePath, 'utf-8')
+  loadInclude(includePath: string, section: string) {
+    let content = this.loadedFiles.get(includePath)
+    if (!content) {
+      content = readFileSync(includePath, 'utf-8')
+      this.loadedFiles.set(includePath, content)
+    }
+    if (!section) {
+      return content
+    }
 
-          // convert `code` to symbol references for README files
-          if (includePath.endsWith('README.md')) {
-            return mdContent.replace(/`[\w@./]+?`/g, (codeRef) => `[[${codeRef.substring(1, codeRef.length - 1)}]]`)
-          }
-          return mdContent
-        })
+    const sectionKey = [includePath, section].join('#')
+    let sectionContent = this.loadedSections.get(sectionKey)
+    if (!sectionContent) {
+      const markerStart = content.indexOf(`# ${section}`)
+      if (markerStart < 0) {
+        throw new Error(`Could not find section "${section}" in file ${includePath}`)
+      }
+      const markerEnd = markerStart + section.length + 2
+      const nextMarkerStart = content.indexOf('# ', markerEnd)
+      sectionContent = content
+        .substring(markerEnd, nextMarkerStart < 0 ? undefined : nextMarkerStart)
+        .trim()
+      this.loadedSections.set(sectionKey, sectionContent)
+    }
+    return sectionContent
+  }
+
+  getModuleDirectory(module: Reflection): string {
+    if (module.sources && module.sources.length) {
+      return dirname(module.sources[0].fileName)
+    }
+    return this.getModuleDirectory(module.parent)
+  }
+
+  importIncludedMarkdown(module: Reflection): void {
+    if (!module.comment || !module.comment.hasVisibleComponent()) {
+      return
+    }
+    const cwd = this.getModuleDirectory(module)
+
+    if (module.comment.text) {
+      module.comment.text = this.replaceWithMarkdown(cwd, module.comment.text)
+    }
+    if (module.comment.shortText) {
+      module.comment.shortText = this.replaceWithMarkdown(cwd, module.comment.shortText)
+    }
+    if (module.comment.returns) {
+      module.comment.returns = this.replaceWithMarkdown(cwd, module.comment.returns)
+    }
+    if (module.comment.tags) {
+      // auto-import README.md content for each package
+      module.comment.tags.forEach(tag => {
+        tag.text = this.replaceWithMarkdown(cwd, tag.text)
       })
     }
   }
 
+  replaceWithMarkdown(cwd: string, text: string): string {
+
+    return text.replace(/\[\[include:[\w.\-_/]+?\.md(?:#[\w.\-:]+)?]]/g, (includeTag) => {
+      const includePath = resolve(cwd, includeTag.match(/include:(.+\.md)/)[1])
+      const sectionMatch = includeTag.match(/#([\w.\-:]+)/)
+      const section = sectionMatch ? sectionMatch[1] : undefined
+      const content = this.loadInclude(includePath, section)
+
+      // convert `code` to symbol references for README files
+      if (includePath.endsWith('README.md')) {
+        return content.replace(/`[\w@./]+?`/g, (codeRef) => `[[${codeRef.substring(1, codeRef.length - 1)}]]`)
+      }
+      return content
+    })
+  }
+
   fixProjectMarkdownPaths(project: ProjectReflection): void {
-    project.readme = project.readme.replace(/\[[@\w./-]+]\(\.\/packages\/[\w./-]+\)/g, link => {
-      const packageName = link.match(/\.\/packages\/([\w./-]+)/)[1]
+    project.readme = project.readme.replace(/\[[@\w./\-]+]\(\.\/packages\/[\w./-]+\)/g, link => {
+      const packageName = link.match(/\.\/packages\/([\w./\-]+)/)[1]
       return `[[@${packageName}]]`
     })
   }
@@ -92,8 +149,11 @@ export class ModuleNameByPackagePlugin extends ConverterComponent {
     const packageModules = [...this.packageModules.values()]
     packageModules.forEach(module => {
       this.renamePackageModule(module)
-      this.importIncludedMarkdown(module)
     })
+
+    for(const ref of Object.values(context.project.reflections)) {
+      this.importIncludedMarkdown(ref)
+    }
 
     this.modules.forEach((module: DeclarationReflection) => {
       const packageModule = this.getPackageModule(module.originalName)

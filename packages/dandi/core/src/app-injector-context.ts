@@ -7,6 +7,7 @@ import { RepositoryRegistrationSource } from './repository-registration'
 
 /**
  * @internal
+ * @ignore
  */
 export class AppInjectorContext extends InjectorContext {
 

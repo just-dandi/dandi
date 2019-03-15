@@ -32,6 +32,9 @@ const PARSE_ARGS_A1 = 0
 const PARSE_ARGS_A2 = 1
 const PARSE_ARGS_PROVIDERS_START = 2
 
+/**
+ * The default implementation of [[Injector]]
+ */
 export class DandiInjector implements Injector, Disposable {
 
   private resolverContextConstructor: ResolverContextConstructor<any>

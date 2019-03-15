@@ -16,6 +16,21 @@ function reducer(result: Provider<any>[], entry: RepositoryEntry<any>): Array<Pr
   return result
 }
 
+/**
+ * A [[Scanner]] implementation that automatically discovers any classes decorated with [[Injectable]] that have been
+ * loaded by the application. This will include any classes defined in modules that are statically referenced by the
+ * your application.
+ *
+ * ```typescript
+ * import { AmbientInjectableScanner, DandiApplication } from '@dandi/core`
+ *
+ * const app = new DandiApplication({
+ *   providers: [
+ *     AmbientInjectableScanner,
+ *   ],
+ * })
+ * ```
+ */
 @Injectable(Scanner)
 export class AmbientInjectableScanner implements Scanner {
 

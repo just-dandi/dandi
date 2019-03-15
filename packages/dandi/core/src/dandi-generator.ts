@@ -15,12 +15,20 @@ import { ResolverContext } from './resolver-context'
 import { ResolverContextConstructor } from './resolver-context-constructor'
 import { DependencyInjectionContext } from './injection-context'
 
+/**
+ * The default implementation of [[InstanceGenerator]].
+ */
 export class DandiGenerator implements InstanceGenerator {
 
   private singletonRequests = new Map<Provider<any>, Promise<any>>()
 
   constructor(private injector: TokenInjector) {}
 
+  /**
+   * Generates the object instance defined by the `resolverContext`'s target. Returns a `Promise` that resolves to
+   * a single instance for non-multi providers, or an array for multi providers.
+   * @param resolverContext A [[ResolverContext]] instance used to configure the instance and resolve any dependencies
+   */
   public async generateInstance<T>(resolverContext: ResolverContext<T>): Promise<T | T[]> {
     const entry = resolverContext.match
 
@@ -33,7 +41,6 @@ export class DandiGenerator implements InstanceGenerator {
       return await Promise.all(
         [...entry].map((provider) =>
           this.fetchProviderInstance(provider, resolverContext.createResolverContext(resolverContextConstructor, resolverContext.target, getInjectionContext(provider))),
-          // this.fetchProviderInstance(provider, injectorContext.createChild(injectorContext.target, injectorContext.context)),
         ),
       )
     }
@@ -41,6 +48,10 @@ export class DandiGenerator implements InstanceGenerator {
     return this.fetchProviderInstance(entry, resolverContext)
   }
 
+  /**
+   * @ignore
+   * @internal
+   */
   protected async generate<T>(provider: GeneratingProvider<T>, resolverContext: ResolverContext<T>): Promise<T> {
 
     if (isFactoryProvider(provider)) {
