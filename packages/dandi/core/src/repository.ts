@@ -60,8 +60,8 @@ export class Repository<TContext = any> implements Disposable {
   /**
    * Gets a reference the global [[Repository]] instance.
    *
-   * The global [[Repository]] instance is used to hold a collection of classes decorated with [[Injectable]], and is
-   * used by [[AmbientInjectableScanner]] to automatically include [[Injectable]]s from JavaScript and TypeScript
+   * The global [[Repository]] instance is used to hold a collection of classes decorated with [[@Injectable()]], and is
+   * used by [[AmbientInjectableScanner]] to automatically include [[@Injectable()]]s from JavaScript and TypeScript
    * modules that are statically referenced by the application's source code.
    */
   public static get global(): Repository {

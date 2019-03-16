@@ -21,7 +21,7 @@ Additionally, Dandi includes a [[Scanner]] interface which allows implementation
 of automatic service discovery.
 
 **[[AmbientInjectableScanner]]** will automatically register any services
-marked with [[Injectable]] that located in any module loaded by NodeJS.
+marked with [[@Injectable()]] that located in any module loaded by NodeJS.
 
 **[[FileSystemScanner]]** can be used in conjunction with
 [[AmbientInjectableScanner]] to automatically load modules from paths

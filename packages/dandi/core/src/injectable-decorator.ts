@@ -67,7 +67,7 @@ function isInjectableOption(obj: any): obj is InjectableOption {
 }
 
 /**
- * A utility class used to set [[InjectableOption]] values for a class decorated with [[Injectable]]
+ * A utility class used to set [[InjectableOption]] values for a class decorated with [[@Injectable()]]
  *
  * [[include:injectable-decorator.doc.md#InjectableOption:values]]
  */
@@ -83,26 +83,26 @@ export class InjectableOption {
 }
 
 /**
- * Marks an [[Injectable]] decorated class as a singleton
+ * Marks an [[@Injectable()]] decorated class as a singleton
  */
 export const Singleton = new InjectableOption((options: ProviderOptions<any>) => (options.singleton = true))
 
 /**
- * Marks an [[Injectable]] decorated class as a non-singleton
+ * Marks an [[@Injectable()]] decorated class as a non-singleton
  */
 export const NotSingleton = new InjectableOption((options: ProviderOptions<any>) => (options.singleton = false))
 
 /**
- * Marks an [[Injectable]] decorated class as an entry for a multi provider
+ * Marks an [[@Injectable()]] decorated class as an entry for a multi provider
  */
 export const Multi = new InjectableOption((options: ProviderOptions<any>) => (options.multi = true))
 
 /**
- * Marks an [[Injectable]] decorated class as singular (non-multi) provider
+ * Marks an [[@Injectable()]] decorated class as singular (non-multi) provider
  */
 export const NotMulti = new InjectableOption((options: ProviderOptions<any>) => (options.multi = false))
 
 /**
- * Prevents an [[Injectable]] decorated class from being registered as itself
+ * Prevents an [[@Injectable()]] decorated class from being registered as itself
  */
 export const NoSelf = new InjectableOption((options: ProviderOptions<any>) => (options.noSelf = true))

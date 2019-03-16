@@ -1,3 +1,12 @@
+/**
+ * @module
+ * [[include:README.md]]
+ * [[include:docs/DOCS.md]]
+ */
+
+/**
+ * @ignore - this placeholder required so that typedoc uses the above module comment
+ */
 export * from './src/data.property.metadata'
 export * from './src/json.decorator'
 export * from './src/member.metadata'

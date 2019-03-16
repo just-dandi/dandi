@@ -3,19 +3,40 @@ import { DateTime } from 'luxon'
 
 import { MemberMetadata, getAllKeys, getModelMetadata } from './member.metadata'
 
+/**
+ * @ignore
+ * @internal
+ */
 export const NO_RECURSION: Array<Constructor<any>> = [Array, Boolean, DateTime, Number, String, Url, Uuid]
 
+/**
+ * @ignore
+ * @internal
+ */
 export type PropertyNameFormatter = (property: string) => string
+
+/**
+ * @ignore
+ * @internal
+ */
 export type RecursionFilter<TMetadata extends MemberMetadata> = (meta: TMetadata) => boolean
 
 const DEFAULT_FORMATTER: PropertyNameFormatter = (prop: string): string => prop
 
+/**
+ * @ignore
+ * @internal
+ */
 export interface PathListOptions {
   formatter?: PropertyNameFormatter;
   maxDepth?: number;
   recursionFilter?: RecursionFilter<MemberMetadata>;
 }
 
+/**
+ * @ignore
+ * @internal
+ */
 export class ModelUtil {
   public static generatePathList<T>(model: Constructor<T>, options: PathListOptions = {}): string[] {
     if (!options.formatter) {

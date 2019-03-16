@@ -6,6 +6,7 @@ import { ProjectReflection } from 'typedoc'
 import { Component, ConverterComponent } from 'typedoc/dist/lib/converter/components'
 import { Converter } from 'typedoc/dist/lib/converter/converter'
 import { Context } from 'typedoc/dist/lib/converter/context'
+import { ReferenceType } from 'typedoc/dist/lib/models'
 import { ContainerReflection } from 'typedoc/dist/lib/models/reflections/container'
 import { Reflection } from 'typedoc/dist/lib/models/reflections/abstract'
 import { DeclarationReflection } from 'typedoc/dist/lib/models/reflections/declaration'
@@ -144,6 +145,21 @@ export class ModuleNameByPackagePlugin extends ConverterComponent {
     })
   }
 
+  isDecorator(ref: Reflection): boolean {
+    if (!(ref as any).signatures) {
+      return false
+    }
+    return !!(ref as DeclarationReflection).signatures.find(sig => {
+      if (sig.comment && sig.comment.tags && sig.comment.tags.find(tag => tag.tagName === 'decorator')) {
+        return true
+      }
+      if (!sig.type || !(sig.type as any).name) {
+        return false
+      }
+      return (sig.type as any).name.endsWith('Decorator')
+    })
+  }
+
   onResolveBegin(context: Context) {
     this.fixProjectMarkdownPaths(context.project)
     const packageModules = [...this.packageModules.values()]
@@ -153,6 +169,11 @@ export class ModuleNameByPackagePlugin extends ConverterComponent {
 
     for(const ref of Object.values(context.project.reflections)) {
       this.importIncludedMarkdown(ref)
+
+      // rename decorators
+      if (this.isDecorator(ref)) {
+        ref.name = `@${ref.name}()`
+      }
     }
 
     this.modules.forEach((module: DeclarationReflection) => {

@@ -30,7 +30,7 @@ function storeResult(key: symbol, value: string[]): string[] {
 }
 
 /**
- * Thrown when [[Inject]] is used to decorate an unsupported parameter, such as a `rest` parameter.
+ * Thrown when [[@Inject()]] is used to decorate an unsupported parameter, such as a `rest` parameter.
  */
 export class UnsupportedParamTypeError extends AppError {
   constructor(message: string, public readonly target: any) {

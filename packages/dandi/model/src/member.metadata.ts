@@ -1,31 +1,51 @@
 import { Constructor } from '@dandi/common'
 
+/**
+ * @ignore
+ * @internal
+ */
 export type SourceAccessorFn = <TSource, TMember>(source: TSource) => TMember
 
+/**
+ * @ignore
+ * @internal
+ */
 export type MemberSourceAccessor = string | SourceAccessorFn
 
+/**
+ * @ignore
+ * @internal
+ */
 export interface MemberMetadata {
-  type?: Constructor<any>;
-  keyType?: Constructor<any>;
-  valueType?: Constructor<any>;
-  required?: boolean;
-  minLength?: number;
-  maxLength?: number;
-  minValue?: number;
-  maxValue?: number;
-  pattern?: RegExp;
-  format?: string;
-  oneOf?: Array<Constructor<any>>;
-  json?: boolean;
-  sourceAccessor?: MemberSourceAccessor;
+  type?: Constructor<any>
+  keyType?: Constructor<any>
+  valueType?: Constructor<any>
+  required?: boolean
+  minLength?: number
+  maxLength?: number
+  minValue?: number
+  maxValue?: number
+  pattern?: RegExp
+  format?: string
+  oneOf?: Array<Constructor<any>>
+  json?: boolean
+  sourceAccessor?: MemberSourceAccessor
 }
 
+/**
+ * @ignore
+ * @internal
+ */
 export interface ModelMetadata {
-  [propertyName: string]: MemberMetadata;
+  [propertyName: string]: MemberMetadata
 }
 
 const protoKeys = new Map<Function, Map<Symbol, any>>()
 
+/**
+ * @ignore
+ * @internal
+ */
 export function getModelMetadata(target: Function): ModelMetadata {
   let protoKey = protoKeys.get(target)
   if (!protoKey) {
@@ -44,7 +64,8 @@ export function getModelMetadata(target: Function): ModelMetadata {
 }
 
 /**
- * Used walk the prototype hierarchy of a {@see ModelMetadata} object and gather a list of all inherited properties
+ * @ignore
+ * @internal
  */
 export function getAllKeys(obj: ModelMetadata): string[] {
   if (obj === null) {
@@ -53,6 +74,10 @@ export function getAllKeys(obj: ModelMetadata): string[] {
   return Object.keys(obj).concat(getAllKeys(Object.getPrototypeOf(obj)))
 }
 
+/**
+ * @ignore
+ * @internal
+ */
 export function getMemberMetadata(target: any, propertyName: string, paramIndex?: number): MemberMetadata {
   const modelMetadata = getModelMetadata(target)
   const key = typeof paramIndex === 'number' ? `${propertyName}__${paramIndex}` : propertyName

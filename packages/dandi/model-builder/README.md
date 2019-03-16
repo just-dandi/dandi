@@ -4,7 +4,7 @@ The `@dandi/model-builder` package contains utilities for dynamically
 constructing and validating models defined using decorators from
 `@dandi/model`.
 
-While `ModelBuilder` can be used on its own, is used by several other
+While `ModelBuilder` can be used on its own, it is used by several other
 Dandi packages to provide automatic construction and validation of
 data models:
 
@@ -56,5 +56,5 @@ from `@dandi/model` to define a model. Some things to note about using
 - Nested models are supported - it will recurse into each complex type
   and convert any properties defined by the `@dandi/model` decorators.
 - When using the `keyTransform` option, it will _not_ transform the keys
-  of `Map` properties (defined with `@MapOf()`), or JSON properties
-  (specified by adding `@Json()`).
+  of `Map` properties (defined with `MapOf`), or JSON properties
+  (specified by adding `Json`).

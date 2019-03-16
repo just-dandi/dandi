@@ -1,6 +1,6 @@
 ## Describing Dependencies
 
-Use the [[Inject]] decorator to describe dependencies in a constructor:
+Use the [[@Inject()]] decorator to describe dependencies in a constructor:
 
 ```typescript
 @Injectable()
@@ -27,7 +27,7 @@ class ServiceB {
 }
 ```
 
-The [[Inject]] decorator can also be used to describe dependencies for
+The [[@Inject()]] decorator can also be used to describe dependencies for
 a method. While Dandi does not automatically wrap method
 calls, decorated method can be invoked by the [[Injector.invoke]] method:
 
@@ -49,7 +49,7 @@ class MyService {
 
 ### Optional Dependencies
 
-Dependencies can be marked as option using the [[Optional]] decorator.
+Dependencies can be marked as option using the [[@Optional()]] decorator.
 Optional dependencies that cannot be resolved will be passed as `undefined`.
 
 ```typescript

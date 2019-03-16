@@ -3,7 +3,7 @@
 ### @Injectable() Decorator
 
 The simplest method of describing an injectable service is to add the
-[[Injectable]] decorator to it. This tells the resolver that when it
+[[@Injectable()]] decorator to it. This tells the resolver that when it
 encounters a dependency of the decorated class, it will instantiate a
 new instance of that class:
 
@@ -34,7 +34,7 @@ feature. Since interfaces are only types (and are not available
 at runtime), there needs to be a concrete value to represent them.
 Dandi uses a `const` of the same name to represent an interface's
 injection token, allowing for consistency when looking at code using
-the [[Injectable]] and [[Inject]] decorators.
+the [[@Injectable()]] and [[@Inject()]] decorators.
 
 ### Providers
 

@@ -101,7 +101,7 @@ export function isInjector(obj: any): obj is Injector {
 }
 
 /**
- * A service that is responsible for invoking methods whose parameters are decorated with [[Inject]] decorators.
+ * A service that is responsible for invoking methods whose parameters are decorated with [[@Inject()]] decorators.
  */
 export interface Invoker {
 
