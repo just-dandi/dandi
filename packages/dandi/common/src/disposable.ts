@@ -49,7 +49,7 @@ export interface Disposable {
 
   /**
    * Disposes of any resources controlled by the instance
-   * @param reason
+   * @param reason A brief description of why the object is being disposed
    */
   dispose(reason: string): void | Promise<void>
 }

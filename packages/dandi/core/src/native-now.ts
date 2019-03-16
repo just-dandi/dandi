@@ -1,11 +1,14 @@
 import { ValueProvider } from './provider'
-import { Now, NowFn } from './now'
+import { NowFn } from './now-fn'
 
 function nativeNow(): number {
   return new Date().valueOf()
 }
 
+/**
+ * A [[Provider]] for [[NowFn]] that uses JavaScript's native `Date` object to generate a timestamp
+ */
 export const NativeNow: ValueProvider<NowFn> = {
-  provide: Now,
+  provide: NowFn,
   useValue: nativeNow,
 }

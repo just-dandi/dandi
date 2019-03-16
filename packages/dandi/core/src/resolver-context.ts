@@ -12,12 +12,21 @@ import {
 
 import { InjectorContext } from './injector-context'
 
+/**
+ * An [[InjectorContext]] used for resolving specific [[Provider]]s during dependency injection.
+ */
 export class ResolverContext<T> extends InjectorContext {
 
+  /**
+   * Gets an [[InjectionContext]] representing the matched [[RepositoryEntry]].
+   */
   public get injectionContext(): InjectionContext {
     return getInjectionContext(this.match as any) || super.injectionContext
   }
 
+  /**
+   * Gets the matching [[RepositoryEntry]] for the instance's [[target]].
+   */
   public get match(): RepositoryEntry<T> {
     if (!this._match) {
       this._match = this.find(this.target)
@@ -25,6 +34,9 @@ export class ResolverContext<T> extends InjectorContext {
     return this._match
   }
 
+  /**
+   * Gets the [[InjectionResult]] for the instance's [[match]], if it has been resolved.
+   */
   public get result(): InjectionResult<T> {
     return this._result
   }
@@ -48,16 +60,28 @@ export class ResolverContext<T> extends InjectorContext {
 
   }
 
+  /**
+   * Registers an object instance that was generated for the [[ResolverContext]].
+   * @param obj
+   */
   public addInstance(obj: T): T {
     this.instances.push(obj)
     return obj
   }
 
+  /**
+   * Resolves the [[ResolverContext]] with the specified injection `result`.
+   * @param result
+   */
   public resolveValue(result: T | T[]): InjectionResult<T> {
     this._result = new InjectionResult<T>(this, result)
     return this._result
   }
 
+  /**
+   * Disposes all instances registered with [[addInstance]], then follows the same behavior as [[InjectorContext.dispose]].
+   * @param reason A brief description of why the object is being disposed
+   */
   public async dispose(reason: string): Promise<void> {
     await Promise.all(this.instances.map((instance) => {
       if (Disposable.isDisposable(instance) && !Disposable.isDisposed(instance)) {
@@ -68,6 +92,10 @@ export class ResolverContext<T> extends InjectorContext {
     return super.dispose(reason)
   }
 
+  /**
+   * @internal
+   * Gets a string representing the [[ResolverContext]] in an dependency injection stack
+   */
   protected getCustomInspectorString(): string {
 
     const thisContext = this.context || getInjectionContext(this.match as any)

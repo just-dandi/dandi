@@ -24,11 +24,6 @@ export class DandiGenerator implements InstanceGenerator {
 
   constructor(private injector: TokenInjector) {}
 
-  /**
-   * Generates the object instance defined by the `resolverContext`'s target. Returns a `Promise` that resolves to
-   * a single instance for non-multi providers, or an array for multi providers.
-   * @param resolverContext A [[ResolverContext]] instance used to configure the instance and resolve any dependencies
-   */
   public async generateInstance<T>(resolverContext: ResolverContext<T>): Promise<T | T[]> {
     const entry = resolverContext.match
 

@@ -3,6 +3,11 @@ import { getTokenString } from './injection-token'
 import { Provider } from './provider'
 import { isClassProvider, isFactoryProvider, isValueProvider } from './provider-util'
 
+/**
+ * @internal
+ * Returns an [[InjectionContext]] object for the given `provider`
+ * @param provider The [[Provider]] whose dependency is being resolved
+ */
 export function getInjectionContext<T>(provider: Provider<T>): InjectionContext {
   if (isClassProvider(provider)) {
     return provider.useClass
@@ -18,6 +23,10 @@ export function getInjectionContext<T>(provider: Provider<T>): InjectionContext 
   }
 }
 
+/**
+ * Returns `true` if `obj` is a valid [[MethodInjectionContext]]; otherwise, `false`
+ * @param obj The object to check
+ */
 export function isMethodInjectionContext(obj: any): obj is MethodInjectionContext {
   return obj && typeof obj.methodName === 'string' && typeof obj.instance === 'object'
 }

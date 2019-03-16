@@ -3,6 +3,10 @@ import { OnConfigInternal } from '@dandi/core/src/on-config-internal'
 
 import { LogListener } from './log-listener'
 
+/**
+ * @internal
+ * @ignore
+ */
 export const LoggerConfig: Provider<OnConfig> = {
   provide: OnConfigInternal,
   useFactory: (stream: LogStream, listeners: LogListener[]): OnConfig => (): void => {

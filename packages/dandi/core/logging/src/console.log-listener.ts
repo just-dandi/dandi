@@ -35,6 +35,9 @@ function coalesceByDefined<T>(a: T, b: T): T {
   return typeof a === 'undefined' ? b : a
 }
 
+/**
+ * A [[LogListener]] implementation that formats [[LogEntry]] objects to be displayed on the console.
+ */
 @Injectable(LogListener, Singleton)
 export class ConsoleLogListener implements LogListener {
 
@@ -82,7 +85,7 @@ export class ConsoleLogListener implements LogListener {
     console[entry.level](tag, ...entry.args)
   }
 
-  private getLongestAllowedLevelTag() {
+  private getLongestAllowedLevelTag(): number {
     const allowedLevels: LogLevel[] =
       Object.keys(LogLevel)
         .filter((level: LogLevel) => !this.isFiltered(level))
@@ -150,7 +153,7 @@ export class ConsoleLogListener implements LogListener {
     return formatter(entryInfo)
   }
 
-  private getContextName(context: InjectionContext) {
+  private getContextName(context: InjectionContext): string {
     return getInjectionContextName(context)
   }
 

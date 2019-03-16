@@ -6,7 +6,7 @@ import { createStubInstance } from 'sinon'
 
 import { isFactoryProvider } from '../../src/provider-util'
 
-import { LoggerConfig } from './logger.config'
+import { LoggerConfig } from './logger-config'
 
 describe('LoggerConfig', function() {
 

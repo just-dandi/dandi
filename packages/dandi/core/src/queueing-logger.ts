@@ -2,7 +2,7 @@ import { Logger } from './logger'
 import { LoggerMethod, createLoggerMethodChain, LogCallOptions } from './logger-method'
 import { LogLevel } from './log-level'
 import { InjectionContext } from './injection-context'
-import { NowFn } from './now'
+import { NowFn } from './now-fn'
 import { LogEntry } from './log-entry'
 import { LogStream } from './log-stream'
 

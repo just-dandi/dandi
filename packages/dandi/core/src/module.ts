@@ -8,20 +8,47 @@ import { InjectionToken, isInjectionToken } from './injection-token'
 export type RegisterableTypes = Constructor<any> | Provider<any> | Array<Constructor<any>> | Array<Provider<any>> | Module
 export type Registerable = RegisterableTypes | RegisterableTypes[]
 
+/**
+ * Contains registration debugging information about where a [[Provider]] or [[Constructor]] was registered
+ */
 export interface ModuleInfo {
-  name: string;
-  package: string;
-  module: Module;
-  registeredBy: Module[];
+  name: string
+  package: string
+  module: Module
+  registeredBy: Module[]
 }
 
 const MODULE_INFO_REG = new Map<InjectionToken<any>, ModuleInfo>()
 
+/**
+ * A container class used to logically group [[Provider]], [[Constructor]], and other [[Module]] instances for easy
+ * configuration of libraries. `Module` implementations add metadata to their contained entries to make it easier to
+ * debug problems during [[Provider]] registration.
+ */
 export class Module extends Array<Registerable> {
-  public static readonly MODULE_INFO = Symbol.for(`${PKG}#${Module.name}.MODULE_INFO`);
-  public static readonly MODULE_NAME = Symbol.for(`${PKG}#${Module.name}.MODULE_NAME`);
-  public static readonly PACKAGE = Symbol.for(`${PKG}#${Module.name}.PACKAGE`);
 
+  /**
+   * @internal
+   * @ignore
+   */
+  public static readonly MODULE_INFO = Symbol.for(`${PKG}#${Module.name}.MODULE_INFO`)
+
+  /**
+   * @internal
+   * @ignore
+   */
+  public static readonly MODULE_NAME = Symbol.for(`${PKG}#${Module.name}.MODULE_NAME`)
+
+  /**
+   * @internal
+   * @ignore
+   */
+  public static readonly PACKAGE = Symbol.for(`${PKG}#${Module.name}.PACKAGE`)
+
+  /**
+   * Gets a [[ModuleInfo]] object containing registration debugging information for the specified `target`
+   * @param target
+   */
   public static moduleInfo(target: any): ModuleInfo {
     if (!target) {
       return undefined
@@ -39,6 +66,10 @@ export class Module extends Array<Registerable> {
     this.tag(entries)
   }
 
+  /**
+   * Adds registration debugging metadata to the specified `entries`
+   * @param entries
+   */
   protected tag(entries: Registerable[]): void {
     entries.forEach((entry) => {
       if (Array.isArray(entry)) {
@@ -52,6 +83,10 @@ export class Module extends Array<Registerable> {
     })
   }
 
+  /**
+   * Adds registration debugging metadata to the specified `target`
+   * @param target
+   */
   protected tagTarget(target: InjectionToken<any> | Provider<any>): void {
     let info: ModuleInfo
     const useMap = isInjectionToken(target) && !isConstructor(target) && !isProvider(target)

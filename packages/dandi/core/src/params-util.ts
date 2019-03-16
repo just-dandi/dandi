@@ -29,6 +29,9 @@ function storeResult(key: symbol, value: string[]): string[] {
   return value
 }
 
+/**
+ * Thrown when [[Inject]] is used to decorate an unsupported parameter, such as a `rest` parameter.
+ */
 export class UnsupportedParamTypeError extends AppError {
   constructor(message: string, public readonly target: any) {
     super(message)
@@ -45,6 +48,10 @@ function selectPattern(str: string): RegExp {
   return PATTERNS.ctrOrFunctionSig
 }
 
+/**
+ * @internal
+ * @ignore
+ */
 export function getParamNames<T>(target: Function, memberName?: string): string[] {
   if (typeof target !== 'function') {
     throw new Error('Target is not a function')

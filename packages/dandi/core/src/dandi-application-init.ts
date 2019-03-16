@@ -12,7 +12,7 @@ import { Injector } from './injector'
 import { InstanceGenerator, InstanceGeneratorFactory } from './instance-generator'
 import { LogStream } from './log-stream'
 import { Logger } from './logger'
-import { Now, NowFn } from './now'
+import { NowFn } from './now-fn'
 import { Optional } from './optional-decorator'
 import { OnConfig } from './on-config'
 import { OnConfigInternal } from './on-config-internal'
@@ -99,7 +99,7 @@ export class DandiApplicationInit<TConfig extends DandiApplicationConfig> implem
 
   public async init(
     @Inject(Logger) logger: Logger,
-    @Inject(Now) now: NowFn,
+    @Inject(NowFn) now: NowFn,
     @Inject(LogStream) @Optional() logStream?: LogStream,
   ): Promise<void> {
     if (logStream) {
@@ -126,7 +126,7 @@ export class DandiApplicationInit<TConfig extends DandiApplicationConfig> implem
 
   public async scan(
     @Inject(Logger) logger: Logger,
-    @Inject(Now) now: NowFn,
+    @Inject(NowFn) now: NowFn,
     @Inject(Scanner) @Optional() scanners?: Scanner[],
   ): Promise<void> {
     if (!scanners) {
@@ -143,7 +143,7 @@ export class DandiApplicationInit<TConfig extends DandiApplicationConfig> implem
 
   public async runConfig(
     @Inject(Logger) logger: Logger,
-    @Inject(Now) now: NowFn,
+    @Inject(NowFn) now: NowFn,
     @Inject(OnConfig) @Optional() configs?: OnConfig[],
   ): Promise<void> {
     if (logger) {
@@ -163,7 +163,7 @@ export class DandiApplicationInit<TConfig extends DandiApplicationConfig> implem
 
   public async bootstrap(
     @Inject(Logger) logger,
-    @Inject(Now) now: NowFn,
+    @Inject(NowFn) now: NowFn,
     @Inject(EntryPoint) @Optional() entryPoint?: EntryPoint<any>,
   ): Promise<void> {
     logger.debug(`Application starting after ${now() - this.startTs}ms`)

@@ -8,6 +8,9 @@ export interface ScannerContructor {
   new (config: any[]): Scanner;
 }
 
+/**
+ * A service that discovered [[Provider]] objects
+ */
 export interface Scanner {
   scan(): Promise<Array<Provider<any> | Constructor<any>>>
 }
@@ -15,6 +18,11 @@ export interface Scanner {
 export const Scanner: InjectionToken<Scanner> = localOpinionatedToken<Scanner>('Scanner', { multi: true })
 export const ScannerConfig: InjectionToken<any[]> = localSymbolToken<any[]>('ScannerConfig')
 
+/**
+ * Creates a [[Provider]] object for the specified [[Scanner]] implementation
+ * @param scanner
+ * @param config
+ */
 export function scannerProvider<T extends Scanner>(
   scanner: Constructor<Scanner>,
   config: any[],

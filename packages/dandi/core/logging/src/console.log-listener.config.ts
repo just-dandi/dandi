@@ -2,16 +2,30 @@ import { cloneObject } from '@dandi/common'
 import { LogCallOptions, LogEntry, LogLevel, ValueProvider } from '@dandi/core'
 import { DateTimeFormatOptions } from 'luxon'
 
-import { localOpinionatedToken } from './local.token'
+import { localOpinionatedToken } from './local-token'
 
+/**
+ * Additional metadata used for displaying a [[LogEntry]] in the console.
+ */
 export interface ConsoleLogListenerEntryInfo extends LogEntry {
   levelTagHighWater: number
   tagHighWater: number
   contextName: string
 }
+
+/**
+ * A function that takes a [[ConsoleLogListenerEntryInfo]] object and returns a `string`.
+ */
 export type ConsoleLogListenerFormatter = (entryInfo: ConsoleLogListenerEntryInfo) => string
+
+/**
+ * A function that generates a string or array of strings representing the "message" portion of a [[LogEntry]].
+ */
 export type ConsoleLogListenerMessageFormatter = (entryInfo: ConsoleLogListenerEntryInfo) => string | string[]
 
+/**
+ * An object containing formatted sections of a [[LogEntry]] tag, as well as metadata and configuration data
+ */
 export interface LogEntryTagInfo {
   partOrder: (keyof LogCallOptions)[]
   context: string
@@ -24,6 +38,9 @@ export interface LogEntryTagInfo {
   tagHighWater: number
 }
 
+/**
+ * Defines configuration options for formatting the tag portion of a [[LogEntry]]
+ */
 export interface TagFormatOptions {
   partSeparator?: string
   partOrder?: (keyof LogCallOptions)[]
@@ -43,7 +60,7 @@ export interface ConsoleLogListenerOptions {
 }
 
 export interface ConsoleLogListenerConfig extends ConsoleLogListenerOptions {
-  levelOptions?: { [key in keyof LogLevel]?: ConsoleLogListenerOptions }
+  levelOptions?: { [TKey in keyof LogLevel]?: ConsoleLogListenerOptions }
   filter?: LogLevel
 }
 
@@ -55,6 +72,9 @@ export function consoleLogListenerConfigProvider(config: ConsoleLogListenerConfi
   return new ConsoleLogListenerConfigProvider(config)
 }
 
+/**
+ * A helper class for creating [[ConsoleLogListenerConfig]] objects.
+ */
 export class ConsoleLogListenerConfigProvider implements ValueProvider<ConsoleLogListenerConfig> {
 
   private readonly config: ConsoleLogListenerConfig

@@ -10,14 +10,33 @@ import {
   TagFormatOptions,
 } from './console.log-listener.config'
 
+/**
+ * @internal
+ * @ignore
+ */
 export const DEFAULT_CONTEXT_TAG: ConsoleLogListenerFormatter = (entry: ConsoleLogListenerEntryInfo): string => entry.contextName
+
+/**
+ * @internal
+ * @ignore
+ */
 export const DEFAULT_LEVEL_TAG: ConsoleLogListenerFormatter = (entry: ConsoleLogListenerEntryInfo): string => entry.level.toLocaleUpperCase().padEnd(entry.levelTagHighWater, ' ')
+
+/**
+ * @internal
+ * @ignore
+ */
 export const DEFAULT_TIMESTAMP_FORMATTER: ConsoleLogListenerFormatter = (entry: ConsoleLogListenerEntryInfo): string => entry.ts ? entry.ts.toString() : undefined
 const DEFAULT_TAG_PART_ORDER: (keyof LogCallOptions)[] = [
   'level',
   'timestamp',
   'context',
 ]
+
+/**
+ * @internal
+ * @ignore
+ */
 export const DEFAULT_TAG_FORMATTER = (tagInfo: LogEntryTagInfo): string => {
   if (!tagInfo.partOrder.find(part => !!tagInfo[part])) {
     return undefined
@@ -56,6 +75,10 @@ const DEFAULT_TAG_FORMAT_OPTIONS: TagFormatOptions = {
   partOrder: DEFAULT_TAG_PART_ORDER,
 }
 
+/**
+ * @internal
+ * @ignore
+ */
 export const DEFAULT_LOGGING_CONFIG: ConsoleLogListenerConfig = {
   contextTag: false,
   levelTag: DEFAULT_LEVEL_TAG,
@@ -64,4 +87,7 @@ export const DEFAULT_LOGGING_CONFIG: ConsoleLogListenerConfig = {
   tag: DEFAULT_TAG_FORMAT_OPTIONS,
 }
 
+/**
+ * A [[ConsoleLogListenerConfigProvider]] that defines basic [[LogEntry]] formatting for the console
+ */
 export const DefaultLogging: ConsoleLogListenerConfigProvider = consoleLogListenerConfigProvider(DEFAULT_LOGGING_CONFIG)

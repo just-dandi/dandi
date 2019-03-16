@@ -5,6 +5,7 @@ import { localOpinionatedToken } from './local-token'
 import { InstanceInvokableFn } from './injector'
 
 /**
+ * @internal
  * Stores a reference to the object (and for invocations, the method) that requested an injection dependency.
  */
 export interface MethodInjectionContext<TInstance = any, TResult = any> {
@@ -12,6 +13,10 @@ export interface MethodInjectionContext<TInstance = any, TResult = any> {
   methodName: InstanceInvokableFn<TInstance, TResult>,
 }
 
+/**
+ * @internal
+ * A specialized [[InjectionContext]] implementation used when resolving DI dependencies
+ */
 export class DependencyInjectionContext {
 
   public readonly value: string
@@ -49,6 +54,9 @@ export class DependencyInjectionContext {
 
 }
 
+/**
+ * An object representing the reason for injection
+ */
 export type InjectionContext = Constructor<any> | Function | MethodInjectionContext | string | DependencyInjectionContext
 
 export const InjectionContext: InjectionToken<InjectionContext> = localOpinionatedToken<InjectionContext>(
@@ -60,12 +68,20 @@ export const InjectionContext: InjectionToken<InjectionContext> = localOpinionat
   },
 )
 
+/**
+ * @internal
+ * The [[InjectionContext]] used by the [[InjectorContext]] created by the application [[Injector]] instance
+ */
 export const RootInjectionContext = new class RootInjectionContext extends DependencyInjectionContext {
   constructor() {
     super(RootInjectionContext, false)
   }
 }()
 
+/**
+ * @internal
+ * The top level [[InjectionContext]] used by the [[InjectorContext]] created by [[DandiApplication]] during startup
+ */
 export const AppInjectionContext = new class AppInjectionContext extends DependencyInjectionContext {
   constructor() {
     super('Application')

@@ -8,18 +8,30 @@ import { Repository, RepositoryEntry } from './repository'
 import { ResolverContext } from './resolver-context'
 import { ResolverContextConstructor } from './resolver-context-constructor'
 
+/**
+ * @internal
+ * @ignore
+ */
 export type FindExecFn<T, TResult> = (repo: Repository, entry: RepositoryEntry<T>) => TResult
 
+/**
+ * @internal
+ * @ignore
+ */
 export interface FindCacheEntry<T> {
   repo: Repository
   entry: RepositoryEntry<T>
 }
 
 /**
- * A context object containing references to the set of repositories used to resolve an injection token to a provider.
+ * A context object containing references to the set of available [[Provider]] objects used to resolve an
+ * [[InjectionToken]] to its configured [[Provider]].
  */
 export class InjectorContext implements Disposable {
 
+  /**
+   * Returns the [[InjectionContext]] object specified when creating the [[InjectorContext]].
+   */
   public get injectionContext(): InjectionContext {
     return this.context
   }
@@ -30,6 +42,11 @@ export class InjectorContext implements Disposable {
   private readonly children: Array<InjectorContext> = []
   private readonly findCache = new Map<InjectionToken<any>, FindCacheEntry<any>>()
 
+  /**
+   * @param parent The `InjectorContext` used to generate the previous level of the `InjectorContext` hierarchy
+   * @param context The reason the `InjectorContext` is being instantiated
+   * @param providers
+   */
   public constructor(
     public readonly parent: InjectorContext,
     public readonly context: InjectionContext,
@@ -58,6 +75,11 @@ export class InjectorContext implements Disposable {
     providers.forEach((provider) => this.repository.register(this.injectorSource, provider))
   }
 
+  /**
+   * @internal
+   * Attempts to find a [[RepositoryEntry]] for the specified `token`.
+   * @param token The [[InjectionToken]] to search for
+   */
   public find<T>(token: InjectionToken<T>): RepositoryEntry<T>
   public find<T, TResult>(token: InjectionToken<T>, exec: FindExecFn<T, TResult>): TResult
   public find<T, TResult>(token: InjectionToken<T>, exec?: FindExecFn<T, TResult>): TResult | RepositoryEntry<T> {
@@ -71,6 +93,14 @@ export class InjectorContext implements Disposable {
     return result.entry as RepositoryEntry<T>
   }
 
+  /**
+   * @internal
+   * Adds a singleton instance for the specified `provider` to the deepest possible [[InjectorContext]] in the hierarchy.
+   *
+   * Most, if not all singletons should end up being stored in the [[Injector]]'s root [[InjectorContext]]
+   * @param provider
+   * @param value
+   */
   public addSingleton<T>(provider: Provider<T>, value: T): T {
     return this.find(provider.provide, (repo) => {
       const singletonRepo = repo.allowSingletons ? repo : this.findSingletonRepo(repo)
@@ -79,6 +109,11 @@ export class InjectorContext implements Disposable {
     })
   }
 
+  /**
+   * @internal
+   * Attempts to find a singleton instance for the specified `provider`.
+   * @param provider
+   */
   public getSingleton<T>(provider: Provider<T>): T {
     return this.find(provider.provide, (repo) => {
       const singletonRepo = repo.allowSingletons ? repo : this.findSingletonRepo(repo)
@@ -86,6 +121,10 @@ export class InjectorContext implements Disposable {
     })
   }
 
+  /**
+   * Disposes of any child [[InjectorContext]] instances, as well as the [[Repository]] instance.
+   * @param reason A brief description of why the object is being disposed
+   */
   public async dispose(reason: string): Promise<void> {
     await Promise.all(this.children.map((child) => {
       if (!Disposable.isDisposed(child)) {
@@ -98,6 +137,12 @@ export class InjectorContext implements Disposable {
     Disposable.remapDisposed(this, reason)
   }
 
+  /**
+   * @internal
+   * Creates child [[InjectorContext]] using the specified `injectionContext` and additional providers.
+   * @param injectionContext The [[InjectionContext]]
+   * @param providers Any additional [[Provider]] values that can be used to resolve tokens in the child [[InjectorContext]]
+   */
   public createChild(
     injectionContext: InjectionContext,
     ...providers: Provider<any>[]
@@ -108,6 +153,14 @@ export class InjectorContext implements Disposable {
     return cloned
   }
 
+  /**
+   * @internal
+   * Creates a [[ResolverContext]] instance that can be used by [[Injector]] instances to resolve and inject dependencies
+   * @param ctr The constructor to use for creating the [[ResolverContext]] instance
+   * @param token The [[InjectionToken]] that the [[ResolverContext]] instance is being created to resolve
+   * @param injectionContext
+   * @param providers Any additional [[Provider]] values that can be used to resolve tokens in the [[ResolverContext]]
+   */
   public createResolverContext<T>(
     ctr: ResolverContextConstructor<T>,
     token: InjectionToken<T>,
@@ -120,6 +173,10 @@ export class InjectorContext implements Disposable {
     return cloned
   }
 
+  /**
+   * @internal
+   * Gets a string representation of the [[InjectionContext]].
+   */
   protected getCustomInspectorString(): string {
     if (!this.context) {
       return '???'
@@ -128,6 +185,9 @@ export class InjectorContext implements Disposable {
     return getInjectionContextName(this.context)
   }
 
+  /**
+   * Generates an injection stack from the hierarchy of [[InjectorContext]] instances.
+   */
   public [CUSTOM_INSPECTOR](): string {
     const parts = [this.getCustomInspectorString()]
     if (this.parent) {
@@ -136,6 +196,10 @@ export class InjectorContext implements Disposable {
     return parts.reverse().join(' -> ')
   }
 
+  /**
+   * @internal
+   * @ignore
+   */
   protected doFind<T>(token: InjectionToken<T>, entryContext: InjectorContext): FindCacheEntry<T> {
     const entry = this.repository.get(token)
     if (entry && !this.isSkipped(entry, entryContext)) {
@@ -152,19 +216,10 @@ export class InjectorContext implements Disposable {
     return undefined
   }
 
-  private isSkipped(entry: RepositoryEntry<any>, entryContext: InjectorContext): boolean {
-    if (this !== entryContext) {
-      return false
-    }
-    if (entry instanceof Set) {
-      if (!entry.size) {
-        return false
-      }
-      return !![...entry][0].parentsOnly
-    }
-    return !!entry.parentsOnly
-  }
-
+  /**
+   * @internal
+   * @ignore
+   */
   protected cachedFind<T>(token: InjectionToken<T>, entryContext: InjectorContext): FindCacheEntry<T> {
     const cacheResult = this.findCache.get(token)
     if (cacheResult) {
@@ -176,6 +231,10 @@ export class InjectorContext implements Disposable {
     return cacheEntry as FindCacheEntry<T>
   }
 
+  /**
+   * @internal
+   * @ignore
+   */
   protected findSingletonRepo(fromRepo: Repository): Repository {
     if (this.parent) {
       const fromParent = this.parent.findSingletonRepo(fromRepo)
@@ -186,5 +245,18 @@ export class InjectorContext implements Disposable {
     if (this.repository.allowSingletons) {
       return this.repository
     }
+  }
+
+  private isSkipped(entry: RepositoryEntry<any>, entryContext: InjectorContext): boolean {
+    if (this !== entryContext) {
+      return false
+    }
+    if (entry instanceof Set) {
+      if (!entry.size) {
+        return false
+      }
+      return !![...entry][0].parentsOnly
+    }
+    return !!entry.parentsOnly
   }
 }

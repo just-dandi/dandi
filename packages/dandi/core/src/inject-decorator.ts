@@ -17,6 +17,7 @@ export function injectDecorator<T>(token: InjectionToken<T>, target: any, paramN
   meta.token = token
 }
 
+
 export function Inject<T>(token: InjectionToken<T>): ParameterDecorator {
   return injectDecorator.bind(null, token)
 }

@@ -8,7 +8,6 @@ import {
   LoggerMethod,
   LogLevel,
   LogStream,
-  Now,
   NowFn,
 } from '@dandi/core'
 
@@ -34,7 +33,7 @@ export class ContextualLogger implements Logger {
   constructor(
     @Inject(LogStream) private stream: LogStream,
     @Inject(InjectionContext) private context: InjectionContext,
-    @Inject(Now) private now: NowFn,
+    @Inject(NowFn) private now: NowFn,
   ) {}
 
   private log(level: LogLevel, options: LogCallOptions, ...args: any[]): void {

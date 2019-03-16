@@ -1,5 +1,8 @@
 const tokens = new Map<string, SymbolToken<any>>()
 
+/**
+ * @internal
+ */
 export abstract class SymbolTokenBase<T> {
   private readonly symbol: symbol;
 
@@ -20,6 +23,9 @@ export abstract class SymbolTokenBase<T> {
   }
 }
 
+/**
+ * An [[InjectionToken]] that uses a `symbol` as its underlying value
+ */
 export class SymbolToken<T> extends SymbolTokenBase<T> {
   public static local<T>(pkg: string, target: string): SymbolToken<T> {
     return new SymbolToken<T>(`${pkg}#${target}`)

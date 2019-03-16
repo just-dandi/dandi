@@ -7,6 +7,10 @@ import { Provider } from './provider'
 import { ResolverContext } from './resolver-context'
 import { localOpinionatedToken } from './local-token'
 
+/**
+ * @internal
+ * @ignore
+ */
 export interface ResolverContextConstructor<T> {
   new (
     target: InjectionToken<T>,
@@ -16,6 +20,10 @@ export interface ResolverContextConstructor<T> {
   ): ResolverContext<T>
 }
 
+/**
+ * @internal
+ * @ignore
+ */
 export const ResolverContextConstructor: InjectionToken<ResolverContextConstructor<any>> =
   localOpinionatedToken('ResolverContextConstructor', {
     multi: false,

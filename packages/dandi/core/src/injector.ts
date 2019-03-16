@@ -69,10 +69,12 @@ export interface Resolver {
  * An invokable function that returns a value
  */
 export type InvokableReturnFn<T> = (...args: any[]) => T | Promise<T>
+
 /**
  * An invokable function that does not return a value
  */
 export type InvokableVoidFn = (...args: any[]) => void | Promise<void>
+
 /**
  * An invokable function
  */
@@ -102,6 +104,7 @@ export function isInjector(obj: any): obj is Injector {
  * A service that is responsible for invoking methods whose parameters are decorated with [[Inject]] decorators.
  */
 export interface Invoker {
+
   /**
    * [[include:injector.doc.md#invoke]]
    * @param instance [[include:injector.doc.md#invoke:instance]]
@@ -150,12 +153,25 @@ export interface TokenInjector {
 
 }
 
+/**
+ * A service that combines the responsibilities of [[Resolver]], [[Invoker]], and [[TokenInjector]].
+ */
 export interface Injector extends Resolver, Invoker, TokenInjector {
 
+  /**
+   * Executes any initialization logic required by the [[Injector]] implementation. Called by [[DandiApplication]] as
+   * part of the `init` application lifecycle step. Returns a `Promise<void>` that is resolved when initialization is
+   * complete.
+   * @param args
+   */
   init(...args: any[]): Promise<void>
 
 }
 
+/**
+ * @internal
+ * @ignore
+ */
 export type InjectorFactory = (appInjectorContext: AppInjectorContext, generatorFactory: InstanceGeneratorFactory) => Injector | Promise<Injector>
 
 export const Injector = localOpinionatedToken<Injector>('Injector', {

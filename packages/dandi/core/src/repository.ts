@@ -24,9 +24,19 @@ export type RepositoryEntry<T> = Provider<T> | Set<Provider<T>>
 const GLOBAL_CONTEXT = globalSymbol('Repository:GLOBAL_CONTEXT')
 
 /**
+ * @internal
  * Contains mappings of injection tokens to providers, and stores instances of singletons.
  */
 export class Repository<TContext = any> implements Disposable {
+
+  /**
+   * Creates or returns a [[Repository]] instance tied to the specified `context`.
+   *
+   * Only one [[Repository]] instance may exist per `context` value. When the [[Repository]] is disposed, it is
+   * disassociated from the `context`, and a new instance may be created.
+   *
+   * @param context An object or value used to uniquely identify the [[Repository]] instance
+   */
   public static for(context: any): Repository {
     if (!context) {
       throw new InvalidRepositoryContextError(context)
@@ -39,14 +49,28 @@ export class Repository<TContext = any> implements Disposable {
     return repo
   }
 
+  /**
+   * Returns `true` if there is an existing [[Repository]] instance for the specified `context`; otherwise, `false`.
+   * @param context
+   */
   public static exists(context: any): boolean {
     return REPOSITORIES.has(context)
   }
 
+  /**
+   * Gets a reference the global [[Repository]] instance.
+   *
+   * The global [[Repository]] instance is used to hold a collection of classes decorated with [[Injectable]], and is
+   * used by [[AmbientInjectableScanner]] to automatically include [[Injectable]]s from JavaScript and TypeScript
+   * modules that are statically referenced by the application's source code.
+   */
   public static get global(): Repository {
     return this.for(GLOBAL_CONTEXT)
   }
 
+  /**
+   * The global [[Repository]] instance does not allow singletons to be stored; all others do.
+   */
   public get allowSingletons(): boolean {
     return this._allowSingletons
   }
@@ -57,6 +81,14 @@ export class Repository<TContext = any> implements Disposable {
 
   private constructor(private context: any, private readonly _allowSingletons: boolean) {}
 
+  /**
+   * @internal
+   * Registers the specified [[Constructor]] or [[Provider]]. If `target` is a [[Constructor]], a [[ClassProvider]] is
+   * created.
+   * @param source
+   * @param target
+   * @param options
+   */
   public register<T>(source: RepositoryRegistrationSource, target: Constructor<T> | Provider<T>, options?: RegisterOptions<T>): this {
     if (isProvider(target)) {
       this.registerProvider(target)
@@ -85,19 +117,27 @@ export class Repository<TContext = any> implements Disposable {
     throw new InvalidRegistrationTargetError(source, target, options)
   }
 
-  public registerProviders(...providers: Provider<any>[]): this {
-    providers.forEach((provider) => this.registerProvider(provider))
-    return this
-  }
-
+  /**
+   * Gets the configured [[RepositoryEntry]] for the specified `token`
+   * @param token
+   */
   public get<T>(token: InjectionToken<T>): RepositoryEntry<T> {
     return this.providers.get(token)
   }
 
+  /**
+   * Gets the current collection of registered [[RepositoryEntry]] objects.
+   */
   public entries(): IterableIterator<RepositoryEntry<any>> {
     return this.providers.values()
   }
 
+  /**
+   * Registers a singleton instance for the specified `provider`.
+   *
+   * @param provider
+   * @param value
+   */
   public addSingleton<TSingleton>(provider: Provider<TSingleton>, value: TSingleton): TSingleton {
     if (!this._allowSingletons) {
       throw new Error('Singletons are not allowed to be registered on this Repository instance')
@@ -109,10 +149,24 @@ export class Repository<TContext = any> implements Disposable {
     return value
   }
 
+  /**
+   * Gets the singleton instance registered to the specified `provider` if it exists. Returns `undefined` if no
+   * singleton has been registered yet.
+   *
+   * @param provider
+   */
   public getSingleton<TSingleton>(provider: Provider<TSingleton>): TSingleton {
     return this.singletons.get(provider)
   }
 
+  /**
+   * Disposes of the instance, removing all providers and singleton objects, and removes the association between the
+   * instance and the `context` value used when it was created.
+   *
+   * The global [[Repository]] instance cannot be disposed.
+   *
+   * @param reason A brief description of why the object is being disposed
+   */
   public dispose(reason: string): void {
     if (this.context === GLOBAL_CONTEXT) {
       throw new InvalidDisposeTargetError('Cannot dispose global repository')
@@ -123,7 +177,7 @@ export class Repository<TContext = any> implements Disposable {
     Disposable.remapDisposed(this, reason)
   }
 
-  private registerProvider<T>(provider: Provider<T>, target?: Constructor<T> | Provider<T>) {
+  private registerProvider<T>(provider: Provider<T>, target?: Constructor<T> | Provider<T>): void {
     if (provider.provide instanceof OpinionatedToken) {
       const opinionatedOptions = provider.provide.options
       Object.keys(opinionatedOptions).forEach((optionKey) => {
