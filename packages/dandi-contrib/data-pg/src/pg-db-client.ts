@@ -13,14 +13,14 @@ export class PgDbClient extends PgDbQueryableBase<PgDbPool> implements DbClient,
 
   constructor(
     @Inject(PgDbPool) private pool: PgDbPool,
-    @Inject(ModelBuilder) modelValidator: ModelBuilder,
+    @Inject(ModelBuilder) modelBuilder: ModelBuilder,
     @Inject(Injector) private injector: Injector,
     @Inject(Logger) private logger: Logger,
     @Inject(PgDbModelBuilderOptions)
     @Optional()
     modelBuilderOptions?: ModelBuilderOptions,
   ) {
-    super(modelValidator, modelBuilderOptions)
+    super(modelBuilder, modelBuilderOptions)
   }
 
   public query(cmd: string, ...args: any[]): Promise<any[]> {

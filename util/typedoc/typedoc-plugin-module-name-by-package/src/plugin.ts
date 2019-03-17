@@ -160,6 +160,34 @@ export class ModuleNameByPackagePlugin extends ConverterComponent {
     })
   }
 
+  execOnCommentText(module: Reflection, fn: (module: Reflection, text: string) => string): void {
+    if (!module.comment || !module.comment.hasVisibleComponent()) {
+      return
+    }
+    if (module.comment.text) {
+      module.comment.text = fn(module, module.comment.text)
+    }
+    if (module.comment.shortText) {
+      module.comment.shortText = fn(module, module.comment.shortText)
+    }
+    if (module.comment.returns) {
+      module.comment.returns = fn(module, module.comment.returns)
+    }
+    if (module.comment.tags) {
+      // auto-import README.md content for each package
+      module.comment.tags.forEach(tag => {
+        tag.text = fn(module, tag.text)
+      })
+    }
+  }
+
+  fixGenericCommentReferences(module: Reflection, text: string): string {
+    return text.replace(/\[\[\w+<\w+>]]/g, typeRef =>
+      typeRef.replace(/\[\[(\w+)<(\w+)>]]/, (match, type, gType) =>
+        `[[${type}]]<[[${gType}]]>`
+      ))
+  }
+
   onResolveBegin(context: Context) {
     this.fixProjectMarkdownPaths(context.project)
     const packageModules = [...this.packageModules.values()]
@@ -169,6 +197,7 @@ export class ModuleNameByPackagePlugin extends ConverterComponent {
 
     for(const ref of Object.values(context.project.reflections)) {
       this.importIncludedMarkdown(ref)
+      this.execOnCommentText(ref, this.fixGenericCommentReferences)
 
       // rename decorators
       if (this.isDecorator(ref)) {

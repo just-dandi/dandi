@@ -61,13 +61,13 @@ export class PgDbTransactionClient extends PgDbQueryableBase<PgDbPoolClient> imp
 
   constructor(
     @Inject(PgDbPoolClient) client: PgDbPoolClient,
-    @Inject(ModelBuilder) modelValidator: ModelBuilder,
+    @Inject(ModelBuilder) modelBuilder: ModelBuilder,
     @Inject(Logger) private logger: Logger,
     @Inject(PgDbModelBuilderOptions)
     @Optional()
     modelBuilderOptions?: ModelBuilderOptions,
   ) {
-    super(modelValidator, modelBuilderOptions)
+    super(modelBuilder, modelBuilderOptions)
 
     this.mutex = AsyncMutex.for(client)
   }
