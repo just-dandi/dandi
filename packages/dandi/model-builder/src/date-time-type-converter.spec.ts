@@ -1,7 +1,6 @@
-import { expect } from 'chai'
+import { DateTimeTypeConverter, TypeConversionError } from '@dandi/model-builder'
 
-import { DateTimeTypeConverter } from './date.time.type.converter'
-import { TypeConversionError } from './type.converter'
+import { expect } from 'chai'
 
 describe('DateTimeTypeConverter', () => {
   let validator: DateTimeTypeConverter

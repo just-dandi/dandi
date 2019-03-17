@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import { camelCase } from 'change-case'
 
-import { mapKeys } from './map.keys'
+import { mapKeys } from './map-keys'
 
 describe('mapKeys', () => {
   it('converts the keys of a given object to camel case', () => {

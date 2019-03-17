@@ -2,7 +2,7 @@ import { AppError, Constructor } from '@dandi/common'
 import { InjectionToken } from '@dandi/core'
 import { MemberMetadata } from '@dandi/model'
 
-import { localOpinionatedToken } from './local.token'
+import { localOpinionatedToken } from './local-token'
 
 export interface TypeConverter<T> {
   convert(value: any, metadata?: MemberMetadata): T;

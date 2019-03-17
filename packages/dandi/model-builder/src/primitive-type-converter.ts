@@ -2,7 +2,7 @@ import { AppError, Constructor } from '@dandi/common'
 import { Inject, Injectable } from '@dandi/core'
 import { MemberMetadata } from '@dandi/model'
 
-import { TypeConversionError, TypeConverter } from './type.converter'
+import { TypeConversionError, TypeConverter } from './type-converter'
 
 @Injectable(TypeConverter)
 export class StringTypeConverter implements TypeConverter<String> {

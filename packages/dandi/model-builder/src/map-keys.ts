@@ -1,7 +1,15 @@
+/**
+ * @ignore
+ * @internal
+ */
 function isObject(obj: any): obj is Object {
   return typeof obj === 'object'
 }
 
+/**
+ * @ignore
+ * @internal
+ */
 function walkCaseEntry(caseKeysFn: (str: string) => string, obj: any): any {
   if (typeof obj !== 'object') {
     return obj
@@ -17,6 +25,10 @@ function walkCaseEntry(caseKeysFn: (str: string) => string, obj: any): any {
   return caseKeysFn(obj)
 }
 
+/**
+ * @ignore
+ * @internal
+ */
 export function mapKeys(caseFn: (str: string) => string, obj: any): any {
   const caseKeysFn = mapKeys.bind(null, caseFn)
   if (Array.isArray(obj)) {

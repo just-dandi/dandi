@@ -2,18 +2,17 @@ import { Constructor } from '@dandi/common'
 import { InjectionToken, Provider } from '@dandi/core'
 import { MemberMetadata } from '@dandi/model'
 
-import { DataTransformer } from './data.transformer'
-import { KeyTransformFn } from './key.transformer'
-import { localOpinionatedToken } from './local.token'
-import { ModelValidator } from './model.validator'
+import { DataTransformer, KeyTransformFn } from './data-transformer'
+import { localOpinionatedToken } from './local-token'
+import { ModelValidator } from './model-validator'
 
 export interface MemberBuilderOptions {
-  validators?: ModelValidator[];
-  keyTransform?: KeyTransformFn;
+  validators?: ModelValidator[]
+  keyTransform?: KeyTransformFn
 }
 
 export interface ModelBuilderOptions extends MemberBuilderOptions {
-  dataTransformers?: DataTransformer[];
+  dataTransformers?: DataTransformer[]
 }
 
 export const ModelBuilderOptions = {
@@ -25,9 +24,19 @@ export const ModelBuilderOptions = {
   },
 }
 
+/**
+ * Defines a service that constructs well-defined models from a POJO source object.
+ */
 export interface ModelBuilder {
-  constructModel<T>(type: Constructor<T>, obj: any, options?: ModelBuilderOptions): T;
-  constructMember(metadata: MemberMetadata, key: string, value: any, options?: ModelBuilderOptions): any;
+
+  /**
+   *
+   * @param type
+   * @param obj
+   * @param options
+   */
+  constructModel<T>(type: Constructor<T>, obj: any, options?: ModelBuilderOptions): T
+  constructMember(metadata: MemberMetadata, key: string, value: any, options?: ModelBuilderOptions): any
 }
 
 export const ModelBuilder: InjectionToken<ModelBuilder> = localOpinionatedToken<ModelBuilder>('ModelBuilder', {

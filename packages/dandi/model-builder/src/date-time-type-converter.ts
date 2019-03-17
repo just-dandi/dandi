@@ -2,8 +2,11 @@ import { Injectable } from '@dandi/core'
 import { MemberMetadata } from '@dandi/model'
 import { DateTime } from 'luxon'
 
-import { TypeConversionError, TypeConverter } from './type.converter'
+import { TypeConversionError, TypeConverter } from './type-converter'
 
+/**
+ * An implementation of [[TypeConverter]] that converts and validates DateTime values.
+ */
 @Injectable(TypeConverter)
 export class DateTimeTypeConverter implements TypeConverter<DateTime> {
   public readonly type = DateTime;

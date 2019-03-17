@@ -1,6 +1,6 @@
-import { expect } from 'chai'
+import { NestedKeyTransformer } from '@dandi/model-builder'
 
-import { NestedKeyTransformer } from './nested.key.transformer'
+import { expect } from 'chai'
 
 describe('NestedKeyTransformer', () => {
   let transformer: NestedKeyTransformer

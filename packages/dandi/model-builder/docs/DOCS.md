@@ -40,4 +40,4 @@ from [[@dandi/model]] to define a model. Some things to note about using
   and convert any properties defined by the [[@dandi/model]] decorators.
 - When using the `keyTransform` option, it will _not_ transform the keys
   of `Map` properties (defined with [[@MapOf()]]), or JSON properties
-  (specified by adding [[@Json()]]).
+  (defined with [[@Json()]]).

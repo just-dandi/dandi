@@ -2,7 +2,7 @@ import { Uuid } from '@dandi/common'
 import { Injectable } from '@dandi/core'
 import { UUID_PATTERN } from '@dandi/model'
 
-import { TypeConversionError, TypeConverter } from './type.converter'
+import { TypeConversionError, TypeConverter } from './type-converter'
 
 @Injectable(TypeConverter)
 export class UuidTypeConverter implements TypeConverter<Uuid> {

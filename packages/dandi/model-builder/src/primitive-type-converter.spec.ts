@@ -1,18 +1,20 @@
 import { AppError, Url, Uuid } from '@dandi/common'
-import { DateTime } from 'luxon'
-import { expect } from 'chai'
-import { SinonStubbedInstance, createStubInstance } from 'sinon'
-
-import { DateTimeTypeConverter } from './date.time.type.converter'
 import {
   BooleanTypeConverter,
+  DateTimeTypeConverter,
   NumberTypeConverter,
   PrimitiveTypeConverter,
   StringTypeConverter,
-} from './primitive.type.converter'
-import { TypeConversionError, TypeConverter } from './type.converter'
-import { UrlTypeConverter } from './url.type.converter'
-import { UuidTypeConverter } from './uuid.type.converter'
+  TypeConversionError,
+  TypeConverter,
+  UrlTypeConverter,
+  UuidTypeConverter,
+} from '@dandi/model-builder'
+
+import { DateTime } from 'luxon'
+
+import { expect } from 'chai'
+import { SinonStubbedInstance, createStubInstance } from 'sinon'
 
 describe('StringTypeValidator', () => {
   let validator: TypeConverter<any>

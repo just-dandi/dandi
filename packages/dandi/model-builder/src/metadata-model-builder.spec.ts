@@ -9,6 +9,7 @@ import {
 } from '@dandi/model-builder'
 
 import { camel } from 'change-case'
+
 import { expect } from 'chai'
 import { SinonSpy, SinonStubbedInstance, createStubInstance, spy, stub } from 'sinon'
 

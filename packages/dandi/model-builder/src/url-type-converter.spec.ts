@@ -1,7 +1,7 @@
 import { Url } from '@dandi/common'
-import { expect } from 'chai'
+import { UrlTypeConverter } from '@dandi/model-builder'
 
-import { UrlTypeConverter } from './url.type.converter'
+import { expect } from 'chai'
 
 describe('UrlTypeValidator', () => {
   let validator: UrlTypeConverter

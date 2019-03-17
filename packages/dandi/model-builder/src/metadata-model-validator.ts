@@ -1,10 +1,13 @@
 import { Injectable } from '@dandi/core'
 import { MemberMetadata } from '@dandi/model'
 
-import { MetadataValidationError } from './metadata.validation.error'
-import { ModelValidator } from './model.validator'
-import { RequiredPropertyError } from './required.property.error'
+import { MetadataValidationError } from './metadata-validation-error'
+import { ModelValidator } from './model-validator'
+import { RequiredPropertyError } from './required-property-error'
 
+/**
+ * The default implementation of [[ModelValidator]].
+ */
 @Injectable(ModelValidator)
 export class MetadataModelValidator implements ModelValidator {
   public validateMember(metadata: MemberMetadata, key: string, value: any): void {

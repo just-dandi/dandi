@@ -1,4 +1,5 @@
 import { MetadataModelValidator, MetadataValidationError, RequiredPropertyError } from '@dandi/model-builder'
+
 import { expect } from 'chai'
 
 describe('MetadataModelValidator', () => {

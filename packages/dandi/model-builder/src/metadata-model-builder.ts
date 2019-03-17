@@ -2,12 +2,21 @@ import { Constructor, isPrimitiveType } from '@dandi/common'
 import { Inject, Injectable } from '@dandi/core'
 import { MemberMetadata, OneOf, getAllKeys, getModelMetadata } from '@dandi/model'
 
-import { ModelValidationError } from './model.validation.error'
-import { MemberBuilderOptions, ModelBuilder, ModelBuilderOptions } from './model.builder'
-import { OneOfConversionAttempt, OneOfConversionError } from './one.of.conversion.error'
-import { PrimitiveTypeConverter } from './primitive.type.converter'
-import { TypeConversionError } from './type.converter'
+import { ModelValidationError } from './model-validation-error'
+import { MemberBuilderOptions, ModelBuilder, ModelBuilderOptions } from './model-builder'
+import { OneOfConversionAttempt, OneOfConversionError } from './one-of-conversion-error'
+import { PrimitiveTypeConverter } from './primitive-type-converter'
+import { TypeConversionError } from './type-converter'
 
+/**
+ * The default implementation of [[ModelBuilder]]. Uses metadata generated from [[@dandi/model]] decorators.
+ *
+ * `MetadataModelBuilder` supports building nested models by recursing into complex types defined by [[@Property()]]
+ * decorators.
+ *
+ * When using `MetadataModelBuilder` with a `keyTransform` option, it will _not_ transform keys of `Map` properties
+ * (defined with [[@MapOf()]]), or JSON properties (defined with [[@Json()]].
+ */
 @Injectable(ModelBuilder)
 export class MetadataModelBuilder implements ModelBuilder {
   constructor(@Inject(PrimitiveTypeConverter) private primitive: PrimitiveTypeConverter) {}
