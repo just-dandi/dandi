@@ -1,7 +1,15 @@
+/**
+ * @module
+ * [[include:README.md]]
+ * [[include:docs/DOCS.md]]
+ */
+
+/**
+ * @ignore - this placeholder required so that typedoc uses the above module comment
+ */
 export * from './src/currency.type.converter'
 export * from './src/data.transformer'
 export * from './src/date.time.type.converter'
-// export * from './src/key.mapper.factory';
 export * from './src/key.transformer'
 export * from './src/metadata.model.builder'
 export * from './src/metadata.model.validator'

@@ -4,6 +4,9 @@ import { MemberMetadata } from '@dandi/model'
 
 import { TypeConverter } from './type.converter'
 
+/**
+ * An implementation of [[TypeConverter]] that converts [[Currency]] values.
+ */
 @Injectable(TypeConverter)
 export class CurrencyTypeConverter implements TypeConverter<Currency> {
   public readonly type = Currency;

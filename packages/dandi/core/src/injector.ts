@@ -1,7 +1,6 @@
-import { AppInjectorContext } from '@dandi/core/src/app-injector-context'
-
 import { Constructor } from '@dandi/common'
 
+import { AppInjectorContext } from './app-injector-context'
 import { InjectionContext } from './injection-context'
 import { InjectionToken } from './injection-token'
 import { InjectionResult } from './injection-result'
