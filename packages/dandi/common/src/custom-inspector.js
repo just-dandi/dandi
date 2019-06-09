@@ -1,7 +1,14 @@
-const { isBrowser } = require('./is-browser')
+const DEFAULT_INSPECTOR = 'toString'
 
-if (isBrowser()) {
-  module.exports.CUSTOM_INSPECTOR = 'toString'
-} else {
-  module.exports.CUSTOM_INSPECTOR = require('util').inspect.custom
+function getCustomInspector() {
+  try {
+    if (require.resolve('util')) {
+      return require('util').inspect.custom
+    }
+    return DEFAULT_INSPECTOR
+  } catch (err) {
+    return DEFAULT_INSPECTOR
+  }
 }
+
+module.exports.CUSTOM_INSPECTOR = getCustomInspector()
