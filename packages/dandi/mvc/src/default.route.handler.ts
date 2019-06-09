@@ -38,7 +38,7 @@ export class DefaultRouteHandler implements RouteHandler {
     )
 
     requestInfo.performance.mark('DefaultRouteHandler.handleRouteRequest', 'beforeInvokeController')
-    const result = await this.injector.invoke(controller, route.controllerMethod as any, injectorContext)
+    const result: any = await this.injector.invoke(controller, route.controllerMethod as any, injectorContext)
     requestInfo.performance.mark('DefaultRouteHandler.handleRouteRequest', 'afterInvokeController')
 
     const initialResult: ControllerResult = isControllerResult(result) ?
