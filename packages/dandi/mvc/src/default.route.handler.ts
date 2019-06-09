@@ -27,7 +27,7 @@ export class DefaultRouteHandler implements RouteHandler {
     @Inject(RequestInfo) requestInfo: RequestInfo,
     @Inject(ControllerResultTransformer)
     @Optional()
-    resultTransformers?: ControllerResultTransformer[],
+      resultTransformers?: ControllerResultTransformer[],
   ): Promise<void> {
     requestInfo.performance.mark('DefaultRouteHandler.handleRouteRequest', 'begin')
 

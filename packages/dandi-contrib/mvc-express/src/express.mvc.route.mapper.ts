@@ -12,7 +12,7 @@ function hasCorsConfig(obj: any): obj is CorsConfig {
 
 @Injectable(RouteMapper)
 export class ExpressMvcRouteMapper implements RouteMapper {
-  private readonly corsRoutes = new Set<string>();
+  private readonly corsRoutes = new Set<string>()
 
   constructor(
     @Inject(Injector) private injector: Injector,

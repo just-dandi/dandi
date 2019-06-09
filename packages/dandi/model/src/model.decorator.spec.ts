@@ -27,7 +27,7 @@ describe('ModelDecorator', () => {
     it("sets the type of the property on the member's metadata", () => {
       class TestClass {
         @Property(String)
-        public property: string;
+        public property: string
       }
       const meta = getMemberMetadata(TestClass, 'property')
       expect(meta.type).to.equal(String)
@@ -38,7 +38,7 @@ describe('ModelDecorator', () => {
     it('sets the "required" property on the member\'s metadata', () => {
       class TestClass {
         @Required()
-        public requiredProperty: string;
+        public requiredProperty: string
       }
       const meta = getMemberMetadata(TestClass, 'requiredProperty')
       expect(meta.required).to.be.true
@@ -69,7 +69,7 @@ describe('ModelDecorator', () => {
     it("sets minLength property on the member's metadata", () => {
       class TestClass {
         @MinLength(2)
-        public property: string;
+        public property: string
       }
       const meta = getMemberMetadata(TestClass, 'property')
       expect(meta.minLength).to.equal(2)
@@ -80,7 +80,7 @@ describe('ModelDecorator', () => {
     it("sets maxLength property on the member's metadata", () => {
       class TestClass {
         @MaxLength(3)
-        public property: string;
+        public property: string
       }
       const meta = getMemberMetadata(TestClass, 'property')
       expect(meta.maxLength).to.equal(3)
@@ -91,7 +91,7 @@ describe('ModelDecorator', () => {
     it("sets minValue property on the member's metadata", () => {
       class TestClass {
         @MinValue(2)
-        public property: string;
+        public property: string
       }
       const meta = getMemberMetadata(TestClass, 'property')
       expect(meta.minValue).to.equal(2)
@@ -102,7 +102,7 @@ describe('ModelDecorator', () => {
     it("sets maxLength property on the member's metadata", () => {
       class TestClass {
         @MaxValue(3)
-        public property: string;
+        public property: string
       }
       const meta = getMemberMetadata(TestClass, 'property')
       expect(meta.maxValue).to.equal(3)
@@ -113,7 +113,7 @@ describe('ModelDecorator', () => {
     it("sets minLength property on the member's metadata", () => {
       class TestClass {
         @MinLength(2)
-        public property: string;
+        public property: string
       }
       const meta = getMemberMetadata(TestClass, 'property')
       expect(meta.minLength).to.equal(2)
@@ -124,7 +124,7 @@ describe('ModelDecorator', () => {
     it('sets the "pattern" property on the member\'s metadata', () => {
       class TestClass {
         @Pattern(/foo/)
-        public property: string;
+        public property: string
       }
       const meta = getMemberMetadata(TestClass, 'property')
       expect(meta.pattern).to.deep.equal(/foo/)
@@ -134,7 +134,7 @@ describe('ModelDecorator', () => {
   describe('@Email', () => {
     class TestClass {
       @Email()
-      public email: string;
+      public email: string
     }
 
     let meta: MemberMetadata
@@ -166,7 +166,7 @@ describe('ModelDecorator', () => {
   describe('@UrlProperty', () => {
     class TestClass {
       @UrlProperty()
-      public url: Url;
+      public url: Url
     }
 
     let meta: MemberMetadata
@@ -190,7 +190,7 @@ describe('ModelDecorator', () => {
   describe('@DateTimeFormat', () => {
     class TestClass {
       @DateTimeFormat('test-format')
-      public testOn: DateTime;
+      public testOn: DateTime
     }
 
     let meta: MemberMetadata
@@ -214,7 +214,7 @@ describe('ModelDecorator', () => {
   describe('@ArrayOf', () => {
     class TestClass {
       @ArrayOf(String)
-      public strings: string[];
+      public strings: string[]
     }
 
     let meta: MemberMetadata
@@ -238,7 +238,7 @@ describe('ModelDecorator', () => {
   describe('@UrlArray', () => {
     class TestClass {
       @UrlArray()
-      public urls: Url[];
+      public urls: Url[]
     }
 
     let meta: MemberMetadata
@@ -266,7 +266,7 @@ describe('ModelDecorator', () => {
   describe('@OneOf', () => {
     class TestClass {
       @OneOf(Uuid, String)
-      public oneOf: Uuid | string;
+      public oneOf: Uuid | string
     }
 
     let meta: MemberMetadata
@@ -298,7 +298,7 @@ describe('ModelDecorator', () => {
   describe('@SetOf', () => {
     class TestClass {
       @SetOf(String)
-      public strings: Set<string>;
+      public strings: Set<string>
     }
 
     let meta: MemberMetadata
@@ -320,7 +320,7 @@ describe('ModelDecorator', () => {
   describe('@MapOf', () => {
     class TestClass {
       @MapOf(Uuid, Number)
-      public theMap: Map<Uuid, number>;
+      public theMap: Map<Uuid, number>
     }
 
     let meta: MemberMetadata
@@ -345,12 +345,12 @@ describe('ModelDecorator', () => {
   describe('subclasses', () => {
     class BaseClass {
       @Property(String)
-      public baseProperty: string;
+      public baseProperty: string
     }
 
     class SubClass extends BaseClass {
       @Property(String)
-      public subProperty: string;
+      public subProperty: string
     }
 
     let baseMeta

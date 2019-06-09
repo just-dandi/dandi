@@ -10,12 +10,12 @@ describe('MetadataModelBuilder', () => {
 
   class TestModel {
     @UrlProperty()
-    public url: Url;
+    public url: Url
   }
 
   class TestModel2 extends TestModel {
     @Property(String)
-    public prop: string;
+    public prop: string
   }
 
   beforeEach(async () => {

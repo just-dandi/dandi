@@ -90,7 +90,7 @@ export class DandiInjector implements Injector, Disposable {
 
     if (!injectorContext.match) {
       if (this.shouldDisposeResolverContext(injectorContext)) {
-       await injectorContext.dispose('Disposed after resolving to an undefined provider')
+        await injectorContext.dispose('Disposed after resolving to an undefined provider')
       }
       return undefined
     }

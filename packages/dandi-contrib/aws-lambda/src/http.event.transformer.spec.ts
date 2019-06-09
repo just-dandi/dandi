@@ -12,7 +12,7 @@ import { HttpEventTransformer, HttpHandlerRequest } from './http.event.transform
 import { LambdaEventTransformer } from './lambda.event.transformer'
 
 class TestBody {
-  public foo: string;
+  public foo: string
 }
 
 describe('HttpEventTransformer', () => {

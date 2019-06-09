@@ -26,7 +26,7 @@ describe('@Injectable', () => {
 
   it('registers the decorated class for the specified token', () => {
     class FooClass {
-      public bar: string;
+      public bar: string
     }
     class TestClass {}
 

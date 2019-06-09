@@ -9,8 +9,8 @@ export class EnvConfigClient implements SyncConfigClient {
     return configProvider(EnvConfigClient, token)
   }
 
-  public readonly async: false = false;
-  public readonly allowsEncryption = false;
+  public readonly async: false = false
+  public readonly allowsEncryption = false
 
   public get(token: ConfigToken<any>): string {
     return process.env[token.key]

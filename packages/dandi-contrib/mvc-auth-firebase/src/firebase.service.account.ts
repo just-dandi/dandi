@@ -12,13 +12,13 @@ export class FirebaseServiceAccount extends ModelBase implements admin.ServiceAc
   }
 
   @Property(String)
-  public projectId?: string;
+  public projectId?: string
 
   @Property(String)
-  public clientEmail?: string;
+  public clientEmail?: string
 
   @Property(String)
-  public privateKey?: string;
+  public privateKey?: string
 
   constructor(source?: any) {
     super(source)

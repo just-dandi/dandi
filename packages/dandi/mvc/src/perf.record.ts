@@ -18,13 +18,13 @@ function timeString(time: [number, number]): string {
 /* eslint-enable */
 
 export class PerfRecord implements PerfRecorder {
-  private _entries: PerfRecordEntry[] = [];
+  private _entries: PerfRecordEntry[] = []
   public get entries(): PerfRecordEntry[] {
     return this._entries
   }
 
-  private readonly start: [number, number];
-  private last: [number, number];
+  private readonly start: [number, number]
+  private last: [number, number]
 
   constructor(component: string, name: string) {
     this.start = process.hrtime()

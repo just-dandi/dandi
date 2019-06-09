@@ -38,8 +38,8 @@ function coalesceByDefined<T>(a: T, b: T): T {
 @Injectable(LogListener, Singleton)
 export class ConsoleLogListener implements LogListener {
 
-  private tagLengthHighWater = 0;
-  private readonly longestAllowedLevelTag: number;
+  private tagLengthHighWater = 0
+  private readonly longestAllowedLevelTag: number
 
   constructor(@Inject(ConsoleLogListenerConfig) @Optional() private config: ConsoleLogListenerConfig = DEFAULT_CONFIG) {
     this.longestAllowedLevelTag = this.getLongestAllowedLevelTag()

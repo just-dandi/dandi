@@ -13,7 +13,7 @@ export interface DeniedAuthorization {
 export type AuthorizationCondition = AllowedAuthorization | DeniedAuthorization
 
 export const AuthorizationCondition: InjectionToken<AuthorizationCondition> = localOpinionatedToken<
-  AuthorizationCondition
+AuthorizationCondition
 >('AuthorizationCondition', {
   multi: true,
 })

@@ -22,7 +22,7 @@ describe('DefaultRouteExecutor', function() {
       useFactory: () => ({
         // eslint-disable-next-line brace-style
         controllerCtr: class TestClass {
-          public method = stub();
+          public method = stub()
         },
         controllerMethod: 'method',
         httpMethod: HttpMethod.get,

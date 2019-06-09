@@ -31,7 +31,7 @@ export class CommandUtil {
   }
 
   private static action<THost>(hostType: Constructor<THost>, actionName: CommandAction<THost>, start: number):
-    (...args: CommanderArgs) => Promise<void> {
+  (...args: CommanderArgs) => Promise<void> {
     return async (...args: [string | Command]): Promise<void> => {
       const cmd = args.pop() as Command
       const cmdArgs = args as string[]

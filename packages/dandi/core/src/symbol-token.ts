@@ -1,7 +1,7 @@
 const tokens = new Map<string, SymbolToken<any>>()
 
 export abstract class SymbolTokenBase<T> {
-  private readonly symbol: symbol;
+  private readonly symbol: symbol
 
   protected constructor(private desc: string) {
     this.symbol = Symbol(this.desc)

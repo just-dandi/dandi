@@ -38,7 +38,7 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public id: number;
+        public id: number
       }
 
       @Controller('/test')
@@ -48,7 +48,7 @@ describe('DefaultResourceComposer', function() {
         getModel(
           @PathParam(Number)
           @AccessorResourceId()
-          id,
+            id,
         ): Promise<TestModel> {
           return null
         }
@@ -119,13 +119,13 @@ describe('DefaultResourceComposer', function() {
     it('adds self link on models with relations, but no identifier', async function() {
       class Resource {
         @ResourceId()
-        resourceId: number;
+        resourceId: number
       }
       class Index {
         constructor() {}
 
         @ListRelation(Resource)
-        public resources: Resource[];
+        public resources: Resource[]
       }
 
       @Controller('/index')
@@ -148,7 +148,7 @@ describe('DefaultResourceComposer', function() {
         getResource(
           @PathParam(Number)
           @AccessorResourceId()
-          resourceId,
+            resourceId,
         ) {}
       }
 
@@ -188,7 +188,7 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public id: number;
+        public id: number
       }
       class TestModel {
         constructor(id?: number, parentId?: number) {
@@ -197,13 +197,13 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public id: number;
+        public id: number
 
         @ResourceId(TestModelParent, 'parent')
-        public parentId: number;
+        public parentId: number
 
         @Relation(TestModelParent)
-        public parent?: TestModelParent;
+        public parent?: TestModelParent
       }
 
       @Controller('/test')
@@ -213,7 +213,7 @@ describe('DefaultResourceComposer', function() {
         getModel(
           @PathParam(Number)
           @AccessorResourceId()
-          id,
+            id,
         ): Promise<TestModel> {
           return null
         }
@@ -225,7 +225,7 @@ describe('DefaultResourceComposer', function() {
         getModelParent(
           @PathParam(Number)
           @AccessorResourceId()
-          id,
+            id,
         ): Promise<TestModelParent> {
           return null
         }
@@ -270,7 +270,7 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public id: number;
+        public id: number
       }
 
       class TestModelParent {
@@ -279,10 +279,10 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public id: number;
+        public id: number
 
         @ListRelation(TestModel)
-        public children: TestModel[];
+        public children: TestModel[]
       }
       @Controller('/test')
       class TestController {
@@ -291,7 +291,7 @@ describe('DefaultResourceComposer', function() {
         getModel(
           @PathParam(Number)
           @AccessorResourceId()
-          id,
+            id,
         ): Promise<TestModel> {
           return null
         }
@@ -304,7 +304,7 @@ describe('DefaultResourceComposer', function() {
         getModelParent(
           @PathParam(Number)
           @AccessorResourceId()
-          id,
+            id,
         ): Promise<TestModelParent> {
           return null
         }
@@ -314,7 +314,7 @@ describe('DefaultResourceComposer', function() {
         listChildren(
           @PathParam(Number)
           @AccessorResourceId(TestModelParent)
-          id,
+            id,
         ): Promise<TestModel[]> {
           return null
         }
@@ -366,7 +366,7 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public id: number;
+        public id: number
       }
 
       class TestModel {
@@ -376,13 +376,13 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public id: number;
+        public id: number
 
         @ResourceId(TestModelParent, 'parent')
-        public parentId: number;
+        public parentId: number
 
         @Relation(TestModelParent)
-        public parent?: TestModelParent;
+        public parent?: TestModelParent
       }
 
       @Controller('/test')
@@ -490,7 +490,7 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public id: number;
+        public id: number
       }
 
       class TestModelParent {
@@ -499,10 +499,10 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public id: number;
+        public id: number
 
         @ListRelation(TestModel)
-        public children: TestModel[];
+        public children: TestModel[]
       }
 
       @Controller('/test')
@@ -643,7 +643,7 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public id: number;
+        public id: number
       }
 
       class LevelTwoModel {
@@ -653,13 +653,13 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public id: number;
+        public id: number
 
         @ResourceId(LevelOneModel, 'parent')
-        public parentId: number;
+        public parentId: number
 
         @Relation(LevelOneModel)
-        public parent?: LevelOneModel;
+        public parent?: LevelOneModel
       }
 
       class LevelThreeModel {
@@ -669,13 +669,13 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public id: number;
+        public id: number
 
         @ResourceId(LevelTwoModel, 'parent')
-        public parentId: number;
+        public parentId: number
 
         @Relation(LevelTwoModel)
-        public parent?: LevelTwoModel;
+        public parent?: LevelTwoModel
       }
 
       @Controller('/level-one')
@@ -810,7 +810,7 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public id: number;
+        public id: number
       }
 
       class TestModel {
@@ -820,13 +820,13 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public id: number;
+        public id: number
 
         @ResourceId(OtherModel, 'other')
-        public otherId: number;
+        public otherId: number
 
         @Relation(OtherModel)
-        public other: OtherModel;
+        public other: OtherModel
       }
 
       class TestModelParent {
@@ -835,10 +835,10 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public id: number;
+        public id: number
 
         @ListRelation(TestModel)
-        public children: TestModel[];
+        public children: TestModel[]
       }
 
       @Controller('/other')
@@ -1004,7 +1004,7 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public itemId: number;
+        public itemId: number
       }
 
       class List extends HalModelBase {
@@ -1013,10 +1013,10 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ResourceId()
-        public listId: number;
+        public listId: number
 
         @ListRelation(Item)
-        public items: Item[];
+        public items: Item[]
       }
 
       class Me extends HalModelBase {
@@ -1025,7 +1025,7 @@ describe('DefaultResourceComposer', function() {
         }
 
         @ListRelation(List)
-        public lists: List[];
+        public lists: List[]
       }
 
       @Controller('/list')

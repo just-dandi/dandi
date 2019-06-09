@@ -2,12 +2,12 @@ import { Injectable, Singleton } from '@dandi/core'
 import { Duration } from 'luxon'
 
 import { Cache, CacheProvider, CacheProviderType } from './cache.provider'
-import Timer = NodeJS.Timer;
+import Timer = NodeJS.Timer
 
 @Injectable(CacheProvider(CacheProviderType.localMemory), Singleton)
 export class MemoryCache implements Cache {
-  private map = new Map<symbol, any>();
-  private timeouts = new Map<symbol, Timer>();
+  private map = new Map<symbol, any>()
+  private timeouts = new Map<symbol, Timer>()
 
   public get<T>(key: symbol): Promise<T> {
     return Promise.resolve(this.map.get(key))

@@ -4,7 +4,7 @@ import { AuthorizationService } from './authorization.service'
 import { localOpinionatedToken } from './local.token'
 
 export const RequestAuthorizationService: InjectionToken<AuthorizationService> = localOpinionatedToken<
-  AuthorizationService
+AuthorizationService
 >('RequestAuthorizationService', {
   multi: false,
   singleton: true,

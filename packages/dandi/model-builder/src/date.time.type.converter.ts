@@ -6,7 +6,7 @@ import { TypeConversionError, TypeConverter } from './type.converter'
 
 @Injectable(TypeConverter)
 export class DateTimeTypeConverter implements TypeConverter<DateTime> {
-  public readonly type = DateTime;
+  public readonly type = DateTime
   public convert(value: any, metadata: MemberMetadata): DateTime {
     let dt: DateTime
     const asInt = parseInt(value, 10)

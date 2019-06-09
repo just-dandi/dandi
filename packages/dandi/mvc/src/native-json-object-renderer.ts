@@ -6,7 +6,7 @@ import { Renderer } from './renderer-decorator'
 @Renderer(MimeTypes.applicationJson)
 export class NativeJsonObjectRenderer extends ObjectRendererBase {
 
-  protected readonly defaultContentType: string = MimeTypes.applicationJson;
+  protected readonly defaultContentType: string = MimeTypes.applicationJson
 
   constructor() {
     super()

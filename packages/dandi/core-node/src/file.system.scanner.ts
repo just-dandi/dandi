@@ -23,7 +23,7 @@ export class FileSystemScanner implements Scanner {
   public async scan(): Promise<Array<Provider<any> | Constructor<any>>> {
     return (await Promise.all(
       this.config.map((config) => this.scanDir(config, process.cwd()),
-    )))
+      )))
       .reduce((result, modules) => {
         result.push(...modules)
         return result

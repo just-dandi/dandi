@@ -9,7 +9,7 @@ import { PgDbModelBuilderOptions } from './pg-db-model-builder-options'
 
 @Injectable(DbClient)
 export class PgDbClient extends PgDbQueryableBase<PgDbPool> implements DbClient, Disposable {
-  private activeTransactions: DbTransactionClient[] = [];
+  private activeTransactions: DbTransactionClient[] = []
 
   constructor(
     @Inject(PgDbPool) private pool: PgDbPool,

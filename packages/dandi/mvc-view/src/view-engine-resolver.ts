@@ -21,8 +21,8 @@ interface ViewEngineIndexedConfig extends ViewEngineConfig {
 
 @Injectable(Singleton)
 export class ViewEngineResolver {
-  private extensions: Map<string, Constructor<ViewEngine>> = new Map<string, Constructor<ViewEngine>>();
-  private resolvedViews = new Map<string, ResolvedView>();
+  private extensions: Map<string, Constructor<ViewEngine>> = new Map<string, Constructor<ViewEngine>>()
+  private resolvedViews = new Map<string, ResolvedView>()
 
   private static exists(path: string): Promise<boolean> {
     return new Promise((resolve) => {

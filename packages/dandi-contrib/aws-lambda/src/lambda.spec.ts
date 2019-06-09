@@ -37,7 +37,7 @@ describe('Lambda', () => {
   TestHarness.scopeGlobalRepository()
 
   class TestHandler implements LambdaHandler<TestEventData> {
-    public static instance: SinonStubbedInstance<LambdaHandler<TestEventData>>;
+    public static instance: SinonStubbedInstance<LambdaHandler<TestEventData>>
 
     constructor() {
       stub(this, 'handleEvent').callsFake(() => {

@@ -8,7 +8,7 @@ describe('MemberMetadata', () => {
     it('gets the metadata for each property of a flat class', () => {
       class TestClass {
         @Property(String)
-        public prop: string;
+        public prop: string
       }
 
       const result = getModelMetadata(TestClass)

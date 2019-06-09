@@ -18,9 +18,9 @@ export interface ModuleInfo {
 const MODULE_INFO_REG = new Map<InjectionToken<any>, ModuleInfo>()
 
 export class Module extends Array<Registerable> {
-  public static readonly MODULE_INFO = Symbol.for(`${PKG}#${Module.name}.MODULE_INFO`);
-  public static readonly MODULE_NAME = Symbol.for(`${PKG}#${Module.name}.MODULE_NAME`);
-  public static readonly PACKAGE = Symbol.for(`${PKG}#${Module.name}.PACKAGE`);
+  public static readonly MODULE_INFO = Symbol.for(`${PKG}#${Module.name}.MODULE_INFO`)
+  public static readonly MODULE_NAME = Symbol.for(`${PKG}#${Module.name}.MODULE_NAME`)
+  public static readonly PACKAGE = Symbol.for(`${PKG}#${Module.name}.PACKAGE`)
 
   public static moduleInfo(target: any): ModuleInfo {
     if (!target) {

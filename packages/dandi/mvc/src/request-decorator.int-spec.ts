@@ -18,7 +18,7 @@ describe('Request Decorators', () => {
   class TestModel {
     @UrlProperty()
     @Required()
-    public url: Url;
+    public url: Url
   }
   class TestController {
     public testBody(@RequestBody(TestModel) body: TestModel): TestModel {

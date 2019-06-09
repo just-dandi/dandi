@@ -12,7 +12,7 @@ function getRegistrationTargetSourceString(source: RepositoryRegistrationSource)
 }
 
 export class RegistrationError extends AppError {
-  public readonly moduleInfo: ModuleInfo;
+  public readonly moduleInfo: ModuleInfo
 
   constructor(message: string, public readonly target: any) {
     super(message)

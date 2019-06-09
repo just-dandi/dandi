@@ -9,7 +9,7 @@ export class ListRequest extends ModelBase {
 
   @Property(String)
   @Required()
-  public title: string;
+  public title: string
 }
 
 export class List extends ListRequest {
@@ -20,5 +20,5 @@ export class List extends ListRequest {
   @Property(Uuid)
   @Required()
   @ResourceId()
-  public listId: Uuid;
+  public listId: Uuid
 }

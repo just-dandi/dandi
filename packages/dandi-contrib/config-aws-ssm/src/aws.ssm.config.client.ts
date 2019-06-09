@@ -9,8 +9,8 @@ export class AwsSsmConfigClient implements AsyncConfigClient {
     return configProvider(AwsSsmConfigClient, token)
   }
 
-  public readonly async: true = true;
-  public readonly allowsEncryption = true;
+  public readonly async: true = true
+  public readonly allowsEncryption = true
 
   constructor(@Inject(SsmClient) private ssm: SsmClient) {}
 

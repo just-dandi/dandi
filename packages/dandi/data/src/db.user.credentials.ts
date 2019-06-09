@@ -12,11 +12,11 @@ export class DbUserCredentials extends ModelBase {
 
   @Property(String)
   @Required()
-  public username: string;
+  public username: string
 
   @Property(String)
   @Required()
-  public password: string;
+  public password: string
 
   constructor(source?: any) {
     super(source)

@@ -9,7 +9,7 @@ export interface RequestProviderRegistrar {
 }
 
 export const RequestProviderRegistrar: InjectionToken<RequestProviderRegistrar> = localOpinionatedToken<
-  RequestProviderRegistrar
+RequestProviderRegistrar
 >('RequestProviderRegistrar', {
   multi: true,
 })

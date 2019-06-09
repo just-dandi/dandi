@@ -68,9 +68,9 @@ describe('MvcViewRenderer', function() {
 
     expect(await this.renderer.render(parseMimeTypes(MimeTypes.textHtml), viewResult))
       .to.deep.equal({
-      contentType: MimeTypes.textHtml,
-      renderedOutput: 'foo!',
-    })
+        contentType: MimeTypes.textHtml,
+        renderedOutput: 'foo!',
+      })
 
   })
 

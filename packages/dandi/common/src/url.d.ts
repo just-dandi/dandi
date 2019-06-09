@@ -1,18 +1,18 @@
 export class Url {
   constructor(url: string);
 
-  hash: string;
-  host: string;
-  hostname: string;
-  href: string;
-  readonly origin: string;
-  password: string;
-  pathname: string;
-  port: string;
-  protocol: string;
-  search: string;
-  readonly searchParams: URLSearchParams;
-  username: string;
+  hash: string
+  host: string
+  hostname: string
+  href: string
+  readonly origin: string
+  password: string
+  pathname: string
+  port: string
+  protocol: string
+  search: string
+  readonly searchParams: URLSearchParams
+  username: string
 
   toString(): string;
 }

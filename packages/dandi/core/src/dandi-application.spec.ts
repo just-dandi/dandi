@@ -46,46 +46,46 @@ describe('DandiApplication', function() {
       expect((application as any).initHost.appInjectorContext.repository.providers).to.contain.keys([token1, token2])
     })
 
-  describe('init', function() {
+    describe('init', function() {
 
-    it('runs any scanners registered in the constructor configuration', async function() {
-      const token1 = SymbolToken.for('Foo')
-      const provider1 = {
-        provide: token1,
-        useValue: 'foo',
-      }
-      const scanner1 = { scan: stub().returns([provider1]) }
-      const scannerProvider1 = {
-        provide: Scanner,
-        useValue: scanner1,
-        multi: true,
-      }
-      const token2 = SymbolToken.for('Bar')
-      const provider2 = {
-        provide: token2,
-        useValue: 'bar',
-      }
-      const scanner2 = { scan: stub().returns([provider2]) }
-      const scannerProvider2 = {
-        provide: Scanner,
-        useValue: scanner2,
-        multi: true,
-      }
+      it('runs any scanners registered in the constructor configuration', async function() {
+        const token1 = SymbolToken.for('Foo')
+        const provider1 = {
+          provide: token1,
+          useValue: 'foo',
+        }
+        const scanner1 = { scan: stub().returns([provider1]) }
+        const scannerProvider1 = {
+          provide: Scanner,
+          useValue: scanner1,
+          multi: true,
+        }
+        const token2 = SymbolToken.for('Bar')
+        const provider2 = {
+          provide: token2,
+          useValue: 'bar',
+        }
+        const scanner2 = { scan: stub().returns([provider2]) }
+        const scannerProvider2 = {
+          provide: Scanner,
+          useValue: scanner2,
+          multi: true,
+        }
 
-      const application = new DandiApplication({
-        providers: [scannerProvider1, scannerProvider2],
+        const application = new DandiApplication({
+          providers: [scannerProvider1, scannerProvider2],
+        })
+
+        await (application as any).initHost.preInit()
+        await (application as any).initHost.init(this.logger, () => new Date().valueOf())
+
+        expect(scanner1.scan).to.have.been.calledOnce
+        expect(scanner2.scan).to.have.been.calledOnce
+
+        expect((application as any).initHost.appInjectorContext.repository.get(token1)).to.exist
+        expect((application as any).initHost.appInjectorContext.repository.get(token2)).to.exist
       })
-
-      await (application as any).initHost.preInit()
-      await (application as any).initHost.init(this.logger, () => new Date().valueOf())
-
-      expect(scanner1.scan).to.have.been.calledOnce
-      expect(scanner2.scan).to.have.been.calledOnce
-
-      expect((application as any).initHost.appInjectorContext.repository.get(token1)).to.exist
-      expect((application as any).initHost.appInjectorContext.repository.get(token2)).to.exist
     })
-  })
   })
 
   describe('start', () => {
