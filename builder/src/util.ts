@@ -46,7 +46,7 @@ export class Util {
     })
   }
 
-  public spawn(command: string, args?: string[], options?: SpawnOptions): Promise<string> {
+  public spawn(command: string, args?: string[], options?: SpawnOptions, ignoreErrors: boolean = false): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       options = Object.assign(options || {}, {
         env: process.env,
@@ -57,7 +57,16 @@ export class Util {
       let error: string = ''
       cmd.stdout.on('data', chunk => output += chunk)
       cmd.stderr.on('data', chunk => error += chunk)
-      cmd.on('close', code => code === 0 ? resolve(output) : reject(new Error(output + error)))
+      cmd.on('close', code => {
+        if (code === 0 || ignoreErrors) {
+          if (error) {
+            this.logger.debug('Ignored error:', error)
+          }
+          resolve(error ? undefined : output)
+        } else {
+          reject(new Error(output + error))
+        }
+      })
     })
   }
 

@@ -26,6 +26,7 @@ export interface Package {
   peerDependencies?: DependencyMap
   devDependencies?: DependencyMap
   license?: any
+  private?: boolean
 }
 
 export const BUILDER_PROJECT_DEFAULTS: BuilderProjectOptions = {

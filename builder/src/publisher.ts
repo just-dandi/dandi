@@ -91,7 +91,7 @@ export class Publisher {
     if (registry) {
       infoArgs.push('--registry', registry)
     }
-    let packageInfo = await this.util.spawn('npm', infoArgs)
+    let packageInfo = await this.util.spawn('npm', infoArgs, undefined, true)
     if (packageInfo) {
       this.logger.warn(`${publishTarget}: skipping publish, already exists`, packageInfo.trim())
       return packageInfo
@@ -102,6 +102,9 @@ export class Publisher {
     if (registry) {
       infoArgs.push('--registry', registry)
     }
+    if (!packageInfo && !info.packageConfig.private) {
+      publishArgs.push('--access', 'public')
+    }
     await this.util.spawn('npm', publishArgs, {
       cwd: info.outPath,
     })
@@ -109,7 +112,7 @@ export class Publisher {
 
     while(!packageInfo) {
       this.logger.debug(`${publishTarget}: waiting for package to become available...`)
-      packageInfo = await this.util.spawn('npm', infoArgs)
+      packageInfo = await this.util.spawn('npm', infoArgs, undefined, true)
     }
     this.logger.debug(`${publishTarget}: done.`)
   }
