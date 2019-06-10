@@ -83,7 +83,7 @@ export class Publisher {
       .filter(info => !info.projectDependencies.length || info.projectDependencies.every(dep => state.published.has(dep)))
   }
 
-  private async checkInfoAndPublish(info: PackageInfo, registry?: string): Promise<string> {
+  private async checkInfoAndPublish(info: PackageInfo, registry: string): Promise<string> {
     const publishTarget = `${info.fullName}@${this.project.mainPkg.version}`
 
     this.logger.debug(`${publishTarget}: checking for existing package...`)
@@ -100,7 +100,7 @@ export class Publisher {
     this.logger.debug(`${publishTarget}: publishing${registry ? ` to ${registry}` : ''}...`)
     const publishArgs = ['publish']
     if (registry) {
-      infoArgs.push('--registry', registry)
+      publishArgs.push('--registry', registry)
     }
     if (!packageInfo && !info.packageConfig.private) {
       publishArgs.push('--access', 'public')
