@@ -9,7 +9,7 @@ import { PrimitiveTypeConverter } from './primitive-type-converter'
 import { TypeConversionError } from './type-converter'
 
 /**
- * The default implementation of [[ModelBuilder]]. Uses metadata generated from [[@dandi/model]] decorators.
+ * The default implementation of {@see ModelBuilder}. Uses metadata generated from [[@dandi/model]] decorators.
  *
  * `MetadataModelBuilder` supports building nested models by recursing into complex types defined by [[@Property()]]
  * decorators.

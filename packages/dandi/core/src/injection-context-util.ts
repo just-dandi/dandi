@@ -5,8 +5,8 @@ import { isClassProvider, isFactoryProvider, isValueProvider } from './provider-
 
 /**
  * @internal
- * Returns an [[InjectionContext]] object for the given `provider`
- * @param provider The [[Provider]] whose dependency is being resolved
+ * Returns an {@see InjectionContext} object for the given `provider`
+ * @param provider The {@see Provider} whose dependency is being resolved
  */
 export function getInjectionContext<T>(provider: Provider<T>): InjectionContext {
   if (isClassProvider(provider)) {
@@ -24,7 +24,7 @@ export function getInjectionContext<T>(provider: Provider<T>): InjectionContext 
 }
 
 /**
- * Returns `true` if `obj` is a valid [[MethodInjectionContext]]; otherwise, `false`
+ * Returns `true` if `obj` is a valid {@see MethodInjectionContext}; otherwise, `false`
  * @param obj The object to check
  */
 export function isMethodInjectionContext(obj: any): obj is MethodInjectionContext {

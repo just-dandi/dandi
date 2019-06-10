@@ -51,7 +51,7 @@ function checkIsValueProvider<T>(obj: any, hasInjectionToken?: boolean): obj is 
 
 /**
  * @internal
- * Returns `true` if `obj` is a valid [[Provider]]; otherwise, `false`.
+ * Returns `true` if `obj` is a valid {@see Provider}; otherwise, `false`.
  * @param obj The object to check
  */
 export function isProvider<T>(obj: any): obj is Provider<T> {
@@ -60,7 +60,7 @@ export function isProvider<T>(obj: any): obj is Provider<T> {
 
 /**
  * @internal
- * Returns `true` if `obj` is a valid [[ClassProvider]]; otherwise, `false`.
+ * Returns `true` if `obj` is a valid {@see ClassProvider}; otherwise, `false`.
  * @param obj The object to check
  */
 export function isClassProvider<T>(obj: any): obj is ClassProvider<T> {
@@ -69,7 +69,7 @@ export function isClassProvider<T>(obj: any): obj is ClassProvider<T> {
 
 /**
  * @internal
- * Returns `true` if `obj` is a valid [[FactoryProvider]]; otherwise, `false`.
+ * Returns `true` if `obj` is a valid {@see FactoryProvider}; otherwise, `false`.
  * @param obj The object to check
  */
 export function isFactoryProvider<T>(obj: any): obj is FactoryProvider<T> {
@@ -78,7 +78,7 @@ export function isFactoryProvider<T>(obj: any): obj is FactoryProvider<T> {
 
 /**
  * @internal
- * Returns `true` if `obj` is a valid [[AsyncFactoryProvider]]; otherwise, `false`.
+ * Returns `true` if `obj` is a valid {@see AsyncFactoryProvider}; otherwise, `false`.
  * @param obj The object to check
  */
 export function isAsyncFactoryProvider<T>(obj: any): obj is AsyncFactoryProvider<T> {
@@ -87,7 +87,7 @@ export function isAsyncFactoryProvider<T>(obj: any): obj is AsyncFactoryProvider
 
 /**
  * @internal
- * Returns `true` if `obj` is a valid [[GeneratingProvider]]; otherwise, `false`.
+ * Returns `true` if `obj` is a valid {@see GeneratingProvider}; otherwise, `false`.
  * @param obj The object to check
  */
 export function isGeneratingProvider<T>(obj: any): obj is GeneratingProvider<T> {
@@ -96,7 +96,7 @@ export function isGeneratingProvider<T>(obj: any): obj is GeneratingProvider<T> 
 
 /**
  * @internal
- * Returns `true` if `obj` is a valid [[ValueProvider]]; otherwise, `false`.
+ * Returns `true` if `obj` is a valid {@see ValueProvider}; otherwise, `false`.
  * @param obj The object to check
  */
 export function isValueProvider<T>(obj: any): obj is ValueProvider<T> {

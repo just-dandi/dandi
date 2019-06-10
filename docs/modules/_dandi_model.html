@@ -1,0 +1,998 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@dandi/model | @dandi</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@dandi</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="_dandi_model.html">@dandi/model</a>
+				</li>
+			</ul>
+			<h1>External module @dandi/model</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<dl class="tsd-comment-tags">
+						<dt>module</dt>
+						<dd><h1 id="-dandi-model">@dandi/model</h1>
+							<p><a href="_dandi_model.html">@dandi/model</a> provides decorators for defining models and validation
+							metadata.</p>
+							<p><a href="_dandi_model.html">@dandi/model</a> does not have any dependencies on NodeJS, and therefore
+							can be used on classes shared with projects targeted for the web.</p>
+							<h2 id="specifying-type">Specifying Type</h2>
+							<p>The type of a model member is defined using the <a href="_dandi_model.html#_property__">@Property()</a> decorator:</p>
+							<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Property } <span class="hljs-keyword">from</span> <span class="hljs-string">'@dandi/model'</span>
+
+<span class="hljs-keyword">class</span> MyModel {
+  <span class="hljs-meta">@Property</span>(<span class="hljs-built_in">String</span>)
+  <span class="hljs-keyword">public</span> name: <span class="hljs-built_in">string</span>
+}</code></pre>
+							<h3 id="typescript">TypeScript</h3>
+							<p>Even with TypeScript, since there is no type data at runtime, you must
+								provide a class in order to define a type. While it may be possible to
+								use post processing using the generated AST to determine type, it is not
+							implemented at this time.</p>
+							<p>In general, the type of the member should match the type specified in
+							<a href="_dandi_model.html#_property__">@Property()</a> decorator.</p>
+							<h3 id="complex-models">Complex Models</h3>
+							<p>Models can have any number of levels of hierarchy, so long as the class
+							for child models is referenced in the <code>@Property</code> decorator:</p>
+							<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Property } <span class="hljs-keyword">from</span> <span class="hljs-string">'@dandi/model'</span>
+
+<span class="hljs-keyword">class</span> ParentModel {
+  <span class="hljs-meta">@Property</span>(ChildModel)
+  <span class="hljs-keyword">public</span> child: ChildModel
+}
+
+<span class="hljs-keyword">class</span> ChildModel {
+  <span class="hljs-meta">@Property</span>(<span class="hljs-built_in">String</span>)
+  <span class="hljs-keyword">public</span> name: <span class="hljs-built_in">string</span>
+}</code></pre>
+							<h3 id="using-property-with-primitive-types">Using @Property with Primitive Types</h3>
+							<p>When using the <a href="_dandi_model.html#_property__">@Property()</a> decorator for a native primitive type such
+							as <code>string</code>, <code>number</code>, or <code>boolean</code>, use the corresponding class:</p>
+							<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Property } <span class="hljs-keyword">from</span> <span class="hljs-string">'@dandi/model'</span>
+
+<span class="hljs-keyword">class</span> MyModel {
+  <span class="hljs-meta">@Property</span>(<span class="hljs-built_in">String</span>)
+  <span class="hljs-keyword">public</span> stringProperty: <span class="hljs-built_in">string</span>
+
+  <span class="hljs-meta">@Property</span>(<span class="hljs-built_in">Number</span>)
+  <span class="hljs-keyword">public</span> numberProperty: <span class="hljs-built_in">number</span>
+
+  <span class="hljs-meta">@Property</span>(<span class="hljs-built_in">Boolean</span>)
+  <span class="hljs-keyword">public</span> booleanProperty: <span class="hljs-built_in">boolean</span>
+}</code></pre>
+							<p>In these cases, the class version of the primitive type is only used to
+								identify the type. Validators should set the property using the native
+							primitive type rather than the class.</p>
+							<h2 id="arrays">Arrays</h2>
+							<p><code>Array&lt;T&gt;</code> properties must use the <a href="_dandi_model.html#_arrayof__">@ArrayOf()</a> decorator to define the type
+							of the array. The <a href="_dandi_model.html#_arrayof__">@ArrayOf()</a> decorator is used in place of <a href="_dandi_model.html#_property__">@Property()</a>:</p>
+							<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { ArrayOf } <span class="hljs-keyword">from</span> <span class="hljs-string">'@dandi/model'</span>
+
+<span class="hljs-keyword">class</span> MyModel {
+  <span class="hljs-meta">@ArrayOf</span>(<span class="hljs-built_in">String</span>)
+  <span class="hljs-keyword">public</span> allMyStrings: <span class="hljs-built_in">string</span>[]
+}</code></pre>
+							<h2 id="sets">Sets</h2>
+							<p><code>Set&lt;T&gt;</code> properties must use the <a href="_dandi_model.html#_setof__">@SetOf()</a> decorator to define the type
+								of items contained in the set. The <a href="_dandi_model.html#_setof__">@SetOf()</a> decorator is used in place
+							of <a href="_dandi_model.html#_property__">@Property()</a>:</p>
+							<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { SetOf } <span class="hljs-keyword">from</span> <span class="hljs-string">'@dandi/model'</span>
+
+<span class="hljs-keyword">class</span> MyModel {
+  <span class="hljs-meta">@SetOf</span>(<span class="hljs-built_in">String</span>)
+  <span class="hljs-keyword">public</span> setMeUp: Set&lt;<span class="hljs-built_in">string</span>&gt;
+}</code></pre>
+							<h2 id="maps">Maps</h2>
+							<p><code>Map&lt;TKey, TValue&gt;</code> properties must use the <a href="_dandi_model.html#_mapof__">@MapOf()</a> decorator to define the type
+								of items contained in the set. The <a href="_dandi_model.html#_mapof__">@MapOf()</a> decorator is used in place
+							of <a href="_dandi_model.html#_property__">@Property()</a>:</p>
+							<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Uuid } <span class="hljs-keyword">from</span> <span class="hljs-string">'@dandi/common'</span>
+<span class="hljs-keyword">import</span> { MapOf } <span class="hljs-keyword">from</span> <span class="hljs-string">'@dandi/model'</span>
+
+<span class="hljs-keyword">class</span> MyModel {
+  <span class="hljs-meta">@MapOf</span>(Uuid, <span class="hljs-built_in">Number</span>)
+  <span class="hljs-keyword">public</span> hereIsAMap: Map&lt;Uuid, <span class="hljs-built_in">Number</span>&gt;[]
+}</code></pre>
+							<h2 id="required-members">Required Members</h2>
+							<p>Use the <a href="_dandi_model.html#_required__">@Required()</a> decorator to specify a member that must be present
+							in order to pass validation.</p>
+							<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { Property, Required } <span class="hljs-keyword">from</span> <span class="hljs-string">'@dandi/model'</span>
+
+<span class="hljs-keyword">class</span> MyModel {
+  <span class="hljs-meta">@Property</span>(<span class="hljs-built_in">String</span>)
+  <span class="hljs-meta">@Required</span>()
+  <span class="hljs-keyword">public</span> youNeedThis: <span class="hljs-built_in">string</span>
+}</code></pre>
+							<h2 id="array-and-string-length">Array and String Length</h2>
+							<p>Use the <a href="_dandi_model.html#_minlength__">@MinLength()</a> and <a href="_dandi_model.html#_maxlength__">@MaxLength()</a> decorators to define length
+								requirements for a string or array. These decorators are valid on any
+							type that has a <code>length</code> property.</p>
+							<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { ArrayOf, MaxLength, MinLength, Property } <span class="hljs-keyword">from</span> <span class="hljs-string">'@dandi/model'</span>
+
+<span class="hljs-keyword">class</span> MyModel {
+  <span class="hljs-meta">@Property</span>(<span class="hljs-built_in">String</span>)
+  <span class="hljs-meta">@MinLength</span>(<span class="hljs-number">20</span>)
+  <span class="hljs-keyword">public</span> longString: <span class="hljs-built_in">string</span>
+
+  <span class="hljs-meta">@Property</span>(<span class="hljs-built_in">String</span>)
+  <span class="hljs-meta">@MaxLength</span>(<span class="hljs-number">5</span>)
+  <span class="hljs-keyword">public</span> shortString: <span class="hljs-built_in">string</span>
+
+  <span class="hljs-meta">@ArrayOf</span>(<span class="hljs-built_in">String</span>)
+  <span class="hljs-meta">@MinLength</span>(<span class="hljs-number">1</span>)
+  <span class="hljs-keyword">public</span> gottaHaveOne: <span class="hljs-built_in">string</span>[]
+}</code></pre>
+							<h2 id="number-value-constraints">Number Value Constraints</h2>
+							<p>Use the <a href="_dandi_model.html#_minvalue__">@MinValue()</a> and <a href="_dandi_model.html#_maxvalue__">@MaxValue()</a> decorators to define value
+							requirements for number values.</p>
+							<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { MaxValue, MinValue, Property } <span class="hljs-keyword">from</span> <span class="hljs-string">'@dandi/model'</span>
+
+<span class="hljs-keyword">class</span> MyModel {
+  <span class="hljs-meta">@Property</span>(<span class="hljs-built_in">Number</span>)
+  <span class="hljs-meta">@MinValue</span>(<span class="hljs-number">5</span>)
+  <span class="hljs-meta">@MaxValue</span>(<span class="hljs-number">25</span>)
+  <span class="hljs-keyword">public</span> llamaCount: <span class="hljs-built_in">string</span>
+}</code></pre>
+							<h2 id="members-with-multiple-valid-types">Members with Multiple Valid Types</h2>
+							<p>Use the [[@OneOf()]] decorator in place of <a href="_dandi_model.html#_property__">@Property()</a> to allow a member
+							be validated as one of two or more types.</p>
+							<pre><code class="language-typescript"><span class="hljs-keyword">import</span> { OneOf } <span class="hljs-keyword">from</span> <span class="hljs-string">'@dandi/model'</span>
+
+<span class="hljs-keyword">class</span> MyModel {
+  <span class="hljs-meta">@OneOf</span>(<span class="hljs-built_in">Number</span>, <span class="hljs-built_in">String</span>)
+  <span class="hljs-keyword">public</span> key: <span class="hljs-built_in">number</span> | <span class="hljs-built_in">string</span>
+}</code></pre>
+							<p>When using [[@OneOf()]], the validator will use the first type that
+								successfully validates. In the above example, the validator would first
+								attempt to convert the value to a <code>number</code>, falling back to a <code>string</code>
+							if it failed.</p>
+							<h2 id="other-decorators">Other Decorators</h2>
+							<ul>
+								<li><a href="_dandi_model.html#_pattern__">@Pattern()</a> - accepts a <code>RegExp</code> pattern that must be matched</li>
+								<li><a href="_dandi_model.html#_email__">@Email()</a> - a shorthand decorator for <code>@Property(String)</code>,
+									<code>@Pattern()</code> using a built-in email validation pattern,
+									<code>@MinLength(6)</code>, and <code>@MaxLength(254)</code>
+								<a href="https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address">1</a></li>
+								<li><a href="_dandi_model.html#_urlproperty__">@UrlProperty()</a> - a shorthand decorator for <code>@Property(Url)</code>, and
+								<code>@Pattern()</code> using a built-in url validation pattern</li>
+								<li><a href="_dandi_model.html#_datetimeformat__">@DateTimeFormat()</a> - a shorthand decorator for
+									<code>@Property(DateTime)</code> that define the specified pattern to be used for
+								parsing the Luxon <code>DateTime</code> object.</li>
+								<li><a href="_dandi_model.html#_urlarray__">@UrlArray()</a> - similar to <code>@UrlProperty()</code>, except it uses
+								<code>@ArrayOf(Url)</code> instead of <code>@Property(Url)</code></li>
+							</ul>
+							<hr>
+							<p>1: <a href="https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address">https://stackoverflow.com/questions/386294/what-is-the-maximum-length-of-a-valid-email-address</a></p>
+						</dd>
+					</dl>
+				</div>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Classes</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-class tsd-parent-kind-external-module"><a href="../classes/_dandi_model.modelbase.html" class="tsd-kind-icon">Model<wbr>Base</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Functions</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_dandi_model.html#_arrayof__" class="tsd-kind-icon">@<wbr>Array<wbr>Of()</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_dandi_model.html#_datetimeformat__" class="tsd-kind-icon">@<wbr>Date<wbr>Time<wbr>Format()</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_dandi_model.html#_email__" class="tsd-kind-icon">@<wbr>Email()</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_dandi_model.html#_json__" class="tsd-kind-icon">@<wbr>Json()</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_dandi_model.html#_mapof__" class="tsd-kind-icon">@<wbr>Map<wbr>Of()</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_dandi_model.html#_maxlength__" class="tsd-kind-icon">@<wbr>Max<wbr>Length()</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_dandi_model.html#_maxvalue__" class="tsd-kind-icon">@<wbr>Max<wbr>Value()</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_dandi_model.html#_minlength__" class="tsd-kind-icon">@<wbr>Min<wbr>Length()</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_dandi_model.html#_minvalue__" class="tsd-kind-icon">@<wbr>Min<wbr>Value()</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_dandi_model.html#_pattern__" class="tsd-kind-icon">@<wbr>Pattern()</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_dandi_model.html#_property__" class="tsd-kind-icon">@<wbr>Property()</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_dandi_model.html#_required__" class="tsd-kind-icon">@<wbr>Required()</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter"><a href="_dandi_model.html#_setof__" class="tsd-kind-icon">@<wbr>Set<wbr>Of()</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_dandi_model.html#_sourceaccessor__" class="tsd-kind-icon">@<wbr>Source<wbr>Accessor()</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_dandi_model.html#_urlarray__" class="tsd-kind-icon">@<wbr>Url<wbr>Array()</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_dandi_model.html#_urlproperty__" class="tsd-kind-icon">@<wbr>Url<wbr>Property()</a></li>
+								<li class="tsd-kind-function tsd-parent-kind-external-module"><a href="_dandi_model.html#oneof" class="tsd-kind-icon">One<wbr>Of</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Functions</h2>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+					<a name="_arrayof__" class="tsd-anchor"></a>
+					<h3>@<wbr>Array<wbr>Of()</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">@<wbr>Array<wbr>Of()&lt;T&gt;<span class="tsd-signature-symbol">(</span>valueType<span class="tsd-signature-symbol">: </span><a href="../interfaces/_dandi_common.constructor.html" class="tsd-signature-type">Constructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDecorator</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/model.decorator.ts#L131">dandi/model/src/model.decorator.ts:131</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>decorator</dt>
+									<dd><p>Marks a member as an <code>Array</code> property.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>valueType: <a href="../interfaces/_dandi_common.constructor.html" class="tsd-signature-type">Constructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PropertyDecorator</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="_datetimeformat__" class="tsd-anchor"></a>
+					<h3>@<wbr>Date<wbr>Time<wbr>Format()</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">@<wbr>Date<wbr>Time<wbr>Format()<span class="tsd-signature-symbol">(</span>format<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDecorator</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/model.decorator.ts#L119">dandi/model/src/model.decorator.ts:119</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>decorator</dt>
+									<dd><p>Marks a property to define a format for parsing and formatting a <code>DateTime</code> value.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>format: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PropertyDecorator</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="_email__" class="tsd-anchor"></a>
+					<h3>@<wbr>Email()</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">@<wbr>Email()<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDecorator</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/model.decorator.ts#L94">dandi/model/src/model.decorator.ts:94</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>decorator</dt>
+									<dd><p>Marks a property such that the value must be a valid e-mail address.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PropertyDecorator</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="_json__" class="tsd-anchor"></a>
+					<h3>@<wbr>Json()</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">Json<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDecorator</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/json.decorator.ts#L9">dandi/model/src/json.decorator.ts:9</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Marks a member as being backed by JSON storage</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PropertyDecorator</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+					<a name="_mapof__" class="tsd-anchor"></a>
+					<h3>@<wbr>Map<wbr>Of()</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">@<wbr>Map<wbr>Of()&lt;TKey, TValue&gt;<span class="tsd-signature-symbol">(</span>keyType<span class="tsd-signature-symbol">: </span><a href="../interfaces/_dandi_common.constructor.html" class="tsd-signature-type">Constructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TKey</span><span class="tsd-signature-symbol">&gt;</span>, valueType<span class="tsd-signature-symbol">: </span><a href="../interfaces/_dandi_common.constructor.html" class="tsd-signature-type">Constructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TValue</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDecorator</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/model.decorator.ts#L156">dandi/model/src/model.decorator.ts:156</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>decorator</dt>
+									<dd><p>Marks a member as a <code>Map</code> property.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>TKey</h4>
+								</li>
+								<li>
+									<h4>TValue</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>keyType: <a href="../interfaces/_dandi_common.constructor.html" class="tsd-signature-type">Constructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TKey</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>valueType: <a href="../interfaces/_dandi_common.constructor.html" class="tsd-signature-type">Constructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">TValue</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PropertyDecorator</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="_maxlength__" class="tsd-anchor"></a>
+					<h3>@<wbr>Max<wbr>Length()</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">@<wbr>Max<wbr>Length()<span class="tsd-signature-symbol">(</span>maxLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDecorator</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/model.decorator.ts#L59">dandi/model/src/model.decorator.ts:59</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>decorator</dt>
+									<dd><p>Marks a property to define a maximum required length for the property&#39;s value.</p>
+										<p>Can be used on <code>string</code> and <code>Array</code> values, or any type that has a <code>length</code> property.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>maxLength: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PropertyDecorator</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="_maxvalue__" class="tsd-anchor"></a>
+					<h3>@<wbr>Max<wbr>Value()</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">@<wbr>Max<wbr>Value()<span class="tsd-signature-symbol">(</span>maxValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDecorator</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/model.decorator.ts#L77">dandi/model/src/model.decorator.ts:77</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>decorator</dt>
+									<dd><p>Marks a property to define a maximum required value for the property&#39;s value.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>maxValue: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PropertyDecorator</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="_minlength__" class="tsd-anchor"></a>
+					<h3>@<wbr>Min<wbr>Length()</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">@<wbr>Min<wbr>Length()<span class="tsd-signature-symbol">(</span>minLength<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDecorator</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/model.decorator.ts#L48">dandi/model/src/model.decorator.ts:48</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>decorator</dt>
+									<dd><p>Marks a property to define a minimum required length for the property&#39;s value.</p>
+										<p>Can be used on <code>string</code> and <code>Array</code> values, or any type that has a <code>length</code> property.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>minLength: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PropertyDecorator</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="_minvalue__" class="tsd-anchor"></a>
+					<h3>@<wbr>Min<wbr>Value()</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">@<wbr>Min<wbr>Value()<span class="tsd-signature-symbol">(</span>minValue<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">number</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDecorator</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/model.decorator.ts#L68">dandi/model/src/model.decorator.ts:68</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>decorator</dt>
+									<dd><p>Marks a property to define a minimum required value for the property&#39;s value.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>minValue: <span class="tsd-signature-type">number</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PropertyDecorator</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="_pattern__" class="tsd-anchor"></a>
+					<h3>@<wbr>Pattern()</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">@<wbr>Pattern()<span class="tsd-signature-symbol">(</span>pattern<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">RegExp</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDecorator</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/model.decorator.ts#L86">dandi/model/src/model.decorator.ts:86</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>decorator</dt>
+									<dd><p>Marks a property to define a <code>RegExp</code> pattern that the property&#39;s value must match.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>pattern: <span class="tsd-signature-type">RegExp</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PropertyDecorator</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="_property__" class="tsd-anchor"></a>
+					<h3>@<wbr>Property()</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">@<wbr>Property()<span class="tsd-signature-symbol">(</span>type<span class="tsd-signature-symbol">?: </span><a href="../interfaces/_dandi_common.constructor.html" class="tsd-signature-type">Constructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDecorator</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/model.decorator.ts#L29">dandi/model/src/model.decorator.ts:29</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>decorator</dt>
+									<dd><p>Marks a member as a model property</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagOptional">Optional</span> type: <a href="../interfaces/_dandi_common.constructor.html" class="tsd-signature-type">Constructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The type of the property</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PropertyDecorator</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="_required__" class="tsd-anchor"></a>
+					<h3>@<wbr>Required()</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">@<wbr>Required()<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDecorator</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/model.decorator.ts#L37">dandi/model/src/model.decorator.ts:37</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>decorator</dt>
+									<dd><p>Marks a member as required</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PropertyDecorator</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+					<a name="_setof__" class="tsd-anchor"></a>
+					<h3>@<wbr>Set<wbr>Of()</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+						<li class="tsd-signature tsd-kind-icon">@<wbr>Set<wbr>Of()&lt;T&gt;<span class="tsd-signature-symbol">(</span>valueType<span class="tsd-signature-symbol">: </span><a href="../interfaces/_dandi_common.constructor.html" class="tsd-signature-type">Constructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDecorator</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/model.decorator.ts#L143">dandi/model/src/model.decorator.ts:143</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>decorator</dt>
+									<dd><p>Marks a member as a <code>Set</code> property.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>valueType: <a href="../interfaces/_dandi_common.constructor.html" class="tsd-signature-type">Constructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PropertyDecorator</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="_sourceaccessor__" class="tsd-anchor"></a>
+					<h3>@<wbr>Source<wbr>Accessor()</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">@<wbr>Source<wbr>Accessor()<span class="tsd-signature-symbol">(</span>sourceAccessor<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">MemberSourceAccessor</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDecorator</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/model.decorator.ts#L196">dandi/model/src/model.decorator.ts:196</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>decorator</dt>
+									<dd><p>Marks a member to define an alternate source of the value when constructing the model.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>sourceAccessor: <span class="tsd-signature-type">MemberSourceAccessor</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PropertyDecorator</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="_urlarray__" class="tsd-anchor"></a>
+					<h3>@<wbr>Url<wbr>Array()</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">@<wbr>Url<wbr>Array()<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDecorator</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/model.decorator.ts#L168">dandi/model/src/model.decorator.ts:168</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>decorator</dt>
+									<dd><p>Marks a member as a [[@Url()]] property.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PropertyDecorator</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="_urlproperty__" class="tsd-anchor"></a>
+					<h3>@<wbr>Url<wbr>Property()</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">@<wbr>Url<wbr>Property()<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">PropertyDecorator</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/model.decorator.ts#L107">dandi/model/src/model.decorator.ts:107</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>decorator</dt>
+									<dd><p>Marks a property such that the value must be a valid URL.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">PropertyDecorator</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-function tsd-parent-kind-external-module">
+					<a name="oneof" class="tsd-anchor"></a>
+					<h3>One<wbr>Of</h3>
+					<ul class="tsd-signatures tsd-kind-function tsd-parent-kind-external-module">
+						<li class="tsd-signature tsd-kind-icon">@<wbr>One<wbr>Of()<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">...</span>oneOf<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_dandi_common.constructor.html" class="tsd-signature-type">Constructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">any</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/model/src/model.decorator.ts#L184">dandi/model/src/model.decorator.ts:184</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>decorator</dt>
+									<dd><p>Marks a member as a property that can be one of multiple types.</p>
+										<p>When using [[@OneOf()]], the validator will use the first type that successfully validates.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>oneOf: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../interfaces/_dandi_common.constructor.html" class="tsd-signature-type">Constructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">any</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_contrib_aws_lambda.html">@dandi-<wbr>contrib/aws-<wbr>lambda</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_contrib_config_aws_ssm.html">@dandi-<wbr>contrib/config-<wbr>aws-<wbr>ssm</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_contrib_data_pg.html">@dandi-<wbr>contrib/data-<wbr>pg</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_contrib_mvc_auth_firebase.html">@dandi-<wbr>contrib/mvc-<wbr>auth-<wbr>firebase</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_contrib_mvc_express.html">@dandi-<wbr>contrib/mvc-<wbr>express</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_contrib_mvc_view_ejs.html">@dandi-<wbr>contrib/mvc-<wbr>view-<wbr>ejs</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_contrib_mvc_view_pug.html">@dandi-<wbr>contrib/mvc-<wbr>view-<wbr>pug</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_cache.html">@dandi/cache</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_common.html">@dandi/common</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_config.html">@dandi/config</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_core.html">@dandi/core</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_core_node.html">@dandi/core-<wbr>node</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_core_logging.html">@dandi/core/logging</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_core_testing.html">@dandi/core/testing</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_data.html">@dandi/data</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_hal.html">@dandi/hal</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_logging.html">@dandi/logging</a>
+					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="_dandi_model.html">@dandi/model</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_model_builder.html">@dandi/model-<wbr>builder</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_mvc.html">@dandi/mvc</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_mvc_hal.html">@dandi/mvc-<wbr>hal</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_mvc_view.html">@dandi/mvc-<wbr>view</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="_dandi_mvc_testing.html">@dandi/mvc/testing</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+					<li class=" tsd-kind-class tsd-parent-kind-external-module">
+						<a href="../classes/_dandi_model.modelbase.html" class="tsd-kind-icon">Model<wbr>Base</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="_dandi_model.html#_arrayof__" class="tsd-kind-icon">@<wbr>Array<wbr>Of()</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_dandi_model.html#_datetimeformat__" class="tsd-kind-icon">@<wbr>Date<wbr>Time<wbr>Format()</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_dandi_model.html#_email__" class="tsd-kind-icon">@<wbr>Email()</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_dandi_model.html#_json__" class="tsd-kind-icon">@<wbr>Json()</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="_dandi_model.html#_mapof__" class="tsd-kind-icon">@<wbr>Map<wbr>Of()</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_dandi_model.html#_maxlength__" class="tsd-kind-icon">@<wbr>Max<wbr>Length()</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_dandi_model.html#_maxvalue__" class="tsd-kind-icon">@<wbr>Max<wbr>Value()</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_dandi_model.html#_minlength__" class="tsd-kind-icon">@<wbr>Min<wbr>Length()</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_dandi_model.html#_minvalue__" class="tsd-kind-icon">@<wbr>Min<wbr>Value()</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_dandi_model.html#_pattern__" class="tsd-kind-icon">@<wbr>Pattern()</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_dandi_model.html#_property__" class="tsd-kind-icon">@<wbr>Property()</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_dandi_model.html#_required__" class="tsd-kind-icon">@<wbr>Required()</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="_dandi_model.html#_setof__" class="tsd-kind-icon">@<wbr>Set<wbr>Of()</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_dandi_model.html#_sourceaccessor__" class="tsd-kind-icon">@<wbr>Source<wbr>Accessor()</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_dandi_model.html#_urlarray__" class="tsd-kind-icon">@<wbr>Url<wbr>Array()</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_dandi_model.html#_urlproperty__" class="tsd-kind-icon">@<wbr>Url<wbr>Property()</a>
+					</li>
+					<li class=" tsd-kind-function tsd-parent-kind-external-module">
+						<a href="_dandi_model.html#oneof" class="tsd-kind-icon">One<wbr>Of</a>
+					</li>
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

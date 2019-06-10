@@ -9,7 +9,7 @@ export type RegisterableTypes = Constructor<any> | Provider<any> | Array<Constru
 export type Registerable = RegisterableTypes | RegisterableTypes[]
 
 /**
- * Contains registration debugging information about where a [[Provider]] or [[Constructor]] was registered
+ * Contains registration debugging information about where a {@see Provider} or {@see Constructor} was registered
  */
 export interface ModuleInfo {
   name: string
@@ -21,9 +21,9 @@ export interface ModuleInfo {
 const MODULE_INFO_REG = new Map<InjectionToken<any>, ModuleInfo>()
 
 /**
- * A container class used to logically group [[Provider]], [[Constructor]], and other [[Module]] instances for easy
+ * A container class used to logically group {@see Provider}, {@see Constructor}, and other {@see Module} instances for easy
  * configuration of libraries. `Module` implementations add metadata to their contained entries to make it easier to
- * debug problems during [[Provider]] registration.
+ * debug problems during {@see Provider} registration.
  */
 export class Module extends Array<Registerable> {
 
@@ -46,7 +46,7 @@ export class Module extends Array<Registerable> {
   public static readonly PACKAGE = Symbol.for(`${PKG}#${Module.name}.PACKAGE`)
 
   /**
-   * Gets a [[ModuleInfo]] object containing registration debugging information for the specified `target`
+   * Gets a {@see ModuleInfo} object containing registration debugging information for the specified `target`
    * @param target
    */
   public static moduleInfo(target: any): ModuleInfo {

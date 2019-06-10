@@ -88,6 +88,6 @@ export const DEFAULT_LOGGING_CONFIG: ConsoleLogListenerConfig = {
 }
 
 /**
- * A [[ConsoleLogListenerConfigProvider]] that defines basic [[LogEntry]] formatting for the console
+ * A {@see ConsoleLogListenerConfigProvider} that defines basic {@see LogEntry} formatting for the console
  */
 export const DefaultLogging: ConsoleLogListenerConfigProvider = consoleLogListenerConfigProvider(DEFAULT_LOGGING_CONFIG)

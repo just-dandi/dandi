@@ -33,7 +33,7 @@ const PARSE_ARGS_A2 = 1
 const PARSE_ARGS_PROVIDERS_START = 2
 
 /**
- * The default implementation of [[Injector]]
+ * The default implementation of {@see Injector}
  */
 export class DandiInjector implements Injector, Disposable {
 

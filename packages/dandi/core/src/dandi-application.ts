@@ -23,7 +23,7 @@ export class DandiApplication<TConfig extends DandiApplicationConfig = DandiAppl
 
   /**
    *
-   * @param options A [[DandiApplicationConfig]] object
+   * @param options A {@see DandiApplicationConfig} object
    */
   constructor(options: Options<TConfig> = {}, defaults?: Options<TConfig>) {
     this.config = Object.assign({} as TConfig, defaults, options)
@@ -37,8 +37,8 @@ export class DandiApplication<TConfig extends DandiApplicationConfig = DandiAppl
   }
 
   /**
-   * Runs the application. Returns a `Promise` that is fulfilled with the value returned by the [[EntryPoint]]
-   * implementation, if specified. If no [[EntryPoint]] is specified, the promise is a `Promise<void>`.
+   * Runs the application. Returns a `Promise` that is fulfilled with the value returned by the {@see EntryPoint}
+   * implementation, if specified. If no {@see EntryPoint} is specified, the promise is a `Promise<void>`.
    * @param ts An optional timestamp (e.g. value of `new Date().valueOf()`) to use when computing lifecycle timing for logging and analytics
    */
   public run(ts?: number): Promise<any> {
@@ -46,7 +46,7 @@ export class DandiApplication<TConfig extends DandiApplicationConfig = DandiAppl
   }
 
   /**
-   * The same as [[DandiApplication.run]], but resolves with a reference to the application's [[Injector]] instance
+   * The same as [[DandiApplication.run]], but resolves with a reference to the application's {@see Injector} instance
    * once the application is started.
    * @param ts An optional timestamp (e.g. value of `new Date().valueOf()`) to use when computing lifecycle timing for logging and analytics
    */

@@ -7,7 +7,7 @@ function nooper(): () => void {
 }
 
 /**
- * An implementation of [[Logger]] that doesn't do anything with your silly log data.
+ * An implementation of {@see Logger} that doesn't do anything with your silly log data.
  */
 @Injectable(Logger)
 export class NoopLogger implements Logger {

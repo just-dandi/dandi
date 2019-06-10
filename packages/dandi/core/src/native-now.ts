@@ -6,7 +6,7 @@ function nativeNow(): number {
 }
 
 /**
- * A [[Provider]] for [[NowFn]] that uses JavaScript's native `Date` object to generate a timestamp
+ * A {@see Provider} for {@see NowFn} that uses JavaScript's native `Date` object to generate a timestamp
  */
 export const NativeNow: ValueProvider<NowFn> = {
   provide: NowFn,

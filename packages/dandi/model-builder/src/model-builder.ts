@@ -11,32 +11,32 @@ import { ModelValidator } from './model-validator'
  */
 export interface MemberBuilderOptions {
   /**
-   * An array of [[ModelValidator]]s the check constructed objects against
+   * An array of {@see ModelValidator}s the check constructed objects against
    */
   validators?: ModelValidator[]
 
   /**
-   * A [[KeyTransformFn]] that will be used to transform keys of the source object before constructing the model
+   * A {@see KeyTransformFn} that will be used to transform keys of the source object before constructing the model
    */
   keyTransform?: KeyTransformFn
 }
 
 /**
- * Options for customizing behavior of [[ModelBuilder]] services.
+ * Options for customizing behavior of {@see ModelBuilder} services.
  */
 export interface ModelBuilderOptions extends MemberBuilderOptions {
   /**
-   * An array of [[DataTransformer]]s that will be run against source objects before constructing a model
+   * An array of {@see DataTransformer}s that will be run against source objects before constructing a model
    */
   dataTransformers?: DataTransformer[]
 }
 
 /**
- * A utility that allows creating [[Provider]] objects for [[ModelBuilderOptions]]
+ * A utility that allows creating {@see Provider} objects for {@see ModelBuilderOptions}
  */
 export const ModelBuilderOptions = {
   /**
-   * Creates a [[Provider<ModelBuilderOptions>]] object using the specified `token` and `options` object.
+   * Creates a {@see Provider<ModelBuilderOptions>} object using the specified `token` and `options` object.
    * @param token
    * @param options
    */
@@ -54,12 +54,20 @@ export const ModelBuilderOptions = {
 export interface ModelBuilder {
 
   /**
-   *
-   * @param type
-   * @param obj
-   * @param options
+   * Converts a POJO to an instance of the specified `type`.
+   * @param type A model class
+   * @param obj The source object
+   * @param options Options for customizing value construction and validation behavior
    */
   constructModel<T>(type: Constructor<T>, obj: any, options?: ModelBuilderOptions): T
+
+  /**
+   * Converts a value for a specific property of a model class.
+   * @param metadata The metadata generated for the member
+   * @param key The name of the property
+   * @param value The source value
+   * @param options Options for customizing value construction and validation behavior
+   */
   constructMember(metadata: MemberMetadata, key: string, value: any, options?: ModelBuilderOptions): any
 }
 

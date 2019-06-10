@@ -3,7 +3,7 @@ import * as uuid from 'uuid/v4'
 const UUID = new Map<string, Uuid>()
 
 /**
- * An implementation of UUID values based on [uuid/v4](https://www.npmjs.com/package/uuid). [[Uuid]] instances are
+ * An implementation of UUID values based on [uuid/v4](https://www.npmjs.com/package/uuid). {@see Uuid} instances are
  * immutable (due to the constructor calling `Object.freeze`), and when constructed purely with [[Uuid.for]], can be
  * compared as value types.
  *
@@ -23,8 +23,8 @@ const UUID = new Map<string, Uuid>()
 export class Uuid extends String {
 
   /**
-   * Returns a [[Uuid]] instance representing the specified `value` string. If the application has previously
-   * initialized a [[Uuid]] instance for this particular `value`, that instance is returned. Otherwise, a new instance
+   * Returns a {@see Uuid} instance representing the specified `value` string. If the application has previously
+   * initialized a {@see Uuid} instance for this particular `value`, that instance is returned. Otherwise, a new instance
    * is created, and will be returned for future calls to [[Uuid.for]] with the same `value`.
    * @param value
    */
@@ -41,7 +41,7 @@ export class Uuid extends String {
   }
 
   /**
-   * Creates a [[Uuid]] instance containing a random v4 UUID using [[Uuid.for]].
+   * Creates a {@see Uuid} instance containing a random v4 UUID using [[Uuid.for]].
    */
   public static create(): Uuid {
     return this.for(uuid())

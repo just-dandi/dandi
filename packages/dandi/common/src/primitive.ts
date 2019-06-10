@@ -15,7 +15,7 @@ import { Uuid } from './uuid'
 export type PrimitiveType = Boolean | Currency | DateTime | Number | String | Url | Uuid
 
 /**
- * Returns `true` if `type` is one of the types represented by [[PrimitiveType]]; otherwise, false.
+ * Returns `true` if `type` is one of the types represented by {@see PrimitiveType}; otherwise, false.
  * @param type The type to check
  */
 export function isPrimitiveType(type: any): type is PrimitiveType {

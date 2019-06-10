@@ -16,7 +16,7 @@ export interface Jsonable {
 }
 
 /**
- * Returns `true` if `obj` implements the [[toJSON]] function; otherwise, `false`.
+ * Returns `true` if `obj` implements the {@see toJSON} function; otherwise, `false`.
  * @param obj The object to check
  */
 export function isJsonable(obj: any): obj is Jsonable {

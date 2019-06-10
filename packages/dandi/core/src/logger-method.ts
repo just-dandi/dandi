@@ -9,8 +9,8 @@ export interface LoggerMethodModifiers {
 }
 
 /**
- * A language chain of [[LoggerMethodModifiers]] that gives the caller a fluent interface for defining the
- * [[LogCallOptions]] of a [[LogEntry]].
+ * A language chain of {@see LoggerMethodModifiers} that gives the caller a fluent interface for defining the
+ * {@see LogCallOptions} of a {@see LogEntry}.
  *
  * ```typescript
  * this.logger.info.noContext(`Context doesn't really matter anyway`)
@@ -21,7 +21,7 @@ export interface LoggerMethod extends LoggerMethodModifiers, Function {
 }
 
 /**
- * Options for customizing the display of a [[LogEntry]]
+ * Options for customizing the display of a {@see LogEntry}
  */
 export interface LogCallOptions {
   level?: boolean

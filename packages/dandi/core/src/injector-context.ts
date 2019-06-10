@@ -24,13 +24,13 @@ export interface FindCacheEntry<T> {
 }
 
 /**
- * A context object containing references to the set of available [[Provider]] objects used to resolve an
- * [[InjectionToken]] to its configured [[Provider]].
+ * A context object containing references to the set of available {@see Provider} objects used to resolve an
+ * {@see InjectionToken} to its configured {@see Provider}.
  */
 export class InjectorContext implements Disposable {
 
   /**
-   * Returns the [[InjectionContext]] object specified when creating the [[InjectorContext]].
+   * Returns the {@see InjectionContext} object specified when creating the {@see InjectorContext}.
    */
   public get injectionContext(): InjectionContext {
     return this.context
@@ -77,8 +77,8 @@ export class InjectorContext implements Disposable {
 
   /**
    * @internal
-   * Attempts to find a [[RepositoryEntry]] for the specified `token`.
-   * @param token The [[InjectionToken]] to search for
+   * Attempts to find a {@see RepositoryEntry} for the specified `token`.
+   * @param token The {@see InjectionToken} to search for
    */
   public find<T>(token: InjectionToken<T>): RepositoryEntry<T>
   public find<T, TResult>(token: InjectionToken<T>, exec: FindExecFn<T, TResult>): TResult
@@ -95,9 +95,9 @@ export class InjectorContext implements Disposable {
 
   /**
    * @internal
-   * Adds a singleton instance for the specified `provider` to the deepest possible [[InjectorContext]] in the hierarchy.
+   * Adds a singleton instance for the specified `provider` to the deepest possible {@see InjectorContext} in the hierarchy.
    *
-   * Most, if not all singletons should end up being stored in the [[Injector]]'s root [[InjectorContext]]
+   * Most, if not all singletons should end up being stored in the {@see Injector}'s root {@see InjectorContext}
    * @param provider
    * @param value
    */
@@ -122,7 +122,7 @@ export class InjectorContext implements Disposable {
   }
 
   /**
-   * Disposes of any child [[InjectorContext]] instances, as well as the [[Repository]] instance.
+   * Disposes of any child {@see InjectorContext} instances, as well as the {@see Repository} instance.
    * @param reason A brief description of why the object is being disposed
    */
   public async dispose(reason: string): Promise<void> {
@@ -139,9 +139,9 @@ export class InjectorContext implements Disposable {
 
   /**
    * @internal
-   * Creates child [[InjectorContext]] using the specified `injectionContext` and additional providers.
-   * @param injectionContext The [[InjectionContext]]
-   * @param providers Any additional [[Provider]] values that can be used to resolve tokens in the child [[InjectorContext]]
+   * Creates child {@see InjectorContext} using the specified `injectionContext` and additional providers.
+   * @param injectionContext The {@see InjectionContext}
+   * @param providers Any additional {@see Provider} values that can be used to resolve tokens in the child {@see InjectorContext}
    */
   public createChild(
     injectionContext: InjectionContext,
@@ -155,11 +155,11 @@ export class InjectorContext implements Disposable {
 
   /**
    * @internal
-   * Creates a [[ResolverContext]] instance that can be used by [[Injector]] instances to resolve and inject dependencies
-   * @param ctr The constructor to use for creating the [[ResolverContext]] instance
-   * @param token The [[InjectionToken]] that the [[ResolverContext]] instance is being created to resolve
+   * Creates a {@see ResolverContext} instance that can be used by {@see Injector} instances to resolve and inject dependencies
+   * @param ctr The constructor to use for creating the {@see ResolverContext} instance
+   * @param token The {@see InjectionToken} that the {@see ResolverContext} instance is being created to resolve
    * @param injectionContext
-   * @param providers Any additional [[Provider]] values that can be used to resolve tokens in the [[ResolverContext]]
+   * @param providers Any additional {@see Provider} values that can be used to resolve tokens in the {@see ResolverContext}
    */
   public createResolverContext<T>(
     ctr: ResolverContextConstructor<T>,
@@ -175,7 +175,7 @@ export class InjectorContext implements Disposable {
 
   /**
    * @internal
-   * Gets a string representation of the [[InjectionContext]].
+   * Gets a string representation of the {@see InjectionContext}.
    */
   protected getCustomInspectorString(): string {
     if (!this.context) {
@@ -186,7 +186,7 @@ export class InjectorContext implements Disposable {
   }
 
   /**
-   * Generates an injection stack from the hierarchy of [[InjectorContext]] instances.
+   * Generates an injection stack from the hierarchy of {@see InjectorContext} instances.
    */
   public [CUSTOM_INSPECTOR](): string {
     const parts = [this.getCustomInspectorString()]

@@ -13,8 +13,8 @@ export function optionalDecorator(target: any, propertyName: string, paramIndex:
 }
 
 /**
- * Marks the decorated parameter as optional. This prevents [[Resolver.resolve]] from throwing [[MissingProviderError]],
- * and causes the parameter to be injected with `undefined` if there is no matching [[Provider]].
+ * Marks the decorated parameter as optional. This prevents [[Resolver.resolve]] from throwing {@see MissingPro viderError},
+ * and causes the parameter to be injected with `undefined` if there is no matching {@see Provider}.
  * @decorator
  */
 export function Optional(): ParameterDecorator {

@@ -12,7 +12,7 @@ function getRegistrationTargetSourceString(source: RepositoryRegistrationSource)
 }
 
 /**
- * A base error type for errors that are thrown during [[Provider]] registration.
+ * A base error type for errors that are thrown during {@see Provider} registration.
  */
 export class RegistrationError extends AppError {
   public readonly moduleInfo: ModuleInfo;
@@ -24,7 +24,7 @@ export class RegistrationError extends AppError {
 }
 
 /**
- * Thrown when attempting to register an object that is not a valid [[Provider]] or [[Constructor]]
+ * Thrown when attempting to register an object that is not a valid {@see Provider} or {@see Constructor}
  */
 export class InvalidRegistrationTargetError extends RegistrationError {
   constructor(public readonly source: RepositoryRegistrationSource, target: any, public readonly options: any) {
@@ -33,7 +33,7 @@ export class InvalidRegistrationTargetError extends RegistrationError {
 }
 
 /**
- * Thrown when attempting to register a [[Provider]] whose [[InjectionOptions]] conflict with another [[Provider]] that
+ * Thrown when attempting to register a {@see Provider} whose {@see InjectionOptions} conflict with another {@see Provider} that
  * was already registered.
  */
 export class ConflictingRegistrationOptionsError extends AppError {
@@ -43,7 +43,7 @@ export class ConflictingRegistrationOptionsError extends AppError {
 }
 
 /**
- * Thrown when attempting to create a [[Repository]] instance using a non-existent `context` object.
+ * Thrown when attempting to create a {@see Repository} instance using a non-existent `context` object.
  */
 export class InvalidRepositoryContextError extends AppError {
   constructor(public readonly context: any) {

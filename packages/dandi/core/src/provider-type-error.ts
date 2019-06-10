@@ -1,7 +1,7 @@
 import { AppError } from '@dandi/common'
 
 /**
- * Thrown when an [[InstanceGenerator]] cannot determine how to resolve a value from a [[Provider]].
+ * Thrown when an {@see InstanceGenerator} cannot determine how to resolve a value from a {@see Provider}.
  */
 export class ProviderTypeError extends AppError {
   constructor(public readonly target: any) {

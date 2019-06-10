@@ -6,7 +6,6 @@ import { ProjectReflection } from 'typedoc'
 import { Component, ConverterComponent } from 'typedoc/dist/lib/converter/components'
 import { Converter } from 'typedoc/dist/lib/converter/converter'
 import { Context } from 'typedoc/dist/lib/converter/context'
-import { ReferenceType } from 'typedoc/dist/lib/models'
 import { ContainerReflection } from 'typedoc/dist/lib/models/reflections/container'
 import { Reflection } from 'typedoc/dist/lib/models/reflections/abstract'
 import { DeclarationReflection } from 'typedoc/dist/lib/models/reflections/declaration'
@@ -145,12 +144,16 @@ export class ModuleNameByPackagePlugin extends ConverterComponent {
     })
   }
 
+  isDecoratorByComment(ref: Reflection): boolean {
+    return ref.comment && ref.comment.tags && !!ref.comment.tags.find(tag => tag.tagName === 'decorator')
+  }
+
   isDecorator(ref: Reflection): boolean {
     if (!(ref as any).signatures) {
-      return false
+      return this.isDecoratorByComment(ref)
     }
     return !!(ref as DeclarationReflection).signatures.find(sig => {
-      if (sig.comment && sig.comment.tags && sig.comment.tags.find(tag => tag.tagName === 'decorator')) {
+      if (this.isDecoratorByComment(ref)) {
         return true
       }
       if (!sig.type || !(sig.type as any).name) {
@@ -181,11 +184,12 @@ export class ModuleNameByPackagePlugin extends ConverterComponent {
     }
   }
 
-  fixGenericCommentReferences(module: Reflection, text: string): string {
-    return text.replace(/\[\[\w+<\w+>]]/g, typeRef =>
-      typeRef.replace(/\[\[(\w+)<(\w+)>]]/, (match, type, gType) =>
-        `[[${type}]]<[[${gType}]]>`
-      ))
+  transformSeeReferences(module: Reflection, text: string): string {
+    return text.replace(/{@see \w+(?:<\w+>)?}/g, ref =>
+      ref.replace(/{@see (\w+)(?:<\w+>)?}/, (match, type, gType) =>
+        `[[${type}${gType ? `<[[${gType}]]>`: ''}]]`
+      )
+    )
   }
 
   onResolveBegin(context: Context) {
@@ -197,7 +201,7 @@ export class ModuleNameByPackagePlugin extends ConverterComponent {
 
     for(const ref of Object.values(context.project.reflections)) {
       this.importIncludedMarkdown(ref)
-      this.execOnCommentText(ref, this.fixGenericCommentReferences)
+      this.execOnCommentText(ref, this.transformSeeReferences.bind(this))
 
       // rename decorators
       if (this.isDecorator(ref)) {

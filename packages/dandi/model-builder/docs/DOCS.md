@@ -1,4 +1,4 @@
-## ModelBuilder
+## Using ModelBuilder
 
 The [[ModelBuilder]] interface exposes two methods for working with models.
 [[ModelBuilder.constructModel]] is used for converting a POJO ("Plain
@@ -6,11 +6,12 @@ Old JavaScript Object") into an instance of a desired model class.
 [[ModelBuilder.constructMember]] is used to convert individual values to
 a specified type.
 
-## ModelBuilderOptions
+## Using ModelBuilderOptions
 
-Providing options to `constructModel` or `constructMember` calls will
-allow you to configure validation, transform the keys of your source
-object, or for `constructModel`, transform the source object itself
+Providing options to [[ModelBuilder.constructModel]] or
+[[ModelBuilder.constructMember]] calls will allow you to configure
+validation, transform the keys of your source object, or for
+[[ModelBuilder.constructModel]], transform the source object itself
 before construction.
 
 - **`validators`:** An array of [[ModelValidator]] instances that will be
@@ -27,7 +28,7 @@ before construction.
   to convert a flat POJO with dot notated keys to a complex object with
   nested properties.
 
-## MetadataModelBuilder
+## Using MetadataModelBuilder
 
 [[MetadataModelBuilder]] is the default implementation of [[ModelBuilder]]
 and is included in the [[@dandi/model-builder]] package.

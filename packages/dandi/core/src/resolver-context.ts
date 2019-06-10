@@ -13,19 +13,19 @@ import {
 import { InjectorContext } from './injector-context'
 
 /**
- * An [[InjectorContext]] used for resolving specific [[Provider]]s during dependency injection.
+ * An {@see InjectorContext} used for resolving specific {@see Provider}s during dependency injection.
  */
 export class ResolverContext<T> extends InjectorContext {
 
   /**
-   * Gets an [[InjectionContext]] representing the matched [[RepositoryEntry]].
+   * Gets an {@see InjectionContext} representing the matched {@see RepositoryEntry}.
    */
   public get injectionContext(): InjectionContext {
     return getInjectionContext(this.match as any) || super.injectionContext
   }
 
   /**
-   * Gets the matching [[RepositoryEntry]] for the instance's [[target]].
+   * Gets the matching {@see RepositoryEntry} for the instance's {@see target}.
    */
   public get match(): RepositoryEntry<T> {
     if (!this._match) {
@@ -35,7 +35,7 @@ export class ResolverContext<T> extends InjectorContext {
   }
 
   /**
-   * Gets the [[InjectionResult]] for the instance's [[match]], if it has been resolved.
+   * Gets the {@see InjectionResult} for the instance's {@see match}, if it has been resolved.
    */
   public get result(): InjectionResult<T> {
     return this._result
@@ -61,7 +61,7 @@ export class ResolverContext<T> extends InjectorContext {
   }
 
   /**
-   * Registers an object instance that was generated for the [[ResolverContext]].
+   * Registers an object instance that was generated for the {@see ResolverContext}.
    * @param obj
    */
   public addInstance(obj: T): T {
@@ -70,7 +70,7 @@ export class ResolverContext<T> extends InjectorContext {
   }
 
   /**
-   * Resolves the [[ResolverContext]] with the specified injection `result`.
+   * Resolves the {@see ResolverContext} with the specified injection `result`.
    * @param result
    */
   public resolveValue(result: T | T[]): InjectionResult<T> {
@@ -79,7 +79,7 @@ export class ResolverContext<T> extends InjectorContext {
   }
 
   /**
-   * Disposes all instances registered with [[addInstance]], then follows the same behavior as [[InjectorContext.dispose]].
+   * Disposes all instances registered with {@see addInstance}, then follows the same behavior as [[InjectorContext.dispose]].
    * @param reason A brief description of why the object is being disposed
    */
   public async dispose(reason: string): Promise<void> {
@@ -94,7 +94,7 @@ export class ResolverContext<T> extends InjectorContext {
 
   /**
    * @internal
-   * Gets a string representing the [[ResolverContext]] in an dependency injection stack
+   * Gets a string representing the {@see ResolverContext} in an dependency injection stack
    */
   protected getCustomInspectorString(): string {
 

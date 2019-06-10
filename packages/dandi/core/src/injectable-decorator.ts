@@ -67,7 +67,7 @@ function isInjectableOption(obj: any): obj is InjectableOption {
 }
 
 /**
- * A utility class used to set [[InjectableOption]] values for a class decorated with [[@Injectable()]]
+ * A utility class used to set {@see InjectableOption} values for a class decorated with [[@Injectable()]]
  *
  * [[include:injectable-decorator.doc.md#InjectableOption:values]]
  */

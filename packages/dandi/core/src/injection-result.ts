@@ -28,7 +28,7 @@ export class InjectionResult<T> implements Disposable {
   }
 
   /**
-   * Disposes of the [[InjectorContext]] used to resolve and generate the injected object instance
+   * Disposes of the {@see InjectorContext} used to resolve and generate the injected object instance
    * @param reason A brief description of why the object is being disposed
    */
   public async dispose(reason: string): Promise<void> {

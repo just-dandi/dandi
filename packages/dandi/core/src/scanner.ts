@@ -9,7 +9,7 @@ export interface ScannerContructor {
 }
 
 /**
- * A service that discovered [[Provider]] objects
+ * A service that discovered {@see Provider} objects
  */
 export interface Scanner {
   scan(): Promise<Array<Provider<any> | Constructor<any>>>
@@ -19,7 +19,7 @@ export const Scanner: InjectionToken<Scanner> = localOpinionatedToken<Scanner>('
 export const ScannerConfig: InjectionToken<any[]> = localSymbolToken<any[]>('ScannerConfig')
 
 /**
- * Creates a [[Provider]] object for the specified [[Scanner]] implementation
+ * Creates a {@see Provider} object for the specified {@see Scanner} implementation
  * @param scanner
  * @param config
  */

@@ -30,12 +30,12 @@ const GLOBAL_CONTEXT = globalSymbol('Repository:GLOBAL_CONTEXT')
 export class Repository<TContext = any> implements Disposable {
 
   /**
-   * Creates or returns a [[Repository]] instance tied to the specified `context`.
+   * Creates or returns a {@see Repository} instance tied to the specified `context`.
    *
-   * Only one [[Repository]] instance may exist per `context` value. When the [[Repository]] is disposed, it is
+   * Only one {@see Repository} instance may exist per `context` value. When the {@see Repository} is disposed, it is
    * disassociated from the `context`, and a new instance may be created.
    *
-   * @param context An object or value used to uniquely identify the [[Repository]] instance
+   * @param context An object or value used to uniquely identify the {@see Repository} instance
    */
   public static for(context: any): Repository {
     if (!context) {
@@ -50,7 +50,7 @@ export class Repository<TContext = any> implements Disposable {
   }
 
   /**
-   * Returns `true` if there is an existing [[Repository]] instance for the specified `context`; otherwise, `false`.
+   * Returns `true` if there is an existing {@see Repository} instance for the specified `context`; otherwise, `false`.
    * @param context
    */
   public static exists(context: any): boolean {
@@ -58,10 +58,10 @@ export class Repository<TContext = any> implements Disposable {
   }
 
   /**
-   * Gets a reference the global [[Repository]] instance.
+   * Gets a reference the global {@see Repository} instance.
    *
-   * The global [[Repository]] instance is used to hold a collection of classes decorated with [[@Injectable()]], and is
-   * used by [[AmbientInjectableScanner]] to automatically include [[@Injectable()]]s from JavaScript and TypeScript
+   * The global {@see Repository} instance is used to hold a collection of classes decorated with [[@Injectable()]], and is
+   * used by {@see AmbientInjectableScanner} to automatically include [[@Injectable()]]s from JavaScript and TypeScript
    * modules that are statically referenced by the application's source code.
    */
   public static get global(): Repository {
@@ -69,7 +69,7 @@ export class Repository<TContext = any> implements Disposable {
   }
 
   /**
-   * The global [[Repository]] instance does not allow singletons to be stored; all others do.
+   * The global {@see Repository} instance does not allow singletons to be stored; all others do.
    */
   public get allowSingletons(): boolean {
     return this._allowSingletons
@@ -83,7 +83,7 @@ export class Repository<TContext = any> implements Disposable {
 
   /**
    * @internal
-   * Registers the specified [[Constructor]] or [[Provider]]. If `target` is a [[Constructor]], a [[ClassProvider]] is
+   * Registers the specified {@see Constructor} or {@see Provider}. If `target` is a {@see Constructor}, a {@see ClassProvider} is
    * created.
    * @param source
    * @param target
@@ -118,7 +118,7 @@ export class Repository<TContext = any> implements Disposable {
   }
 
   /**
-   * Gets the configured [[RepositoryEntry]] for the specified `token`
+   * Gets the configured {@see RepositoryEntry} for the specified `token`
    * @param token
    */
   public get<T>(token: InjectionToken<T>): RepositoryEntry<T> {
@@ -126,7 +126,7 @@ export class Repository<TContext = any> implements Disposable {
   }
 
   /**
-   * Gets the current collection of registered [[RepositoryEntry]] objects.
+   * Gets the current collection of registered {@see RepositoryEntry} objects.
    */
   public entries(): IterableIterator<RepositoryEntry<any>> {
     return this.providers.values()
@@ -163,7 +163,7 @@ export class Repository<TContext = any> implements Disposable {
    * Disposes of the instance, removing all providers and singleton objects, and removes the association between the
    * instance and the `context` value used when it was created.
    *
-   * The global [[Repository]] instance cannot be disposed.
+   * The global {@see Repository} instance cannot be disposed.
    *
    * @param reason A brief description of why the object is being disposed
    */

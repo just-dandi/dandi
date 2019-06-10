@@ -36,7 +36,7 @@ function coalesceByDefined<T>(a: T, b: T): T {
 }
 
 /**
- * A [[LogListener]] implementation that formats [[LogEntry]] objects to be displayed on the console.
+ * A {@see LogListener} implementation that formats {@see LogEntry} objects to be displayed on the console.
  */
 @Injectable(LogListener, Singleton)
 export class ConsoleLogListener implements LogListener {

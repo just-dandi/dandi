@@ -2,6 +2,9 @@ import { Injectable } from '@dandi/core'
 
 import { DataTransformer } from './data-transformer'
 
+/**
+ * A {@see DataTransformer}
+ */
 @Injectable()
 export class NestedKeyTransformer implements DataTransformer {
   public transform(obj: any): any {

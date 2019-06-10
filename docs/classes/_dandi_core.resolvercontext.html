@@ -1,0 +1,931 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>ResolverContext | @dandi</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="../assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="../assets/js/search.js" data-base="..">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="../index.html" class="title">@dandi</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="../globals.html">Globals</a>
+				</li>
+				<li>
+					<a href="../modules/_dandi_core.html">@dandi/core</a>
+				</li>
+				<li>
+					<a href="_dandi_core.resolvercontext.html">ResolverContext</a>
+				</li>
+			</ul>
+			<h1>Class ResolverContext&lt;T&gt;</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<section class="tsd-panel tsd-comment">
+				<div class="tsd-comment tsd-typography">
+					<div class="lead">
+						<p>An <a href="_dandi_core.injectorcontext.html">InjectorContext</a> used for resolving specific <a href="../modules/_dandi_core.html#provider">Provider</a>s during dependency injection.</p>
+					</div>
+				</div>
+			</section>
+			<section class="tsd-panel tsd-type-parameters">
+				<h3>Type parameters</h3>
+				<ul class="tsd-type-parameters">
+					<li>
+						<h4>T</h4>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel tsd-hierarchy">
+				<h3>Hierarchy</h3>
+				<ul class="tsd-hierarchy">
+					<li>
+						<a href="_dandi_core.injectorcontext.html" class="tsd-signature-type">InjectorContext</a>
+						<ul class="tsd-hierarchy">
+							<li>
+								<span class="target">ResolverContext</span>
+								<ul class="tsd-hierarchy">
+									<li>
+										<a href="_dandi_core_testing.stubresolvercontext.html" class="tsd-signature-type">StubResolverContext</a>
+									</li>
+								</ul>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</section>
+			<section class="tsd-panel">
+				<h3>Implements</h3>
+				<ul class="tsd-hierarchy">
+					<li><a href="_dandi_common.disposable.html" class="tsd-signature-type">Disposable</a></li>
+				</ul>
+			</section>
+			<section class="tsd-panel-group tsd-index-group">
+				<h2>Index</h2>
+				<section class="tsd-panel tsd-index-panel">
+					<div class="tsd-index-content">
+						<section class="tsd-index-section ">
+							<h3>Constructors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite"><a href="_dandi_core.resolvercontext.html#constructor" class="tsd-kind-icon">constructor</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Properties</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dandi_core.resolvercontext.html#context" class="tsd-kind-icon">context</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_dandi_core.resolvercontext.html#injectorsource" class="tsd-kind-icon">injector<wbr>Source</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><a href="_dandi_core.resolvercontext.html#parent" class="tsd-kind-icon">parent</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected"><a href="_dandi_core.resolvercontext.html#repository" class="tsd-kind-icon">repository</a></li>
+								<li class="tsd-kind-property tsd-parent-kind-class"><a href="_dandi_core.resolvercontext.html#target" class="tsd-kind-icon">target</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Accessors</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-get-signature tsd-parent-kind-class tsd-is-overwrite"><a href="_dandi_core.resolvercontext.html#injectioncontext" class="tsd-kind-icon">injection<wbr>Context</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="_dandi_core.resolvercontext.html#match" class="tsd-kind-icon">match</a></li>
+								<li class="tsd-kind-get-signature tsd-parent-kind-class"><a href="_dandi_core.resolvercontext.html#result" class="tsd-kind-icon">result</a></li>
+							</ul>
+						</section>
+						<section class="tsd-index-section ">
+							<h3>Methods</h3>
+							<ul class="tsd-index-list">
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_dandi_core.resolvercontext.html#__computed" class="tsd-kind-icon">__computed</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dandi_core.resolvercontext.html#addinstance" class="tsd-kind-icon">add<wbr>Instance</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="_dandi_core.resolvercontext.html#addsingleton" class="tsd-kind-icon">add<wbr>Singleton</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><a href="_dandi_core.resolvercontext.html#createchild" class="tsd-kind-icon">create<wbr>Child</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="_dandi_core.resolvercontext.html#createresolvercontext" class="tsd-kind-icon">create<wbr>Resolver<wbr>Context</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite"><a href="_dandi_core.resolvercontext.html#dispose" class="tsd-kind-icon">dispose</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="_dandi_core.resolvercontext.html#find" class="tsd-kind-icon">find</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected"><a href="_dandi_core.resolvercontext.html#getcustominspectorstring" class="tsd-kind-icon">get<wbr>Custom<wbr>Inspector<wbr>String</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited"><a href="_dandi_core.resolvercontext.html#getsingleton" class="tsd-kind-icon">get<wbr>Singleton</a></li>
+								<li class="tsd-kind-method tsd-parent-kind-class"><a href="_dandi_core.resolvercontext.html#resolvevalue" class="tsd-kind-icon">resolve<wbr>Value</a></li>
+							</ul>
+						</section>
+					</div>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Constructors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+					<a name="constructor" class="tsd-anchor"></a>
+					<h3>constructor</h3>
+					<ul class="tsd-signatures tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">new <wbr>Resolver<wbr>Context<span class="tsd-signature-symbol">(</span>target<span class="tsd-signature-symbol">: </span><a href="../modules/_dandi_core.html#injectiontoken" class="tsd-signature-type">InjectionToken</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>, parentInjectorContext<span class="tsd-signature-symbol">: </span><a href="_dandi_core.injectorcontext.html" class="tsd-signature-type">InjectorContext</a>, injectionContext<span class="tsd-signature-symbol">: </span><a href="../modules/_dandi_core.html#injectioncontext" class="tsd-signature-type">InjectionContext</a>, providers<span class="tsd-signature-symbol">?: </span><a href="../modules/_dandi_core.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dandi_core.resolvercontext.html" class="tsd-signature-type">ResolverContext</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="_dandi_core.injectorcontext.html">InjectorContext</a>.<a href="_dandi_core.injectorcontext.html#constructor">constructor</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/resolver-context.ts#L47">dandi/core/src/resolver-context.ts:47</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>target: <a href="../modules/_dandi_core.html#injectiontoken" class="tsd-signature-type">InjectionToken</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>parentInjectorContext: <a href="_dandi_core.injectorcontext.html" class="tsd-signature-type">InjectorContext</a></h5>
+								</li>
+								<li>
+									<h5>injectionContext: <a href="../modules/_dandi_core.html#injectioncontext" class="tsd-signature-type">InjectionContext</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagDefault value">Default value</span> providers: <a href="../modules/_dandi_core.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol"> =&nbsp;[]</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_dandi_core.resolvercontext.html" class="tsd-signature-type">ResolverContext</a></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Properties</h2>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="context" class="tsd-anchor"></a>
+					<h3>context</h3>
+					<div class="tsd-signature tsd-kind-icon">context<span class="tsd-signature-symbol">:</span> <a href="../modules/_dandi_core.html#injectioncontext" class="tsd-signature-type">InjectionContext</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="_dandi_core.injectorcontext.html">InjectorContext</a>.<a href="_dandi_core.injectorcontext.html#context">context</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/injector-context.ts#L52">dandi/core/src/injector-context.ts:52</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The reason the <code>InjectorContext</code> is being instantiated</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="injectorsource" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> injector<wbr>Source</h3>
+					<div class="tsd-signature tsd-kind-icon">injector<wbr>Source<span class="tsd-signature-symbol">:</span> <span class="tsd-signature-type">any</span></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="_dandi_core.injectorcontext.html">InjectorContext</a>.<a href="_dandi_core.injectorcontext.html#injectorsource">injectorSource</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/injector-context.ts#L40">dandi/core/src/injector-context.ts:40</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+					<a name="parent" class="tsd-anchor"></a>
+					<h3>parent</h3>
+					<div class="tsd-signature tsd-kind-icon">parent<span class="tsd-signature-symbol">:</span> <a href="_dandi_core.injectorcontext.html" class="tsd-signature-type">InjectorContext</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="_dandi_core.injectorcontext.html">InjectorContext</a>.<a href="_dandi_core.injectorcontext.html#parent">parent</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/injector-context.ts#L51">dandi/core/src/injector-context.ts:51</a></li>
+						</ul>
+					</aside>
+					<div class="tsd-comment tsd-typography">
+						<div class="lead">
+							<p>The <code>InjectorContext</code> used to generate the previous level of the <code>InjectorContext</code> hierarchy</p>
+						</div>
+					</div>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+					<a name="repository" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> repository</h3>
+					<div class="tsd-signature tsd-kind-icon">repository<span class="tsd-signature-symbol">:</span> <a href="_dandi_core.repository.html" class="tsd-signature-type">Repository</a></div>
+					<aside class="tsd-sources">
+						<p>Inherited from <a href="_dandi_core.injectorcontext.html">InjectorContext</a>.<a href="_dandi_core.injectorcontext.html#repository">repository</a></p>
+						<ul>
+							<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/injector-context.ts#L39">dandi/core/src/injector-context.ts:39</a></li>
+						</ul>
+					</aside>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-property tsd-parent-kind-class">
+					<a name="target" class="tsd-anchor"></a>
+					<h3>target</h3>
+					<div class="tsd-signature tsd-kind-icon">target<span class="tsd-signature-symbol">:</span> <a href="../modules/_dandi_core.html#injectiontoken" class="tsd-signature-type">InjectionToken</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></div>
+					<aside class="tsd-sources">
+						<ul>
+							<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/resolver-context.ts#L50">dandi/core/src/resolver-context.ts:50</a></li>
+						</ul>
+					</aside>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Accessors</h2>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class tsd-is-overwrite">
+					<a name="injectioncontext" class="tsd-anchor"></a>
+					<h3>injection<wbr>Context</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> injectionContext<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/_dandi_core.html#injectioncontext" class="tsd-signature-type">InjectionContext</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="_dandi_core.injectorcontext.html">InjectorContext</a>.<a href="_dandi_core.injectorcontext.html#injectioncontext">injectionContext</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/resolver-context.ts#L23">dandi/core/src/resolver-context.ts:23</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Gets an <a href="../modules/_dandi_core.html#injectioncontext">InjectionContext</a> representing the matched <a href="../modules/_dandi_core.html#repositoryentry">RepositoryEntry</a>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <a href="../modules/_dandi_core.html#injectioncontext" class="tsd-signature-type">InjectionContext</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="match" class="tsd-anchor"></a>
+					<h3>match</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> match<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/_dandi_core.html#repositoryentry" class="tsd-signature-type">RepositoryEntry</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/resolver-context.ts#L30">dandi/core/src/resolver-context.ts:30</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Gets the matching <a href="../modules/_dandi_core.html#repositoryentry">RepositoryEntry</a> for the instance&#39;s <a href="_dandi_core.resolvercontext.html#target">target</a>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <a href="../modules/_dandi_core.html#repositoryentry" class="tsd-signature-type">RepositoryEntry</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-get-signature tsd-parent-kind-class">
+					<a name="result" class="tsd-anchor"></a>
+					<h3>result</h3>
+					<ul class="tsd-signatures tsd-kind-get-signature tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon"><span class="tsd-signature-symbol">get</span> result<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dandi_core.injectionresult.html" class="tsd-signature-type">InjectionResult</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/resolver-context.ts#L40">dandi/core/src/resolver-context.ts:40</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Gets the <a href="_dandi_core.injectionresult.html">InjectionResult</a> for the instance&#39;s <a href="_dandi_core.resolvercontext.html#match">match</a>, if it has been resolved.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <a href="_dandi_core.injectionresult.html" class="tsd-signature-type">InjectionResult</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+			<section class="tsd-panel-group tsd-member-group ">
+				<h2>Methods</h2>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="__computed" class="tsd-anchor"></a>
+					<h3>__computed</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">__computed<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_dandi_core.injectorcontext.html">InjectorContext</a>.<a href="_dandi_core.injectorcontext.html#__computed">__computed</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/injector-context.ts#L191">dandi/core/src/injector-context.ts:191</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Generates an injection stack from the hierarchy of <a href="_dandi_core.injectorcontext.html">InjectorContext</a> instances.</p>
+								</div>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="addinstance" class="tsd-anchor"></a>
+					<h3>add<wbr>Instance</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Instance<span class="tsd-signature-symbol">(</span>obj<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/resolver-context.ts#L67">dandi/core/src/resolver-context.ts:67</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Registers an object instance that was generated for the <a href="_dandi_core.resolvercontext.html">ResolverContext</a>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>obj: <span class="tsd-signature-type">T</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+					<a name="addsingleton" class="tsd-anchor"></a>
+					<h3>add<wbr>Singleton</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">add<wbr>Singleton&lt;T&gt;<span class="tsd-signature-symbol">(</span>provider<span class="tsd-signature-symbol">: </span><a href="../modules/_dandi_core.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>, value<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_dandi_core.injectorcontext.html">InjectorContext</a>.<a href="_dandi_core.injectorcontext.html#addsingleton">addSingleton</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/injector-context.ts#L104">dandi/core/src/injector-context.ts:104</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>internal</dt>
+									<dd><p>Adds a singleton instance for the specified <code>provider</code> to the deepest possible <a href="_dandi_core.injectorcontext.html">InjectorContext</a> in the hierarchy.</p>
+										<p>Most, if not all singletons should end up being stored in the <a href="../interfaces/_dandi_core.injector.html">Injector</a>&#39;s root <a href="_dandi_core.injectorcontext.html">InjectorContext</a></p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>provider: <a href="../modules/_dandi_core.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>value: <span class="tsd-signature-type">T</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+					<a name="createchild" class="tsd-anchor"></a>
+					<h3>create<wbr>Child</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Child<span class="tsd-signature-symbol">(</span>injectionContext<span class="tsd-signature-symbol">: </span><a href="../modules/_dandi_core.html#injectioncontext" class="tsd-signature-type">InjectionContext</a>, <span class="tsd-signature-symbol">...</span>providers<span class="tsd-signature-symbol">: </span><a href="../modules/_dandi_core.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dandi_core.injectorcontext.html" class="tsd-signature-type">InjectorContext</a></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_dandi_core.injectorcontext.html">InjectorContext</a>.<a href="_dandi_core.injectorcontext.html#createchild">createChild</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/injector-context.ts#L146">dandi/core/src/injector-context.ts:146</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>internal</dt>
+									<dd><p>Creates child <a href="_dandi_core.injectorcontext.html">InjectorContext</a> using the specified <code>injectionContext</code> and additional providers.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>injectionContext: <a href="../modules/_dandi_core.html#injectioncontext" class="tsd-signature-type">InjectionContext</a></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The <a href="../modules/_dandi_core.html#injectioncontext">InjectionContext</a></p>
+									</div>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>providers: <a href="../modules/_dandi_core.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Any additional <a href="../modules/_dandi_core.html#provider">Provider</a> values that can be used to resolve tokens in the child <a href="_dandi_core.injectorcontext.html">InjectorContext</a></p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_dandi_core.injectorcontext.html" class="tsd-signature-type">InjectorContext</a></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+					<a name="createresolvercontext" class="tsd-anchor"></a>
+					<h3>create<wbr>Resolver<wbr>Context</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">create<wbr>Resolver<wbr>Context&lt;T&gt;<span class="tsd-signature-symbol">(</span>ctr<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">ResolverContextConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>, token<span class="tsd-signature-symbol">: </span><a href="../modules/_dandi_core.html#injectiontoken" class="tsd-signature-type">InjectionToken</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>, injectionContext<span class="tsd-signature-symbol">: </span><a href="../modules/_dandi_core.html#injectioncontext" class="tsd-signature-type">InjectionContext</a>, <span class="tsd-signature-symbol">...</span>providers<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_dandi_core.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_dandi_common.constructor.html" class="tsd-signature-type">Constructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dandi_core.resolvercontext.html" class="tsd-signature-type">ResolverContext</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_dandi_core.injectorcontext.html">InjectorContext</a>.<a href="_dandi_core.injectorcontext.html#createresolvercontext">createResolverContext</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/injector-context.ts#L164">dandi/core/src/injector-context.ts:164</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>internal</dt>
+									<dd><p>Creates a <a href="_dandi_core.resolvercontext.html">ResolverContext</a> instance that can be used by <a href="../interfaces/_dandi_core.injector.html">Injector</a> instances to resolve and inject dependencies</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>ctr: <span class="tsd-signature-type">ResolverContextConstructor</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The constructor to use for creating the <a href="_dandi_core.resolvercontext.html">ResolverContext</a> instance</p>
+									</div>
+								</li>
+								<li>
+									<h5>token: <a href="../modules/_dandi_core.html#injectiontoken" class="tsd-signature-type">InjectionToken</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The <a href="../modules/_dandi_core.html#injectiontoken">InjectionToken</a> that the <a href="_dandi_core.resolvercontext.html">ResolverContext</a> instance is being created to resolve</p>
+									</div>
+								</li>
+								<li>
+									<h5>injectionContext: <a href="../modules/_dandi_core.html#injectioncontext" class="tsd-signature-type">InjectionContext</a></h5>
+								</li>
+								<li>
+									<h5><span class="tsd-flag ts-flagRest">Rest</span> <span class="tsd-signature-symbol">...</span>providers: <span class="tsd-signature-type">Array</span><span class="tsd-signature-symbol">&lt;</span><a href="../modules/_dandi_core.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol"> | </span><a href="../interfaces/_dandi_common.constructor.html" class="tsd-signature-type">Constructor</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">any</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>Any additional <a href="../modules/_dandi_core.html#provider">Provider</a> values that can be used to resolve tokens in the <a href="_dandi_core.resolvercontext.html">ResolverContext</a></p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_dandi_core.resolvercontext.html" class="tsd-signature-type">ResolverContext</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+					<a name="dispose" class="tsd-anchor"></a>
+					<h3>dispose</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+						<li class="tsd-signature tsd-kind-icon">dispose<span class="tsd-signature-symbol">(</span>reason<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="_dandi_core.injectorcontext.html">InjectorContext</a>.<a href="_dandi_core.injectorcontext.html#dispose">dispose</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/resolver-context.ts#L85">dandi/core/src/resolver-context.ts:85</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Disposes all instances registered with <a href="_dandi_core.resolvercontext.html#addinstance">addInstance</a>, then follows the same behavior as <a href="_dandi_core.injectorcontext.html#dispose">InjectorContext.dispose</a>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>reason: <span class="tsd-signature-type">string</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>A brief description of why the object is being disposed</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">Promise</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">void</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+					<a name="find" class="tsd-anchor"></a>
+					<h3>find</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">find&lt;T&gt;<span class="tsd-signature-symbol">(</span>token<span class="tsd-signature-symbol">: </span><a href="../modules/_dandi_core.html#injectiontoken" class="tsd-signature-type">InjectionToken</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="../modules/_dandi_core.html#repositoryentry" class="tsd-signature-type">RepositoryEntry</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+						<li class="tsd-signature tsd-kind-icon">find&lt;T, TResult&gt;<span class="tsd-signature-symbol">(</span>token<span class="tsd-signature-symbol">: </span><a href="../modules/_dandi_core.html#injectiontoken" class="tsd-signature-type">InjectionToken</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span>, exec<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">FindExecFn</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">TResult</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">TResult</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_dandi_core.injectorcontext.html">InjectorContext</a>.<a href="_dandi_core.injectorcontext.html#find">find</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/injector-context.ts#L83">dandi/core/src/injector-context.ts:83</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>internal</dt>
+									<dd><p>Attempts to find a <a href="../modules/_dandi_core.html#repositoryentry">RepositoryEntry</a> for the specified <code>token</code>.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>token: <a href="../modules/_dandi_core.html#injectiontoken" class="tsd-signature-type">InjectionToken</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+										<p>The <a href="../modules/_dandi_core.html#injectiontoken">InjectionToken</a> to search for</p>
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="../modules/_dandi_core.html#repositoryentry" class="tsd-signature-type">RepositoryEntry</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_dandi_core.injectorcontext.html">InjectorContext</a>.<a href="_dandi_core.injectorcontext.html#find">find</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/injector-context.ts#L84">dandi/core/src/injector-context.ts:84</a></li>
+								</ul>
+							</aside>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+								<li>
+									<h4>TResult</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>token: <a href="../modules/_dandi_core.html#injectiontoken" class="tsd-signature-type">InjectionToken</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+								<li>
+									<h5>exec: <span class="tsd-signature-type">FindExecFn</span><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">, </span><span class="tsd-signature-type">TResult</span><span class="tsd-signature-symbol">&gt;</span></h5>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">TResult</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+					<a name="getcustominspectorstring" class="tsd-anchor"></a>
+					<h3><span class="tsd-flag ts-flagProtected">Protected</span> get<wbr>Custom<wbr>Inspector<wbr>String</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Custom<wbr>Inspector<wbr>String<span class="tsd-signature-symbol">(</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">string</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Overrides <a href="_dandi_core.injectorcontext.html">InjectorContext</a>.<a href="_dandi_core.injectorcontext.html#getcustominspectorstring">getCustomInspectorString</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/resolver-context.ts#L99">dandi/core/src/resolver-context.ts:99</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>internal</dt>
+									<dd><p>Gets a string representing the <a href="_dandi_core.resolvercontext.html">ResolverContext</a> in an dependency injection stack</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">string</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+					<a name="getsingleton" class="tsd-anchor"></a>
+					<h3>get<wbr>Singleton</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+						<li class="tsd-signature tsd-kind-icon">get<wbr>Singleton&lt;T&gt;<span class="tsd-signature-symbol">(</span>provider<span class="tsd-signature-symbol">: </span><a href="../modules/_dandi_core.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<p>Inherited from <a href="_dandi_core.injectorcontext.html">InjectorContext</a>.<a href="_dandi_core.injectorcontext.html#getsingleton">getSingleton</a></p>
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/injector-context.ts#L117">dandi/core/src/injector-context.ts:117</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<dl class="tsd-comment-tags">
+									<dt>internal</dt>
+									<dd><p>Attempts to find a singleton instance for the specified <code>provider</code>.</p>
+									</dd>
+								</dl>
+							</div>
+							<h4 class="tsd-type-parameters-title">Type parameters</h4>
+							<ul class="tsd-type-parameters">
+								<li>
+									<h4>T</h4>
+								</li>
+							</ul>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>provider: <a href="../modules/_dandi_core.html#provider" class="tsd-signature-type">Provider</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <span class="tsd-signature-type">T</span></h4>
+						</li>
+					</ul>
+				</section>
+				<section class="tsd-panel tsd-member tsd-kind-method tsd-parent-kind-class">
+					<a name="resolvevalue" class="tsd-anchor"></a>
+					<h3>resolve<wbr>Value</h3>
+					<ul class="tsd-signatures tsd-kind-method tsd-parent-kind-class">
+						<li class="tsd-signature tsd-kind-icon">resolve<wbr>Value<span class="tsd-signature-symbol">(</span>result<span class="tsd-signature-symbol">: </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">[]</span><span class="tsd-signature-symbol">)</span><span class="tsd-signature-symbol">: </span><a href="_dandi_core.injectionresult.html" class="tsd-signature-type">InjectionResult</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></li>
+					</ul>
+					<ul class="tsd-descriptions">
+						<li class="tsd-description">
+							<aside class="tsd-sources">
+								<ul>
+									<li>Defined in <a href="https://github.com/just-dandi/dandi/blob/b20f89a/packages/dandi/core/src/resolver-context.ts#L76">dandi/core/src/resolver-context.ts:76</a></li>
+								</ul>
+							</aside>
+							<div class="tsd-comment tsd-typography">
+								<div class="lead">
+									<p>Resolves the <a href="_dandi_core.resolvercontext.html">ResolverContext</a> with the specified injection <code>result</code>.</p>
+								</div>
+							</div>
+							<h4 class="tsd-parameters-title">Parameters</h4>
+							<ul class="tsd-parameters">
+								<li>
+									<h5>result: <span class="tsd-signature-type">T</span><span class="tsd-signature-symbol"> | </span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">[]</span></h5>
+									<div class="tsd-comment tsd-typography">
+									</div>
+								</li>
+							</ul>
+							<h4 class="tsd-returns-title">Returns <a href="_dandi_core.injectionresult.html" class="tsd-signature-type">InjectionResult</a><span class="tsd-signature-symbol">&lt;</span><span class="tsd-signature-type">T</span><span class="tsd-signature-symbol">&gt;</span></h4>
+						</li>
+					</ul>
+				</section>
+			</section>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="../globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_contrib_aws_lambda.html">@dandi-<wbr>contrib/aws-<wbr>lambda</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_contrib_config_aws_ssm.html">@dandi-<wbr>contrib/config-<wbr>aws-<wbr>ssm</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_contrib_data_pg.html">@dandi-<wbr>contrib/data-<wbr>pg</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_contrib_mvc_auth_firebase.html">@dandi-<wbr>contrib/mvc-<wbr>auth-<wbr>firebase</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_contrib_mvc_express.html">@dandi-<wbr>contrib/mvc-<wbr>express</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_contrib_mvc_view_ejs.html">@dandi-<wbr>contrib/mvc-<wbr>view-<wbr>ejs</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_contrib_mvc_view_pug.html">@dandi-<wbr>contrib/mvc-<wbr>view-<wbr>pug</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_cache.html">@dandi/cache</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_common.html">@dandi/common</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_config.html">@dandi/config</a>
+					</li>
+					<li class="current tsd-kind-external-module">
+						<a href="../modules/_dandi_core.html">@dandi/core</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_core_node.html">@dandi/core-<wbr>node</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_core_logging.html">@dandi/core/logging</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_core_testing.html">@dandi/core/testing</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_data.html">@dandi/data</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_hal.html">@dandi/hal</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_logging.html">@dandi/logging</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_model.html">@dandi/model</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_model_builder.html">@dandi/model-<wbr>builder</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_mvc.html">@dandi/mvc</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_mvc_hal.html">@dandi/mvc-<wbr>hal</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_mvc_view.html">@dandi/mvc-<wbr>view</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="../modules/_dandi_mvc_testing.html">@dandi/mvc/testing</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+				<ul class="current">
+					<li class="current tsd-kind-class tsd-parent-kind-external-module tsd-has-type-parameter">
+						<a href="_dandi_core.resolvercontext.html" class="tsd-kind-icon">Resolver<wbr>Context</a>
+						<ul>
+							<li class=" tsd-kind-constructor tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_dandi_core.resolvercontext.html#constructor" class="tsd-kind-icon">constructor</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="_dandi_core.resolvercontext.html#context" class="tsd-kind-icon">context</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="_dandi_core.resolvercontext.html#injectorsource" class="tsd-kind-icon">injector<wbr>Source</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited">
+								<a href="_dandi_core.resolvercontext.html#parent" class="tsd-kind-icon">parent</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class tsd-is-inherited tsd-is-protected">
+								<a href="_dandi_core.resolvercontext.html#repository" class="tsd-kind-icon">repository</a>
+							</li>
+							<li class=" tsd-kind-property tsd-parent-kind-class">
+								<a href="_dandi_core.resolvercontext.html#target" class="tsd-kind-icon">target</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_dandi_core.resolvercontext.html#injectioncontext" class="tsd-kind-icon">injection<wbr>Context</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="_dandi_core.resolvercontext.html#match" class="tsd-kind-icon">match</a>
+							</li>
+							<li class=" tsd-kind-get-signature tsd-parent-kind-class">
+								<a href="_dandi_core.resolvercontext.html#result" class="tsd-kind-icon">result</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="_dandi_core.resolvercontext.html#__computed" class="tsd-kind-icon">__computed</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_dandi_core.resolvercontext.html#addinstance" class="tsd-kind-icon">add<wbr>Instance</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+								<a href="_dandi_core.resolvercontext.html#addsingleton" class="tsd-kind-icon">add<wbr>Singleton</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-inherited">
+								<a href="_dandi_core.resolvercontext.html#createchild" class="tsd-kind-icon">create<wbr>Child</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+								<a href="_dandi_core.resolvercontext.html#createresolvercontext" class="tsd-kind-icon">create<wbr>Resolver<wbr>Context</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite">
+								<a href="_dandi_core.resolvercontext.html#dispose" class="tsd-kind-icon">dispose</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+								<a href="_dandi_core.resolvercontext.html#find" class="tsd-kind-icon">find</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-is-overwrite tsd-is-protected">
+								<a href="_dandi_core.resolvercontext.html#getcustominspectorstring" class="tsd-kind-icon">get<wbr>Custom<wbr>Inspector<wbr>String</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class tsd-has-type-parameter tsd-is-inherited">
+								<a href="_dandi_core.resolvercontext.html#getsingleton" class="tsd-kind-icon">get<wbr>Singleton</a>
+							</li>
+							<li class=" tsd-kind-method tsd-parent-kind-class">
+								<a href="_dandi_core.resolvercontext.html#resolvevalue" class="tsd-kind-icon">resolve<wbr>Value</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+				<ul class="after-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="../assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="../assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>

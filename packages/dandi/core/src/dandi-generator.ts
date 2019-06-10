@@ -16,7 +16,7 @@ import { ResolverContextConstructor } from './resolver-context-constructor'
 import { DependencyInjectionContext } from './injection-context'
 
 /**
- * The default implementation of [[InstanceGenerator]].
+ * The default implementation of {@see InstanceGenerator}.
  */
 export class DandiGenerator implements InstanceGenerator {
 

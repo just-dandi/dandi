@@ -5,7 +5,7 @@ import { DateTimeFormatOptions } from 'luxon'
 import { localOpinionatedToken } from './local-token'
 
 /**
- * Additional metadata used for displaying a [[LogEntry]] in the console.
+ * Additional metadata used for displaying a {@see LogEntry} in the console.
  */
 export interface ConsoleLogListenerEntryInfo extends LogEntry {
   levelTagHighWater: number
@@ -14,17 +14,17 @@ export interface ConsoleLogListenerEntryInfo extends LogEntry {
 }
 
 /**
- * A function that takes a [[ConsoleLogListenerEntryInfo]] object and returns a `string`.
+ * A function that takes a {@see ConsoleLogListenerEntryInfo} object and returns a `string`.
  */
 export type ConsoleLogListenerFormatter = (entryInfo: ConsoleLogListenerEntryInfo) => string
 
 /**
- * A function that generates a string or array of strings representing the "message" portion of a [[LogEntry]].
+ * A function that generates a string or array of strings representing the "message" portion of a {@see LogEntry}.
  */
 export type ConsoleLogListenerMessageFormatter = (entryInfo: ConsoleLogListenerEntryInfo) => string | string[]
 
 /**
- * An object containing formatted sections of a [[LogEntry]] tag, as well as metadata and configuration data
+ * An object containing formatted sections of a {@see LogEntry} tag, as well as metadata and configuration data
  */
 export interface LogEntryTagInfo {
   partOrder: (keyof LogCallOptions)[]
@@ -39,7 +39,7 @@ export interface LogEntryTagInfo {
 }
 
 /**
- * Defines configuration options for formatting the tag portion of a [[LogEntry]]
+ * Defines configuration options for formatting the tag portion of a {@see LogEntry}
  */
 export interface TagFormatOptions {
   partSeparator?: string
@@ -73,7 +73,7 @@ export function consoleLogListenerConfigProvider(config: ConsoleLogListenerConfi
 }
 
 /**
- * A helper class for creating [[ConsoleLogListenerConfig]] objects.
+ * A helper class for creating {@see ConsoleLogListenerConfig} objects.
  */
 export class ConsoleLogListenerConfigProvider implements ValueProvider<ConsoleLogListenerConfig> {
 

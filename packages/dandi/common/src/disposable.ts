@@ -23,7 +23,7 @@ export const DISPOSED_REASON = globalSymbol('Disposable.DISPOSED_REASON')
  * Allows classes to define behavior for cleaning up resources like IO streams, database connections,
  * as well as `Observable` and other event subscriptions.
  *
- * When used with [[@dandi/core]]'s dependency injection, [[Disposable]] instances are automatically disposed at the
+ * When used with [[@dandi/core]]'s dependency injection, {@see Disposable} instances are automatically disposed at the
  * end of their lifecycle.
  *
  * When implementing, it is recommended to call [[Disposable.remapDisposed]] on the instance to ensure that it is
@@ -43,7 +43,7 @@ export const DISPOSED_REASON = globalSymbol('Disposable.DISPOSED_REASON')
  * ```
  *
  * ## `Disposable` Static Class
- * Provides utility functions for working with [[Disposable]] object instances.
+ * Provides utility functions for working with {@see Disposable} object instances.
  */
 export interface Disposable {
 
@@ -71,7 +71,7 @@ export class DisposableTypeError extends AppError {
 }
 
 /**
- * Thrown when [[Disposable.makeDisposable]] is called and the provided [[DisposeFn]] is not a valid `function`
+ * Thrown when [[Disposable.makeDisposable]] is called and the provided {@see DisposeFn} is not a valid `function`
  */
 export class DisposableFunctionError extends AppError {
   constructor(message?: string) {
@@ -80,7 +80,7 @@ export class DisposableFunctionError extends AppError {
 }
 
 /**
- * Thrown when a particular instance of a [[Disposable]] implementation cannot be disposed
+ * Thrown when a particular instance of a {@see Disposable} implementation cannot be disposed
  */
 export class InvalidDisposeTargetError extends AppError {
   constructor(message: string) {
@@ -89,7 +89,7 @@ export class InvalidDisposeTargetError extends AppError {
 }
 
 /**
- * Thrown when attempting to dispose a [[Disposable]] instance multiple times
+ * Thrown when attempting to dispose a {@see Disposable} instance multiple times
  */
 export class AlreadyDisposedError extends AppError {
   constructor(public readonly target: any, public readonly reason: string) {
@@ -104,7 +104,7 @@ function throwAlreadyDisposed(target: any, reason: string): never {
 export class Disposable {
 
   /**
-   * Returns `true` if `obj` implements [[Disposable]] (explicitly or implicitly); otherwise, `false`.
+   * Returns `true` if `obj` implements {@see Disposable} (explicitly or implicitly); otherwise, `false`.
    *
    * @oaram obj The object to check
    */
@@ -132,12 +132,12 @@ export class Disposable {
   }
 
   /**
-   * Modifies the specified object to add the provided [[DisposeFn]] as the [[Disposable.dispose]]
+   * Modifies the specified object to add the provided {@see DisposeFn} as the [[Disposable.dispose]]
    * implementation. If the object already has a function member named `dispose`, it is wrapped and called
    * before the new function.
    *
-   * @param obj The object to convert to a [[Disposable]] instance
-   * @param dispose The [[DisposeFn]] to invoke when disposing of `obj`
+   * @param obj The object to convert to a {@see Disposable} instance
+   * @param dispose The {@see DisposeFn} to invoke when disposing of `obj`
    */
   public static makeDisposable<T>(obj: T, dispose: DisposeFn): T & Disposable {
     if (!obj || typeof obj !== 'object') {
@@ -178,7 +178,7 @@ export class Disposable {
    *
    * @typeparam T The type of `obj`
    * @typeparam TResult The type returned by `use`
-   * @param obj The [[Disposable]] instance to use
+   * @param obj The {@see Disposable} instance to use
    * @param use The function to invoke
    */
   public static use<T extends Disposable, TResult = void>(obj: T, use: (obj: T) => TResult): TResult {
@@ -203,7 +203,7 @@ export class Disposable {
    *
    * @typeparam T The type of `obj`
    * @typeparam TResult The type returned by `use`
-   * @param obj The [[Disposable]] instance to use, or, a `Promise<T>` that resolves to a [[Disposable]] instance
+   * @param obj The {@see Disposable} instance to use, or, a `Promise<T>` that resolves to a {@see Disposable} instance
    * @param use The function to invoke
    */
   public static async useAsync<T extends Disposable, TResult = void>(
@@ -224,14 +224,14 @@ export class Disposable {
 
   /**
    * Overwrites or overrides the `target`'s instance members so that any subsequent member access will result in an
-   * [[AlreadyDisposedError]]. After being called, [[Disposable.isDisposed]] will return `true` for `target`, and
+   * {@see AlreadyDisposedError}. After being called, [[Disposable.isDisposed]] will return `true` for `target`, and
    * [[Disposable.getDisposedReason]] will return `reason`. `target` will also be "frozen" with `Object.freeze`,
    * preventing further modification of the instance.
    *
    * @typeparam T The type of `target`
    * @param target The instance to dispose
    * @param reason A brief description of why `target` is being disposed
-   * @param options An optional [[RemapOptions]] object to customize the remapping behavior
+   * @param options An optional {@see RemapOptions} object to customize the remapping behavior
    */
   public static remapDisposed<T>(target: T, reason: string, options?: RemapOptions): T {
     Object.defineProperty(target, DISPOSED, {

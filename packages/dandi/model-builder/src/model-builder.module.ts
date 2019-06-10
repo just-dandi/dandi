@@ -16,7 +16,7 @@ export class ModelBuilderModuleBuilder extends ModuleBuilder<ModelBuilderModuleB
 }
 
 /**
- * A [[Module]] containing the implementations of [[ModelBuilder]], [[ModelValidator]], and [[TypeConverter]] defined
+ * A {@see Module} containing the implementations of {@see ModelBuilder}, {@see ModelValidator}, and {@see TypeConverter} defined
  * in [[@dandi/model-builder]].
  */
 export const ModelBuilderModule = new ModelBuilderModuleBuilder(TypeConverters, MetadataModelBuilder, MetadataModelValidator)

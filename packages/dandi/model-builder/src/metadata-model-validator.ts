@@ -6,7 +6,7 @@ import { ModelValidator } from './model-validator'
 import { RequiredPropertyError } from './required-property-error'
 
 /**
- * The default implementation of [[ModelValidator]].
+ * The default implementation of {@see ModelValidator}.
  */
 @Injectable(ModelValidator)
 export class MetadataModelValidator implements ModelValidator {

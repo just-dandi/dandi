@@ -163,7 +163,7 @@ export function MapOf<TKey, TValue>(keyType: Constructor<TKey>, valueType: Const
 
 /**
  * @decorator
- * Marks a member as a [[Url]] property.
+ * Marks a member as a {@see Url} property.
  */
 export function UrlArray(): PropertyDecorator {
   return modelDecorator.bind(null, {
@@ -178,7 +178,7 @@ export function UrlArray(): PropertyDecorator {
  * @decorator
  * Marks a member as a property that can be one of multiple types.
  *
- * When using [[@OneOf()]], the validator will use the first type that successfully validates.
+ * When using {@see OneOf}, the validator will use the first type that successfully validates.
  * @param oneOf
  */
 export function OneOf(...oneOf: Array<Constructor<any>>): any {

@@ -12,13 +12,13 @@ import { ResolverContext } from './resolver-context'
 export type ResolvedProvider<T> = Provider<T> | Set<Provider<T>>
 
 /**
- * A service that is responsible for resolving [[InjectionToken]]s to [[Provider]]s.
+ * A service that is responsible for resolving {@see InjectionToken}s to {@see Provider}s.
  */
 export interface Resolver {
 
   /**
    * Performs a shallow check (not checking dependencies or other parameters) to see if a matching provider
-   * has been configured for the specified [[InjectionToken]].
+   * has been configured for the specified {@see InjectionToken}.
    * @param token [[include:injector.doc.md#resolve:token]]
    * @param providers [[include:injector.doc.md#shared:providers]]
    */
@@ -92,7 +92,7 @@ export type InvokableFns<TInstance, TResult> = Subset<TInstance, InvokableFn<TRe
 export type InstanceInvokableFn<TInstance, TResult> = keyof InvokableFns<TInstance, TResult>
 
 /**
- * Returns `true` if `obj` implements the members of [[Injector]]; otherwise, `false`.
+ * Returns `true` if `obj` implements the members of {@see Injector}; otherwise, `false`.
  * @param obj The object to check
  */
 export function isInjector(obj: any): obj is Injector {
@@ -132,7 +132,7 @@ export interface Invoker {
 }
 
 /**
- * A service that is responsible for taking [[InjectionToken]] objects and creating the corresponding object instance
+ * A service that is responsible for taking {@see InjectionToken} objects and creating the corresponding object instance
  * configured by their provider.
  */
 export interface TokenInjector {
@@ -153,12 +153,12 @@ export interface TokenInjector {
 }
 
 /**
- * A service that combines the responsibilities of [[Resolver]], [[Invoker]], and [[TokenInjector]].
+ * A service that combines the responsibilities of {@see Resolver}, {@see Invoker}, and {@see TokenInjector}.
  */
 export interface Injector extends Resolver, Invoker, TokenInjector {
 
   /**
-   * Executes any initialization logic required by the [[Injector]] implementation. Called by [[DandiApplication]] as
+   * Executes any initialization logic required by the {@see Injector} implementation. Called by {@see DandiApplication} as
    * part of the `init` application lifecycle step. Returns a `Promise<void>` that is resolved when initialization is
    * complete.
    * @param args

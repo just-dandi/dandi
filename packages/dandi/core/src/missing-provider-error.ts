@@ -4,7 +4,7 @@ import { InjectionToken, getTokenString } from './injection-token'
 import { InjectorContext } from './injector-context'
 
 /**
- * Thrown when there is no configured [[Provider]] for an [[InjectionToken]] when attempting to resolve a required
+ * Thrown when there is no configured {@see Provider} for an {@see InjectionToken} when attempting to resolve a required
  * dependency.
  */
 export class MissingProviderError<T> extends AppError {

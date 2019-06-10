@@ -3,7 +3,7 @@ import { InjectionToken } from './injection-token'
 import { localOpinionatedToken } from './local-token'
 
 /**
- * A service used to generate [[LogEntry]] objects and publish them to the [[LogStream]].
+ * A service used to generate {@see LogEntry} objects and publish them to the {@see LogStream}.
  */
 export interface Logger {
 

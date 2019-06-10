@@ -5,7 +5,7 @@ import { DateTime } from 'luxon'
 import { TypeConversionError, TypeConverter } from './type-converter'
 
 /**
- * An implementation of [[TypeConverter]] that converts and validates DateTime values.
+ * An implementation of {@see TypeConverter} that converts and validates DateTime values.
  */
 @Injectable(TypeConverter)
 export class DateTimeTypeConverter implements TypeConverter<DateTime> {

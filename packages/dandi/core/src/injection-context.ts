@@ -15,7 +15,7 @@ export interface MethodInjectionContext<TInstance = any, TResult = any> {
 
 /**
  * @internal
- * A specialized [[InjectionContext]] implementation used when resolving DI dependencies
+ * A specialized {@see InjectionContext} implementation used when resolving DI dependencies
  */
 export class DependencyInjectionContext {
 
@@ -70,7 +70,7 @@ export const InjectionContext: InjectionToken<InjectionContext> = localOpinionat
 
 /**
  * @internal
- * The [[InjectionContext]] used by the [[InjectorContext]] created by the application [[Injector]] instance
+ * The {@see InjectionContext} used by the {@see InjectorContext} created by the application {@see Injector} instance
  */
 export const RootInjectionContext = new class RootInjectionContext extends DependencyInjectionContext {
   constructor() {
@@ -80,7 +80,7 @@ export const RootInjectionContext = new class RootInjectionContext extends Depen
 
 /**
  * @internal
- * The top level [[InjectionContext]] used by the [[InjectorContext]] created by [[DandiApplication]] during startup
+ * The top level {@see InjectionContext} used by the {@see InjectorContext} created by {@see DandiApplication} during startup
  */
 export const AppInjectionContext = new class AppInjectionContext extends DependencyInjectionContext {
   constructor() {

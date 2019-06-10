@@ -20,7 +20,7 @@ export class LoggingModuleBuilder extends ModuleBuilder<LoggingModuleBuilder> {
 }
 
 /**
- * A [[Module]] containing [[ContextualLogger]], [[LogStreamSubject]], and a [[Provider]] that automatically
- * subscribes any registered [[LogListener]] implementations to the [[LogStream]].
+ * A {@see Module} containing {@see ContextualLogger}, {@see LogStreamSubject}, and a {@see Provider} that automatically
+ * subscribes any registered {@see LogListener} implementations to the {@see LogStream}.
  */
 export const LoggingModule = new LoggingModuleBuilder(ContextualLogger, LoggerConfig, LogStreamSubject)

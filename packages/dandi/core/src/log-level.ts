@@ -1,5 +1,5 @@
 /**
- * Represents the severity level of a [[LogEntry]]
+ * Represents the severity level of a {@see LogEntry}
  */
 export enum LogLevel {
   debug = 'debug',

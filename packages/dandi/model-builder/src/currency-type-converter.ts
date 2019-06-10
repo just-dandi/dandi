@@ -5,7 +5,7 @@ import { TypeConverter } from './type-converter'
 
 /**
  * @ignore
- * An implementation of [[TypeConverter]] that converts [[Currency]] values.
+ * An implementation of {@see TypeConverter} that converts {@see Currency} values.
  */
 @Injectable(TypeConverter)
 export class CurrencyTypeConverter implements TypeConverter<Currency> {

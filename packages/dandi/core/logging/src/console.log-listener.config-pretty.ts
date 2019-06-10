@@ -19,6 +19,6 @@ export const PRETTY_LOGGING_CONFIG: ConsoleLogListenerConfig = {
 }
 
 /**
- * A [[ConsoleLogListenerConfigProvider]] that defines some nicer looking [[LogEntry]] formatting for the console
+ * A {@see ConsoleLogListenerConfigProvider} that defines some nicer looking {@see LogEntry} formatting for the console
  */
 export const PrettyLogging: ConsoleLogListenerConfigProvider = DefaultLogging.clone().set(PRETTY_LOGGING_CONFIG)

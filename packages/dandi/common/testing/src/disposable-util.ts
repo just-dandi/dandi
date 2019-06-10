@@ -3,7 +3,7 @@ import { Disposable } from '@dandi/common'
 import { DISABLE_REMAP } from '../../src/disposable-flags'
 
 /**
- * A utility for working with [[Disposable]] instances during testing.
+ * A utility for working with {@see Disposable} instances during testing.
  */
 export class DisposableUtil {
 

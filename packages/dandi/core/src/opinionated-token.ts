@@ -5,7 +5,7 @@ import { InjectionOptions, Provider } from './provider'
 import { SymbolTokenBase } from './symbol-token'
 
 /**
- * An [[InjectionToken]] that defines a set of [[InjectionOptions]] that cannot be overridden by [[Provider]]s
+ * An {@see InjectionToken} that defines a set of {@see InjectionOptions} that cannot be overridden by {@see Provider}s
  */
 export class OpinionatedToken<T> extends SymbolTokenBase<T> {
   public static local<T>(pkg: string, target: string, options: InjectionOptions): InjectionToken<T> {
@@ -20,7 +20,7 @@ export class OpinionatedToken<T> extends SymbolTokenBase<T> {
 }
 
 /**
- * Thrown when a [[Provider]] specifies an [[InjectableOption]] that conflicts with one defined by an [[OpinionatedToken]]
+ * Thrown when a {@see Provider} specifies an {@see InjectableOption} that conflicts with one defined by an {@see OpinionatedToken}
  */
 export class OpinionatedProviderOptionsConflictError<T> extends AppError {
   constructor(public readonly provider: Provider<T>) {

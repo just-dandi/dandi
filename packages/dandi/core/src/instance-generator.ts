@@ -8,12 +8,12 @@ export interface InstanceGenerator {
   /**
    * Generates the object instance defined by the `resolverContext`'s target. Returns a `Promise` that resolves to
    * a single instance for non-multi providers, or an array for multi providers.
-   * @param resolverContext A [[ResolverContext]] instance used to configure the instance and resolve any dependencies
+   * @param resolverContext A {@see ResolverContext} instance used to configure the instance and resolve any dependencies
    */
   generateInstance<T>(resolverContext: ResolverContext<T>): Promise<T | T[]>
 }
 
 /**
- * A factory function that instantiates an [[InstanceGenerator]] instance.
+ * A factory function that instantiates an {@see InstanceGenerator} instance.
  */
 export type InstanceGeneratorFactory = ((injector: Injector) => InstanceGenerator) | Promise<InstanceGenerator>

@@ -3,7 +3,7 @@ import { AppError, Constructor, isConstructor } from '@dandi/common'
 import { SymbolTokenBase } from './symbol-token'
 
 /**
- * Represents one out of a set of related [[InjectionToken]] values.
+ * Represents one out of a set of related {@see InjectionToken} values.
  */
 export interface MappedInjectionToken<TKey, TService> {
   provide: InjectionToken<TService>
@@ -11,7 +11,7 @@ export interface MappedInjectionToken<TKey, TService> {
 }
 
 /**
- * A function that can generate [[MappedInjectionToken]] values for `InjectionToken<TService>`
+ * A function that can generate {@see MappedInjectionToken} values for `InjectionToken<TService>`
  */
 export type MappedInjectionTokenFactory<T> = (<TKey, TService>(key: TKey) => MappedInjectionToken<TKey, TService>)
 
@@ -33,7 +33,7 @@ export function isMappedInjectionToken(obj: any): obj is MappedInjectionToken<an
 }
 
 /**
- * Returns `true` if `obj` is a valid [[InjectionToken]]; otherwise, `false`
+ * Returns `true` if `obj` is a valid {@see InjectionToken}; otherwise, `false`
  * @param obj The object to check
  */
 export function isInjectionToken<T>(obj: any): obj is InjectionToken<T> {
@@ -47,7 +47,7 @@ export function isInjectionToken<T>(obj: any): obj is InjectionToken<T> {
 }
 
 /**
- * Thrown when the specified argument is not a valid [[InjectionToken]].
+ * Thrown when the specified argument is not a valid {@see InjectionToken}.
  */
 export class InjectionTokenTypeError extends AppError {
   constructor(public readonly target: any) {
@@ -56,8 +56,8 @@ export class InjectionTokenTypeError extends AppError {
 }
 
 /**
- * Returns a string representation of an [[InjectionToken]].
- * @param token The [[InjectionToken]]
+ * Returns a string representation of an {@see InjectionToken}.
+ * @param token The {@see InjectionToken}
  */
 export function getTokenString(token: InjectionToken<any> | Function): string {
   if (typeof token === 'function') {

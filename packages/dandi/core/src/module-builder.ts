@@ -3,7 +3,7 @@ import { Constructor } from '@dandi/common'
 import { Module, Registerable } from './module'
 
 /**
- * A utility subclass of [[Module]] that makes it easier to define and modify package modules
+ * A utility subclass of {@see Module} that makes it easier to define and modify package modules
  */
 export class ModuleBuilder<TBuilder extends ModuleBuilder<TBuilder>> extends Module {
   protected constructor(private cloneCtr: Constructor<TBuilder>, pkg: string, ...entries: Registerable[]) {

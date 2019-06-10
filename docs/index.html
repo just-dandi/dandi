@@ -1,0 +1,285 @@
+<!doctype html>
+<html class="default no-js">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<title>@dandi</title>
+	<meta name="description" content="">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<link rel="stylesheet" href="assets/css/main.css">
+</head>
+<body>
+<header>
+	<div class="tsd-page-toolbar">
+		<div class="container">
+			<div class="table-wrap">
+				<div class="table-cell" id="tsd-search" data-index="assets/js/search.js" data-base=".">
+					<div class="field">
+						<label for="tsd-search-field" class="tsd-widget search no-caption">Search</label>
+						<input id="tsd-search-field" type="text" />
+					</div>
+					<ul class="results">
+						<li class="state loading">Preparing search index...</li>
+						<li class="state failure">The search index is not available</li>
+					</ul>
+					<a href="index.html" class="title">@dandi</a>
+				</div>
+				<div class="table-cell" id="tsd-widgets">
+					<div id="tsd-filter">
+						<a href="#" class="tsd-widget options no-caption" data-toggle="options">Options</a>
+						<div class="tsd-filter-group">
+							<div class="tsd-select" id="tsd-filter-visibility">
+								<span class="tsd-select-label">All</span>
+								<ul class="tsd-select-list">
+									<li data-value="public">Public</li>
+									<li data-value="protected">Public/Protected</li>
+									<li data-value="private" class="selected">All</li>
+								</ul>
+							</div>
+							<input type="checkbox" id="tsd-filter-inherited" checked />
+							<label class="tsd-widget" for="tsd-filter-inherited">Inherited</label>
+						</div>
+					</div>
+					<a href="#" class="tsd-widget menu no-caption" data-toggle="menu">Menu</a>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="tsd-page-title">
+		<div class="container">
+			<ul class="tsd-breadcrumb">
+				<li>
+					<a href="globals.html">Globals</a>
+				</li>
+			</ul>
+			<h1> @dandi</h1>
+		</div>
+	</div>
+</header>
+<div class="container container-main">
+	<div class="row">
+		<div class="col-8 col-content">
+			<div class="tsd-panel tsd-typography">
+				<h1 id="-dandi">@dandi</h1>
+				<p><img src="https://img.shields.io/github/release-pre/just-dandi/dandi.svg" alt="">
+					<a href="https://travis-ci.org/just-dandi/dandi"><img src="https://travis-ci.org/just-dandi/dandi.svg?branch=master" alt="Build Status"></a>
+					<a href="https://coveralls.io/github/just-dandi/dandi"><img src="https://coveralls.io/repos/github/just-dandi/dandi/badge.svg" alt="Coverage Status"></a>
+					<a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-green.svg" alt="License: MIT"></a>
+				<img src="https://img.shields.io/snyk/vulnerabilities/github/just-dandi/dandi.svg" alt=""></p>
+				<p>Dandi is a modular DI and MVC framework designed to make it easier to write
+					RESTful APIs, console applications,  and other services for NodeJS. It is split into modules to
+				allow developers to use only the features they require.</p>
+				<h2 id="features">Features</h2>
+				<h3 id="dependency-injection">Dependency Injection</h3>
+				<ul>
+					<li>Modeled after <a href="https://angular.io">Angular</a>&#39;s dependency injection system</li>
+					<li>Both constructors and methods can be injected with dependencies</li>
+					<li>3rd party dependencies can be configured to be injected with Providers</li>
+				</ul>
+				<h3 id="mvc">MVC</h3>
+				<ul>
+					<li>Modeled after <a href="https://docs.microsoft.com/en-us/aspnet/core/mvc/overview">ASP.NET Core MVC</a></li>
+					<li>Web framework agnostic - Built for <a href="https://expressjs.com/">Express 4</a>, but can be used with other frameworks if desired</li>
+					<li>Decorator-based route configuration</li>
+					<li>Automatic path parameter, query parameter, and body model mapping and validation</li>
+					<li>Support for automatically generating <a href="http://stateless.co/hal_specification.html">HAL</a> output</li>
+				</ul>
+				<h3 id="model-building-and-validation">Model Building and Validation</h3>
+				<ul>
+					<li>Robust set of decorators for defining models and validation metadata</li>
+					<li>Automatically construct model class instances from JSON objects or POJOs</li>
+					<li>Convert from objects using a different property key casing
+					(e.g. <code>snake_case</code> to <code>camelCase</code>)</li>
+				</ul>
+				<h3 id="misc">Misc</h3>
+				<ul>
+					<li><code>Disposable</code> interface and utilities for managing disposable resources</li>
+					<li>Uses <a href="https://moment.github.io/luxon/">Luxon</a> as a replacement for Date objects</li>
+					<li>Models can be reused between backend NodeJS and frontend TypeScript/JavaScript applications</li>
+					<li><code>Uuid</code> class based on the <a href="https://github.com/kelektiv/node-uuid">uuid</a> library for working with and comparing UUIDs.</li>
+				</ul>
+				<h1 id="core-modules">Core Modules</h1>
+				<ul>
+					<li><strong><a href="modules/_dandi_common.html">@dandi/common</a></strong> 🕸 - Common types and utilities</li>
+					<li><strong><a href="modules/_dandi_config.html">@dandi/config</a></strong> 🕸 - Configuration services</li>
+					<li><strong><a href="modules/_dandi_core.html">@dandi/core</a></strong> 🕸 - Dependency Injection</li>
+					<li><strong><a href="modules/_dandi_core_logging.html">@dandi/core/logging</a></strong> 🕸 - Core logging and configuration</li>
+					<li><strong><a href="modules/_dandi_core_node.html">@dandi/core-node</a></strong> - Additional DI utilities specific to NodeJS</li>
+					<li><strong><a href="modules/_dandi_data.html">@dandi/data</a></strong> 🕸 - Base types and utilities for working with data services</li>
+					<li><strong><a href="modules/_dandi_hal.html">@dandi/hal</a></strong> - 🕸 - Model decorators, basic types and utilities for supporting HAL</li>
+					<li><strong><a href="modules/_dandi_logging.html">@dandi/logging</a></strong> - 🕸 - Additional logging utilities for logging and logging configuration</li>
+					<li><strong><a href="modules/_dandi_model.html">@dandi/model</a></strong> 🕸 - Model decorators</li>
+					<li><strong><a href="modules/_dandi_model_builder.html">@dandi/model-builder</a></strong> 🕸 - Utilities for dynamically constructing and validating models</li>
+					<li><strong><a href="modules/_dandi_mvc.html">@dandi/mvc</a></strong> - MVC decorators and base utilities (not specific to Express)</li>
+					<li><strong><a href="modules/_dandi_mvc_hal.html">@dandi/mvc-hal</a></strong> - Supports rendering HAL JSON from existing <code>@dandi/mvc</code> controllers</li>
+					<li><strong><a href="modules/_dandi_mvc_view.html">@dandi/mvc-view</a></strong> - Use <code>@dandi/mvc</code> with your favorite templating engine</li>
+				</ul>
+				<h1 id="3rd-party-integration-modules">3rd Party Integration Modules</h1>
+				<ul>
+					<li><strong><a href="modules/_dandi_contrib_aws_lambda.html">@dandi-contrib/aws-lambda</a></strong> Helpers for using <code>@dandi/core</code> with AWS Lambda</li>
+					<li><strong><a href="modules/_dandi_contrib_config_aws_ssm.html">@dandi-contrib/config-aws-ssm</a></strong> - <code>@dandi/config</code> client for AWS SSM Parameter Store</li>
+					<li><strong><a href="modules/_dandi_contrib_data_pg.html">@dandi-contrib/data-pg</a></strong> - <code>@dandi/data</code> client implementations for Postgres</li>
+					<li><strong><a href="modules/_dandi_contrib_mvc_auth_firebase.html">@dandi-contrib/mvc-auth-firebase</a></strong> - Google Firebase Authorization service implementation for <code>@dandi/mvc</code></li>
+					<li><strong><a href="modules/_dandi_contrib_mvc_express.html">@dandi-contrib/mvc-express</a></strong> - Express-specific <code>@dandi/mvc</code> service implementations</li>
+					<li><strong><a href="modules/_dandi_contrib_mvc_view_ejs.html">@dandi-contrib/mvc-view-ejs</a></strong> - <a href="https://ejs.co">EJS</a> implementation for <code>@dandi/mvc-view</code></li>
+					<li><strong><a href="modules/_dandi_contrib_mvc_view_pug.html">@dandi-contrib/mvc-view-pug</a></strong> - <a href="https://pugjs.org">Pug</a> implementation for <code>@dandi/mvc-view</code></li>
+				</ul>
+				<p>🕸 - web browser compatible/no NodeJS-specific dependencies</p>
+				<h1 id="examples">Examples</h1>
+				<p><a href="./_examples/simple-express-rest-api">Simple Express REST API</a> - An
+					implementation of a very simple REST API using <code>@dandi</code>
+					<a href="./_examples/simple-console">Simple Console</a> - A simple console
+				application demonstrating using <code>@dandi</code> with <code>commander</code></p>
+			</div>
+		</div>
+		<div class="col-4 col-menu menu-sticky-wrap menu-highlight">
+			<nav class="tsd-navigation primary">
+				<ul>
+					<li class="globals  ">
+						<a href="globals.html"><em>Globals</em></a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_contrib_aws_lambda.html">@dandi-<wbr>contrib/aws-<wbr>lambda</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_contrib_config_aws_ssm.html">@dandi-<wbr>contrib/config-<wbr>aws-<wbr>ssm</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_contrib_data_pg.html">@dandi-<wbr>contrib/data-<wbr>pg</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_contrib_mvc_auth_firebase.html">@dandi-<wbr>contrib/mvc-<wbr>auth-<wbr>firebase</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_contrib_mvc_express.html">@dandi-<wbr>contrib/mvc-<wbr>express</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_contrib_mvc_view_ejs.html">@dandi-<wbr>contrib/mvc-<wbr>view-<wbr>ejs</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_contrib_mvc_view_pug.html">@dandi-<wbr>contrib/mvc-<wbr>view-<wbr>pug</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_cache.html">@dandi/cache</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_common.html">@dandi/common</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_config.html">@dandi/config</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_core.html">@dandi/core</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_core_node.html">@dandi/core-<wbr>node</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_core_logging.html">@dandi/core/logging</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_core_testing.html">@dandi/core/testing</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_data.html">@dandi/data</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_hal.html">@dandi/hal</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_logging.html">@dandi/logging</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_model.html">@dandi/model</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_model_builder.html">@dandi/model-<wbr>builder</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_mvc.html">@dandi/mvc</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_mvc_hal.html">@dandi/mvc-<wbr>hal</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_mvc_view.html">@dandi/mvc-<wbr>view</a>
+					</li>
+					<li class=" tsd-kind-external-module">
+						<a href="modules/_dandi_mvc_testing.html">@dandi/mvc/testing</a>
+					</li>
+				</ul>
+			</nav>
+			<nav class="tsd-navigation secondary menu-sticky">
+				<ul class="before-current">
+				</ul>
+			</nav>
+		</div>
+	</div>
+</div>
+<footer class="with-border-bottom">
+	<div class="container">
+		<h2>Legend</h2>
+		<div class="tsd-legend-group">
+			<ul class="tsd-legend">
+				<li class="tsd-kind-module"><span class="tsd-kind-icon">Module</span></li>
+				<li class="tsd-kind-object-literal"><span class="tsd-kind-icon">Object literal</span></li>
+				<li class="tsd-kind-variable"><span class="tsd-kind-icon">Variable</span></li>
+				<li class="tsd-kind-function"><span class="tsd-kind-icon">Function</span></li>
+				<li class="tsd-kind-function tsd-has-type-parameter"><span class="tsd-kind-icon">Function with type parameter</span></li>
+				<li class="tsd-kind-index-signature"><span class="tsd-kind-icon">Index signature</span></li>
+				<li class="tsd-kind-type-alias"><span class="tsd-kind-icon">Type alias</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-enum"><span class="tsd-kind-icon">Enumeration</span></li>
+				<li class="tsd-kind-enum-member"><span class="tsd-kind-icon">Enumeration member</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-enum"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-enum"><span class="tsd-kind-icon">Method</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-interface"><span class="tsd-kind-icon">Interface</span></li>
+				<li class="tsd-kind-interface tsd-has-type-parameter"><span class="tsd-kind-icon">Interface with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-interface"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-interface"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-interface"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-interface"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-class"><span class="tsd-kind-icon">Class</span></li>
+				<li class="tsd-kind-class tsd-has-type-parameter"><span class="tsd-kind-icon">Class with type parameter</span></li>
+				<li class="tsd-kind-constructor tsd-parent-kind-class"><span class="tsd-kind-icon">Constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class"><span class="tsd-kind-icon">Property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class"><span class="tsd-kind-icon">Method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class"><span class="tsd-kind-icon">Accessor</span></li>
+				<li class="tsd-kind-index-signature tsd-parent-kind-class"><span class="tsd-kind-icon">Index signature</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-constructor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited constructor</span></li>
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-inherited"><span class="tsd-kind-icon">Inherited accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-protected"><span class="tsd-kind-icon">Protected accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private property</span></li>
+				<li class="tsd-kind-method tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private method</span></li>
+				<li class="tsd-kind-accessor tsd-parent-kind-class tsd-is-private"><span class="tsd-kind-icon">Private accessor</span></li>
+			</ul>
+			<ul class="tsd-legend">
+				<li class="tsd-kind-property tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static property</span></li>
+				<li class="tsd-kind-call-signature tsd-parent-kind-class tsd-is-static"><span class="tsd-kind-icon">Static method</span></li>
+			</ul>
+		</div>
+	</div>
+</footer>
+<div class="container tsd-generator">
+	<p>Generated using <a href="http://typedoc.org/" target="_blank">TypeDoc</a></p>
+</div>
+<div class="overlay"></div>
+<script src="assets/js/main.js"></script>
+<script>if (location.protocol == 'file:') document.write('<script src="assets/js/search.js"><' + '/script>');</script>
+</body>
+</html>
