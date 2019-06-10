@@ -1,5 +1,4 @@
 import { Constructor, Url, Uuid } from '@dandi/common'
-import { DbQueryable } from '@dandi/data'
 import { DataPropertyMetadata, ModelUtil } from '@dandi/model'
 import { ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder'
 

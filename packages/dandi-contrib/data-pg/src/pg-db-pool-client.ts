@@ -1,24 +1,24 @@
 import { Disposable } from '@dandi/common'
-import { InjectionToken, Provider } from '@dandi/core'
-import { PoolClient } from 'pg'
+import { Provider } from '@dandi/core'
+import { PoolClient, QueryResult } from 'pg'
 
-import { localOpinionatedToken } from './local-token'
 import { PgDbPool } from './pg-db-pool'
 import { PgDbQueryableClient } from './pg-db-queryable'
 
-export interface PgDbPoolClient extends Disposable, PgDbQueryableClient {}
+export class PgDbPoolClient implements Disposable, PgDbQueryableClient {
+  constructor(private readonly client: PoolClient) {}
 
-export const PgDbPoolClient: InjectionToken<PgDbPoolClient> = localOpinionatedToken('PgDbPoolClient', {
-  multi: false,
-  singleton: false,
-})
+  public query(cmd: string, args: any[]): Promise<QueryResult> {
+    return this.client.query(cmd, args)
+  }
+
+  public dispose(): void | Promise<void> {
+    this.client.release()
+  }
+}
 
 export async function poolClientFactory(pool: PgDbPool): Promise<PgDbPoolClient> {
-  const client = await pool.connect()
-  if (Disposable.isDisposable(client)) {
-    return client
-  }
-  return Disposable.makeDisposable<PoolClient>(client, () => client.release())
+  return new PgDbPoolClient(await pool.connect())
 }
 
 export const POOL_CLIENT_PROVIDER: Provider<PgDbPoolClient> = {
