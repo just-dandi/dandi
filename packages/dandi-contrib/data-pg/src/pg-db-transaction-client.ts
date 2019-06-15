@@ -26,6 +26,8 @@ enum TransactionAction {
   rollback = 'ROLLBACK',
 }
 
+type TransactionQueryFn = (client: PgDbPoolClient) => Promise<any>
+
 const TRANSITIONS = {
   [TransactionAction.begin]: TransactionState.beginning,
   [TransactionAction.commit]: TransactionState.committing,
@@ -73,15 +75,15 @@ export class PgDbTransactionClient extends PgDbQueryableBase<PgDbPoolClient> imp
   }
 
   public query(cmd: string, ...args: any[]): Promise<any[]> {
-    return this.transactionQuery(this.baseQuery, cmd, args)
+    return this.transactionQuery(client => this.baseQuery(client, cmd, args))
   }
 
   public queryModel<T>(model: Constructor<T>, cmd: string, ...args: any[]): Promise<T[]> {
-    return this.transactionQuery(this.baseQueryModel, model, cmd, args)
+    return this.transactionQuery(client => this.baseQueryModel(client, model, cmd, args))
   }
 
   public async queryModelSingle<T>(model: Constructor<T>, cmd: string, ...args: any[]): Promise<T> {
-    return this.transactionQuery(this.baseQueryModelSingle, model, cmd, args)
+    return this.transactionQuery(client => this.baseQueryModelSingle(client, model, cmd, args))
   }
 
   public async rollback(err?: Error): Promise<void> {
@@ -132,11 +134,11 @@ export class PgDbTransactionClient extends PgDbQueryableBase<PgDbPoolClient> imp
     }
   }
 
-  private async transactionQuery(queryFn: Function, ...queryArgs: any[]): Promise<any> {
+  private async transactionQuery(queryFn: TransactionQueryFn): Promise<any> {
     return await this.mutex.runLocked(async (lockedClient) => {
       await this.safeBeginTransaction(lockedClient)
       try {
-        return await queryFn.call(this, lockedClient, ...queryArgs)
+        return await queryFn.call(this, lockedClient)
       } catch (err) {
         const rollback = this.rollback()
         lockedClient.dispose('query error')

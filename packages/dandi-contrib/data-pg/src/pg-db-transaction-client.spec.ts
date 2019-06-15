@@ -116,9 +116,12 @@ describe('PgDbTransactionClient', function() {
     it('calls through to baseQueryModel', async function() {
       await this.transactionClient.queryModel(TestModel, 'SELECT foo FROM bar WHERE id = $1', 1)
 
-      expect(this.transactionClient.baseQueryModel).to.have.been
-        .calledOnce
-        .calledWithExactly(this.client, TestModel, 'SELECT foo FROM bar WHERE id = $1', [1])
+      expect(this.transactionClient.baseQueryModel).to.have.been.calledOnce
+      const call = this.transactionClient.baseQueryModel.firstCall
+      const args = call.args
+      expect(args[1]).to.equal(TestModel)
+      expect(args[2]).to.equal('SELECT foo FROM bar WHERE id = $1')
+      expect(args[3]).to.deep.equal([1])
     })
 
   })
@@ -134,9 +137,12 @@ describe('PgDbTransactionClient', function() {
     it('calls through to baseQueryModelSingle', async function() {
       await this.transactionClient.queryModelSingle(TestModel, 'SELECT foo FROM bar WHERE id = $1', 1)
 
-      expect(this.transactionClient.baseQueryModelSingle).to.have.been
-        .calledOnce
-        .calledWithExactly(this.client, TestModel, 'SELECT foo FROM bar WHERE id = $1', [1])
+      expect(this.transactionClient.baseQueryModel).to.have.been.calledOnce
+      const call = this.transactionClient.baseQueryModel.firstCall
+      const args = call.args
+      expect(args[1]).to.equal(TestModel)
+      expect(args[2]).to.equal('SELECT foo FROM bar WHERE id = $1')
+      expect(args[3]).to.deep.equal([1])
     })
 
   })
