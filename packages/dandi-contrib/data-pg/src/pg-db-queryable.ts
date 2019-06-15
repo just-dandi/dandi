@@ -44,7 +44,7 @@ export class PgDbQueryableBase<TClient extends PgDbQueryableClient> {
     return result.map((item) => this.modelBuilder.constructModel(model, item, this.modelBuilderOptions))
   }
 
-  protected async baseQueryModelSingle<T>(client: TClient, model: Constructor<T>, cmd: string, ...args: any[]): Promise<T> {
+  protected async baseQueryModelSingle<T>(client: TClient, model: Constructor<T>, cmd: string, args: any[]): Promise<T> {
     const result = await this.baseQueryModel(client, model, cmd, args)
     if (!result || !result.length) {
       return undefined

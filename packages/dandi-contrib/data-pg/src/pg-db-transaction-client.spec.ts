@@ -137,8 +137,8 @@ describe('PgDbTransactionClient', function() {
     it('calls through to baseQueryModelSingle', async function() {
       await this.transactionClient.queryModelSingle(TestModel, 'SELECT foo FROM bar WHERE id = $1', 1)
 
-      expect(this.transactionClient.baseQueryModel).to.have.been.calledOnce
-      const call = this.transactionClient.baseQueryModel.firstCall
+      expect(this.transactionClient.baseQueryModelSingle).to.have.been.calledOnce
+      const call = this.transactionClient.baseQueryModelSingle.firstCall
       const args = call.args
       expect(args[1]).to.equal(TestModel)
       expect(args[2]).to.equal('SELECT foo FROM bar WHERE id = $1')
