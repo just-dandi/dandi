@@ -1,5 +1,4 @@
-import { PgDbPool, poolClientFactory } from '@dandi-contrib/data-pg'
-import { Disposable } from '@dandi/common'
+import { PgDbPool, PgDbPoolClient, poolClientFactory } from '@dandi-contrib/data-pg'
 
 import { expect } from 'chai'
 import { createStubInstance, stub } from 'sinon'
@@ -15,52 +14,66 @@ describe('poolClientFactory', function() {
     const client = {}
     this.pool.connect.resolves(client)
 
-    expect(await poolClientFactory(this.pool)).to.equal(client)
-
-  })
-
-  it('returns the client directly if it is already a disposable', async function() {
-
-    const client = {
-      dispose: stub(),
-    }
-    const makeDisposable = stub(Disposable, 'makeDisposable')
-
-    this.pool.connect.resolves(client)
-
-    expect(await poolClientFactory(this.pool)).to.equal(client)
-    expect(Disposable.makeDisposable).to.not.have.been.called
-
-    makeDisposable.restore()
-
-  })
-
-  it('makes the client disposable by adding a dispose() function', async function() {
-
-    const client: any = {
-      release: stub(),
-    }
-
-    this.pool.connect.resolves(client)
-
     await poolClientFactory(this.pool)
 
-    expect(client.dispose).to.be.a('function')
+    expect(this.pool.connect).to.have.been.calledOnce
 
   })
 
-  it(`the added dispose() function calls the client's release() function`, async function() {
+  it('returns an instance of PgDbPoolClient', async function() {
 
-    const client: any = {
+    const client = {}
+    this.pool.connect.resolves(client)
+    expect(await poolClientFactory(this.pool)).to.be.instanceof(PgDbPoolClient)
+
+  })
+
+})
+
+describe('PgDbPoolClient', function() {
+
+  beforeEach(function() {
+    this.poolClient = {
+      query: stub(),
       release: stub(),
     }
-    this.pool.connect.resolves(client)
+    this.client = new PgDbPoolClient(this.poolClient)
+  })
 
-    await poolClientFactory(this.pool)
+  describe('query', function() {
 
-    await client.dispose()
+    it('passes the cmd and args params through to the pg PoolClient instance', function() {
 
-    expect(client.release).to.have.been.called
+      const query = 'SELECT foo FROM bar WHERE id = $1'
+      const args = ['1']
+      this.client.query(query, args)
+
+      expect(this.poolClient.query).to.have.been.calledOnceWithExactly(query, args)
+
+    })
+
+    it('returns the result from the pg PoolClient instance', async function() {
+
+      const query = 'SELECT foo FROM bar WHERE id = $1'
+      const args = ['1']
+      const result = { id: 1 }
+      this.poolClient.query.resolves(result)
+
+      await expect(this.poolClient.query(query, args)).to.become(result)
+
+    })
+
+  })
+
+  describe('dispose', function() {
+
+    it('calls the release() function of the pg PoolClient instance', function() {
+
+      this.client.dispose()
+
+      expect(this.poolClient.release).to.have.been.calledOnce
+
+    })
 
   })
 

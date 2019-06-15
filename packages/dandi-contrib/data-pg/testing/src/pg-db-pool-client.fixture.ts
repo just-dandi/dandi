@@ -1,11 +1,11 @@
 import { PgDbPoolClient } from '@dandi-contrib/data-pg'
-import { Options, Provider } from '@dandi/core'
+import { Options } from '@dandi/core'
 import { TestProvider } from '@dandi/core/testing'
 
 import { QueryResult } from 'pg'
 import { stub } from 'sinon'
 
-export class PgDbPoolClientFixture implements PgDbPoolClient {
+export class PgDbPoolClientFixture extends PgDbPoolClient {
 
   public static result(result: Options<QueryResult> | Error): void {
     this.currentResult = result
@@ -22,6 +22,7 @@ export class PgDbPoolClientFixture implements PgDbPoolClient {
     return {
       provide: PgDbPoolClient,
       useFactory: () => new PgDbPoolClientFixture(),
+      singleton,
       underTest: !singleton,
     }
   }
@@ -29,6 +30,7 @@ export class PgDbPoolClientFixture implements PgDbPoolClient {
   private static currentResult: Options<QueryResult> | Error
 
   constructor() {
+    super(undefined)
     stub(this, 'query').callsFake(() => {
       if (PgDbPoolClientFixture.currentResult instanceof Error) {
         return Promise.reject(PgDbPoolClientFixture.currentResult)
@@ -36,14 +38,6 @@ export class PgDbPoolClientFixture implements PgDbPoolClient {
       return Promise.resolve(PgDbPoolClientFixture.currentResult)
     })
     stub(this, 'dispose')
-  }
-
-  public query(cmd: string, args: any[]): Promise<QueryResult> {
-    return undefined
-  }
-
-  public dispose(reason: string): void | Promise<void> {
-    return undefined
   }
 
 }

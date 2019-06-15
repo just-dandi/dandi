@@ -47,7 +47,7 @@ export class AsyncMutex<T extends object> implements Disposable {
     }
   }
 
-  public async runLocked<TResult>(fn: (lock?: LockedObject<T>) => Promise<TResult>) {
+  public async runLocked<TResult>(fn: (lock?: LockedObject<T>) => Promise<TResult>): Promise<TResult> {
     return Disposable.useAsync(this.getLock(), fn)
   }
 
