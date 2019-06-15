@@ -57,7 +57,7 @@ export class TestHarness implements TestInjector, Disposable {
     let repo: Repository
     let globalRepoStub: SinonStub
 
-    // eslint-disable-next-line typescript/class-name-casing
+    // eslint-disable-next-line @typescript-eslint/class-name-casing
     class __TestSanityChecker {}
 
     beforeEach(function() {
@@ -108,7 +108,7 @@ export class TestHarness implements TestInjector, Disposable {
     }
   }
 
-  private singletonizeProviders(providers: any[]) {
+  private singletonizeProviders(providers: any[]): Provider<any>[] {
     return providers.map(provider => {
       // allow forcing singletons for providers that don't allow singletons
       if (!isFactoryProvider(provider) || provider.singleton || (provider as TestProvider<any>).underTest) {
