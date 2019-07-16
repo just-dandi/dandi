@@ -1,16 +1,28 @@
 language: node_js
 
-cache: npm
+cache:
+  directories:
+    - node_modules
+    - builder/node_modules
+    - packages/dandi/core/node_modules
+    - packages/dandi/logging/node_modules
+    - packages/dandi/model-builder/node_modules
+    - packages/dandi-contrib/aws-lambda/node_modules
+    - packages/dandi-contrib/config-aws-ssm/node_modules
+    - packages/dandi-contrib/data-pg/node_modules
+    - packages/dandi-contrib/mvc-auth-firebase/node_modules
+    - packages/dandi-contrib/mvc-express/node_modules
+    - packages/dandi-contrib/mvc-view-ejs/node_modules
+    - packages/dandi-contrib/mvc-view-pug/node_modules
 
 install:
   - "npm install"
   - "tsc --version"
   - "ts-node --version"
+  - "pushd builder && npm install && popd"
   - "npm run install-packages"
 
 script:
-  - "npm run build"
-
-after_success:
   - "npm run coverage"
   - "npm run coverage-report"
+  - "npm run build"

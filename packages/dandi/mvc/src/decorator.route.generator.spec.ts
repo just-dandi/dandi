@@ -1,4 +1,5 @@
-import { Logger, NoopLogger, Repository } from '@dandi/core'
+import { Repository } from '@dandi/core'
+import { stubHarness } from '@dandi/core/testing'
 import {
   Authorized,
   Controller,
@@ -12,120 +13,107 @@ import {
   IsAuthorized,
   Route,
 } from '@dandi/mvc'
+
 import { expect } from 'chai'
-import { SinonStubbedInstance, createStubInstance } from 'sinon'
 
-@Controller('/decorator-route-generator/a')
-@Cors()
-class TestControllerA {
-  @HttpGet('testA')
-  @HttpPost('/testA')
-  public testMethod() {}
-}
-@Controller('/decorator-route-generator/b')
-@Cors({})
-class TestControllerB {
-  @HttpPut('testB')
-  public testMethod() {}
-}
-@Controller('decorator-route-generator/c')
-@Authorized()
-class TestControllerC {
-  @HttpDelete('testC')
+describe('DecoratorRouteGenerator', function() {
+
+  @Controller('/decorator-route-generator/a')
   @Cors()
-  public testMethod() {}
-}
-@Controller('/decorator-route-generator/d/')
-class TestControllerD {
-  @HttpGet('/testD')
-  @Authorized()
+  class TestControllerA {
+    @HttpGet('testA')
+    @HttpPost('/testA')
+    public testMethod() {}
+  }
+  @Controller('/decorator-route-generator/b')
   @Cors({})
-  public testMethod() {}
-}
-
-describe('DecoratorRouteGenerator', () => {
-  let logger: SinonStubbedInstance<Logger>
-  let generator: DecoratorRouteGenerator
-  let repository: Repository
-  let routes: Route[]
-  let aGet: Route
-  let aPost: Route
-  let bPut: Route
-  let cDelete: Route
-  let dGet: Route
-
-  function findRoute(path, httpMethod): Route {
-    return routes.find(
-      (route) => route.path === `/decorator-route-generator${path}` && route.httpMethod === httpMethod,
-    )
+  class TestControllerB {
+    @HttpPut('testB')
+    public testMethod() {}
+  }
+  @Controller('decorator-route-generator/c')
+  @Authorized()
+  class TestControllerC {
+    @HttpDelete('testC')
+    @Cors()
+    public testMethod() {}
+  }
+  @Controller('/decorator-route-generator/d/')
+  class TestControllerD {
+    @HttpGet('/testD')
+    @Authorized()
+    @Cors({})
+    public testMethod() {}
   }
 
-  beforeEach(() => {
-    logger = createStubInstance(NoopLogger)
-    generator = new DecoratorRouteGenerator(logger)
-    repository = Repository.for(Controller)
+  const harness = stubHarness(DecoratorRouteGenerator)
 
-    routes = generator.generateRoutes().filter((route: Route) => route.path.startsWith('/decorator-route-generator/'))
-    aGet = findRoute('/a/testA', HttpMethod.get)
-    aPost = findRoute('/a/testA', HttpMethod.post)
-    bPut = findRoute('/b/testB', HttpMethod.put)
-    cDelete = findRoute('/c/testC', HttpMethod.delete)
-    dGet = findRoute('/d/testD', HttpMethod.get)
+  beforeEach(async function() {
+    this.generator = await harness.inject(DecoratorRouteGenerator)
+    this.repository = Repository.for(Controller)
+
+    this.findRoute = (path, httpMethod): Route => {
+      return this.routes.find(
+        (route) => route.path === `/decorator-route-generator${path}` && route.httpMethod === httpMethod,
+      )
+    }
+
+    this.routes = this.generator.generateRoutes().filter((route: Route) => route.path.startsWith('/decorator-route-generator/'))
+    this.aGet = this.findRoute('/a/testA', HttpMethod.get)
+    this.aPost = this.findRoute('/a/testA', HttpMethod.post)
+    this.bPut = this.findRoute('/b/testB', HttpMethod.put)
+    this.cDelete = this.findRoute('/c/testC', HttpMethod.delete)
+    this.dGet = this.findRoute('/d/testD', HttpMethod.get)
   })
-  afterEach(() => {
-    logger = undefined
-    generator = undefined
-    // (repository as any).providers.clear();
-  })
 
-  describe('generateRoutes', () => {
-    it('generates a route for each http method configured for each method in each controller', () => {
-      expect(routes.length).to.equal(5)
-      expect(aGet).to.exist
-      expect(aPost).to.exist
-      expect(bPut).to.exist
-      expect(cDelete).to.exist
-      expect(dGet).to.exist
+  describe('generateRoutes', function() {
+    it('generates a route for each http method configured for each method in each controller', function() {
+      expect(this.routes.length).to.equal(5)
+      expect(this.aGet).to.exist
+      expect(this.aPost).to.exist
+      expect(this.bPut).to.exist
+      expect(this.cDelete).to.exist
+      expect(this.dGet).to.exist
     })
 
-    describe('route paths', () => {
-      it('adds forward slashes between controller and method paths if they are missing', () => {
-        expect(aGet).to.exist
-        expect(bPut).to.exist
-        expect(cDelete).to.exist
+    describe('route paths', function() {
+      it('adds forward slashes between controller and method paths if they are missing', function() {
+        expect(this.aGet).to.exist
+        expect(this.bPut).to.exist
+        expect(this.cDelete).to.exist
       })
-      it('dedupes slashes between controller and paths', () => {
-        expect(dGet).to.exist
+      it('dedupes slashes between controller and paths', function() {
+        expect(this.dGet).to.exist
       })
     })
 
-    describe('authorization', () => {
-      it('does not include authorization info if neither the controller nor method define it', () => {
-        expect(aGet.authorization).to.be.undefined
-        expect(aPost.authorization).to.be.undefined
+    describe('authorization', function() {
+      it('does not include authorization info if neither the controller nor method define it', function() {
+        expect(this.aGet.authorization).to.be.undefined
+        expect(this.aPost.authorization).to.be.undefined
       })
-      it('includes authorization from the controller', () => {
-        expect(cDelete.authorization).not.to.be.undefined
-        expect(cDelete.authorization).to.deep.equal([IsAuthorized])
+      it('includes authorization from the controller', function() {
+        expect(this.cDelete.authorization).not.to.be.undefined
+        expect(this.cDelete.authorization).to.deep.equal([IsAuthorized])
       })
-      it('includes authorization from the method', () => {
-        expect(dGet.authorization).not.to.be.undefined
-        expect(dGet.authorization).to.deep.equal([IsAuthorized])
+      it('includes authorization from the method', function() {
+        expect(this.dGet.authorization).not.to.be.undefined
+        expect(this.dGet.authorization).to.deep.equal([IsAuthorized])
       })
     })
 
-    describe('cors', () => {
-      it('gets simple cors config from the controller', () => {
-        expect(aGet.cors).to.be.true
+    describe('cors', function() {
+      it('gets simple cors config from the controller', function() {
+        expect(this.aGet.cors).to.be.true
       })
-      it('gets specific cors config from the controller', () => {
-        expect(bPut.cors).to.deep.equal({})
+      it('gets specific cors config from the controller', function() {
+        expect(this.bPut.cors).to.deep.equal({})
       })
-      it('gets simple cors config from the method', () => {
-        expect(cDelete.cors).to.be.true
+      it('gets simple cors config from the method', function() {
+        expect(this.cDelete.cors).to.be.true
       })
-      it('gets specific cors config from the method', () => {
-        expect(dGet.cors).to.deep.equal({})
+      it('gets specific cors config from the method', function() {
+        expect(this.dGet.cors).to.deep.equal({})
       })
     })
   })

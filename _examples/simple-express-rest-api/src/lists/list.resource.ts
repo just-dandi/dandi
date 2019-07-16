@@ -10,5 +10,5 @@ export class ListResource extends List {
   }
 
   @ListRelation(Task)
-  public tasks: Task[];
+  public tasks: Task[]
 }

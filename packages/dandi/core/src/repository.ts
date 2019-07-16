@@ -1,27 +1,31 @@
 import { Constructor, Disposable, InvalidDisposeTargetError } from '@dandi/common'
 
-import { globalSymbol } from './global.symbol'
-import { InjectionToken } from './injection.token'
-import { OpinionatedProviderOptionsConflictError, OpinionatedToken } from './opinionated.token'
+import { globalSymbol } from './global-symbol'
+import { InjectionToken } from './injection-token'
+import { OpinionatedProviderOptionsConflictError, OpinionatedToken } from './opinionated-token'
 import { Provider, ProviderOptions } from './provider'
-import { ProviderTypeError } from './provider.type.error'
-import { isProvider } from './provider.util'
+import { ProviderTypeError } from './provider-type-error'
+import { isProvider } from './provider-util'
 import {
   ConflictingRegistrationOptionsError,
   InvalidRegistrationTargetError,
   InvalidRepositoryContextError,
-} from './repository.errors'
+} from './repository-errors'
+import { RepositoryRegistrationSource } from './repository-registration'
 
 const REPOSITORIES = new Map<any, Repository>()
 
 export interface RegisterOptions<T> extends ProviderOptions<T> {
-  provide?: InjectionToken<T>;
+  provide?: InjectionToken<T>
 }
 
-export type RepositoryEntry<T> = Provider<T> | Array<Provider<T>>
+export type RepositoryEntry<T> = Provider<T> | Set<Provider<T>>
 
 const GLOBAL_CONTEXT = globalSymbol('Repository:GLOBAL_CONTEXT')
 
+/**
+ * Contains mappings of injection tokens to providers, and stores instances of singletons.
+ */
 export class Repository<TContext = any> implements Disposable {
   public static for(context: any): Repository {
     if (!context) {
@@ -47,13 +51,13 @@ export class Repository<TContext = any> implements Disposable {
     return this._allowSingletons
   }
 
-  private readonly providers = new Map<InjectionToken<any>, RepositoryEntry<any>>();
+  private readonly providers = new Map<InjectionToken<any>, RepositoryEntry<any>>()
 
-  private readonly singletons = new Map<Provider<any>, any>();
+  private readonly singletons = new Map<Provider<any>, any>()
 
   private constructor(private context: any, private readonly _allowSingletons: boolean) {}
 
-  public register<T>(target: Constructor<T> | Provider<T>, options?: RegisterOptions<T>): this {
+  public register<T>(source: RepositoryRegistrationSource, target: Constructor<T> | Provider<T>, options?: RegisterOptions<T>): this {
     if (isProvider(target)) {
       this.registerProvider(target)
       return this
@@ -78,11 +82,12 @@ export class Repository<TContext = any> implements Disposable {
       return this
     }
 
-    throw new InvalidRegistrationTargetError(target, options)
+    throw new InvalidRegistrationTargetError(source, target, options)
   }
 
-  public registerProviders(...providers: Provider<any>[]): void {
+  public registerProviders(...providers: Provider<any>[]): this {
     providers.forEach((provider) => this.registerProvider(provider))
+    return this
   }
 
   public get<T>(token: InjectionToken<T>): RepositoryEntry<T> {
@@ -135,10 +140,10 @@ export class Repository<TContext = any> implements Disposable {
       })
     }
 
-    let entry: Provider<T> | Array<Provider<T>> = this.providers.get(provider.provide)
+    let entry: RepositoryEntry<T> = this.providers.get(provider.provide)
 
     if (entry) {
-      const entryIsMulti = entry && Array.isArray(entry)
+      const entryIsMulti = entry instanceof Set
 
       if (provider.multi && !entryIsMulti) {
         throw new ConflictingRegistrationOptionsError(
@@ -158,12 +163,11 @@ export class Repository<TContext = any> implements Disposable {
     }
 
     if (provider.multi) {
-      if (entry) {
-        (entry as Array<Provider<T>>).push(provider)
-      } else {
-        entry = [provider] as Array<Provider<T>>
+      if (!entry) {
+        entry = new Set<Provider<T>>()
         this.providers.set(provider.provide, entry)
       }
+      (entry as Set<Provider<T>>).add(provider)
     } else {
       this.providers.set(provider.provide, provider)
     }

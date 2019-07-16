@@ -6,7 +6,7 @@ import { TypeConversionError, TypeConverter } from './type.converter'
 
 @Injectable(TypeConverter)
 export class StringTypeConverter implements TypeConverter<String> {
-  public readonly type = String;
+  public readonly type = String
   public convert(obj: string): string {
     return obj
   }
@@ -14,7 +14,7 @@ export class StringTypeConverter implements TypeConverter<String> {
 
 @Injectable(TypeConverter)
 export class NumberTypeConverter implements TypeConverter<Number> {
-  public readonly type = Number;
+  public readonly type = Number
   public convert(obj: string): number {
     const result = parseInt(obj, 10)
     if (isNaN(result)) {
@@ -26,7 +26,7 @@ export class NumberTypeConverter implements TypeConverter<Number> {
 
 @Injectable(TypeConverter)
 export class BooleanTypeConverter implements TypeConverter<Boolean> {
-  public readonly type = Boolean;
+  public readonly type = Boolean
   public convert(obj: any): boolean {
     if (obj === true || obj === false) {
       return obj
@@ -51,7 +51,7 @@ export class BooleanTypeConverter implements TypeConverter<Boolean> {
 
 @Injectable()
 export class PrimitiveTypeConverter {
-  private primitive = new Map<Constructor<any>, TypeConverter<any>>();
+  private primitive = new Map<Constructor<any>, TypeConverter<any>>()
 
   constructor(@Inject(TypeConverter) converters: TypeConverter<any>[]) {
     if (converters) {

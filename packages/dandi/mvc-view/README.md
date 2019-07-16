@@ -7,12 +7,12 @@
 Use `MvcViewModule` when constructing your application's container to map file extensions to view engines:
 
 ```js
-import { Container } from '@dandi/core'
+import { DandiApplication } from '@dandi/core'
 import { MvcViewModule } from '@dandi/mvc-view'
 import { EjsViewEngine } from '@dandi-contrib/mvc-view-ejs'
 import { PugViewEngine } from '@dandi-contrib/mvc-view-pug'
 
-new Container({
+new DandiApplication({
   providers: [
     MvcViewModule
       .engine('ejs', EjsViewEngine)

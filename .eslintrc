@@ -1,7 +1,9 @@
 {
-  "extends": "eslint:recommended",
-  "parser": "typescript-eslint-parser",
-  "plugins": ["import", "typescript", "mocha"],
+  "extends": [
+    "eslint:recommended"
+  ],
+  "parser": "@typescript-eslint/parser",
+  "plugins": ["import", "@typescript-eslint", "mocha"],
   "parserOptions": {
     "ecmaVersion": 8
   },
@@ -120,9 +122,12 @@
 
     "import/order": ["error", { "newlines-between":  "always-and-inside-groups" }],
 
-    "typescript/class-name-casing": ["error"],
-    "typescript/explicit-function-return-type": ["error", { "allowExpressions":  true }],
-    "typescript/generic-type-naming": ["error", "^T(?:[A-Z][a-zA-Z]+)*$"],
-    "typescript/no-unused-vars": ["error"]
+    "@typescript-eslint/class-name-casing": ["error"],
+    "@typescript-eslint/explicit-function-return-type": ["error", { "allowExpressions":  true }],
+    "@typescript-eslint/generic-type-naming": ["error", "^T(?:[A-Z][a-zA-Z]+)*$"],
+    "@typescript-eslint/indent": ["error", 2],
+    "@typescript-eslint/no-explicit-any": ["off"],
+    "@typescript-eslint/no-unused-vars": ["error"],
+    "@typescript-eslint/semi": ["error", "never"]
   }
 }

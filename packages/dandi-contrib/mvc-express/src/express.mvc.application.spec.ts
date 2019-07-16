@@ -12,18 +12,22 @@ const TEST_EXPRESS_RESOLVER: any = {
   },
 }
 
-Repository.global.register(TEST_EXPRESS_RESOLVER)
-Repository.global.register({
+const REGISTRATION_SOURCE = {
+  constructor: function ExpressMvcApplicationSpec() {},
+}
+
+Repository.global.register(REGISTRATION_SOURCE, TEST_EXPRESS_RESOLVER)
+Repository.global.register(REGISTRATION_SOURCE, {
   provide: ExpressMvcConfig,
   useValue: {},
 })
-Repository.global.register({
+Repository.global.register(REGISTRATION_SOURCE, {
   provide: RouteGenerator,
   useValue: {
     generateRoutes: stub().returns([]),
   },
 })
-Repository.global.register({
+Repository.global.register(REGISTRATION_SOURCE, {
   provide: RouteInitializer,
   useValue: {},
 })

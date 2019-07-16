@@ -11,10 +11,10 @@ export class TaskRequest extends ModelBase {
 
   @Property(String)
   @Required()
-  public title: string;
+  public title: string
 
   @Property(Uuid)
-  public listId?: Uuid;
+  public listId?: Uuid
 }
 
 export class Task extends TaskRequest {
@@ -29,18 +29,18 @@ export class Task extends TaskRequest {
   @Property(Uuid)
   @Required()
   @ResourceId()
-  public taskId: Uuid;
+  public taskId: Uuid
 
   @Property(Uuid)
   @Required()
   @ResourceId(List, 'list')
-  public listId: Uuid;
+  public listId: Uuid
 
   @Property(Boolean)
-  public completed: boolean;
+  public completed: boolean
 
   @Property(Number)
-  public order: number;
+  public order: number
 }
 
 export class TaskResource extends Task {
@@ -50,5 +50,5 @@ export class TaskResource extends Task {
 
   @Property(List)
   @Relation(List)
-  public list: List;
+  public list: List
 }

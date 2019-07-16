@@ -182,6 +182,11 @@ describe('Disposable', () => {
       expect(stubs.use).to.have.been.calledWith(obj)
     })
 
+    it('resolves a promise and calls the use function with the result', async () => {
+      await Disposable.useAsync(Promise.resolve(obj), stubs.use)
+      expect(stubs.use).to.have.been.calledWith(obj)
+    })
+
     it('returns the result of the use function', async () => {
       const expected = {}
       stubs.use.callsFake(() => new Promise((resolve) => setTimeout(resolve.bind(null, expected), 10)))

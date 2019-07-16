@@ -4,9 +4,9 @@ import { AuthorizationService, AuthorizedUser } from '@dandi/mvc'
 import * as admin from 'firebase-admin'
 import { DateTime } from 'luxon'
 
-import App = admin.app.App;
-import Auth = admin.auth.Auth;
-import UserRecord = admin.auth.UserRecord;
+import App = admin.app.App
+import Auth = admin.auth.Auth
+import UserRecord = admin.auth.UserRecord
 
 import { FirebaseServiceAccount } from './firebase.service.account'
 
@@ -14,7 +14,7 @@ const MILLIS_FACTOR = 1000
 
 @Injectable(AuthorizationService('Bearer'), Singleton)
 export class FirebaseAuthorizationService implements AuthorizationService {
-  private readonly app: App;
+  private readonly app: App
 
   private get auth(): Auth {
     return this.app.auth()

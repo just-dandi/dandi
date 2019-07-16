@@ -8,7 +8,7 @@ describe('@Json()', () => {
   it("sets the json property on a member's metadata", () => {
     class TestClass {
       @Json()
-      public something: any;
+      public something: any
     }
 
     const meta = getMemberMetadata(TestClass, 'something') as DataPropertyMetadata

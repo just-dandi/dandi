@@ -1,16 +1,28 @@
-import { Injectable } from './injectable.decorator'
-import { LogLevel } from './log-level'
+import { Injectable } from './injectable-decorator'
 import { Logger } from './logger'
+import { createLoggerMethodChain, LoggerMethod } from './logger-method'
+
+function nooper(): () => void {
+  return function noop() {}
+}
 
 @Injectable(Logger)
 export class NoopLogger implements Logger {
-  public log(level: LogLevel, ...args: any[]): void {}
 
-  public debug(...args: any[]): void {}
+  public get debug(): LoggerMethod {
+    return createLoggerMethodChain(nooper())
+  }
 
-  public info(...args: any[]): void {}
+  public get info(): LoggerMethod {
+    return createLoggerMethodChain(nooper())
+  }
 
-  public warn(...args: any[]): void {}
+  public get warn(): LoggerMethod {
+    return createLoggerMethodChain(nooper())
+  }
 
-  public error(...args: any[]): void {}
+  public get error(): LoggerMethod {
+    return createLoggerMethodChain(nooper())
+  }
+
 }

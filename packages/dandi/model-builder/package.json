@@ -1,7 +1,7 @@
 {
   "name": "@dandi/model-builder",
   "devDependencies": {
-    "change-case": "^3.0.2"
+    "change-case": "^3.1.0"
   },
   "peerDependencies": {
     "@dandi/common": "*",

@@ -11,13 +11,13 @@ export class DbConnectionInfo extends ModelBase {
   }
 
   @Property(Number)
-  public port: number;
+  public port: number
 
   @Property(String)
-  public host: string;
+  public host: string
 
   @Property(String)
-  public database: string;
+  public database: string
 
   constructor(source?: any) {
     super(source)

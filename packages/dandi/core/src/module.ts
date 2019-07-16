@@ -1,11 +1,11 @@
 import { Constructor, isConstructor } from '@dandi/common'
 
-import { PKG } from './local.token'
+import { PKG } from './local-token'
 import { Provider } from './provider'
-import { isProvider } from './provider.util'
-import { InjectionToken, isInjectionToken } from './injection.token'
+import { isProvider } from './provider-util'
+import { InjectionToken, isInjectionToken } from './injection-token'
 
-export type RegisterableTypes = Constructor<any> | Provider<any> | Array<Constructor<any>> | Array<Provider<any>>
+export type RegisterableTypes = Constructor<any> | Provider<any> | Array<Constructor<any>> | Array<Provider<any>> | Module
 export type Registerable = RegisterableTypes | RegisterableTypes[]
 
 export interface ModuleInfo {
@@ -18,13 +18,13 @@ export interface ModuleInfo {
 const MODULE_INFO_REG = new Map<InjectionToken<any>, ModuleInfo>()
 
 export class Module extends Array<Registerable> {
-  public static readonly MODULE_INFO = Symbol.for(`${PKG}#${Module.name}.MODULE_INFO`);
-  public static readonly MODULE_NAME = Symbol.for(`${PKG}#${Module.name}.MODULE_NAME`);
-  public static readonly PACKAGE = Symbol.for(`${PKG}#${Module.name}.PACKAGE`);
+  public static readonly MODULE_INFO = Symbol.for(`${PKG}#${Module.name}.MODULE_INFO`)
+  public static readonly MODULE_NAME = Symbol.for(`${PKG}#${Module.name}.MODULE_NAME`)
+  public static readonly PACKAGE = Symbol.for(`${PKG}#${Module.name}.PACKAGE`)
 
   public static moduleInfo(target: any): ModuleInfo {
     if (!target) {
-      return null
+      return undefined
     }
     if (isInjectionToken(target) && !isConstructor(target)) {
       return MODULE_INFO_REG.get(target)

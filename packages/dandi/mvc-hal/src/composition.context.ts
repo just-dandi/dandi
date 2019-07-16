@@ -5,11 +5,11 @@ import { SELF_RELATION } from '@dandi/hal'
 export type ParentCompositionContext = { [P in keyof CompositionContext]?: CompositionContext[P] }
 
 export class CompositionContext implements Disposable {
-  public readonly repositories: Repository[];
-  public readonly relStack: string[];
-  public readonly embeddedRels: string[];
-  public readonly repository: Repository;
-  public readonly path: string;
+  public readonly repositories: Repository[]
+  public readonly relStack: string[]
+  public readonly embeddedRels: string[]
+  public readonly repository: Repository
+  public readonly path: string
 
   public static for(rel: string, path: string, embeddedRels: string[]): CompositionContext {
     return new CompositionContext(rel, path, { embeddedRels })

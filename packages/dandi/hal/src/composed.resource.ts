@@ -8,8 +8,8 @@ export interface ComposedLink {
 }
 
 export class ComposedResource<T> implements Jsonable {
-  public readonly links: { [rel: string]: ComposedLink } = {};
-  public readonly embedded: { [rel: string]: ComposedResource<any> | ComposedResource<any>[] } = {};
+  public readonly links: { [rel: string]: ComposedLink } = {}
+  public readonly embedded: { [rel: string]: ComposedResource<any> | ComposedResource<any>[] } = {}
 
   constructor(public readonly entity: T) {}
 

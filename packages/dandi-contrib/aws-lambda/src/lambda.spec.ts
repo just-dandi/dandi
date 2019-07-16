@@ -1,5 +1,5 @@
 import { LambdaErrorHandler } from '@dandi-contrib/aws-lambda'
-import { TestHarness, stubProvider, testHarness } from '@dandi/core-testing'
+import { TestHarness, stubProvider, testHarness } from '@dandi/core/testing'
 import { Context } from 'aws-lambda'
 import { expect } from 'chai'
 import { SinonStubbedInstance, createStubInstance, spy, stub } from 'sinon'
@@ -37,7 +37,7 @@ describe('Lambda', () => {
   TestHarness.scopeGlobalRepository()
 
   class TestHandler implements LambdaHandler<TestEventData> {
-    public static instance: SinonStubbedInstance<LambdaHandler<TestEventData>>;
+    public static instance: SinonStubbedInstance<LambdaHandler<TestEventData>>
 
     constructor() {
       stub(this, 'handleEvent').callsFake(() => {
@@ -77,9 +77,9 @@ describe('Lambda', () => {
     responder = undefined
   })
 
-  describe('standalone (no existing container)', () => {
-    // note: this is the way Lambda will be used in the wild, but there's no way to access the resolver
-    // when it uses its own Container instance. This test only ensures that the call goes all the way through.
+  describe('standalone (no existing application)', () => {
+    // note: this is the way Lambda will be used in the wild, but there's no way to access the injector
+    // when it uses its own application instance. This test only ensures that the call goes all the way through.
     // The rest of the functionality is tested elsewhere in this suite.
 
     beforeEach(async () => {
@@ -116,7 +116,7 @@ describe('Lambda', () => {
     )
 
     beforeEach(async () => {
-      handlerFn = Lambda.handler(TestHandler, harness.container)
+      handlerFn = Lambda.handler(TestHandler, harness.injector)
     })
 
     describe('handler', () => {
@@ -158,7 +158,7 @@ describe('Lambda', () => {
           error = new Error('Your llama is lloose!')
           responder.handleResponse.throws(error)
 
-          handlerFn = Lambda.handler(TestHandler, harness.container)
+          handlerFn = Lambda.handler(TestHandler, harness.injector)
 
           await handlerFn(event, context)
         })
@@ -197,7 +197,7 @@ describe('Lambda', () => {
 
       errorHandler = (await harness.injectStub(LambdaErrorHandler))[0]
 
-      handlerFn = Lambda.handler(TestHandler, harness.container)
+      handlerFn = Lambda.handler(TestHandler, harness.injector)
 
       await handlerFn(event, context)
     })

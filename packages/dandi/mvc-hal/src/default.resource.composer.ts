@@ -1,5 +1,5 @@
-import { Disposable } from '@dandi/common'
-import { Inject, Injectable, Repository, Resolver, ResolverContext } from '@dandi/core'
+import { InvalidAccessError } from '@dandi/common'
+import { Inject, Injectable, Injector, InjectorContext, ResolverContext } from '@dandi/core'
 import {
   ComposedResource,
   ITEMS_RELATION,
@@ -28,16 +28,16 @@ import { CompositionContext } from './composition.context'
 import { InheritedResourceType } from './accessor.resource.id.decorator'
 
 function embedResponseAccess(): MvcResponse {
-  throw new Error(`Response object should not be used during embedding`)
+  throw new InvalidAccessError(`Response object may not be used during embedding`)
 }
 
 @Injectable(ResourceComposer)
 export class DefaultResourceComposer implements ResourceComposer {
   constructor(
-    @Inject(Resolver) private resolver: Resolver,
+    @Inject(Injector) private injector: Injector,
     @Inject(RouteInitializer) private routeInitializer: RouteInitializer,
     @Inject(Routes) private routes: Route[],
-    @Inject(ResolverContext) private resolverContext: ResolverContext<any>,
+    @Inject(InjectorContext) private injectorContext: ResolverContext<any>,
   ) {}
 
   public async compose(resource: any, context: CompositionContext): Promise<ComposedResource<any>> {
@@ -77,7 +77,7 @@ export class DefaultResourceComposer implements ResourceComposer {
     if (context.embeddedRels && context.embeddedRels.length) {
       const embeds = context.embeddedRels.map(async (rel) => {
         if (rel === SELF_RELATION) {
-          throw new Error("Cannot embed 'self' relation")
+          throw new Error('Cannot embed \'self\' relation')
         }
 
         const dotIndex = rel.indexOf('.')
@@ -211,7 +211,7 @@ export class DefaultResourceComposer implements ResourceComposer {
         rt.controllerCtr === accessor.controller &&
         rt.controllerMethod === accessor.method,
     )
-    const ogRequest = (await this.resolver.resolveInContext(this.resolverContext, MvcRequest)).singleValue
+    const ogRequest = (await this.injector.inject(MvcRequest, this.injectorContext)).singleValue
     const requestParams = Object.keys(accessor.paramMap).reduce((params, key) => {
       params[key] = this.getParamValue(resource, meta, relMeta, key, accessor)
       return params
@@ -239,27 +239,25 @@ export class DefaultResourceComposer implements ResourceComposer {
       status: embedResponseAccess,
     }
 
-    const requestInfo = (await this.resolver.resolveInContext(this.resolverContext, RequestInfo)).singleValue
-    const embedRepo = await this.routeInitializer.initRouteRequest(route, req, requestInfo, res)
+    const requestInfo = (await this.injector.inject(RequestInfo, this.injectorContext)).singleValue
+    const embedProviders = await this.routeInitializer.initRouteRequest(route, req, requestInfo, res)
 
-    embedRepo.register({
+    embedProviders.push({
       provide: CompositionContext,
       useValue: context.childFor(rel),
     })
 
-    return await Disposable.useAsync(embedRepo, async (embedRepo: Repository) => {
-      return this.resolver.invoke(this, this.invokeController, embedRepo)
-    })
+    return this.injector.invoke(this as DefaultResourceComposer, 'invokeController', ...embedProviders)
   }
 
-  private async invokeController(
-    @Inject(ResolverContext) resolverContext: ResolverContext<any>,
+  public async invokeController(
+    @Inject(InjectorContext) resolverContext: ResolverContext<any>,
     @Inject(RequestController) controller: any,
     @Inject(Route) route: Route,
     @Inject(CompositionContext) compositionContext: CompositionContext,
   ): Promise<ComposedResource<any> | ComposedResource<any>[]> {
-    const result = await this.resolver.invokeInContext(resolverContext, controller, controller[route.controllerMethod])
-    const resultResource: any = isControllerResult(result) ? result.resultObject : result
+    const result = await this.injector.invoke(controller, route.controllerMethod as any, resolverContext)
+    const resultResource: any = isControllerResult(result) ? result.data : result
     if (Array.isArray(resultResource)) {
       return Promise.all(
         resultResource.map((resource) =>

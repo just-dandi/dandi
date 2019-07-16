@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 import { SinonStub, stub } from 'sinon'
 
-import { AppError } from './app.error'
+import { AppError } from './app-error'
 import { ErrorUtil } from './error.util'
 
 describe('ErrorUtil', () => {

@@ -4,7 +4,7 @@ import { ConsoleLogListener, LogStreamSubject } from '@dandi/core/logging'
 import { expect } from 'chai'
 import { createStubInstance } from 'sinon'
 
-import { isFactoryProvider } from '../../src/provider.util'
+import { isFactoryProvider } from '../../src/provider-util'
 
 import { LoggerConfig } from './logger.config'
 

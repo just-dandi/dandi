@@ -29,10 +29,10 @@ describe('MetadataModelBuilder', () => {
   describe('constructModel', () => {
     class TestModel {
       @Property(String)
-      public prop1: string;
+      public prop1: string
 
       @Property(Number)
-      public prop2: number;
+      public prop2: number
     }
 
     let constructMember: SinonSpy
@@ -86,10 +86,10 @@ describe('MetadataModelBuilder', () => {
       class AccessorFnTest {
         @SourceAccessor((source: any) => source.foo.bar)
         @Property(String)
-        public fooBar: string;
+        public fooBar: string
 
         @Property(Boolean)
-        public isAwesome;
+        public isAwesome
       }
 
       builder.constructModel(AccessorFnTest, { foo: { bar: 'yup' }, isAwesome: 'true' })
@@ -119,10 +119,10 @@ describe('MetadataModelBuilder', () => {
       class AccessorPathTest {
         @SourceAccessor('foo.bar')
         @Property(String)
-        public fooBar: string;
+        public fooBar: string
 
         @Property(Boolean)
-        public isAwesome;
+        public isAwesome
       }
 
       builder.constructModel(AccessorPathTest, { foo: { bar: 'yup' }, isAwesome: 'true' })
@@ -152,7 +152,7 @@ describe('MetadataModelBuilder', () => {
       class AccessorPathTest {
         @SourceAccessor('foo.bars.oh.yes')
         @Property(String)
-        public fooBar: string;
+        public fooBar: string
       }
 
       builder.constructModel(AccessorPathTest, { foo: { bar: 'yup' }, isAwesome: 'true' })
@@ -225,10 +225,10 @@ describe('MetadataModelBuilder', () => {
     it('uses the key transformer is specified', () => {
       class KeyTransformerTest {
         @Property(String)
-        public fooBar: string;
+        public fooBar: string
 
         @Property(String)
-        public heyMan: string;
+        public heyMan: string
       }
       // eslint-disable-next-line camelcase
       const source = { foo_bar: 'yeah', hey_man: 'okay' }
@@ -245,15 +245,15 @@ describe('MetadataModelBuilder', () => {
       class Blob {
         @Property(String)
         // eslint-disable-next-line camelcase
-        foo_bar: string;
+        foo_bar: string
       }
       class KeyTransformerTest {
         @Json()
         @Property(Blob)
-        public blob: any;
+        public blob: any
 
         @Property(String)
-        public heyMan: string;
+        public heyMan: string
       }
       // eslint-disable-next-line camelcase
       const source = { blob: { foo_bar: 'yeah' }, hey_man: 'okay' }
@@ -278,10 +278,10 @@ describe('MetadataModelBuilder', () => {
     it('does not use key transformers on Map members', () => {
       class KeyTransformerTest {
         @MapOf(String, String)
-        public map: any;
+        public map: any
 
         @Property(String)
-        public heyMan: string;
+        public heyMan: string
       }
       // eslint-disable-next-line camelcase
       const source = { map: { foo_bar: 'yeah' }, hey_man: 'okay' }
@@ -317,10 +317,10 @@ describe('MetadataModelBuilder', () => {
     it('converts complex types with constructModelInternal', () => {
       class TestModel {
         @Property(String)
-        public prop1: string;
+        public prop1: string
 
         @Property(Number)
-        public prop2: number;
+        public prop2: number
       }
 
       spy(builder as any, 'constructModelInternal')

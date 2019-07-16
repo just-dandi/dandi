@@ -12,8 +12,8 @@ export class ChildResource extends HalModelBase {
   @Property(Uuid)
   @Required()
   @ResourceId()
-  public childId: Uuid;
+  public childId: Uuid
 
   @Relation()
-  public parent: ParentResource;
+  public parent: ParentResource
 }

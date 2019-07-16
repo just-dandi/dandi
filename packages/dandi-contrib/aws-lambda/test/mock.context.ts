@@ -1,16 +1,16 @@
 import { ClientContext, CognitoIdentity, Context } from 'aws-lambda'
 
 export class MockContext implements Context {
-  public awsRequestId: string;
-  public callbackWaitsForEmptyEventLoop: boolean;
-  public clientContext: ClientContext;
-  public functionName: string;
-  public functionVersion: string;
-  public identity: CognitoIdentity;
-  public invokedFunctionArn: string;
-  public logGroupName: string;
-  public logStreamName: string;
-  public memoryLimitInMB: number;
+  public awsRequestId: string
+  public callbackWaitsForEmptyEventLoop: boolean
+  public clientContext: ClientContext
+  public functionName: string
+  public functionVersion: string
+  public identity: CognitoIdentity
+  public invokedFunctionArn: string
+  public logGroupName: string
+  public logStreamName: string
+  public memoryLimitInMB: number
 
   public done(error?: Error, result?: any): void {}
 

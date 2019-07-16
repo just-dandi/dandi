@@ -1,12 +1,19 @@
-import { AppError } from './app.error'
+import { AppError } from './app-error'
+import { DISABLE_REMAP } from './disposable-flags'
 import { globalSymbol } from './global.symbol'
+import { isPromise } from './promise'
 
 export type DisposeFn = (reason: string) => void
 
 export const DISPOSED = globalSymbol('Disposable.DISPOSED')
+export const DISPOSED_REASON = globalSymbol('Disposable.DISPOSED_REASON')
 
 export interface Disposable {
-  dispose(reason: string): void;
+  dispose(reason: string): void | Promise<void>
+}
+
+export interface RemapOptions {
+  retainProperties?: string[]
 }
 
 export class DisposableTypeError extends AppError {
@@ -50,7 +57,11 @@ export class Disposable {
   }
 
   public static isDisposed(obj: any): boolean {
-    return obj && obj[DISPOSED]
+    return obj && obj[DISPOSED] || false
+  }
+
+  public static getDisposedReason(obj: any): string {
+    return obj[DISPOSED_REASON]
   }
 
   /**
@@ -109,24 +120,37 @@ export class Disposable {
   }
 
   public static async useAsync<T extends Disposable, TResult = void>(
-    obj: T,
+    obj: T | Promise<T>,
     use: (obj: T) => Promise<TResult>,
   ): Promise<TResult> {
+    const resolvedObj = isPromise(obj) ? await obj : obj
     try {
-      return await use(obj)
+      return await use(resolvedObj)
     } catch (err) {
       throw err
     } finally {
-      if (Disposable.isDisposable(obj)) {
-        await obj.dispose('after Disposable.useAsync()')
+      if (Disposable.isDisposable(resolvedObj)) {
+        await resolvedObj.dispose('after Disposable.useAsync()')
       }
     }
   }
 
-  public static remapDisposed<T>(target: T, reason: string): T {
+  public static remapDisposed<T>(target: T, reason: string, options?: RemapOptions): T {
+    Object.defineProperty(target, DISPOSED, {
+      get: () => true,
+      set: undefined,
+      configurable: false,
+    })
+    Object.defineProperty(target, DISPOSED_REASON, {
+      get: () => reason,
+      configurable: false,
+    })
+    if (Disposable[DISABLE_REMAP]) {
+      return target
+    }
     const thrower = throwAlreadyDisposed.bind(target, target, reason)
     for (const prop in target) {
-      if (prop === DISPOSED) {
+      if (prop === DISPOSED || (options && options.retainProperties && options.retainProperties.includes(prop))) {
         continue
       }
       if (typeof target[prop] === 'function') {
@@ -139,11 +163,6 @@ export class Disposable {
         })
       }
     }
-    Object.defineProperty(target, DISPOSED, {
-      get: () => true,
-      set: undefined,
-      configurable: false,
-    })
     return Object.freeze(target)
   }
 }

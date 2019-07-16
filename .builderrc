@@ -3,7 +3,7 @@
   "scopes": ["dandi", "dandi-contrib"],
   "licenseFile": "LICENSE",
   "compilerOptions": {
-    "module": "esnext"
+    "module": "commonjs"
   },
   "npmOptions": {
     "registry": "https://registry.npmjs.org/"

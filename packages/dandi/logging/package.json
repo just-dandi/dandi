@@ -1,0 +1,11 @@
+{
+  "name": "@dandi/logging",
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/core": "*",
+    "colors": "^1.3.0"
+  },
+  "optionalDependencies": {
+    "colors": "^1.3.0"
+  }
+}

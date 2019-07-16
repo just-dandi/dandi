@@ -1,11 +1,11 @@
 import { Constructor } from '@dandi/common'
 import {
   AmbientInjectableScanner,
-  Container,
+  DandiApplication,
   Inject,
   Injectable,
-  InjectionToken,
-  Optional,
+  InjectionToken, Injector, isInjector,
+  Optional, Registerable,
   Repository,
 } from '@dandi/core'
 import { Context } from 'aws-lambda'
@@ -22,47 +22,46 @@ export type HandlerFn<TEvent = any, TResult = any> = (event: TEvent, context: Co
 
 @Injectable()
 export class Lambda<TEvent, TEventData, THandler extends LambdaHandler<TEventData>> {
-  public static handler<TEvent, TEventData, THandler extends LambdaHandler<TEventData>>(
-    handlerServiceType: Constructor<THandler>,
-    container: Container,
-  ): HandlerFn<TEvent, any>;
 
   public static handler<TEvent, TEventData, THandler extends LambdaHandler<TEventData>>(
     handlerServiceType: Constructor<THandler>,
-    ...modulesOrProviders: any[]
-  ): HandlerFn<TEvent, any>;
+    injector: Injector,
+  ): HandlerFn<TEvent, any>
 
   public static handler<TEvent, TEventData, THandler extends LambdaHandler<TEventData>>(
+    handlerServiceType: Constructor<THandler>,
+    ...modulesOrProviders: Registerable[]
+  ): HandlerFn<TEvent, any>
+
+  static handler<TEvent, TEventData, THandler extends LambdaHandler<TEventData>>(
     handlerServiceType: Constructor<THandler>,
     ...modulesOrProviders: any[]
   ): HandlerFn<TEvent, any> {
-    const existingContainer =
-      modulesOrProviders.length === 1 && modulesOrProviders[0] instanceof Container && modulesOrProviders[0]
+    let injectorReady: Injector | Promise<Injector> =
+      modulesOrProviders.length === 1 && isInjector(modulesOrProviders[0]) && modulesOrProviders[0]
 
-    const container =
-      existingContainer ||
-      new Container({
-        providers: [AmbientInjectableScanner],
-      })
-
-    const repo = Repository.for({})
-    repo.register({
+    const providers = [{
       provide: LambdaHandler,
       useClass: handlerServiceType,
-    })
-    if (!existingContainer) {
-      modulesOrProviders.forEach((p) => repo.register(p))
+    }]
+
+    if (!injectorReady) {
+      providers.push(...modulesOrProviders)
+
+      const app = new DandiApplication({
+        providers: [AmbientInjectableScanner],
+      })
+      injectorReady = app.start()
     }
 
-    const ready = existingContainer ? Promise.resolve() : container.start()
 
     let lambda: Lambda<TEvent, TEventData, THandler>
 
     return async (event: TEvent, context: Context) => {
-      await ready
+      const injector = await injectorReady
 
       if (!lambda) {
-        lambda = (await container.resolve(Lambda, false, repo)).singleValue
+        lambda = (await injector.inject(Lambda, ...providers)).singleValue
       }
 
       return lambda.handleEvent(event, context)

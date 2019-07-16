@@ -1,11 +1,11 @@
 {
   "name": "@dandi-contrib/data-pg",
   "dependencies": {
-    "change-case": "^3.0.2",
-    "pg": "^7.7.1"
+    "change-case": "^3.1.0",
+    "pg": "^7.11.0"
   },
   "devDependencies": {
-    "@types/pg": "^7.4.11"
+    "@types/pg": "^7.4.14"
   },
   "peerDependencies": {
     "@dandi/common": "*",

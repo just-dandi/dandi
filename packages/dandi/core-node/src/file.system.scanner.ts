@@ -1,6 +1,8 @@
 import { extname, resolve } from 'path'
 
-import { Inject, Injectable, Provider, Repository, Scanner, ScannerConfig, scannerProvider } from '@dandi/core'
+import { Constructor } from '@dandi/common'
+import { Inject, Injectable, Provider, Scanner, ScannerConfig, scannerProvider } from '@dandi/core'
+
 import { readdir, stat } from 'fs-extra'
 
 const DEFAULT_EXTENSIONS = ['.ts', '.js']
@@ -18,15 +20,14 @@ export class FileSystemScanner implements Scanner {
 
   constructor(@Inject(ScannerConfig) private config: FileSystemScannerConfig[]) {}
 
-  public async scan(): Promise<Repository> {
-    const repo = Repository.for(this)
-    await Promise.all(
-      this.config.map(async (config) => {
-        const modules = await this.scanDir(config, process.cwd())
-        modules.forEach((module) => repo.register(module))
-      }),
-    )
-    return repo
+  public async scan(): Promise<Array<Provider<any> | Constructor<any>>> {
+    return (await Promise.all(
+      this.config.map((config) => this.scanDir(config, process.cwd()),
+      )))
+      .reduce((result, modules) => {
+        result.push(...modules)
+        return result
+      }, [])
   }
 
   private async scanDir(config: FileSystemScannerConfig, dirPath: string): Promise<any[]> {

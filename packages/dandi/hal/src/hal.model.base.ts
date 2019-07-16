@@ -1,8 +1,8 @@
 import { HalLink } from './hal.link'
 
 export class HalModelBase {
-  private _links: { [rel: string]: HalLink };
-  private _embedded: { [rel: string]: HalModelBase | HalModelBase[] };
+  private _links: { [rel: string]: HalLink }
+  private _embedded: { [rel: string]: HalModelBase | HalModelBase[] }
 
   protected constructor(obj?: any) {
     Object.assign(this, obj)

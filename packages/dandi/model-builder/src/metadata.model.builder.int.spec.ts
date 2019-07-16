@@ -1,5 +1,5 @@
 import { Url, Uuid } from '@dandi/common'
-import { testHarness } from '@dandi/core-testing'
+import { testHarness } from '@dandi/core/testing'
 import { MemberMetadata, Property, UrlProperty } from '@dandi/model'
 import { MetadataModelBuilder, ModelBuilder, ModelBuilderModule } from '@dandi/model-builder'
 import { expect } from 'chai'
@@ -10,12 +10,12 @@ describe('MetadataModelBuilder', () => {
 
   class TestModel {
     @UrlProperty()
-    public url: Url;
+    public url: Url
   }
 
   class TestModel2 extends TestModel {
     @Property(String)
-    public prop: string;
+    public prop: string
   }
 
   beforeEach(async () => {

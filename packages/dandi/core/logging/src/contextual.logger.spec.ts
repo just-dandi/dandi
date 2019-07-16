@@ -13,23 +13,30 @@ describe('ContextualLogger', function() {
     this.logger = new ContextualLogger(this.stream, 'test', this.now)
   })
 
-  describe('#log', function() {
+  const checkLevel = (level: LogLevel): void => {
 
-    it('calls next() on the LogStream instance with a LogEntry object', function() {
+    describe(level.toString(), function() {
 
-      this.logger.log(LogLevel.info, 'test message')
+      it('calls next() on the LogStream instance with a LogEntry object', function() {
 
-      expect(this.stream.next).to.have.been
-        .calledOnce
-        .calledWithExactly({
-          level: LogLevel.info,
-          ts: this.ts,
-          context: 'test',
-          args: ['test message'],
-        })
+        this.logger[level]('test message')
+
+        expect(this.stream.next).to.have.been
+          .calledOnce
+          .calledWithExactly({
+            level,
+            ts: this.ts,
+            context: 'test',
+            args: ['test message'],
+            options: {},
+          })
+
+      })
 
     })
 
-  })
+  }
+
+  Object.keys(LogLevel).forEach(checkLevel)
 
 })

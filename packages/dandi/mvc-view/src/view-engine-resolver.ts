@@ -2,7 +2,7 @@ import { access, constants } from 'fs'
 import { basename, dirname, extname, resolve } from 'path'
 
 import { Constructor } from '@dandi/common'
-import { Inject, Injectable, Logger, Resolver, Singleton } from '@dandi/core'
+import { Inject, Injectable, Logger, Injector, Singleton } from '@dandi/core'
 
 import { MissingTemplateError } from './missing-template.error'
 import { ViewEngine } from './view-engine'
@@ -21,8 +21,8 @@ interface ViewEngineIndexedConfig extends ViewEngineConfig {
 
 @Injectable(Singleton)
 export class ViewEngineResolver {
-  private extensions: Map<string, Constructor<ViewEngine>> = new Map<string, Constructor<ViewEngine>>();
-  private resolvedViews = new Map<string, ResolvedView>();
+  private extensions: Map<string, Constructor<ViewEngine>> = new Map<string, Constructor<ViewEngine>>()
+  private resolvedViews = new Map<string, ResolvedView>()
 
   private static exists(path: string): Promise<boolean> {
     return new Promise((resolve) => {
@@ -38,7 +38,7 @@ export class ViewEngineResolver {
   constructor(
     @Inject(Logger) private logger: Logger,
     @Inject(ViewEngineConfig) private configs: ViewEngineIndexedConfig[],
-    @Inject(Resolver) private resolver: Resolver,
+    @Inject(Injector) private injector: Injector,
   ) {
     this.configs.forEach((config, index) => (config.index = index))
 
@@ -111,7 +111,7 @@ export class ViewEngineResolver {
   }
 
   private async getEngineInstance(engine: Constructor<ViewEngine>): Promise<ViewEngine> {
-    const result = await this.resolver.resolve(engine)
+    const result = await this.injector.inject(engine)
     return result.singleValue
   }
 }

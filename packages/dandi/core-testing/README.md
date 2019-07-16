@@ -1,1 +1,0 @@
-# @dandi/core-testing

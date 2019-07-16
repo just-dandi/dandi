@@ -36,7 +36,7 @@ export class Currency extends Number {
     return value
   }
 
-  public static readonly zero = Currency.value(0);
+  public static readonly zero = Currency.value(0)
 
   public get valid(): boolean {
     return !isNaN(this.valueOf())

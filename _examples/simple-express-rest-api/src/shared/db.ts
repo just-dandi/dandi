@@ -10,11 +10,9 @@ function delayedDo(fn: () => any): Promise<any> {
 
 @Injectable(Singleton)
 export class Db {
-  private storage: Map<string, any> = new Map<string, any>();
+  private storage: Map<string, any> = new Map<string, any>()
 
-  constructor() {
-    console.log('new db')
-  }
+  constructor() {}
 
   public set(key: string, value: any): Promise<any> {
     return delayedDo(() => {

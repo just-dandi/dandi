@@ -1,4 +1,5 @@
-import { Container, NoopLogger } from '@dandi/core'
+import { DandiInjector } from '@dandi/core'
+import { LoggerFixture } from '@dandi/core/testing'
 import { ViewEngineResolver } from '@dandi/mvc-view'
 
 import { expect } from 'chai'
@@ -7,7 +8,7 @@ import { createStubInstance } from 'sinon'
 describe('ViewEngineResolver', function() {
   beforeEach(function() {
     this.exists = this.sandbox.stub(ViewEngineResolver as any, 'exists')
-    this.logger = createStubInstance(NoopLogger)
+    this.logger = new LoggerFixture()
     this.configA = {
       engine: class EngineA {},
       priority: 3,
@@ -37,9 +38,9 @@ describe('ViewEngineResolver', function() {
       extension: 'e',
     }
     this.configs = [this.configA, this.configB, this.configC, this.configD, this.configE, this.configF]
-    this.resolver = createStubInstance(Container)
+    this.injector = createStubInstance(DandiInjector)
 
-    this.viewResolver = new ViewEngineResolver(this.logger, this.configs, this.resolver)
+    this.viewResolver = new ViewEngineResolver(this.logger, this.configs, this.injector)
   })
 
   describe('#ctr', function() {
@@ -58,7 +59,7 @@ describe('ViewEngineResolver', function() {
       ])
     })
 
-    it('it logs warning when encountering configurations with duplicate extensions, and marks the config as ignored', function() {
+    it('it logs a warning when encountering configurations with duplicate extensions, and marks the config as ignored', function() {
       expect(this.logger.warn).to.have.been.calledWithExactly(
         `ignoring duplicate view engine configuration for extension 'e' (EngineE)`,
       )
@@ -81,7 +82,7 @@ describe('ViewEngineResolver', function() {
     it('returns a resolved view for a known extension with an explicitly specified name', async function() {
       const instance = {}
       this.exists.returns(true)
-      this.resolver.resolve.returns({ singleValue: instance })
+      this.injector.inject.returns({ singleValue: instance })
 
       expect(await this.viewResolver.resolve({ context: __dirname }, 'foo.a')).to.deep.equal({
         engine: instance,
@@ -92,7 +93,7 @@ describe('ViewEngineResolver', function() {
     it('returns a resolved view for a known extension with the name specified by view metadata', async function() {
       const instance = {}
       this.exists.returns(true)
-      this.resolver.resolve.returns({ singleValue: instance })
+      this.injector.inject.returns({ singleValue: instance })
 
       expect(await this.viewResolver.resolve({ context: __dirname, name: 'foo.a' })).to.deep.equal({
         engine: instance,
@@ -103,7 +104,7 @@ describe('ViewEngineResolver', function() {
     it('returns a cached resolved view when called for the same path multiple times', async function() {
       const instance = {}
       this.exists.returns(true)
-      this.resolver.resolve.returns({ singleValue: instance })
+      this.injector.inject.returns({ singleValue: instance })
 
       const resolved = await this.viewResolver.resolve({ context: __dirname }, 'foo.a')
       expect(await this.viewResolver.resolve({ context: __dirname }, 'foo.a')).to.equal(resolved)
@@ -111,7 +112,7 @@ describe('ViewEngineResolver', function() {
 
     it('locates a file by iterating the configurations and checking for files with the configured extension', async function() {
       this.exists.callsFake((path) => path.endsWith('.e'))
-      this.resolver.resolve.callsFake((ctr) => ({ singleValue: new ctr() }))
+      this.injector.inject.callsFake((ctr) => ({ singleValue: new ctr() }))
 
       const resolved = await this.viewResolver.resolve({ context: __dirname }, 'foo')
       expect(resolved.engine).to.be.instanceof(this.configF.engine)
@@ -120,7 +121,7 @@ describe('ViewEngineResolver', function() {
     it('skips ignored configurations when searching for files', async function() {
       // use a configuration that comes after the extension with an ignored configuration
       this.exists.callsFake((path) => path.endsWith('.c'))
-      this.resolver.resolve.callsFake((ctr) => ({ singleValue: new ctr() }))
+      this.injector.inject.callsFake((ctr) => ({ singleValue: new ctr() }))
 
       await this.viewResolver.resolve({ context: __dirname }, 'foo')
       // should only get one call to exists with a path that ends with .c

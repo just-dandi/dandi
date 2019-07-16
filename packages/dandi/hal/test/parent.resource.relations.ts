@@ -6,5 +6,5 @@ import { ParentResource } from './parent.resource.model'
 @Relations(ParentResource)
 export class ParentResourceRelations implements Partial<ParentResource> {
   @ListRelation(ChildResource)
-  children: ChildResource[];
+  children: ChildResource[]
 }

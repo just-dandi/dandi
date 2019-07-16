@@ -12,7 +12,7 @@ The `Disposable` interface allows implementing classes to define
  behavior for cleaning up resources like IO streams, database
  connections, as well as Observable and other event subscriptions.
 
-When used with `@dandi/di-common`, `Disposable` instances are
+When used with `@dandi/core`, `Disposable` instances are
  automatically disposed by Dandi at the end of their lifecycle.
 
 ```typescript

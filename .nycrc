@@ -13,10 +13,10 @@
   ],
   "exclude": [
     "node_modules",
-    "**/*.spec.ts",
+    "**/*.*spec.ts",
     "mocha.config.js",
     "test",
-    "**/local.token.ts"
+    "**/local-token.ts"
   ],
-  "report-dir": ".coverage"
+  "reportDir": ".coverage"
 }

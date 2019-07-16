@@ -5,8 +5,7 @@ import {
   Logger,
   Optional,
   Provider,
-  Repository,
-  Resolver,
+  Injector,
 } from '@dandi/core'
 
 import { AuthProviderFactory } from './auth.provider.factory'
@@ -24,7 +23,7 @@ import { HttpRequestId, RequestController, RequestPathParamMap, RequestQueryPara
 @Injectable(RouteInitializer)
 export class DefaultRouteInitializer implements RouteInitializer {
   constructor(
-    @Inject(Resolver) private resolver: Resolver,
+    @Inject(Injector) private injector: Injector,
     @Inject(RequestProviderRegistrar)
     @Optional()
     private registrars: RequestProviderRegistrar[],
@@ -39,22 +38,20 @@ export class DefaultRouteInitializer implements RouteInitializer {
     req: MvcRequest,
     requestInfo: RequestInfo,
     res: MvcResponse,
-  ): Promise<Repository> {
+  ): Promise<Provider<any>[]> {
     this.logger.debug(
       `begin initRouteRequest ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
       route.httpMethod.toUpperCase(),
       route.path,
     )
-
-    const repo = Repository.for(req)
+    const providers: Provider<any>[] = []
 
     try {
-      this.registerRequestProviders(repo, route, req, requestInfo, res)
-      await this.registerAuthProviders(repo, route, req)
-      await this.registerRequestRegistrarProviders(repo)
-      await this.handleAuthorizationConditions(repo)
-
-      return repo
+      providers.push(...this.generateRequestProviders(route, req, requestInfo, res))
+      providers.push(...(await this.generateAuthProviders(route, req)))
+      providers.push(...(await this.generateRequestRegistrarProviders(providers)))
+      await this.handleAuthorizationConditions(providers)
+      return providers
     } catch (err) {
       throw new RouteInitializationError(err, route)
     } finally {
@@ -70,15 +67,17 @@ export class DefaultRouteInitializer implements RouteInitializer {
    * Registers standard providers for various parts of the request, as well as derivative value providers
    * specified by parameter decorators
    */
-  private registerRequestProviders(
-    repo: Repository,
+  private generateRequestProviders(
     route: Route,
     req: MvcRequest,
     requestInfo: RequestInfo,
     res: MvcResponse,
-  ): void {
-    repo.register(route.controllerCtr, { provide: RequestController })
-    repo.registerProviders(
+  ): Provider<any>[] {
+    const result: Provider<any>[] = [
+      {
+        provide: RequestController,
+        useClass: route.controllerCtr,
+      },
       { provide: MvcRequest, useValue: req },
       { provide: MvcResponse, useValue: res },
       { provide: RequestPathParamMap, useValue: req.params },
@@ -86,27 +85,25 @@ export class DefaultRouteInitializer implements RouteInitializer {
       { provide: Route, useValue: route },
       { provide: HttpRequestId, useValue: requestInfo.requestId },
       { provide: RequestInfo, useValue: requestInfo },
-    )
+    ]
 
     // registers value providers from @PathParam, @QueryParam, @RequestBody decorators
     const meta = getInjectableMetadata(route.controllerCtr.prototype[route.controllerMethod])
-    meta.params.forEach((param) => {
-      if (param.providers) {
-        repo.registerProviders(...param.providers)
-      }
-    })
-  }
-
-  private async registerAuthProviders(repo: Repository, route: Route, req: MvcRequest): Promise<void> {
-    if (!this.authProviderFactory) {
-      return
+    for (const param of meta.params) {
+      result.push(...param.providers || [])
     }
-    const providers = await this.authProviderFactory.createAuthProviders(route, req)
-    repo.registerProviders(...providers)
+    return result
   }
 
-  private async handleAuthorizationConditions(repo: Repository): Promise<void> {
-    const results = await this.resolver.resolve(AuthorizationCondition, true, repo)
+  private async generateAuthProviders(route: Route, req: MvcRequest): Promise<Provider<any>[]> {
+    if (!this.authProviderFactory) {
+      return []
+    }
+    return this.authProviderFactory.generateAuthProviders(route, req)
+  }
+
+  private async handleAuthorizationConditions(providers: Provider<any>[]): Promise<void> {
+    const results = await this.injector.inject(AuthorizationCondition, true, ...providers)
     if (!results) {
       return
     }
@@ -117,17 +114,16 @@ export class DefaultRouteInitializer implements RouteInitializer {
     }
   }
 
-  private async registerRequestRegistrarProviders(repo: Repository): Promise<void> {
+  private async generateRequestRegistrarProviders(providers: Provider<any>[]): Promise<Provider<any>[]> {
     if (!this.registrars) {
-      return
+      return []
     }
-    await Promise.all(
-      this.registrars.map(async (registrar: RequestProviderRegistrar) => {
-        const providers = (await this.resolver.invoke(registrar, registrar.provide, repo)) as Array<Provider<any>>
-        if (providers) {
-          repo.registerProviders(...providers)
-        }
-      }),
-    )
+    return (await Promise.all(this.registrars.map(async (registrar: RequestProviderRegistrar) =>
+      await this.injector.invoke<RequestProviderRegistrar, Provider<any>[]>(registrar, 'provide', ...providers)),
+    ))
+      .reduce((result, providers) => {
+        result.push(...providers || [])
+        return result
+      }, [])
   }
 }

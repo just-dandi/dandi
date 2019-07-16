@@ -1,14 +1,21 @@
 import { resolve } from 'path'
 
+import { Inject, Injectable, Logger } from '@dandi/core'
+
 import { copy, pathExists } from 'fs-extra'
 
 import { BuilderProject } from './builder-project'
 import { PackageInfo } from './package-info'
 import { Util } from './util'
 
+@Injectable()
 export class Builder {
 
-  constructor(private readonly project: BuilderProject) {}
+  constructor(
+    @Inject(BuilderProject) private readonly project: BuilderProject,
+    @Inject(Util) private util: Util,
+    @Inject(Logger) private readonly logger: Logger,
+  ) {}
 
   public async build(): Promise<void> {
     const packages = await this.project.discoverPackages()
@@ -16,23 +23,24 @@ export class Builder {
     await this.project.updateConfigs(packages)
 
     try {
+      this.logger.debug('')
       await this.compile()
     } catch (err) {
-      console.error('compile failed', err)
+      this.logger.error('compile failed', err)
       throw err
     }
 
     try {
       await this.finalizePackages(packages)
     } catch (err) {
-      console.error('error finalizing packages', err)
+      this.logger.error('error finalizing packages', err)
       throw err
     }
 
   }
 
   private compile(): Promise<any> {
-    return Util.spawn('tsc', ['-b', this.project.buildTsConfigPath], {
+    return this.util.spawn('tsc', ['-b', this.project.buildTsConfigPath], {
       cwd: this.project.projectPath,
     })
   }
@@ -65,7 +73,7 @@ export class Builder {
         }
       })
     }
-    await Util.writeJson(resolve(info.outPath, 'package.json'), builtPackage)
+    await this.util.writeJson(resolve(info.outPath, 'package.json'), builtPackage)
   }
 
   private async copyLicense(info: PackageInfo): Promise<void> {
@@ -86,7 +94,7 @@ export class Builder {
       }
       await copy(sourcePath, resolve(info.outPath, packageFileName))
     } catch (err) {
-      console.error('error copying package file', info.name, packageFileName, err)
+      this.logger.error('error copying package file', info.name, packageFileName, err)
       throw err
     }
   }
@@ -95,7 +103,7 @@ export class Builder {
     try {
       return copy(resolve(this.project.projectPath, projectFileName), resolve(info.outPath, projectFileName))
     } catch (err) {
-      console.error('error copying project file', info.name, projectFileName, err)
+      this.logger.error('error copying project file', info.name, projectFileName, err)
       throw err
     }
   }
@@ -107,7 +115,7 @@ export class Builder {
     try {
       await Promise.all(info.manifest.map(this.copyPackageFile.bind(this, info)))
     } catch (err) {
-      console.error('error copying manifest files', info.name)
+      this.logger.error('error copying manifest files', info.name)
       throw err
     }
   }

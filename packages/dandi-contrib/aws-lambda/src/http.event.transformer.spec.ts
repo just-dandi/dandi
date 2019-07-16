@@ -1,4 +1,4 @@
-import { stubProvider, testHarness } from '@dandi/core-testing'
+import { stubProvider, testHarness } from '@dandi/core/testing'
 import { MetadataModelBuilder, ModelBuilder } from '@dandi/model-builder'
 import { APIGatewayProxyEvent, Context } from 'aws-lambda'
 import { expect } from 'chai'
@@ -12,7 +12,7 @@ import { HttpEventTransformer, HttpHandlerRequest } from './http.event.transform
 import { LambdaEventTransformer } from './lambda.event.transformer'
 
 class TestBody {
-  public foo: string;
+  public foo: string
 }
 
 describe('HttpEventTransformer', () => {

@@ -1,4 +1,5 @@
-import { Container } from '@dandi/core'
+import { ParamMetadata } from '@dandi/core'
+import { testHarnessSingle } from '@dandi/core/testing'
 import { MemberMetadata } from '@dandi/model'
 import { MetadataModelBuilder, ModelBuilder, PrimitiveTypeConverter, TypeConverter } from '@dandi/model-builder'
 import { PathParam, RequestPathParamMap } from '@dandi/mvc'
@@ -10,11 +11,13 @@ import { requestParamValidatorFactory } from './request.param.validator'
 
 describe('requestParamValidatorFactory', () => {
   let paramMap: { [key: string]: string }
+  let paramMeta: ParamMetadata<any>
   let builder: SinonStubbedInstance<ModelBuilder>
   let memberMetadata: MemberMetadata
 
   beforeEach(() => {
     paramMap = { foo: 'bar' }
+    paramMeta = {} as any
     builder = createStubInstance(MetadataModelBuilder)
     memberMetadata = {
       type: String,
@@ -29,6 +32,7 @@ describe('requestParamValidatorFactory', () => {
     requestParamValidatorFactory(
       String,
       'foo',
+      paramMeta,
       memberMetadata,
       paramMap,
       builder,
@@ -47,28 +51,26 @@ describe('requestParamValidatorFactory', () => {
       }
     }
     const controller = new TestController()
-    const container = new Container({
-      providers: [
-        MetadataModelBuilder,
-        PrimitiveTypeConverter,
-        {
-          provide: TypeConverter,
-          useValue: {
-            type: String,
-            convert,
-          },
-        },
-        {
-          provide: RequestPathParamMap,
-          useValue: {
-            foo: 'bar',
-          },
-        },
-      ],
-    })
-    await container.start()
 
-    await container.invoke(controller, controller.testMethod)
+    const harness = await testHarnessSingle(
+      MetadataModelBuilder,
+      PrimitiveTypeConverter,
+      {
+        provide: TypeConverter,
+        useValue: {
+          type: String,
+          convert,
+        },
+      },
+      {
+        provide: RequestPathParamMap,
+        useValue: {
+          foo: 'bar',
+        },
+      },
+    )
+
+    await harness.invoke(controller, 'testMethod')
 
     expect(convert).to.have.been.calledWith('bar', { type: String })
   })

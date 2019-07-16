@@ -1,0 +1,11 @@
+{
+  "name": "@dandi/example-simple-console",
+  "private": true,
+  "scripts": {
+    "start": "node --require ts-node/register --require tsconfig-paths/register ./cli.ts"
+  },
+  "devDependencies": {
+    "commander": "^2.19.0",
+    "ts-node": "^7.0.0"
+  }
+}

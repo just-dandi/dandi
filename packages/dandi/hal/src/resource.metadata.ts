@@ -29,11 +29,11 @@ export interface ResourceRelationMetadata {
 }
 
 export class CompositeResourceMetadata implements ResourceMetadata {
-  public resource: Constructor<any>;
-  public idProperty: string;
-  public getAccessor: ResourceAccessorMetadata;
-  public listAccessor: ResourceAccessorMetadata;
-  public relations: { [rel: string]: ResourceRelationMetadata };
+  public resource: Constructor<any>
+  public idProperty: string
+  public getAccessor: ResourceAccessorMetadata
+  public listAccessor: ResourceAccessorMetadata
+  public relations: { [rel: string]: ResourceRelationMetadata }
 
   public constructor(source: ResourceMetadata) {
     this.resource = source.resource

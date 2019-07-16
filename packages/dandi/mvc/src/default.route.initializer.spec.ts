@@ -1,9 +1,9 @@
 import { Uuid } from '@dandi/common'
-import { Container, NoopLogger, Provider } from '@dandi/core'
+import { Provider } from '@dandi/core'
+import { testHarness } from '@dandi/core/testing'
 import {
-  AuthProviderFactory,
   AuthorizationAuthProviderFactory,
-  AuthorizationCondition,
+  AuthorizationCondition, AuthProviderFactory,
   DefaultRouteInitializer,
   ForbiddenError,
   HttpMethod,
@@ -12,25 +12,23 @@ import {
   MvcResponse,
   RequestBody,
   RequestController,
-  RequestInfo,
   RequestPathParamMap,
   RequestProviderRegistrar,
   RequestQueryParamMap,
   Route,
   RouteInitializationError,
-  RouteInitializer,
 } from '@dandi/mvc'
 import { expect } from 'chai'
-import { SinonStubbedInstance, createStubInstance, stub } from 'sinon'
+import { createStubInstance, stub } from 'sinon'
 
-describe('DefaultRouteInitializer', () => {
-  let container: Container
-  let initializer: RouteInitializer
-  let route: Route
-  let req: any
-  let requestInfo: RequestInfo
-  let res: any
-  let authProviderFactory: SinonStubbedInstance<AuthProviderFactory>
+describe('DefaultRouteInitializer', function() {
+
+  const harness = testHarness(DefaultRouteInitializer,
+    {
+      provide: AuthProviderFactory,
+      useFactory: () => createStubInstance(AuthorizationAuthProviderFactory),
+    },
+  )
 
   class TestModel {}
 
@@ -38,128 +36,119 @@ describe('DefaultRouteInitializer', () => {
     public method(@RequestBody(TestModel) body: TestModel) {}
   }
 
-  beforeEach(async () => {
-    container = new Container()
-    await container.start()
-    authProviderFactory = createStubInstance(AuthorizationAuthProviderFactory)
-    authProviderFactory.createAuthProviders.resolves([])
-    initializer = new DefaultRouteInitializer(container, null, new NoopLogger(), authProviderFactory)
-    route = {
+  beforeEach(async function() {
+    this.authProviderFactory = await harness.injectStub(AuthProviderFactory)
+    this.authProviderFactory.generateAuthProviders.resolves([])
+    this.initializer = await harness.inject(DefaultRouteInitializer)
+    this.route = {
       httpMethod: HttpMethod.get,
       siblingMethods: new Set([HttpMethod.get]),
       path: '/',
       controllerCtr: TestController,
       controllerMethod: 'method',
     }
-    req = {
+    this.req = {
       get: stub(),
       params: {},
       query: {},
     }
-    requestInfo = {
-      requestId: new Uuid(),
-      performance: {
-        mark: stub(),
-      },
-    }
-    res = {
+    this.res = {
       contentType: stub().returnsThis(),
       json: stub().returnsThis(),
       send: stub().returnsThis(),
       setHeader: stub().returnsThis(),
       status: stub().returnsThis(),
     }
+    this.requestInfo = {
+      requestId: new Uuid(),
+      performance: {
+        mark: stub(),
+      },
+    }
   })
-  afterEach(() => {
-    initializer = undefined
-    container = undefined
-    req = undefined
-    requestInfo = undefined
-    res = undefined
-  })
 
-  describe('initRouteRequest', () => {
-    it('does not register a request body provider if there is no body', async () => {
-      const repo = await initializer.initRouteRequest(route, req, requestInfo, res)
+  describe('initRouteRequest', function() {
+    it('does not register a request body provider if there is no body', async function() {
+      const providers = await this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)
 
-      expect(container.resolve(HttpRequestBody, null, repo)).to.be.rejected
+      expect(harness.inject(HttpRequestBody, ...providers)).to.be.rejected
     })
 
-    it('adds a provider for the request object', async () => {
-      const repo = await initializer.initRouteRequest(route, req, requestInfo, res)
+    it('generates a provider for the request object', async function() {
+      const providers = await this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)
 
-      expect((await container.resolve(MvcRequest, null, repo)).value).to.equal(req)
+      expect(await harness.inject(MvcRequest, ...providers)).to.equal(this.req)
     })
 
-    it('adds a provider for the response object', async () => {
-      const repo = await initializer.initRouteRequest(route, req, requestInfo, res)
+    it('generates a provider for the response object', async function() {
+      const providers = await this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)
 
-      expect((await container.resolve(MvcResponse, null, repo)).value).to.equal(res)
+      expect(await harness.inject(MvcResponse, ...providers)).to.equal(this.res)
     })
 
-    it('adds a provider for the path params object', async () => {
-      const repo = await initializer.initRouteRequest(route, req, requestInfo, res)
+    it('generates a provider for the path params object', async function() {
+      const providers = await this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)
 
-      expect((await container.resolve(RequestPathParamMap, null, repo)).value).to.equal(req.params)
+      expect(await harness.inject(RequestPathParamMap, ...providers)).to.equal(this.req.params)
     })
 
-    it('adds a provider for the query params object', async () => {
-      const repo = await initializer.initRouteRequest(route, req, requestInfo, res)
+    it('generates a provider for the query params object', async function() {
+      const providers = await this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)
 
-      expect((await container.resolve(RequestQueryParamMap, null, repo)).value).to.equal(req.query)
+      expect(await harness.inject(RequestQueryParamMap, ...providers)).to.equal(this.req.query)
     })
 
-    it('adds a provider for the route object', async () => {
-      const repo = await initializer.initRouteRequest(route, req, requestInfo, res)
+    it('generates a provider for the route object', async function() {
+      const providers = await this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)
 
-      expect((await container.resolve(Route, null, repo)).value).to.equal(route)
+      expect(await harness.inject(Route, ...providers)).to.equal(this.route)
     })
 
-    it('adds a provider for the controllerCtr', async () => {
-      const repo = await initializer.initRouteRequest(route, req, requestInfo, res)
+    it('generates a provider for the controllerCtr', async function() {
+      const providers = await this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)
 
-      expect((await container.resolve(RequestController, null, repo)).value).to.be.instanceOf(TestController)
+      expect(await harness.inject(RequestController, ...providers)).to.be.instanceOf(TestController)
     })
 
-    it('wraps caught errors in RouteInitializationError', async () => {
+    it('wraps caught errors in RouteInitializationError', async function() {
       const error = new Error('Your llama is lloose!')
-      stub(initializer as any, 'registerRequestProviders').throws(error)
+      stub(this.initializer, 'generateRequestProviders').throws(error)
 
-      const result = await expect(initializer.initRouteRequest(route, req, requestInfo, res)).to.be.rejectedWith(
+      const result = await expect(this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)).to.be.rejectedWith(
         RouteInitializationError,
       )
       expect(result.innerError).to.equal(error)
     })
 
-    it('adds request body providers if the method has a parameter that requests HttpRequestBody', async () => {
-      const repo = await initializer.initRouteRequest(route, req, requestInfo, res)
-      expect(repo.get(HttpRequestBody)).to.exist
+    it('adds request body providers if the method has a parameter that requests HttpRequestBody', async function() {
+      const providers = await this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)
+      expect(providers.find(p => p.provide === HttpRequestBody)).to.exist
     })
 
-    it('registers any authProviders', async () => {
+    it('registers any authProviders', async function() {
       class Foo {}
       const value = {}
-      authProviderFactory.createAuthProviders.resolves([{ provide: Foo, useValue: value }])
+      this.authProviderFactory.generateAuthProviders.resolves([{ provide: Foo, useValue: value }])
 
-      const repo = await initializer.initRouteRequest(route, req, requestInfo, res)
+      const providers = await this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)
 
-      expect(repo.get(Foo)).to.exist
+      expect(providers.find(p => p.provide === Foo)).to.exist
     })
 
-    it('does not throw if all authorization conditions pass', async () => {
-      authProviderFactory.createAuthProviders.resolves([
+    it('does not throw if all authorization conditions pass', async function() {
+      this.authProviderFactory.generateAuthProviders.resolves([
         { provide: AuthorizationCondition, useValue: { allowed: true } },
       ])
 
-      await initializer.initRouteRequest(route, req, requestInfo, res)
+      await this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)
     })
 
-    it('throws a Forbidden error if authorization conditions do not pass', async () => {
-      authProviderFactory.createAuthProviders.resolves([
+    it('throws a Forbidden error if authorization conditions do not pass', async function() {
+      this.authProviderFactory.generateAuthProviders.resolves([
         { provide: AuthorizationCondition, useValue: { allowed: false, reason: 'test' } },
       ])
 
-      const error = await expect(initializer.initRouteRequest(route, req, requestInfo, res)).to.be.rejectedWith(
+      const error = await expect(this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)).to.be.rejectedWith(
         RouteInitializationError,
       )
 
@@ -168,9 +157,9 @@ describe('DefaultRouteInitializer', () => {
       expect(error.innerError.internalMessage).to.equal('test')
     })
 
-    it('adds providers from any defined registrars', async () => {
+    it('adds providers from any defined registrars', async function() {
       class Foo {}
-      (initializer as any).registrars = [
+      this.initializer.registrars = [
         {
           async provide(): Promise<Array<Provider<any>>> {
             return [
@@ -183,8 +172,8 @@ describe('DefaultRouteInitializer', () => {
         },
       ] as RequestProviderRegistrar[]
 
-      const repo = await initializer.initRouteRequest(route, req, requestInfo, res)
-      expect(repo.get(Foo)).to.exist
+      const providers = await this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)
+      expect(providers.find(p => p.provide === Foo)).to.exist
     })
   })
 })

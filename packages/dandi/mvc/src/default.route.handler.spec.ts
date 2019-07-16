@@ -1,78 +1,125 @@
 import { Uuid } from '@dandi/common'
-import { Container, NoopLogger, ResolverContext } from '@dandi/core'
-import { HttpMethod, JsonControllerResult, RequestInfo, Route } from '@dandi/mvc'
+import { stubHarness } from '@dandi/core/testing'
+import { ModelBuilderModule } from '@dandi/model-builder'
+import {
+  DefaultRouteHandler,
+  HttpMethod, MimeTypes,
+  MissingParamError,
+  MvcRequest,
+  MvcResponse,
+  MvcResponseRenderer,
+  NativeJsonObjectRenderer,
+  parseMimeTypes,
+  PathParam,
+  RequestAcceptTypesProvider,
+  RequestController,
+  RequestInfo,
+  RequestPathParamMap,
+  Route,
+} from '@dandi/mvc'
+
 import { expect } from 'chai'
-import { stub } from 'sinon'
+import { stub, createStubInstance } from 'sinon'
 
-import { DefaultRouteHandler } from './default.route.handler'
+describe('DefaultRouteHandler', function() {
 
-describe('DefaultRouteHandler', () => {
-  let container: Container
-  let handler: DefaultRouteHandler
-
-  let resolverContext: ResolverContext<any>
-  let controller: any
-  let route: Route
-  let requestInfo: RequestInfo
-  let req: any
-  let res: any
-
-  beforeEach(async () => {
-    container = new Container()
-    await container.start()
-    resolverContext = ResolverContext.create(null)
-    handler = new DefaultRouteHandler(container, new NoopLogger())
-    route = {
-      controllerCtr: class TestClass {},
-      controllerMethod: 'method',
-      httpMethod: HttpMethod.get,
-      siblingMethods: new Set([HttpMethod.get]),
-      path: '/',
-    }
-    req = {
-      params: {},
-      query: {},
-    }
-    res = {
-      contentType: stub().returnsThis(),
-      json: stub().returnsThis(),
-      send: stub().returnsThis(),
-      setHeader: stub().returnsThis(),
-      status: stub().returnsThis(),
-      end: stub().returnsThis(),
-    }
-    requestInfo = {
-      requestId: new Uuid(),
-      performance: {
-        mark: stub(),
+  const harness = stubHarness(DefaultRouteHandler,
+    RequestAcceptTypesProvider,
+    ModelBuilderModule,
+    {
+      provide: Route,
+      useFactory: () => ({
+        controllerCtr: class TestClass {},
+        controllerMethod: 'method',
+        httpMethod: HttpMethod.get,
+        siblingMethods: new Set([HttpMethod.get]),
+        path: '/',
+      }),
+      singleton: true,
+    },
+    {
+      provide: MvcRequest,
+      useFactory: () => ({
+        params: {},
+        query: {},
+        get: stub().callsFake((key: string) => {
+          switch (key) {
+            case 'Accept': return MimeTypes.applicationJson
+          }
+        }),
+      }),
+    },
+    {
+      provide: MvcResponse,
+      useFactory: () => ({
+        contentType: stub().returnsThis(),
+        json: stub().returnsThis(),
+        send: stub().returnsThis(),
+        setHeader: stub().returnsThis(),
+        status: stub().returnsThis(),
+        end: stub().returnsThis(),
+      }),
+    },
+    {
+      provide: RequestInfo,
+      useFactory: () => ({
+        requestId: new Uuid(),
+        performance: {
+          mark: stub(),
+        },
+      }),
+      singleton: true,
+    },
+    {
+      provide: RequestPathParamMap,
+      useFactory(req: MvcRequest) {
+        return req.params
       },
+      deps: [MvcRequest],
+    },
+    {
+      provide: MvcResponseRenderer,
+      useFactory: () => createStubInstance(NativeJsonObjectRenderer),
+    },
+  )
+
+  beforeEach(async function() {
+    this.handler = await harness.inject(DefaultRouteHandler)
+    this.route = await harness.inject(Route)
+    this.req = await harness.inject(MvcRequest)
+    this.res = await harness.inject(MvcResponse)
+    this.requestInfo = await harness.inject(RequestInfo)
+    this.renderer = await harness.inject(MvcResponseRenderer)
+    this.renderer.render.returns({
+      contentType: 'text/plain',
+      renderedOutput: '',
+    })
+    this.registerController = (controller: any) => {
+      harness.register({
+        provide: RequestController,
+        useValue: controller,
+      })
+      this.route.controllerCtr = controller.constructor
     }
-  })
-  afterEach(() => {
-    handler = undefined
-    container = undefined
-    resolverContext = undefined
-    req = undefined
-    res = undefined
-    requestInfo = undefined
+    this.invokeHandler = () => harness.invoke(this.handler, 'handleRouteRequest')
   })
 
-  describe('handleRouteRequest', () => {
-    it('invokes the specified controller method', async () => {
+  describe('handleRouteRequest', function() {
+    it('invokes the specified controller method', async function() {
       const spy = stub()
       class TestController {
         public async method(): Promise<any> {
           spy()
         }
       }
-      controller = new TestController()
-      route.controllerCtr = TestController
-      await handler.handleRouteRequest(resolverContext, controller, route, req, res, requestInfo)
+      this.registerController(new TestController())
+
+      await this.invokeHandler()
 
       expect(spy).to.have.been.called
     })
 
-    it('calls res.send() with the result of the controller', async () => {
+    it('calls renderer.render() with the result of the controller', async function() {
       const spy = stub()
       class TestController {
         public async method(): Promise<any> {
@@ -80,25 +127,75 @@ describe('DefaultRouteHandler', () => {
           return { foo: 'yeah!' }
         }
       }
-      controller = new TestController()
-      await handler.handleRouteRequest(resolverContext, controller, route, req, res, requestInfo)
+      this.registerController(new TestController())
+
+      await this.invokeHandler()
 
       expect(spy).to.have.been.called
-      expect(res.send).to.have.been.calledWith(JSON.stringify({ foo: 'yeah!' }))
-      expect(res.contentType).to.have.been.calledWith('application/json')
+      expect(this.renderer.render).to.have.been.calledWith(parseMimeTypes(MimeTypes.applicationJson), { data: { foo: 'yeah!' } })
     })
 
-    it('adds any response headers specified by the controller result', async () => {
-      const result = new JsonControllerResult({ foo: 'yeah!' }, { 'x-fizzle-bizzle': 'okay' })
+    it('adds any response headers specified by the controller result', async function() {
+      const result = { data: { foo: 'yeah!' }, headers: { 'x-fizzle-bizzle': 'okay' } }
       class TestController {
         public async method(): Promise<any> {
           return result
         }
       }
-      controller = new TestController()
-      await handler.handleRouteRequest(resolverContext, controller, route, req, res, requestInfo)
+      this.registerController(new TestController())
 
-      expect(res.setHeader).to.have.been.calledWith('x-fizzle-bizzle', 'okay')
+      await this.invokeHandler()
+
+      expect(this.res.setHeader).to.have.been.calledWith('x-fizzle-bizzle', 'okay')
+    })
+
+    it('sets the contentType using the renderer result', async function() {
+      const result = { data: { foo: 'yeah!' }, headers: { 'x-fizzle-bizzle': 'okay' } }
+      class TestController {
+        public async method(): Promise<any> {
+          return result
+        }
+      }
+      this.registerController(new TestController())
+      this.renderer.render.returns({
+        contentType: MimeTypes.applicationJson,
+      })
+
+      await this.invokeHandler()
+
+      expect(this.res.contentType).to.have.been.calledWith(MimeTypes.applicationJson)
+    })
+
+    it('calls res.send() with the rendered output of the renderer result', async function() {
+
+      const result = { data: { foo: 'yeah!' }, headers: { 'x-fizzle-bizzle': 'okay' } }
+      class TestController {
+        public async method(): Promise<any> {
+          return result
+        }
+      }
+      this.registerController(new TestController())
+      this.renderer.render.returns({
+        renderedOutput: 'foo yeah!',
+      })
+
+      await this.invokeHandler()
+
+      expect(this.res.send).to.have.been.calledWith('foo yeah!')
+    })
+
+    it('throws an error if one of the path params is missing', async function() {
+
+      class TestController {
+        public method(@PathParam(String) someParam) {
+          return { message: 'OK' }
+        }
+      }
+      this.registerController(new TestController())
+
+      await expect(this.invokeHandler())
+        .to.be.rejectedWith(MissingParamError)
+
     })
   })
 })

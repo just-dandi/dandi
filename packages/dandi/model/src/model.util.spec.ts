@@ -10,14 +10,14 @@ describe('ModelUtil', () => {
     it('generates a list of paths for basic types', () => {
       class TestChildClass {
         @Property(String)
-        public foo: string;
+        public foo: string
       }
       class TestClass {
         @Property(String)
-        public bar: string;
+        public bar: string
 
         @Property(TestChildClass)
-        public child: TestChildClass;
+        public child: TestChildClass
       }
 
       const pathList = ModelUtil.generatePathList(TestClass)
@@ -28,15 +28,15 @@ describe('ModelUtil', () => {
     it('stops recursion based on a provided recursion filter', () => {
       class TestChildClass {
         @Property(String)
-        public foo: string;
+        public foo: string
       }
       class TestClass {
         @Property(String)
-        public bar: string;
+        public bar: string
 
         @Property(TestChildClass)
         @Json()
-        public child: TestChildClass;
+        public child: TestChildClass
       }
       const pathList = ModelUtil.generatePathList(TestClass, {
         recursionFilter: (meta: DataPropertyMetadata) => !meta.json,
@@ -48,14 +48,14 @@ describe('ModelUtil', () => {
     it('uses a provider formatter', () => {
       class TestChildClass {
         @Property(String)
-        public foo: string;
+        public foo: string
       }
       class TestClass {
         @Property(String)
-        public bar: string;
+        public bar: string
 
         @Property(TestChildClass)
-        public child: TestChildClass;
+        public child: TestChildClass
       }
 
       const pathList = ModelUtil.generatePathList(TestClass, {
