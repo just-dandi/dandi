@@ -1,7 +1,5 @@
-import { Constructor } from '@dandi/common'
 import { Provider } from '@dandi/core'
-import { MemberMetadata } from '@dandi/model'
-import { ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder'
+import { ModelBuilder } from '@dandi/model-builder'
 
 import { stub } from 'sinon'
 
@@ -19,10 +17,10 @@ export class ModelBuilderFixture implements ModelBuilder {
     stub(this, 'constructModel')
   }
 
-  public constructMember(metadata: MemberMetadata, key: string, value: any, options?: ModelBuilderOptions): any {
+  public constructMember(): any {
   }
 
-  public constructModel<T>(type: Constructor<T>, obj: any, options?: ModelBuilderOptions): T {
+  public constructModel<T>(): T {
     return undefined
   }
 

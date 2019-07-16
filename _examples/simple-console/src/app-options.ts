@@ -7,18 +7,18 @@ export interface AppOptions {
 
 export interface AppConfig {
 }
-// tslint:disable-next-line variable-name
+
 export const AppConfig: InjectionToken<AppConfig> = localOpinionatedToken('AppConfig', {
   multi: false,
   singleton: true,
 })
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function installerConfigFactory(options: AppConfig): AppConfig {
   return {
   }
 }
 
-// tslint:disable-next-line variable-name
 export function appConfigProvider(options: AppOptions): Provider<AppConfig> {
   return {
     provide: AppConfig,

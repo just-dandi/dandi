@@ -1,5 +1,5 @@
 import { stubProvider, testHarness } from '@dandi/core/testing'
-import { APIGatewayProxyResult } from 'aws-lambda'
+
 import { expect } from 'chai'
 
 import { HttpEventOptions } from './http.event.options'
@@ -80,7 +80,7 @@ describe('HttpResponder', () => {
 
   describe('with interceptors', () => {
     class TestResponseInterceptor implements HttpResponseInterceptor {
-      public exec(res: APIGatewayProxyResult): void {}
+      public exec(): void {}
     }
 
     const harness = testHarness(HttpResponder, stubProvider(TestResponseInterceptor, HttpResponseInterceptor))

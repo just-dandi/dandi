@@ -123,7 +123,7 @@ export class Repository<TContext = any> implements Disposable {
     Disposable.remapDisposed(this, reason)
   }
 
-  private registerProvider<T>(provider: Provider<T>, target?: Constructor<T> | Provider<T>) {
+  private registerProvider<T>(provider: Provider<T>, target?: Constructor<T> | Provider<T>): void {
     if (provider.provide instanceof OpinionatedToken) {
       const opinionatedOptions = provider.provide.options
       Object.keys(opinionatedOptions).forEach((optionKey) => {

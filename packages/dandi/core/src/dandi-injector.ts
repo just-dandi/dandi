@@ -26,7 +26,7 @@ interface Args<T> {
   providers: Array<Provider<any> | Constructor<any>>
   noToken?: boolean
 }
-type KnownArgs<T> = { [P in keyof Args<T>]?: Args<T>[P] }
+type KnownArgs<T> = { [TProp in keyof Args<T>]?: Args<T>[TProp] }
 
 const PARSE_ARGS_A1 = 0
 const PARSE_ARGS_A2 = 1

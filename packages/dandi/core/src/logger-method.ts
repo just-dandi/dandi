@@ -30,7 +30,7 @@ function loggerMethodConfig(value: boolean, ...props: (keyof LogCallOptions)[]):
   }
 }
 
-const LOGGER_METHOD_CONFIG: { [key in keyof LoggerMethodModifiers]: LoggerMethodConfig } = {
+const LOGGER_METHOD_CONFIG: { [TKey in keyof LoggerMethodModifiers]: LoggerMethodConfig } = {
   level: loggerMethodConfig(true, 'level'),
   noLevel: loggerMethodConfig(false, 'level'),
   timestamp: loggerMethodConfig(true, 'timestamp'),

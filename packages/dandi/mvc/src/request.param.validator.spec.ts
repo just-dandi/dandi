@@ -46,7 +46,7 @@ describe('requestParamValidatorFactory', () => {
     const s = stub()
     const convert = stub()
     class TestController {
-      public testMethod(@PathParam(String) foo: string) {
+      public testMethod(@PathParam(String) foo: string): void {
         s(foo)
       }
     }

@@ -6,6 +6,7 @@ describe('@Inject', () => {
   it("sets the specified token on the decorated parameter's metadata", () => {
     const token = new SymbolToken('test')
     class TestClass {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       constructor(@Inject(token) param: any) {}
     }
     const meta = getInjectableParamMetadata(methodTarget(TestClass), null, 0)
@@ -15,6 +16,7 @@ describe('@Inject', () => {
 
   it('throws if the specified token is not a valid InjectionToken', () => {
     class TestClass {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       constructor(param: any) {}
     }
 

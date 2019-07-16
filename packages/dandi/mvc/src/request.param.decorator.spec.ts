@@ -7,6 +7,7 @@ import { PathParam, QueryParam, RequestPathParamMap, RequestQueryParamMap } from
 describe('@RequestParam', () => {
   it('sets a token for the decorated parameter', () => {
     class TestController {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       public method(@PathParam(String) foo: string, @QueryParam(String) bar: string): void {}
     }
 
@@ -26,6 +27,7 @@ describe('@RequestParam', () => {
 
   it('creates a provider to handle validating the param value', () => {
     class TestController {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       public method(@PathParam(String) foo: string, @QueryParam(String) bar: string): void {}
     }
 

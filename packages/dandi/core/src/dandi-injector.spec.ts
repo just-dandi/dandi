@@ -361,7 +361,7 @@ describe('DandiInjector', function () {
       it('calls the invoked method even if it has no parameters', async function() {
         const method = stub()
         class TestClass {
-          public method() {
+          public method(): any {
             // trying to spy on this mucks up Reflection, so just do it manually
             return method()
           }

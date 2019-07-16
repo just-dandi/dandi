@@ -126,8 +126,6 @@ export class Disposable {
     const resolvedObj = isPromise(obj) ? await obj : obj
     try {
       return await use(resolvedObj)
-    } catch (err) {
-      throw err
     } finally {
       if (Disposable.isDisposable(resolvedObj)) {
         await resolvedObj.dispose('after Disposable.useAsync()')

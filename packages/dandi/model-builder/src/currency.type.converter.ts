@@ -1,6 +1,5 @@
 import { Currency } from '@dandi/common'
 import { Injectable } from '@dandi/core'
-import { MemberMetadata } from '@dandi/model'
 
 import { TypeConverter } from './type.converter'
 
@@ -8,7 +7,7 @@ import { TypeConverter } from './type.converter'
 export class CurrencyTypeConverter implements TypeConverter<Currency> {
   public readonly type = Currency
 
-  public convert(value: any, metadata?: MemberMetadata): Currency {
+  public convert(value: any): Currency {
     const result = Currency.parse(value)
     if (result.valid) {
       return result

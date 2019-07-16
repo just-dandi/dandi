@@ -11,6 +11,7 @@ describe('@HttpRequestBody', () => {
     class TestModel {}
 
     class TestController {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       public method(@RequestBody(TestModel) body: any): void {}
     }
 
@@ -24,6 +25,7 @@ describe('@HttpRequestBody', () => {
     class TestModel {}
 
     class TestController {
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       public method(@RequestBody(TestModel) body: any): void {}
     }
 

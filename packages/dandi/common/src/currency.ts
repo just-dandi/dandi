@@ -47,11 +47,11 @@ export class Currency extends Number {
     Object.freeze(this)
   }
 
-  public toString() {
+  public toString(): string {
     return this.toDisplayString()
   }
 
-  public toDisplayString(display: 'symbol' | 'code' | 'name' = 'symbol') {
+  public toDisplayString(display: 'symbol' | 'code' | 'name' = 'symbol'): string {
     return this.toLocaleString(null, {
       style: 'currency',
       currency: this.code,

@@ -1,5 +1,5 @@
 import { AppError, Uuid } from '@dandi/common'
-import { Repository, Injector, InjectorContext } from '@dandi/core'
+import { Injector } from '@dandi/core'
 import { stubHarness } from '@dandi/core/testing'
 import {
   DefaultRouteExecutor,
@@ -12,7 +12,7 @@ import {
 } from '@dandi/mvc'
 
 import { expect } from 'chai'
-import { SinonStubbedInstance, createStubInstance, stub } from 'sinon'
+import { stub } from 'sinon'
 
 describe('DefaultRouteExecutor', function() {
 

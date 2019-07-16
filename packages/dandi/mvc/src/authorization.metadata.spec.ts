@@ -1,8 +1,6 @@
 import { AuthorizationCondition, AuthorizationMetadata, mergeAuthorization } from '@dandi/mvc'
 
-// tslint:disable no-unused-expression
 import { expect } from 'chai'
-import { SinonStubbedInstance, createStubInstance, stub } from 'sinon'
 
 describe('AuthorizationMetadata', () => {
   describe('mergeAuthorization', () => {

@@ -1,4 +1,4 @@
-import { Disposable, Uuid } from '@dandi/common'
+import { Uuid } from '@dandi/common'
 import { Provider } from '@dandi/core'
 import { testHarnessSingle } from '@dandi/core/testing'
 import { ComposedResource, HalModelBase, ListRelation, Relation, ResourceId, SELF_RELATION } from '@dandi/hal'
@@ -27,6 +27,7 @@ import {
 import { expect } from 'chai'
 import { createStubInstance, stub } from 'sinon'
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 describe('DefaultResourceComposer', function() {
 
   describe('compose', function() {
@@ -141,7 +142,7 @@ describe('DefaultResourceComposer', function() {
       class ResourceController {
         @ResourceListAccessor(Resource)
         @HttpGet()
-        getResources() {}
+        getResources(): any {}
 
         @ResourceAccessor(Resource)
         @HttpGet(':resourceId')
@@ -149,7 +150,7 @@ describe('DefaultResourceComposer', function() {
           @PathParam(Number)
           @AccessorResourceId()
             resourceId,
-        ) {}
+        ): any {}
       }
 
       const routes: Provider<Route[]> = {
@@ -1046,7 +1047,7 @@ describe('DefaultResourceComposer', function() {
           @PathParam(Number)
           @AccessorResourceId()
             listId,
-        ) {
+        ): Promise<List> {
           return new List({ listId })
         }
 
@@ -1056,7 +1057,7 @@ describe('DefaultResourceComposer', function() {
           @PathParam(Number)
           @AccessorResourceId(List)
             listId,
-        ) {
+        ): Promise<Item[]> {
           return [
             new Item({ listId, itemId: Math.random() }),
             new Item({ listId, itemId: Math.random() }),
@@ -1195,3 +1196,4 @@ describe('DefaultResourceComposer', function() {
     })
   })
 })
+/* eslint-enable @typescript-eslint/no-unused-vars */

@@ -7,15 +7,13 @@ import { NativeNow } from './native-now'
 import { NoopLogger } from './noop-logger'
 import { QueueingLogger } from './queueing-logger'
 
-export type Options<T> = { [P in keyof T]?: T[P] }
-
 export class DandiApplication<TConfig extends DandiApplicationConfig = DandiApplicationConfig> implements Disposable {
 
   protected readonly config: TConfig
 
   private readonly initHost: DandiApplicationInit<TConfig>
 
-  constructor(options: Options<TConfig> = {}, defaults?: Options<TConfig>) {
+  constructor(options: Partial<TConfig> = {}, defaults?: Partial<TConfig>) {
     this.config = Object.assign({} as TConfig, defaults, options)
 
     if (!this.config.providers) {

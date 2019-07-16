@@ -33,6 +33,7 @@ export class Publisher {
     while (!lastBatch || lastBatch.length > 0) {
       lastBatch = await this.publishClearedPackages(state)
       lastBatch.forEach(info => state.published.add(info.fullName))
+      // eslint-disable-next-line require-atomic-updates
       state.remaining = state.remaining.filter(info => !state.published.has(info.fullName))
     }
 

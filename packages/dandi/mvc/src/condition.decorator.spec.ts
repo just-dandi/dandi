@@ -34,7 +34,8 @@ describe('ConditionDecorator', function() {
   class TestController {
     @Authorized()
     @HttpGet('test')
-    public testMethod(@PathParam(String).within(collection) foo: string) {}
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public testMethod(@PathParam(String).within(collection) foo: string): void {}
   }
 
   it("adds a condition to the method's metadata", () => {

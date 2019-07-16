@@ -12,9 +12,9 @@ export class MockContext implements Context {
   public logStreamName: string
   public memoryLimitInMB: number
 
-  public done(error?: Error, result?: any): void {}
+  public done(): void {}
 
-  public fail(error: Error | string): void {}
+  public fail(): void {}
 
   public getRemainingTimeInMillis(): number {
     return 0
@@ -22,5 +22,5 @@ export class MockContext implements Context {
 
   public succeed(messageOrObject: any): void;
   public succeed(message: string, object: any): void;
-  public succeed(messageOrObject: any | string, object?: any): void {}
+  public succeed(): void {}
 }

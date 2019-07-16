@@ -9,7 +9,7 @@ describe('HttpMethodDecorator', () => {
     @Controller('/')
     class TestController {
       @HttpGet()
-      public testMethod() {}
+      public testMethod(): void {}
     }
 
     const controllerMeta = getControllerMetadata(TestController)
@@ -26,7 +26,7 @@ describe('HttpMethodDecorator', () => {
       @HttpGet()
       @HttpPost()
       @HttpPost('foo')
-      public testMethod() {}
+      public testMethod(): void {}
     }
 
     const controllerMeta = getControllerMetadata(TestController)

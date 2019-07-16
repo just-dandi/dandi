@@ -97,6 +97,7 @@ describe('AmbientInjectableScanner', () => {
     @Injectable(Singleton)
     class Singlejon {}
     @Injectable()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     class Test {
       constructor(@Inject(Singlejon) public jon: Singlejon) {}
     }

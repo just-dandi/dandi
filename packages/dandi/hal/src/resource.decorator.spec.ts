@@ -1,8 +1,7 @@
 import { Resource } from '@dandi/hal'
 import { ModelBase } from '@dandi/model'
-import { expect } from 'chai'
 
-import { ResourceDecorator } from './resource.decorator'
+import { expect } from 'chai'
 
 describe('ResourceDecorator', () => {
   describe('isResource(resource)', () => {

@@ -187,8 +187,8 @@ describe('DefaultRouteHandler', function() {
     it('throws an error if one of the path params is missing', async function() {
 
       class TestController {
-        public method(@PathParam(String) someParam) {
-          return { message: 'OK' }
+        public method(@PathParam(String) someParam): any {
+          return { message: 'OK', param: someParam }
         }
       }
       this.registerController(new TestController())

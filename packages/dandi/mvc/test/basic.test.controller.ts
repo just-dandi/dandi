@@ -1,19 +1,20 @@
 import { Controller, HttpGet } from '@dandi/mvc'
 
 @Controller('/test/basic')
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 class BasicTestController {
 
   constructor() {
     console.log('[BasicTestController] ctr')
   }
 
-    @HttpGet()
-  public noAdditionalPath() {
+  @HttpGet()
+  public noAdditionalPath(): void {
     console.log('[BasicTestController] noAdditionalPath')
   }
 
-    @HttpGet('/more/path')
-    public morePath() {
-      console.log('[BasicTestController] morePath')
-    }
+  @HttpGet('/more/path')
+  public morePath(): void {
+    console.log('[BasicTestController] morePath')
+  }
 }

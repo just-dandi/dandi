@@ -288,7 +288,8 @@ describe('ModelDecorator', () => {
 
     it('sets "oneOf" property on member\'s metadata when used on a method parameter', () => {
       class TestClassMethod {
-        public testMethod(@OneOf(Uuid, String) testParam) {}
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        public testMethod(@OneOf(Uuid, String) testParam): void {}
       }
 
       expect(getMemberMetadata(TestClassMethod, 'testMethod', 0).oneOf).to.deep.equal([Uuid, String])

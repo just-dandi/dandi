@@ -1,11 +1,10 @@
 import { SymbolToken } from '@dandi/core'
-import { MvcViewModuleBuilder, ViewEngine, ViewMetadata } from '@dandi/mvc-view'
-import { ViewEngineConfig } from '@dandi/mvc-view/src/view-engine-config'
+import { MvcViewModuleBuilder, ViewEngine, ViewEngineConfig } from '@dandi/mvc-view'
 import { expect } from 'chai'
 
 describe('MvcViewModuleBuilder', function() {
   class TestViewEngine implements ViewEngine {
-    render(view: ViewMetadata, templatePath: string, data?: any): string | Promise<string> {
+    render(): string | Promise<string> {
       return undefined
     }
   }

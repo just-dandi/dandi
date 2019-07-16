@@ -16,6 +16,7 @@ import {
 
 import { expect } from 'chai'
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 describe('DecoratorRouteGenerator', function() {
 
   @Controller('/decorator-route-generator/a')
@@ -23,27 +24,27 @@ describe('DecoratorRouteGenerator', function() {
   class TestControllerA {
     @HttpGet('testA')
     @HttpPost('/testA')
-    public testMethod() {}
+    public testMethod(): void {}
   }
   @Controller('/decorator-route-generator/b')
   @Cors({})
   class TestControllerB {
     @HttpPut('testB')
-    public testMethod() {}
+    public testMethod(): void {}
   }
   @Controller('decorator-route-generator/c')
   @Authorized()
   class TestControllerC {
     @HttpDelete('testC')
     @Cors()
-    public testMethod() {}
+    public testMethod(): void {}
   }
   @Controller('/decorator-route-generator/d/')
   class TestControllerD {
     @HttpGet('/testD')
     @Authorized()
     @Cors({})
-    public testMethod() {}
+    public testMethod(): void {}
   }
 
   const harness = stubHarness(DecoratorRouteGenerator)
@@ -118,3 +119,4 @@ describe('DecoratorRouteGenerator', function() {
     })
   })
 })
+/* eslint-enable @typescript-eslint/no-unused-vars */

@@ -12,7 +12,7 @@ export class TestTextPlainRenderer extends ObjectRendererBase {
     stub(this as any, 'renderControllerResult')
   }
 
-  protected renderControllerResult(contentType: string, value: any): string | Promise<string> {
+  protected renderControllerResult(): string | Promise<string> {
     return undefined
   }
 

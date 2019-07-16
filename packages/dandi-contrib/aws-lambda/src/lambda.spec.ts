@@ -18,17 +18,17 @@ interface TestEventData {}
 interface TestResponse {}
 
 class TestTransformer implements LambdaEventTransformer<TestEvent, TestEventData> {
-  public transform(event: TestEvent, context: Context): TestEventData {
+  public transform(): TestEventData {
     return undefined
   }
 }
 
 class TestResponder implements LambdaResponder<TestResponse> {
-  public handleError(error: Error): Promise<any> {
+  public handleError(): Promise<any> {
     return undefined
   }
 
-  public handleResponse(response: TestResponse): Promise<any> {
+  public handleResponse(): Promise<any> {
     return undefined
   }
 }
@@ -46,7 +46,7 @@ describe('Lambda', () => {
       TestHandler.instance = this as any
     }
 
-    public handleEvent(data: TestEvent): Promise<any> {
+    public handleEvent(): Promise<any> {
       return undefined
     }
   }
@@ -175,7 +175,7 @@ describe('Lambda', () => {
 
   describe('error handlers', () => {
     class TestErrorHandler implements LambdaErrorHandler<TestEvent> {
-      public handleError(evt: TestEvent, err: Error): void {}
+      public handleError(): void {}
     }
 
     const harness = testHarness(

@@ -12,7 +12,8 @@ import {
   Invoker,
   ResolvedProvider,
   InstanceInvokableFn,
-  ResolverContext, ResolverContextConstructor,
+  ResolverContext,
+  ResolverContextConstructor,
 } from '@dandi/core'
 import { AppInjectorContext } from '@dandi/core/src/app-injector-context'
 import { isFactoryProvider, StubResolverContext } from '@dandi/core/testing'
@@ -175,7 +176,7 @@ export class TestHarness implements TestInjector, Disposable {
 
   canResolve(token: InjectionToken<any>, ...providers: Array<Provider<any> | Constructor<any>>): boolean
   canResolve(token: InjectionToken<any>, parentInjectorContext: ResolverContext<any>, ...providers: Array<Provider<any> | Constructor<any>>): boolean
-  canResolve(token: InjectionToken<any>, ...args: any[]): boolean {
+  canResolve(): boolean {
     // bound in testInjectorFactory
     return false
   }
@@ -193,11 +194,7 @@ export class TestHarness implements TestInjector, Disposable {
     ...providers: Array<Provider<any> | Constructor<any>>
   ): Promise<TResult>
 
-  invoke<TInstance, TResult>(
-    instance: TInstance,
-    methodName: InstanceInvokableFn<TInstance, TResult>,
-    ...args: any[]
-  ): Promise<TResult> {
+  invoke<TInstance, TResult>(): Promise<TResult> {
     // bound in testInjectorFactory
     return undefined
   }
@@ -206,7 +203,7 @@ export class TestHarness implements TestInjector, Disposable {
   resolve<T>(token: InjectionToken<T>, optional: boolean, ...providers: Array<Provider<any> | Constructor<any>>): ResolvedProvider<T>
   resolve<T>(token: InjectionToken<T>, parentInjectorContext: ResolverContext<any>, ...providers: Array<Provider<any> | Constructor<any>>): ResolvedProvider<T>
   resolve<T>(token: InjectionToken<T>, parentInjectorContext: ResolverContext<any>, optional: boolean, ...providers: Array<Provider<any> | Constructor<any>>): ResolvedProvider<T>
-  resolve<T>(token: InjectionToken<T>, ...args: any[]): ResolvedProvider<T> {
+  resolve<T>(): ResolvedProvider<T> {
     // bound in testInjectorFactory
     return undefined
   }

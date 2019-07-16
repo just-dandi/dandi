@@ -11,7 +11,7 @@ describe('@Cors', () => {
       @Cors()
       class TestController {
         @HttpGet()
-        public testMethod() {}
+        public testMethod(): void {}
       }
 
       const controllerMeta = getControllerMetadata(TestController)
@@ -25,7 +25,7 @@ describe('@Cors', () => {
       class TestController {
         @HttpGet()
         @Cors()
-        public testMethod() {}
+        public testMethod(): void {}
       }
 
       const controllerMeta = getControllerMetadata(TestController)

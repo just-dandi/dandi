@@ -43,7 +43,7 @@ export interface ConsoleLogListenerOptions {
 }
 
 export interface ConsoleLogListenerConfig extends ConsoleLogListenerOptions {
-  levelOptions?: { [key in keyof LogLevel]?: ConsoleLogListenerOptions }
+  levelOptions?: { [TKey in keyof LogLevel]?: ConsoleLogListenerOptions }
   filter?: LogLevel
 }
 

@@ -1,5 +1,4 @@
 import { PgDbPoolClient } from '@dandi-contrib/data-pg'
-import { Options } from '@dandi/core'
 import { TestProvider } from '@dandi/core/testing'
 
 import { QueryResult } from 'pg'
@@ -7,7 +6,7 @@ import { stub } from 'sinon'
 
 export class PgDbPoolClientFixture extends PgDbPoolClient {
 
-  public static result(result: Options<QueryResult> | Error): void {
+  public static result(result: Partial<QueryResult> | Error): void {
     this.currentResult = result
   }
 
@@ -27,7 +26,7 @@ export class PgDbPoolClientFixture extends PgDbPoolClient {
     }
   }
 
-  private static currentResult: Options<QueryResult> | Error
+  private static currentResult: Partial<QueryResult> | Error
 
   constructor() {
     super(undefined)
