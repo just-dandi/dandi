@@ -9,7 +9,7 @@ import {
   RequestAcceptTypesProvider,
   Route,
 } from '@dandi/mvc'
-import { HalMimeTypes, HalObjectRenderer, NoSupportedRendererError } from '@dandi/mvc-hal'
+import { HalMimeTypes, HalObjectRenderer } from '@dandi/mvc-hal'
 import { TestApplicationJsonRenderer } from '@dandi/mvc/testing'
 
 import { expect } from 'chai'

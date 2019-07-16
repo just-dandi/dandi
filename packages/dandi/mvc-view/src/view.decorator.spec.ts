@@ -6,10 +6,10 @@ describe('@View', function() {
   const options = {}
   class TestController {
     @View()
-    test() {}
+    test(): any {}
 
     @View('test-named', options)
-    testNamed() {}
+    testNamed(): any {}
   }
 
   beforeEach(function() {

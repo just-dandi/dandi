@@ -18,7 +18,7 @@ export interface Resolver {
    * Performs a shallow check (not checking dependencies or other parameters) to see if a matching provider
    * has been configured for the specified injection token.
    * @param token - the injection token
-   * @param repositories - any additional {Repository} instances to use for resolving the token
+   * @param providers - any additional {Provider} instances to use for resolving the token
    */
   canResolve(token: InjectionToken<any>, ...providers: Array<Provider<any> | Constructor<any>>): boolean
   canResolve(token: InjectionToken<any>, parentResolverContext: ResolverContext<any>, ...providers: Array<Provider<any> | Constructor<any>>): boolean
@@ -40,7 +40,7 @@ export type InvokableVoidFn = (...args: any[]) => void | Promise<void>
 export type InvokableFn<T = void> = InvokableReturnFn<T> | InvokableVoidFn
 
 export type Filtered<TType, TCondition> = {
-  [key in keyof TType]: TType[key] extends TCondition ? key : never
+  [TKey in keyof TType]: TType[TKey] extends TCondition ? TKey : never
 }
 export type AllowedKeys<TType, TCondition> = Filtered<TType, TCondition>[keyof TType]
 export type Subset<TType, TCondition> = Pick<TType, AllowedKeys<TType, TCondition>>

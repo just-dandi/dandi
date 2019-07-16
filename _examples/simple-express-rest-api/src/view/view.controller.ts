@@ -1,6 +1,6 @@
 import { Inject } from '@dandi/core'
-import { Controller, HttpGet, QueryParam, RequestQueryParamMap } from '@dandi/mvc'
-import { View, ViewResultFactory } from '@dandi/mvc-view'
+import { Controller, HttpGet, ParamMap, QueryParam, RequestQueryParamMap } from '@dandi/mvc'
+import { View, ViewResult, ViewResultFactory } from '@dandi/mvc-view'
 
 @Controller('view')
 export class ViewController {
@@ -12,7 +12,7 @@ export class ViewController {
    */
   @HttpGet('auto')
   @View('example-auto')
-  public auto(@Inject(RequestQueryParamMap) query) {
+  public auto(@Inject(RequestQueryParamMap) query): { query: ParamMap } {
     return { query }
   }
 
@@ -22,13 +22,13 @@ export class ViewController {
    */
   @HttpGet('explicit-pug')
   @View('example-explicit.pug')
-  public explicitPug(@Inject(RequestQueryParamMap) query) {
+  public explicitPug(@Inject(RequestQueryParamMap) query): { query: ParamMap } {
     return { query }
   }
 
   @HttpGet('explicit-ejs')
   @View('example-explicit.ejs')
-  public explicitEjs(@Inject(RequestQueryParamMap) query) {
+  public explicitEjs(@Inject(RequestQueryParamMap) query): { query: ParamMap } {
     return { query }
   }
 
@@ -38,7 +38,7 @@ export class ViewController {
    */
   @HttpGet('dynamic')
   @View()
-  public dynamic(@QueryParam(String) mode: string) {
+  public dynamic(@QueryParam(String) mode: string): Promise<ViewResult> {
     return this.view(mode === 'b' ? 'dynamic-b' : 'dynamic-a', { data: { mode } })
   }
 }

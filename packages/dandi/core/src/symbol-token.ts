@@ -15,7 +15,7 @@ export abstract class SymbolTokenBase<T> {
     return `SymbolToken[${this.desc}]`
   }
 
-  protected ready() {
+  protected ready(): void {
     Object.freeze(this)
   }
 }

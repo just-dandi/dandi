@@ -4,9 +4,11 @@ import {
   DandiApplication,
   Inject,
   Injectable,
-  InjectionToken, Injector, isInjector,
-  Optional, Registerable,
-  Repository,
+  InjectionToken,
+  Injector,
+  isInjector,
+  Optional,
+  Registerable,
 } from '@dandi/core'
 import { Context } from 'aws-lambda'
 
@@ -61,6 +63,7 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler<TEventDat
       const injector = await injectorReady
 
       if (!lambda) {
+        // eslint-disable-next-line require-atomic-updates
         lambda = (await injector.inject(Lambda, ...providers)).singleValue
       }
 

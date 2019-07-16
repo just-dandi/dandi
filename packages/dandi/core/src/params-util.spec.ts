@@ -2,6 +2,7 @@ import { expect } from 'chai'
 
 import { UnsupportedParamTypeError, getParamNames } from './params-util'
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 describe('getParamNames', () => {
   class ImplicitConstructorTestClass {}
 
@@ -40,7 +41,7 @@ describe('getParamNames', () => {
 
     public singleParam(param: any): void {}
     public doubleParam(param1: any, param2: any): void {}
-    public multiParam(param1: any, param2: any, param3: any) {}
+    public multiParam(param1: any, param2: any, param3: any): void {}
   }
 
   function parameterlessFunction(): void {}
@@ -163,3 +164,4 @@ describe('getParamNames', () => {
     expect(getParamNames(multiParameterAnonFunction)).to.deep.equal(['param1', 'param2', 'param3'])
   })
 })
+/* eslint-enable @typescript-eslint/no-unused-vars */

@@ -3,9 +3,11 @@ import { expect } from 'chai'
 import { getInjectableMetadata, getInjectableParamMetadata, methodTarget } from '@dandi/core'
 
 class TestClass {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   constructor(param1: any, param2: any) {}
 
-  public method(param1: any, param2: any) {}
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  public method(param1: any, param2: any): void {}
 }
 
 describe('getInjectableMetadata', () => {

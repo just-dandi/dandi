@@ -1,5 +1,4 @@
 import { expect } from 'chai'
-import { SinonStubbedInstance, createStubInstance, stub } from 'sinon'
 
 import { Uuid } from './uuid'
 

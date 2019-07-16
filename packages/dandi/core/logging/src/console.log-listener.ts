@@ -82,7 +82,7 @@ export class ConsoleLogListener implements LogListener {
     console[entry.level](tag, ...entry.args)
   }
 
-  private getLongestAllowedLevelTag() {
+  private getLongestAllowedLevelTag(): number {
     const allowedLevels: LogLevel[] =
       Object.keys(LogLevel)
         .filter((level: LogLevel) => !this.isFiltered(level))
@@ -150,7 +150,7 @@ export class ConsoleLogListener implements LogListener {
     return formatter(entryInfo)
   }
 
-  private getContextName(context: InjectionContext) {
+  private getContextName(context: InjectionContext): string {
     return getInjectionContextName(context)
   }
 

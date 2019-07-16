@@ -2,5 +2,8 @@
   "extends": "../.eslintrc",
   "env": {
     "node": true
+  },
+  "parserOptions": {
+    "sourceType": "module"
   }
 }

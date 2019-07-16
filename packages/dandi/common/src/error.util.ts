@@ -3,7 +3,7 @@ import { AppError } from './app-error'
 export class ErrorUtil {
   public static getCustomProperties(error: Error): any {
     return Object.keys(error)
-      .filter((key) => !Error.prototype.hasOwnProperty(key))
+      .filter((key) => !Object.prototype.hasOwnProperty.call(Error, key))
       .reduce((result, key) => {
         result[key] = error[key]
         return result

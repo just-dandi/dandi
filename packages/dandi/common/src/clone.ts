@@ -11,7 +11,7 @@ export function cloneObject<T extends any>(obj: T): T {
   }
   const clone = {} as T
   for (const prop in obj) {
-    if (obj.hasOwnProperty(prop)) {
+    if (Object.prototype.hasOwnProperty.call(obj, prop)) {
       clone[prop] = cloneObject(obj[prop])
     }
   }

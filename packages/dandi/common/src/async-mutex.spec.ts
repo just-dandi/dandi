@@ -19,7 +19,7 @@ describe('AsyncMutex', function() {
       return this.foo
     }
 
-    public dispose(reason: string): void | Promise<void> {
+    public dispose(): void | Promise<void> {
       return undefined
     }
 
@@ -138,7 +138,7 @@ describe('AsyncMutex', function() {
       const stubA = stub()
       const stubB = stub()
 
-      const a = this.mutex.runLocked(() => waiter().then(stubA))
+      this.mutex.runLocked(() => waiter().then(stubA))
       const b = this.mutex.runLocked(() => waiter().then(stubB))
 
       await b
@@ -159,9 +159,9 @@ describe('AsyncMutex', function() {
       stub(stubs, 'c')
       stub(stubs, 'd')
 
-      const a = this.mutex.runLocked(() => waiter().then(stubs.a))
-      const b = this.mutex.runLocked(() => waiter().then(stubs.b))
-      const c = this.mutex.runLocked(() => waiter().then(stubs.c))
+      this.mutex.runLocked(() => waiter().then(stubs.a))
+      this.mutex.runLocked(() => waiter().then(stubs.b))
+      this.mutex.runLocked(() => waiter().then(stubs.c))
       const d = this.mutex.runLocked(() => waiter().then(stubs.d))
 
       await d

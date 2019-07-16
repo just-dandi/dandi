@@ -1,7 +1,7 @@
 import { Property, getModelMetadata } from '@dandi/model'
 import { expect } from 'chai'
 
-import { MemberMetadata, getAllKeys } from './member.metadata'
+import { getAllKeys } from './member.metadata'
 
 describe('MemberMetadata', () => {
   describe('getModelMetadata', () => {

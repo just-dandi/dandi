@@ -1,11 +1,6 @@
 import { stubHarness } from '@dandi/core/testing'
-import {
-  MimeTypes,
-  ObjectRendererBase,
-  parseMimeTypes,
-} from '@dandi/mvc'
-import { TestTextPlainRenderer } from '@dandi/mvc/testing'
-import { TestMultiTextRenderer } from '@dandi/mvc/testing/src/test-multi-text-renderer'
+import { MimeTypes, parseMimeTypes } from '@dandi/mvc'
+import { TestTextPlainRenderer, TestMultiTextRenderer } from '@dandi/mvc/testing'
 
 import { expect } from 'chai'
 import { stub } from 'sinon'

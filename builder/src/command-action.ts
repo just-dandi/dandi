@@ -6,7 +6,7 @@ import { localOpinionatedToken } from './local-token'
 export type Action = (...args: any[]) => Promise<void>
 
 export type Filtered<TType, TCondition> = {
-  [key in keyof TType]: TType[key] extends TCondition ? key: never
+  [TKey in keyof TType]: TType[TKey] extends TCondition ? TKey : never
 }
 export type AllowedKeys<TType, TCondition> = Filtered<TType, TCondition>[keyof TType]
 export type Subset<TType, TCondition> = Pick<TType, AllowedKeys<TType, TCondition>>

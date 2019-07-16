@@ -44,8 +44,6 @@ export class PgDbClient extends PgDbQueryableBase<PgDbPool> implements DbClient,
         // IMPORTANT! must await the useAsync so that errors are caught and the active transaction is not removed
         // until the transaction is complete
         return await transactionFn(transaction)
-      } catch (err) {
-        throw err
       } finally {
         this.activeTransactions.splice(this.activeTransactions.indexOf(transaction), 1)
       }

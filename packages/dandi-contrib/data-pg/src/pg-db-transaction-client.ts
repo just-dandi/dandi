@@ -126,8 +126,6 @@ export class PgDbTransactionClient extends PgDbQueryableBase<PgDbPoolClient> imp
       if (this.state === TransactionState.ready) {
         await this.commit()
       }
-    } catch (err) {
-      throw err
     } finally {
       await this.mutex.dispose(reason)
       Disposable.remapDisposed(this, reason)

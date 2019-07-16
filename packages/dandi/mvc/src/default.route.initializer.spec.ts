@@ -3,7 +3,8 @@ import { Provider } from '@dandi/core'
 import { testHarness } from '@dandi/core/testing'
 import {
   AuthorizationAuthProviderFactory,
-  AuthorizationCondition, AuthProviderFactory,
+  AuthorizationCondition,
+  AuthProviderFactory,
   DefaultRouteInitializer,
   ForbiddenError,
   HttpMethod,
@@ -33,7 +34,8 @@ describe('DefaultRouteInitializer', function() {
   class TestModel {}
 
   class TestController {
-    public method(@RequestBody(TestModel) body: TestModel) {}
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    public method(@RequestBody(TestModel) body: TestModel): void {}
   }
 
   beforeEach(async function() {
