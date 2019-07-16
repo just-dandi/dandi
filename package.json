@@ -47,7 +47,6 @@
     "eslint": "^6.0.1",
     "eslint-plugin-import": "^2.18.0",
     "eslint-plugin-mocha": "^5.3.0",
-    "lerna": "^3.15.0",
     "lodash": "^4.17.14",
     "longjohn": "^0.2.12",
     "luxon": "^1.17.1",
