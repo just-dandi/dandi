@@ -1,7 +1,16 @@
 import { Uuid } from '@dandi/common'
 import { Provider } from '@dandi/core'
 import { testHarnessSingle } from '@dandi/core/testing'
-import { ComposedResource, HalModelBase, ListRelation, Relation, ResourceId, SELF_RELATION } from '@dandi/hal'
+import {
+  ComposedResource,
+  HalModelBase,
+  ListRelation,
+  Relation,
+  Relations,
+  ResourceId,
+  SELF_RELATION,
+} from '@dandi/hal'
+import { Property } from '@dandi/model'
 import { ModelBuilder } from '@dandi/model-builder'
 import {
   Controller,
@@ -265,14 +274,6 @@ describe('DefaultResourceComposer', function() {
     })
 
     it('adds links for array relations specified by the @ListRelation() decorator', async function() {
-      class TestModel {
-        constructor(id?: number) {
-          this.id = id
-        }
-
-        @ResourceId()
-        public id: number
-      }
 
       class TestModelParent {
         constructor(id?: number) {
@@ -281,10 +282,34 @@ describe('DefaultResourceComposer', function() {
 
         @ResourceId()
         public id: number
+      }
 
+      class TestModel {
+        constructor(id?: number) {
+          this.id = id
+        }
+
+        @ResourceId()
+        public id: number
+
+        @ResourceId(TestModelParent, 'parent')
+        @Property(Number)
+        public parentId: number
+
+      }
+
+      @Relations(TestModelParent)
+      class TestModelParentRelations {
         @ListRelation(TestModel)
         public children: TestModel[]
       }
+
+      @Relations(TestModel)
+      class TestModelRelations {
+        @Relation(TestModelParent)
+        public parent: TestModelParent
+      }
+
       @Controller('/test')
       class TestController {
         @HttpGet(':id')
@@ -814,14 +839,28 @@ describe('DefaultResourceComposer', function() {
         public id: number
       }
 
-      class TestModel {
-        constructor(id?: number, otherId?: number) {
+      class TestModelParent {
+        constructor(id?: number) {
           this.id = id
+        }
+
+        @ResourceId()
+        public id: number
+      }
+
+      class TestModel {
+        constructor(id: number, parentId: number, otherId?: number) {
+          this.id = id
+          this.parentId = parentId
           this.otherId = otherId
         }
 
         @ResourceId()
         public id: number
+
+        @Property(Number)
+        @ResourceId(TestModelParent, 'parent')
+        public parentId: number
 
         @ResourceId(OtherModel, 'other')
         public otherId: number
@@ -830,16 +869,16 @@ describe('DefaultResourceComposer', function() {
         public other: OtherModel
       }
 
-      class TestModelParent {
-        constructor(id?: number) {
-          this.id = id
-        }
-
-        @ResourceId()
-        public id: number
-
+      @Relations(TestModelParent)
+      class TestModelParentRelations {
         @ListRelation(TestModel)
         public children: TestModel[]
+      }
+
+      @Relations(TestModel)
+      class TestModelRelations {
+        @Relation(TestModelParent)
+        public parent: TestModelParent
       }
 
       @Controller('/other')
@@ -888,12 +927,12 @@ describe('DefaultResourceComposer', function() {
             id,
         ): Promise<TestModel[]> {
           return Promise.resolve([
-            new TestModel(1, 2),
-            new TestModel(2, 4),
-            new TestModel(3, 6),
-            new TestModel(5, 10),
-            new TestModel(8, 16),
-            new TestModel(13, 26),
+            new TestModel(1, 1, 2),
+            new TestModel(2, 1, 4),
+            new TestModel(3, 1, 6),
+            new TestModel(5, 1, 10),
+            new TestModel(8, 1, 16),
+            new TestModel(13, 1, 26),
           ])
         }
       }
@@ -983,12 +1022,12 @@ describe('DefaultResourceComposer', function() {
         expect(child.entity).to.be.instanceOf(TestModel)
       })
       expect(embeddedChildren.map((child) => child.entity)).to.deep.equal([
-        { id: 1, otherId: 2 },
-        { id: 2, otherId: 4 },
-        { id: 3, otherId: 6 },
-        { id: 5, otherId: 10 },
-        { id: 8, otherId: 16 },
-        { id: 13, otherId: 26 },
+        { id: 1, parentId: 1, otherId: 2 },
+        { id: 2, parentId: 1, otherId: 4 },
+        { id: 3, parentId: 1, otherId: 6 },
+        { id: 5, parentId: 1, otherId: 10 },
+        { id: 8, parentId: 1, otherId: 16 },
+        { id: 13, parentId: 1, otherId: 26 },
       ])
       embeddedChildren.forEach((child) => {
         const embeddedOther = child.getEmbedded('other') as ComposedResource<OtherModel>
@@ -999,14 +1038,6 @@ describe('DefaultResourceComposer', function() {
     })
 
     it('embeds nested links for array relations on an index model', async function() {
-      class Item extends HalModelBase {
-        constructor(source?: any) {
-          super(source)
-        }
-
-        @ResourceId()
-        public itemId: number
-      }
 
       class List extends HalModelBase {
         constructor(source?: any) {
@@ -1015,7 +1046,29 @@ describe('DefaultResourceComposer', function() {
 
         @ResourceId()
         public listId: number
+      }
 
+      class Item extends HalModelBase {
+        constructor(source?: any) {
+          super(source)
+        }
+
+        @ResourceId()
+        public itemId: number
+
+        @Relation(List, 'list')
+        @Property(Number)
+        public listId: number
+      }
+
+      @Relations(Item)
+      class ItemRelations {
+        @Relation(List)
+        public list: List
+      }
+
+      @Relations(List)
+      class ListRelations {
         @ListRelation(Item)
         public items: Item[]
       }
