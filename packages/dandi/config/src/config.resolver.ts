@@ -1,6 +1,7 @@
 import { isPrimitiveType } from '@dandi/common'
 import { Inject, Injectable } from '@dandi/core'
 import { ModelBuilder } from '@dandi/model-builder'
+import { camelCase } from 'change-case'
 
 import { ConfigClient, isAsyncConfigClient } from './config.client'
 import { ConfigToken } from './config.token'
@@ -20,6 +21,8 @@ export class ConfigResolver {
 
     const strValue: string = isAsyncConfigClient(client) ? await client.get(token) : client.get(token)
     const value = isPrimitiveType(token.type) ? strValue : JSON.parse(strValue)
-    return this.validator.constructModel(token.type, value)
+    return this.validator.constructModel(token.type, value, {
+      keyTransform: camelCase,
+    })
   }
 }
