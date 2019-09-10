@@ -12,38 +12,38 @@ import { TypeConversionError } from './type.converter'
 export class MetadataModelBuilder implements ModelBuilder {
   constructor(@Inject(PrimitiveTypeConverter) private primitive: PrimitiveTypeConverter) {}
 
-  public constructModel(type: Constructor<any>, obj: any, options?: ModelBuilderOptions): any {
+  public constructModel(type: Constructor<any>, source: any, options?: ModelBuilderOptions): any {
     if (options && options.dataTransformers) {
-      options.dataTransformers.forEach((dt) => (obj = dt.transform(obj)))
+      options.dataTransformers.forEach((dt) => (source = dt.transform(source)))
     }
-    return this.constructModelInternal(type, obj, null, options || {})
+    return this.constructModelInternal(type, source, null, options || {})
   }
 
   private constructModelInternal(
     type: Constructor<any>,
-    obj: any,
+    source: any,
     parentKey: string,
     options: MemberBuilderOptions,
   ): any {
     if (!type) {
-      return obj
+      return source
     }
 
     const modelMetadata = getModelMetadata(type)
     const typeKeys = getAllKeys(modelMetadata)
 
-    const result = new type(obj)
+    const result = new type()
 
-    if (options.keyTransform && !Array.isArray(obj) && typeof obj === 'object') {
-      obj = Object.keys(obj).reduce((result, key) => {
-        result[options.keyTransform(key)] = obj[key]
-        return result
+    if (options.keyTransform && !Array.isArray(source) && typeof source === 'object') {
+      source = Object.keys(source).reduce((transformResult, key) => {
+        transformResult[options.keyTransform(key)] = source[key]
+        return transformResult
       }, {})
     }
 
     typeKeys.forEach((key) => {
       const memberMetadata = modelMetadata[key]
-      const objValue = this.getSourceValue(obj, key, memberMetadata)
+      const objValue = this.getSourceValue(source, key, memberMetadata)
       try {
         result[key] = this.constructMemberInternal(memberMetadata, this.getKey(parentKey, key), objValue, options)
       } catch (err) {
