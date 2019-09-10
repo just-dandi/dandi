@@ -167,11 +167,11 @@ export class DefaultResourceComposer implements ResourceComposer {
 
     // TODO: is falling through to meta.idProperty the right thing to do?
     // with a list relation that requires an ID from "self", the relation metadata does not get an idProperty
-    if (relMeta.list) {
-      return resource[meta.idProperty]
+    const result = resource[meta.idProperty]
+    if (!result) {
+      throw new Error(`Could not determine @ResourceId property on '${resource.constructor.name}' for param '${param}'`)
     }
-
-    throw new Error(`Could not determine @ResourceId property on '${resource.constructor.name}' for param '${param}'`)
+    return result
   }
 
   private getMethodPath(methodMeta: ControllerMethodMetadata): string {
