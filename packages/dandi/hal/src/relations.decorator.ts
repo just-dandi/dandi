@@ -12,7 +12,7 @@ export function Relations(forModel: Constructor<any>): any { // use any return t
       // apparently member decorators run before class decorators, so we need to copy over any existing relation metadata
       Object.keys(existingMeta.relations).forEach((rel) => {
         if (existingMeta.relations[rel] && existingMeta.relations[rel].resource) {
-          meta.relations[rel] = Object.assign(meta.relations[rel], existingMeta.relations[rel])
+          meta.relations[rel] = Object.assign(meta.relations[rel] || {}, existingMeta.relations[rel])
         }
       })
     }
