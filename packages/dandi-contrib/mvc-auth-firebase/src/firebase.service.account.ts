@@ -20,6 +20,21 @@ export class FirebaseServiceAccount extends ModelBase implements admin.ServiceAc
   @Property(String)
   public privateKey?: string
 
+  // eslint-disable-next-line camelcase
+  private get project_id(): string {
+    return this.projectId
+  }
+
+  // eslint-disable-next-line camelcase
+  private get client_email(): string {
+    return this.clientEmail
+  }
+
+  // eslint-disable-next-line camelcase
+  private get private_key(): string {
+    return this.privateKey
+  }
+
   constructor(source?: any) {
     super(source)
   }
