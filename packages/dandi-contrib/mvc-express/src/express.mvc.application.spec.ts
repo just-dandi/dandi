@@ -19,7 +19,9 @@ const REGISTRATION_SOURCE = {
 Repository.global.register(REGISTRATION_SOURCE, TEST_EXPRESS_RESOLVER)
 Repository.global.register(REGISTRATION_SOURCE, {
   provide: ExpressMvcConfig,
-  useValue: {},
+  useValue: {
+    port: undefined,
+  },
 })
 Repository.global.register(REGISTRATION_SOURCE, {
   provide: RouteGenerator,
@@ -29,5 +31,7 @@ Repository.global.register(REGISTRATION_SOURCE, {
 })
 Repository.global.register(REGISTRATION_SOURCE, {
   provide: RouteInitializer,
-  useValue: {},
+  useValue: {
+    initRouteRequest: stub(),
+  },
 })

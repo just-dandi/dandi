@@ -34,7 +34,7 @@ describe('HttpEventTransformer', () => {
       resource: 'resource',
       stageVariables: 'stageVariables',
     }
-    context = createStubInstance(MockContext)
+    context = createStubInstance(MockContext) as unknown as Context
   })
   afterEach(() => {
     body = undefined

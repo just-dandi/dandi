@@ -1,7 +1,7 @@
 import { ParamMetadata } from '@dandi/core'
 import { testHarnessSingle } from '@dandi/core/testing'
 import { MemberMetadata } from '@dandi/model'
-import { MetadataModelBuilder, ModelBuilder, PrimitiveTypeConverter, TypeConverter } from '@dandi/model-builder'
+import { MetadataModelBuilder, PrimitiveTypeConverter, TypeConverter } from '@dandi/model-builder'
 import { PathParam, RequestPathParamMap } from '@dandi/mvc'
 import { expect } from 'chai'
 import { SinonStubbedInstance, createStubInstance, stub } from 'sinon'
@@ -12,7 +12,7 @@ import { requestParamValidatorFactory } from './request.param.validator'
 describe('requestParamValidatorFactory', () => {
   let paramMap: { [key: string]: string }
   let paramMeta: ParamMetadata<any>
-  let builder: SinonStubbedInstance<ModelBuilder>
+  let builder: SinonStubbedInstance<MetadataModelBuilder>
   let memberMetadata: MemberMetadata
 
   beforeEach(() => {
