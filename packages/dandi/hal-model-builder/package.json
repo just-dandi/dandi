@@ -1,0 +1,9 @@
+{
+  "name": "@dandi/hal-model-builder",
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/core": "*",
+    "@dandi/hal": "*",
+    "@dandi/model-builder": "*"
+  }
+}
