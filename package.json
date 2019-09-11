@@ -1,7 +1,7 @@
 {
   "name": "dandi",
   "private": true,
-  "version": "1.0.0-alpha.47",
+  "version": "1.0.0-alpha.48",
   "description": "",
   "scripts": {
     "setup": "pushd builder && npm install && npm link && popd && npm link builder && npm run install-packages",
