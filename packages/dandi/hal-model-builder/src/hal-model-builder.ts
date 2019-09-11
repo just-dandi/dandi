@@ -14,8 +14,13 @@ export class HalModelBuilder extends MetadataModelBuilder {
   public constructModel(type: Constructor<any>, source: any, options?: ModelBuilderOptions): any {
     const result = super.constructModel(type, source, options)
 
-    if (isHalObject(source) && source._embedded) {
-      result._embedded = this.constructEmbeddedResources(getResourceMetadata(type), source)
+    if (isHalObject(source)) {
+
+      result._links = source._links
+
+      if (typeof source._embedded === 'object') {
+        result._embedded = this.constructEmbeddedResources(getResourceMetadata(type), source)
+      }
     }
 
     return result

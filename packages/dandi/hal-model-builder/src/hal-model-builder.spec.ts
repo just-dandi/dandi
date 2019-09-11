@@ -67,6 +67,22 @@ describe(HalModelBuilder.name, () => {
 
     })
 
+    it('adds links to models from sources that are a valid HalObject, but do not have embedded resources', () => {
+
+      const source = {
+        name: 'foo',
+        _links: {
+          self: { href: '.' },
+        },
+      }
+      const result = builder.constructModel(TestHalModel, source)
+
+      expect(result._links).to.exist
+      expect(result._links.self).to.equal(source._links.self)
+      expect(result._embedded).to.be.undefined
+
+    })
+
     it('builds embedded relations for valid HalObject sources', () => {
 
       const source = {
