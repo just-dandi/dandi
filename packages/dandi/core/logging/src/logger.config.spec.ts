@@ -1,4 +1,4 @@
-import { OnConfig } from '@dandi/core'
+import { LogEntry, LogLevel, OnConfig } from '@dandi/core'
 import { ConsoleLogListener, LogStreamSubject } from '@dandi/core/logging'
 
 import { expect } from 'chai'
@@ -22,10 +22,16 @@ describe('LoggerConfig', function() {
 
       listeners.forEach((listener, index) => {
         const subscriber = stream.subscribe.getCall(index).args[0]
-        subscriber(`foo${index}`)
+        const entry: LogEntry = {
+          level: LogLevel.info,
+          context: 'test',
+          ts: 0,
+          args: [`foo${index}`],
+        }
+        subscriber(entry)
         expect(listener.log).to.have.been
           .calledOnce
-          .calledWithExactly(`foo${index}`)
+          .calledWithExactly(entry)
       })
     } else {
       this.fail('expected a factory provider')

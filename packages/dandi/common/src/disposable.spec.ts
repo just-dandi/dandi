@@ -153,7 +153,7 @@ describe('Disposable', () => {
     })
 
     it('does not attempt to call the dispose function if the object is not a Disposable', () => {
-      Disposable.use({}, stubs.use)
+      Disposable.use({ dispose: undefined }, stubs.use)
       expect(stubs.use).to.have.been.called
     })
   })

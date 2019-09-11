@@ -2,7 +2,7 @@ import { TestHarness, testHarness } from '@dandi/core/testing'
 import { Route } from '@dandi/mvc'
 import { VIEW_RESULT_FACTORY, ViewEngineResolver, ViewResultFactory, ViewResultFactoryError } from '@dandi/mvc-view'
 import { expect } from 'chai'
-import { createStubInstance } from 'sinon'
+import { createStubInstance, stub } from 'sinon'
 
 describe('ViewResultFactory', function() {
   TestHarness.scopeGlobalRepository()
@@ -42,7 +42,9 @@ describe('ViewResultFactory', function() {
     })
     const resolver = await harness.injectStub(ViewEngineResolver, false)
     const factory = await harness.inject(ViewResultFactory, false)
-    const engine = {}
+    const engine = {
+      render: stub(),
+    }
     const templatePath = '/template/path'
 
     resolver.resolve.resolves({
@@ -68,7 +70,9 @@ describe('ViewResultFactory', function() {
     })
     const resolver = await harness.injectStub(ViewEngineResolver, false)
     const factory = await harness.inject(ViewResultFactory, false)
-    const engine = {}
+    const engine = {
+      render: stub(),
+    }
     const templatePath = '/template/path'
 
     resolver.resolve.resolves({

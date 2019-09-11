@@ -206,7 +206,7 @@ describe('MetadataModelBuilder', () => {
       const source = { 'prop1.value': 'foo', 'prop2.value': 'bar' }
       const value = { prop1: { value: 'foo' }, prop2: { value: 'bar' } }
       stub(builder as any, 'constructModelInternal')
-      const transformer: SinonStubbedInstance<DataTransformer> = {
+      const transformer: DataTransformer = {
         transform: stub().returns(value),
       }
       const options = { dataTransformers: [transformer] }

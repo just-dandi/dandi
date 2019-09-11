@@ -21,7 +21,7 @@ describe('AuthorizationAuthProviderFactory', () => {
 
   beforeEach(() => {
     injector = createStubInstance(DandiInjector)
-    authProviderFactory = new AuthorizationAuthProviderFactory(injector)
+    authProviderFactory = new AuthorizationAuthProviderFactory(injector as unknown as Injector)
     route = {
       path: '/',
       controllerCtr: null,
@@ -61,6 +61,7 @@ describe('AuthorizationAuthProviderFactory', () => {
     it('adds a provider for a scheme-specific AuthorizationService', async () => {
       const authService = {}
       req.get.returns('Bearer foo')
+      // @ts-ignore
       injector.inject.withArgs(AuthorizationService('Bearer'), true).resolves({ singleValue: authService })
 
       const result = await authProviderFactory.generateAuthProviders(route, req)

@@ -62,7 +62,7 @@ describe('Lambda', () => {
 
   beforeEach(async () => {
     event = {}
-    context = createStubInstance(MockContext)
+    context = createStubInstance(MockContext) as unknown as Context
     eventData = {}
     response = {}
   })
