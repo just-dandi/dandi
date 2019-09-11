@@ -1,3 +1,3 @@
 export interface DataTransformer {
-  transform(source: any): any;
+  transform(source: any): any
 }
