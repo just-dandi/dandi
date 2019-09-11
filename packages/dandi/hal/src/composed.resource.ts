@@ -1,28 +1,24 @@
 import { Jsonable, isJsonable } from '@dandi/common'
 
+import { HalLink, HalLinks } from './hal-link'
 import { SELF_RELATION } from './relation.decorator'
 
-export interface ComposedLink {
-  href: string;
-  name?: string;
-}
-
 export class ComposedResource<T> implements Jsonable {
-  public readonly links: { [rel: string]: ComposedLink } = {}
+  public readonly links: HalLinks = { self: undefined }
   public readonly embedded: { [rel: string]: ComposedResource<any> | ComposedResource<any>[] } = {}
 
   constructor(public readonly entity: T) {}
 
-  public addLink(rel: string, link: ComposedLink): this {
+  public addLink(rel: string, link: HalLink): this {
     this.links[rel] = link
     return this
   }
 
-  public getLink(rel: string): ComposedLink {
+  public getLink(rel: string): HalLink {
     return this.links[rel]
   }
 
-  public addSelfLink(link: ComposedLink): this {
+  public addSelfLink(link: HalLink): this {
     return this.addLink(SELF_RELATION, link)
   }
 
