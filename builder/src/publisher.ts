@@ -88,34 +88,39 @@ export class Publisher {
     const publishTarget = `${info.fullName}@${this.project.mainPkg.version}`
 
     this.logger.debug(`${publishTarget}: checking for existing package...`)
-    const infoArgs = ['info', info.fullName, 'time', '--json']
-    if (registry) {
-      infoArgs.push('--registry', registry)
-    }
-    let packageInfo = JSON.parse((await this.util.spawn('npm', infoArgs, undefined, true)) || '{}')
+    let packageInfo = await this.getPackageInfo(info, registry)
     if (packageInfo[this.project.mainPkg.version]) {
       this.logger.warn(`${publishTarget}: skipping publish, already exists - published`, packageInfo[this.project.mainPkg.version])
-      return packageInfo
+      return packageInfo[this.project.mainPkg.version]
     }
 
     this.logger.debug(`${publishTarget}: publishing${registry ? ` to ${registry}` : ''}...`)
-    const publishArgs = ['publish', '--tag', 'latest']
+    const publishArgs = ['publish']
     if (registry) {
       publishArgs.push('--registry', registry)
     }
-    if (!packageInfo && !info.packageConfig.private) {
+    if (!packageInfo[this.project.mainPkg.version] && !info.packageConfig.private) {
       publishArgs.push('--access', 'public')
     }
+    publishArgs.push('--tag', 'latest')
     await this.util.spawn('npm', publishArgs, {
       cwd: info.outPath,
     })
     this.logger.debug(`${publishTarget}: publish complete`)
 
-    while(!packageInfo) {
+    while(!packageInfo[this.project.mainPkg.version]) {
       this.logger.debug(`${publishTarget}: waiting for package to become available...`)
-      packageInfo = await this.util.spawn('npm', infoArgs, undefined, true)
+      packageInfo = await this.getPackageInfo(info, registry)
     }
     this.logger.debug(`${publishTarget}: done.`)
+  }
+
+  private async getPackageInfo(info: PackageInfo, registry: string): Promise<{ [key: string]: string }> {
+    const infoArgs = ['info', info.fullName, 'time', '--json']
+    if (registry) {
+      infoArgs.push('--registry', registry)
+    }
+    return JSON.parse((await this.util.spawn('npm', infoArgs, undefined, true)) || '{}')
   }
 
 }
