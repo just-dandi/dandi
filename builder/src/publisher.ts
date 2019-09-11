@@ -88,18 +88,18 @@ export class Publisher {
     const publishTarget = `${info.fullName}@${this.project.mainPkg.version}`
 
     this.logger.debug(`${publishTarget}: checking for existing package...`)
-    const infoArgs = ['info', publishTarget, 'dist-tags.latest']
+    const infoArgs = ['info', info.fullName, 'time', '--json']
     if (registry) {
       infoArgs.push('--registry', registry)
     }
-    let packageInfo = await this.util.spawn('npm', infoArgs, undefined, true)
-    if (packageInfo) {
-      this.logger.warn(`${publishTarget}: skipping publish, already exists`, packageInfo.trim())
+    let packageInfo = JSON.parse((await this.util.spawn('npm', infoArgs, undefined, true)) || '{}')
+    if (packageInfo[this.project.mainPkg.version]) {
+      this.logger.warn(`${publishTarget}: skipping publish, already exists - published`, packageInfo[this.project.mainPkg.version])
       return packageInfo
     }
 
     this.logger.debug(`${publishTarget}: publishing${registry ? ` to ${registry}` : ''}...`)
-    const publishArgs = ['publish']
+    const publishArgs = ['publish', '--tag', 'latest']
     if (registry) {
       publishArgs.push('--registry', registry)
     }
