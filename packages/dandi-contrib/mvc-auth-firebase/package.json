@@ -1,7 +1,8 @@
 {
   "name": "@dandi-contrib/mvc-auth-firebase",
   "dependencies": {
-    "firebase-admin": "^7.4.0"
+    "firebase-admin": "^7.4.0",
+    "snyk": "^1.230.5"
   },
   "peerDependencies": {
     "@dandi-contrib/mvc-express": "*",
@@ -11,5 +12,10 @@
     "@dandi/core": "*",
     "@dandi/model": "*",
     "@dandi/mvc": "*"
-  }
+  },
+  "scripts": {
+    "snyk-protect": "snyk protect",
+    "prepare": "npm run snyk-protect"
+  },
+  "snyk": true
 }
