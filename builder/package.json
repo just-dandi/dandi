@@ -14,7 +14,7 @@
   },
   "main": "builder.ts",
   "peerDependencies": {
-    "typescript": "^3.2.2",
+    "typescript": "^3.7.2",
     "@dandi/core": "*",
     "@dandi/common": "*",
     "@dandi/logging": "*"
@@ -23,6 +23,6 @@
     "@types/commander": "^2.12.2",
     "@types/fs-extra": "^5.0.4",
     "@types/glob": "^7.1.1",
-    "typescript": "^3.2.2"
+    "typescript": "^3.7.2"
   }
 }
