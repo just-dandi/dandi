@@ -40,13 +40,13 @@ program
   .action(CommandUtil.publisherAction('deprecate', start))
 
 program
-  .command('npm <npm-command> [npm-command-args ...]')
-  .description('Run an npm command on all configured packages')
+  .command('yarn <yarn-command> [yarn-command-args ...]')
+  .description('Run a yarn command on all configured packages')
   .action(CommandUtil.projectAction('npmCommand', start))
 
 program
   .command('outdated')
-  .description('Displays data from npm outdated for all configured project packages')
-  .action(CommandUtil.projectAction('npmOutdated', start))
+  .description('Displays data from yarn outdated for all configured project packages')
+  .action(CommandUtil.projectAction('yarnOutdated', start))
 
 program.parse(process.argv)

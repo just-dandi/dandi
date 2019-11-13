@@ -1,0 +1,28 @@
+#!/bin/bash
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DANDI_DEPS=($(${DIR}/get-dandi-dependencies))
+
+cd ${DIR}/..
+
+PROJECT_ROOT=${PWD}
+
+cd ../../
+
+DANDI_ROOT=${PWD}
+
+if [ $0 != "--skip-build" ]
+then
+  yarn build
+fi
+
+for ((i=0; i<${#DANDI_DEPS[@]}; i++ ))
+do
+  DEP=${DANDI_DEPS[$i]}
+  DEP_SOURCE=${DEP:1}
+  rm -rf ${PROJECT_ROOT}/node_modules/${DEP}
+  cp -R ${DANDI_ROOT}/out/${DEP_SOURCE}/ ${PROJECT_ROOT}/node_modules/${DEP}
+done
+exit
+
+

@@ -22,4 +22,4 @@ cp ../../../common/src/url.js node_modules/@dandi/common/src
 cp ../src/view/*.pug ./src/view
 cp ../src/view/*.ejs ./src/view
 
-npm i express cors body-parser pug ejs
+yarn add express cors body-parser pug ejs
