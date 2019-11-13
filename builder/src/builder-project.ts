@@ -177,18 +177,18 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
       packages = await this.discoverPackages()
     }
 
-    await this.util.spawnForPackages(packages, 'npm', args.filter(arg => arg))
+    await this.util.spawnForPackages(packages, 'yarn', args.filter(arg => arg))
   }
 
-  public async npmOutdated(): Promise<void> {
-    this.logger.debug('npmOutdated')
+  public async yarnOutdated(): Promise<void> {
+    this.logger.debug('yarnOutdated')
     const packages = await this.discoverPackages()
     const outdated = await Promise.all(packages.map(async info => {
       return {
         name: info.fullName,
         data: await (async () => {
           try {
-            return await this.util.spawnForPackage(info, 'npm', ['outdated'])
+            return await this.util.spawnForPackage(info, 'yarn', ['outdated'])
           } catch (err) {
             return err.message
           }
