@@ -1,9 +1,9 @@
-import { ControllerResult } from '@dandi/mvc'
+import { HttpPipelineResult } from '@dandi/http-pipeline'
 
 import { ViewEngine } from './view-engine'
 import { ViewMetadata } from './view-metadata'
 
-export class ViewResult implements ControllerResult {
+export class ViewResult implements HttpPipelineResult {
 
   private _value: string | Promise<string>
   public get value(): string | Promise<string> {

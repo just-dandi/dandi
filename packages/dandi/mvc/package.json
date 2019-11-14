@@ -6,6 +6,7 @@
     "@dandi/core": "*",
     "@dandi/http": "*",
     "@dandi/http-model": "*",
+    "@dandi/http-pipeline": "*",
     "@dandi/model": "*",
     "@dandi/model-builder": "*"
   }

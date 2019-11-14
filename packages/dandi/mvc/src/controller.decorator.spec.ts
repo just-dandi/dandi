@@ -6,7 +6,7 @@ import { expect } from 'chai'
 import { SinonSpy, spy } from 'sinon'
 
 import { CONTROLLER_REGISTRATION_SOURCE } from './controller.decorator'
-import { getControllerMetadata } from './controller.metadata'
+import { getControllerMetadata } from './controller-metadata'
 
 describe('@Controller', () => {
   let injectableRegister: SinonSpy

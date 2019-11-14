@@ -1,13 +1,9 @@
 import { testHarness } from '@dandi/core/testing'
 import { HttpRequest, MimeTypes, HttpRequestAcceptTypes, parseMimeTypes } from '@dandi/http'
-import {
-  DefaultObjectRenderer,
-  MvcResponseRenderer,
-  MvcResponseRendererProvider,
-  Route,
-} from '@dandi/mvc'
+import { HttpResponseRendererProvider, DefaultHttpResponseRenderer, HttpResponseRenderer } from '@dandi/http-pipeline'
+import { TestApplicationJsonRenderer } from '@dandi/http-pipeline/testing'
+import { Route } from '@dandi/mvc'
 import { MvcViewRenderer, ViewResult, ViewResultFactory } from '@dandi/mvc-view'
-import { TestApplicationJsonRenderer } from '@dandi/mvc/testing'
 
 import { SinonStub, stub } from 'sinon'
 import { expect } from 'chai'
@@ -16,8 +12,8 @@ describe('MvcViewRenderer', function() {
 
   const harness = testHarness(
     MvcViewRenderer,
-    MvcResponseRendererProvider,
-    DefaultObjectRenderer.use(TestApplicationJsonRenderer),
+    HttpResponseRendererProvider,
+    DefaultHttpResponseRenderer.use(TestApplicationJsonRenderer),
     {
       provide: Route,
       useValue: {
@@ -43,7 +39,7 @@ describe('MvcViewRenderer', function() {
   beforeEach(async function() {
     this.viewResult = stub()
     this.transformer = new MvcViewRenderer(this.viewResult, undefined)
-    this.renderer = await harness.inject(MvcResponseRenderer)
+    this.renderer = await harness.inject(HttpResponseRenderer)
   })
 
   it('is registered as a Renderer for text/html', function() {

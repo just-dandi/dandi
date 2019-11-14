@@ -1,7 +1,7 @@
 import { Controller, HttpGet, getCorsConfig } from '@dandi/mvc'
 import { expect } from 'chai'
 
-import { getControllerMetadata } from './controller.metadata'
+import { getControllerMetadata } from './controller-metadata'
 import { Cors } from './cors.decorator'
 
 describe('@Cors', () => {

@@ -1,13 +1,10 @@
 import { ModuleBuilder, Registerable } from '@dandi/core'
 import { HttpModule } from '@dandi/http'
+import { HttpPipelineModule } from '@dandi/http-pipeline'
 
-import { DefaultRouteExecutor } from './default.route.executor'
-import { DefaultRouteInitializer } from './default.route.initializer'
-import { DefaultRouteHandler } from './default.route.handler'
+import { DefaultRouteExecutor } from './default-route-executor'
+import { DefaultRouteInitializer } from './default-route-initializer'
 import { PKG } from './local.token'
-import { MvcResponseRendererProvider } from './mvc-response-renderer'
-import { NativeJsonObjectRenderer } from './native-json-object-renderer'
-import { DefaultObjectRenderer } from './object-renderer'
 import { ROUTES_PROVIDER } from './routes'
 
 export class MvcModuleBuilder extends ModuleBuilder<MvcModuleBuilder> {
@@ -18,10 +15,8 @@ export class MvcModuleBuilder extends ModuleBuilder<MvcModuleBuilder> {
 
 export const MvcModule = new MvcModuleBuilder(
   HttpModule,
+  HttpPipelineModule,
   ROUTES_PROVIDER,
   DefaultRouteExecutor,
-  DefaultRouteHandler,
   DefaultRouteInitializer,
-  MvcResponseRendererProvider,
-  DefaultObjectRenderer.use(NativeJsonObjectRenderer),
 )

@@ -1,6 +1,6 @@
 import { ModuleBuilder, Registerable } from '@dandi/core'
 
-import { DefaultResourceComposer } from './default.resource.composer'
+import { DefaultResourceComposer } from './default-resource-composer'
 import { HalObjectRenderer } from './hal-object-renderer'
 import { HalResultTransformer } from './hal.result.transformer'
 import { PKG } from './local.token'
