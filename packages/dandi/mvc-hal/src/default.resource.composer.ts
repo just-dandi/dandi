@@ -9,11 +9,9 @@ import {
   SELF_RELATION,
   getResourceMetadata,
 } from '@dandi/hal'
+import { HttpMethod, HttpRequest, HttpResponse } from '@dandi/http'
 import {
   ControllerMethodMetadata,
-  HttpMethod,
-  MvcRequest,
-  MvcResponse,
   RequestController,
   RequestInfo,
   Route,
@@ -27,7 +25,7 @@ import { ResourceComposer } from './resource.composer'
 import { CompositionContext } from './composition.context'
 import { InheritedResourceType } from './accessor.resource.id.decorator'
 
-function embedResponseAccess(): MvcResponse {
+function embedResponseAccess(): HttpResponse {
   throw new InvalidAccessError(`Response object may not be used during embedding`)
 }
 
@@ -211,12 +209,12 @@ export class DefaultResourceComposer implements ResourceComposer {
         rt.controllerCtr === accessor.controller &&
         rt.controllerMethod === accessor.method,
     )
-    const ogRequest = (await this.injector.inject(MvcRequest, this.injectorContext)).singleValue
+    const ogRequest = (await this.injector.inject(HttpRequest, this.injectorContext)).singleValue
     const requestParams = Object.keys(accessor.paramMap).reduce((params, key) => {
       params[key] = this.getParamValue(resource, meta, relMeta, key, accessor)
       return params
     }, {})
-    const req: MvcRequest = {
+    const req: HttpRequest = {
       body: undefined,
       params: requestParams,
       path,
@@ -226,7 +224,7 @@ export class DefaultResourceComposer implements ResourceComposer {
         return ogRequest.get(key)
       },
     }
-    const res: MvcResponse = {
+    const res: HttpResponse = {
       cookie: embedResponseAccess,
       contentType: embedResponseAccess,
       end: embedResponseAccess,

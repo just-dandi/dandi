@@ -1,5 +1,6 @@
 import { Inject, Injectable, Logger, Injector } from '@dandi/core'
-import { CorsConfig, HttpMethod, Route, RouteExecutor, RouteMapper } from '@dandi/mvc'
+import { HttpMethod } from '@dandi/http'
+import { CorsConfig, Route, RouteExecutor, RouteMapper } from '@dandi/mvc'
 import * as cors from 'cors'
 import { Express } from 'express'
 import { Request, Response } from 'express-serve-static-core'

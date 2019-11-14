@@ -1,9 +1,9 @@
 import { Constructor } from '@dandi/common'
 import { InjectionToken, Provider } from '@dandi/core'
+import { MimeTypeInfo } from '@dandi/http'
 
 import { ControllerResult } from './controller.result'
 import { localOpinionatedToken } from './local.token'
-import { MimeTypeInfo } from './mime-type-info'
 
 export interface ObjectRendererResult {
   renderedOutput: string

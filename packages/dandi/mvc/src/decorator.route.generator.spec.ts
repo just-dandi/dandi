@@ -1,5 +1,6 @@
 import { Repository } from '@dandi/core'
 import { stubHarness } from '@dandi/core/testing'
+import { HttpMethod } from '@dandi/http'
 import {
   Authorized,
   Controller,
@@ -7,7 +8,6 @@ import {
   DecoratorRouteGenerator,
   HttpDelete,
   HttpGet,
-  HttpMethod,
   HttpPost,
   HttpPut,
   IsAuthorized,

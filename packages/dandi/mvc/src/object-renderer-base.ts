@@ -1,7 +1,6 @@
 import { Constructor } from '@dandi/common'
+import { isRenderableMimeType, MimeTypeInfo } from '@dandi/http'
 
-import { isRenderableMimeType } from './mime-type'
-import { MimeTypeInfo } from './mime-type-info'
 import { ObjectRenderer, ObjectRendererResult } from './object-renderer'
 import { getRendererMetadata } from './renderer-decorator'
 import { ControllerResult } from './controller.result'

@@ -1,0 +1,7 @@
+{
+  "name": "@dandi/http",
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/core": "*"
+  }
+}

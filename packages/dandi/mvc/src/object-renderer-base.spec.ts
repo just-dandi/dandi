@@ -1,5 +1,5 @@
 import { stubHarness } from '@dandi/core/testing'
-import { MimeTypes, parseMimeTypes } from '@dandi/mvc'
+import { MimeTypes, parseMimeTypes } from '@dandi/http'
 import { TestTextPlainRenderer, TestMultiTextRenderer } from '@dandi/mvc/testing'
 
 import { expect } from 'chai'

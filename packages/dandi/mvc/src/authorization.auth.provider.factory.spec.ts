@@ -1,17 +1,16 @@
 import { DandiInjector, Injector } from '@dandi/core'
+import { HttpMethod, UnauthorizedError } from '@dandi/http'
 import {
+  AuthorizationAuthProviderFactory,
   AuthorizationService,
   AuthorizedUser,
-  HttpMethod,
   IsAuthorized,
   RequestAuthorizationService,
   Route,
-  UnauthorizedError,
 } from '@dandi/mvc'
+
 import { expect } from 'chai'
 import { SinonStubbedInstance, createStubInstance, stub } from 'sinon'
-
-import { AuthorizationAuthProviderFactory } from './authorization.auth.provider.factory'
 
 describe('AuthorizationAuthProviderFactory', () => {
   let injector: SinonStubbedInstance<Injector>

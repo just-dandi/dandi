@@ -1,14 +1,9 @@
 import { InjectionToken, Provider } from '@dandi/core'
 
 import { AuthorizationCondition } from './authorization.condition'
-import { ConditionWithin } from './condition.within'
 import { localOpinionatedToken } from './local.token'
 
 export const CollectionResource = localOpinionatedToken<any[]>('CollectionResource', { multi: false })
-
-export interface ConditionDecorators {
-  within: ConditionWithin;
-}
 
 export type ConditionFactory = (...args: any[]) => AuthorizationCondition
 

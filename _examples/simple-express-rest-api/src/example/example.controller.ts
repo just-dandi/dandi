@@ -1,5 +1,6 @@
 import { Inject } from '@dandi/core'
-import { Controller, HttpPost, QueryParam } from '@dandi/mvc'
+import { QueryParam } from '@dandi/http-model'
+import { Controller, HttpPost } from '@dandi/mvc'
 
 import { ListManager } from '../lists/list.manager'
 

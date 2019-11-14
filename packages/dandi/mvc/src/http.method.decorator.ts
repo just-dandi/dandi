@@ -1,8 +1,8 @@
 import { MethodTarget } from '@dandi/common'
+import { HttpMethod } from '@dandi/http'
+import { CorsConfig } from '@dandi/mvc'
 
 import { RouteMapEntry, getControllerMetadata } from './controller.metadata'
-import { CorsConfig } from './cors.config'
-import { HttpMethod } from './http.method'
 
 export interface HttpMethodOptions {
   method?: HttpMethod;

@@ -1,7 +1,8 @@
 import { Disposable } from '@dandi/common'
 import { Inject, Injectable } from '@dandi/core'
 import { Resource, SELF_RELATION } from '@dandi/hal'
-import { ControllerResult, ControllerResultTransformer, MvcRequest, ParamMap, RequestQueryParamMap } from '@dandi/mvc'
+import { HttpRequest, HttpRequestQueryParamMap, ParamMap } from '@dandi/http'
+import { ControllerResult, ControllerResultTransformer } from '@dandi/mvc'
 
 import { CompositionContext } from './composition.context'
 import { ResourceComposer } from './resource.composer'
@@ -12,8 +13,8 @@ export const EMBED_RELS_KEY = '_embedded'
 export class HalResultTransformer implements ControllerResultTransformer {
   constructor(
     @Inject(ResourceComposer) private composer: ResourceComposer,
-    @Inject(MvcRequest) private request: MvcRequest,
-    @Inject(RequestQueryParamMap) private queryParams: ParamMap,
+    @Inject(HttpRequest) private request: HttpRequest,
+    @Inject(HttpRequestQueryParamMap) private queryParams: ParamMap,
   ) {}
 
   public async transform(result: ControllerResult): Promise<ControllerResult> {

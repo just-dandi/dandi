@@ -1,8 +1,8 @@
 import { Constructor, getMetadata } from '@dandi/common'
+import { HttpMethod } from '@dandi/http'
 
 import { AuthorizationMetadata } from './authorization.metadata'
 import { CorsConfig } from './cors.config'
-import { HttpMethod } from './http.method'
 import { ControllerMethod, RoutePath } from './http.method.decorator'
 import { globalSymbol } from './global.symbol'
 import { MvcMetadata } from './mvc.metadata'

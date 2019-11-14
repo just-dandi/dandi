@@ -1,5 +1,7 @@
 import { stubHarness } from '@dandi/core/testing'
-import { MimeTypes, PlainTextObjectRenderer } from '@dandi/mvc'
+import { MimeTypes } from '@dandi/http'
+import { PlainTextObjectRenderer } from '@dandi/mvc'
+
 import { expect } from 'chai'
 
 describe('PlainTextObjectRenderer', function() {

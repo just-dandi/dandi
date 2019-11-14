@@ -7,18 +7,22 @@ import {
   Provider,
   Injector,
 } from '@dandi/core'
+import {
+  ForbiddenError,
+  HttpRequest,
+  HttpRequestPathParamMap,
+  HttpRequestQueryParamMap,
+  HttpResponse,
+} from '@dandi/http'
+import { RequestController, HttpRequestId } from '@dandi/mvc'
 
 import { AuthProviderFactory } from './auth.provider.factory'
 import { AuthorizationCondition, DeniedAuthorization } from './authorization.condition'
-import { ForbiddenError } from './errors'
-import { MvcRequest } from './mvc.request'
-import { MvcResponse } from './mvc.response'
 import { RequestInfo } from './request.info'
 import { RequestProviderRegistrar } from './request.provider.registrar'
 import { Route } from './route'
 import { RouteInitializationError } from './route.initialization.error'
 import { RouteInitializer } from './route.initializer'
-import { HttpRequestId, RequestController, RequestPathParamMap, RequestQueryParamMap } from './tokens'
 
 @Injectable(RouteInitializer)
 export class DefaultRouteInitializer implements RouteInitializer {
@@ -35,9 +39,9 @@ export class DefaultRouteInitializer implements RouteInitializer {
 
   public async initRouteRequest(
     route: Route,
-    req: MvcRequest,
+    req: HttpRequest,
     requestInfo: RequestInfo,
-    res: MvcResponse,
+    res: HttpResponse,
   ): Promise<Provider<any>[]> {
     this.logger.debug(
       `begin initRouteRequest ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
@@ -69,19 +73,19 @@ export class DefaultRouteInitializer implements RouteInitializer {
    */
   private generateRequestProviders(
     route: Route,
-    req: MvcRequest,
+    req: HttpRequest,
     requestInfo: RequestInfo,
-    res: MvcResponse,
+    res: HttpResponse,
   ): Provider<any>[] {
     const result: Provider<any>[] = [
       {
         provide: RequestController,
         useClass: route.controllerCtr,
       },
-      { provide: MvcRequest, useValue: req },
-      { provide: MvcResponse, useValue: res },
-      { provide: RequestPathParamMap, useValue: req.params },
-      { provide: RequestQueryParamMap, useValue: req.query },
+      { provide: HttpRequest, useValue: req },
+      { provide: HttpResponse, useValue: res },
+      { provide: HttpRequestPathParamMap, useValue: req.params },
+      { provide: HttpRequestQueryParamMap, useValue: req.query },
       { provide: Route, useValue: route },
       { provide: HttpRequestId, useValue: requestInfo.requestId },
       { provide: RequestInfo, useValue: requestInfo },
@@ -95,7 +99,7 @@ export class DefaultRouteInitializer implements RouteInitializer {
     return result
   }
 
-  private async generateAuthProviders(route: Route, req: MvcRequest): Promise<Provider<any>[]> {
+  private async generateAuthProviders(route: Route, req: HttpRequest): Promise<Provider<any>[]> {
     if (!this.authProviderFactory) {
       return []
     }

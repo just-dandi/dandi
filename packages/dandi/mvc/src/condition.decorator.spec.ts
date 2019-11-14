@@ -1,29 +1,28 @@
 import { Uuid } from '@dandi/common'
 import { FactoryProvider } from '@dandi/core'
 import { testHarnessSingle } from '@dandi/core/testing'
+import { HttpRequestPathParamMap } from '@dandi/http'
+import { PathParam, requestParamToken } from '@dandi/http-model'
 import { ModelBuilderModule } from '@dandi/model-builder'
 import {
   AuthorizationAuthProviderFactory,
   AuthorizationCondition,
   AuthorizationService,
   Authorized,
+  CollectionResource,
   Controller,
   DecoratorRouteGenerator,
   DefaultRouteInitializer,
+  getControllerMetadata,
   HttpGet,
-  PathParam,
-  RequestPathParamMap,
   RouteGenerator,
   RouteInitializer,
-  getControllerMetadata,
 } from '@dandi/mvc'
+
 import { expect } from 'chai'
 import { stub } from 'sinon'
 
-import { CollectionResource } from './condition.decorator'
-import { requestParamToken } from './request.param.decorator'
-
-describe('ConditionDecorator', function() {
+xdescribe('ConditionDecorator', function() {
 
   const collection = {
     provide: CollectionResource,
@@ -46,7 +45,7 @@ describe('ConditionDecorator', function() {
     const condition: FactoryProvider<AuthorizationCondition> = methodMeta.authorization[0] as any
     expect(condition).to.exist
     expect(condition.provide).to.equal(AuthorizationCondition)
-    expect(condition.deps).to.include(requestParamToken(RequestPathParamMap, 'testMethod', 'foo'))
+    expect(condition.deps).to.include(requestParamToken(HttpRequestPathParamMap, 'testMethod', 'foo'))
     expect(condition.useFactory).to.exist
     expect(condition.useFactory).to.be.instanceOf(Function)
   })

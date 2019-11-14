@@ -1,9 +1,7 @@
 import { AppError, Uuid } from '@dandi/common'
 import { Inject, Injectable, Logger, Injector } from '@dandi/core'
+import { HttpRequest, HttpResponse, HttpStatusCode } from '@dandi/http'
 
-import { HttpStatusCode } from './http.status.code'
-import { MvcRequest } from './mvc.request'
-import { MvcResponse } from './mvc.response'
 import { PerfRecord } from './perf.record'
 import { Route } from './route'
 import { RouteExecutor } from './route.executor'
@@ -19,7 +17,7 @@ export class DefaultRouteExecutor implements RouteExecutor {
     @Inject(Logger) private logger: Logger,
   ) {}
 
-  public async execRoute(route: Route, req: MvcRequest, res: MvcResponse): Promise<void> {
+  public async execRoute(route: Route, req: HttpRequest, res: HttpResponse): Promise<void> {
     const requestId = Uuid.create()
     const performance = new PerfRecord('ExpressRouteExecutor.execRoute', 'begin')
 

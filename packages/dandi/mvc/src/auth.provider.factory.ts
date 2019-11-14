@@ -1,11 +1,11 @@
 import { InjectionToken, Provider } from '@dandi/core'
+import { HttpRequest } from '@dandi/http'
 
-import { MvcRequest } from './mvc.request'
 import { Route } from './route'
 import { localOpinionatedToken } from './local.token'
 
 export interface AuthProviderFactory {
-  generateAuthProviders(route: Route, req: MvcRequest): Promise<Provider<any>[]>
+  generateAuthProviders(route: Route, req: HttpRequest): Promise<Provider<any>[]>
 }
 
 export const AuthProviderFactory: InjectionToken<AuthProviderFactory> = localOpinionatedToken('AuthProviderFactory', {

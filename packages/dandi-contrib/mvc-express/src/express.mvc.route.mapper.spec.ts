@@ -1,5 +1,6 @@
 import { stubHarness } from '@dandi/core/testing'
-import { HttpMethod, MvcRequest, MvcResponse, Route, RouteExecutor } from '@dandi/mvc'
+import { HttpMethod, HttpRequest, HttpResponse } from '@dandi/http'
+import { Route, RouteExecutor } from '@dandi/mvc'
 import { ExpressInstance, ExpressMvcRouteMapper } from '@dandi-contrib/mvc-express'
 
 import { expect } from 'chai'
@@ -21,14 +22,14 @@ describe('ExpressMvcRouteMapper', function() {
       }),
     },
     {
-      provide: MvcRequest,
+      provide: HttpRequest,
       useFactory: () => ({
         params: {},
         query: {},
       }),
     },
     {
-      provide: MvcResponse,
+      provide: HttpResponse,
       useFactory: () => ({
         contentType: stub().returnsThis(),
         json: stub().returnsThis(),

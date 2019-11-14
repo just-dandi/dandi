@@ -1,8 +1,7 @@
+import { HttpMethod } from '@dandi/http'
+import { Controller, getControllerMetadata, HttpGet, HttpPost } from '@dandi/mvc'
+
 import { expect } from 'chai'
-
-import { Controller, HttpGet, HttpMethod, HttpPost } from '../'
-
-import { getControllerMetadata } from './controller.metadata'
 
 describe('HttpMethodDecorator', () => {
   it('adds a route entry for the decorated method', () => {

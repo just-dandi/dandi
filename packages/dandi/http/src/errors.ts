@@ -1,6 +1,6 @@
 import { AppError } from '@dandi/common'
 
-import { HttpStatusCode } from './http.status.code'
+import { HttpStatusCode } from './http-status-code'
 
 export class RequestError extends AppError {
   constructor(
@@ -34,17 +34,5 @@ export class UnauthorizedError extends RequestError {
 export class ForbiddenError extends RequestError {
   constructor(reason: string) {
     super(HttpStatusCode.forbidden, reason, 'Forbidden')
-  }
-}
-
-export class ModelBindingError extends RequestError {
-  constructor(innerError: Error) {
-    super(HttpStatusCode.badRequest, null, innerError.message, innerError)
-  }
-}
-
-export class MissingParamError extends RequestError {
-  constructor(paramName: string, innerError?: Error) {
-    super(HttpStatusCode.badRequest, null, `Missing required param ${paramName}`, innerError)
   }
 }
