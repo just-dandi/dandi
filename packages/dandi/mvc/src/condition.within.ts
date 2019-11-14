@@ -1,16 +1,12 @@
 import { MethodTarget } from '@dandi/common'
 import { Provider } from '@dandi/core'
+import { RequestParamDecorator } from '@dandi/http-model'
 
 import { initAuthorizationMetadata } from './authorized.decorator'
 import { AuthorizationCondition } from './authorization.condition'
 import { ConditionFactory, ConditionHelper } from './condition.decorator'
-import { RequestParamDecorator } from './request.param.decorator'
 
 export type SelectorFn<T, TKey> = (obj: T) => TKey
-
-export interface ConditionWithin {
-  (collection: Provider<any[]>): ParameterDecorator;
-}
 
 function checkWithinByKey<T>(key: T, ownedResource: T[]): AuthorizationCondition {
   if (ownedResource.includes(key)) {

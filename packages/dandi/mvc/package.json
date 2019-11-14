@@ -4,6 +4,8 @@
     "@dandi/cache": "*",
     "@dandi/common": "*",
     "@dandi/core": "*",
+    "@dandi/http": "*",
+    "@dandi/http-model": "*",
     "@dandi/model": "*",
     "@dandi/model-builder": "*"
   }

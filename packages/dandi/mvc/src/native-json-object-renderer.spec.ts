@@ -1,5 +1,7 @@
 import { stubHarness } from '@dandi/core/testing'
-import { MimeTypes, NativeJsonObjectRenderer } from '@dandi/mvc'
+import { MimeTypes } from '@dandi/http'
+import { NativeJsonObjectRenderer } from '@dandi/mvc'
+
 import { expect } from 'chai'
 
 describe('NativeJsonObjectRenderer', function() {

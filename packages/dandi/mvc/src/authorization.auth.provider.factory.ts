@@ -1,10 +1,9 @@
 import { Inject, Injectable, Provider, Injector } from '@dandi/core'
+import { HttpRequest, UnauthorizedError } from '@dandi/http'
 
 import { AuthProviderFactory } from './auth.provider.factory'
 import { AuthorizationService } from './authorization.service'
 import { AuthorizedUser, AuthorizedUserProvider } from './authorized.user'
-import { UnauthorizedError } from './errors'
-import { MvcRequest } from './mvc.request'
 import { RequestAuthorizationService } from './request.authorization.service'
 import { Route } from './route'
 
@@ -12,7 +11,7 @@ import { Route } from './route'
 export class AuthorizationAuthProviderFactory implements AuthProviderFactory {
   constructor(@Inject(Injector) private injector: Injector) {}
 
-  public async generateAuthProviders(route: Route, req: MvcRequest): Promise<Provider<any>[]> {
+  public async generateAuthProviders(route: Route, req: HttpRequest): Promise<Provider<any>[]> {
     const authHeader = req.get('Authorization')
 
     if (!authHeader) {

@@ -1,12 +1,10 @@
 import { Inject, Injectable, Logger, Optional, Injector, InjectorContext, ResolverContext } from '@dandi/core'
+import { HttpRequest, HttpRequestAcceptTypes, HttpResponse } from '@dandi/http'
 
 import { ControllerResult, isControllerResult } from './controller.result'
 import { ControllerResultTransformer } from './controller.result.transformer'
-import { MvcRequest } from './mvc.request'
-import { MvcResponse } from './mvc.response'
 import { MvcResponseRenderer } from './mvc-response-renderer'
 import { ObjectRenderer } from './object-renderer'
-import { RequestAcceptTypes } from './request-accept-types'
 import { RequestInfo } from './request.info'
 import { Route } from './route'
 import { RouteHandler } from './route.handler'
@@ -20,9 +18,9 @@ export class DefaultRouteHandler implements RouteHandler {
     @Inject(InjectorContext) injectorContext: ResolverContext<any>,
     @Inject(RequestController) controller: any,
     @Inject(Route) route: Route,
-    @Inject(MvcRequest) req: MvcRequest,
-    @Inject(MvcResponse) res: MvcResponse,
-    @Inject(RequestAcceptTypes) accept: RequestAcceptTypes,
+    @Inject(HttpRequest) req: HttpRequest,
+    @Inject(HttpResponse) res: HttpResponse,
+    @Inject(HttpRequestAcceptTypes) accept: HttpRequestAcceptTypes,
     @Inject(MvcResponseRenderer) renderer: ObjectRenderer,
     @Inject(RequestInfo) requestInfo: RequestInfo,
     @Inject(ControllerResultTransformer)

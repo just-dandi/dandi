@@ -1,4 +1,4 @@
-import { isRenderableMimeType, MimeTypes, parseMimeTypes } from '@dandi/mvc'
+import { isRenderableMimeType, MimeTypes, parseMimeTypes } from '@dandi/http'
 
 import { expect } from 'chai'
 

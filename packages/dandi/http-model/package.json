@@ -1,0 +1,9 @@
+{
+  "name": "@dandi/http-model",
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/core": "*",
+    "@dandi/http": "*",
+    "@dandi/model-builder": "*"
+  }
+}

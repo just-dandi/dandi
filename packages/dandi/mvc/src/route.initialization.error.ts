@@ -1,5 +1,5 @@
-import { RequestError } from './errors'
-import { HttpStatusCode } from './http.status.code'
+import { HttpStatusCode, RequestError } from '@dandi/http'
+
 import { Route } from './route'
 
 export class RouteInitializationError extends RequestError {

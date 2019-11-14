@@ -1,4 +1,6 @@
-import { MimeTypes, ObjectRendererBase, Renderer } from '@dandi/mvc'
+import { MimeTypes } from '@dandi/http'
+import { ObjectRendererBase, Renderer } from '@dandi/mvc'
+
 import { stub } from 'sinon'
 
 @Renderer(MimeTypes.textPlain)

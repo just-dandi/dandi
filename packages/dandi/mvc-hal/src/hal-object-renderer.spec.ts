@@ -1,14 +1,6 @@
 import { testHarness } from '@dandi/core/testing'
-import {
-  DefaultObjectRenderer,
-  MimeTypes,
-  MvcRequest,
-  MvcResponseRendererProvider,
-  parseMimeTypes,
-  PlainTextObjectRenderer,
-  RequestAcceptTypesProvider,
-  Route,
-} from '@dandi/mvc'
+import { HttpRequest, HttpRequestAcceptTypesProvider, MimeTypes, parseMimeTypes } from '@dandi/http'
+import { DefaultObjectRenderer, MvcResponseRendererProvider, PlainTextObjectRenderer, Route } from '@dandi/mvc'
 import { HalMimeTypes, HalObjectRenderer } from '@dandi/mvc-hal'
 import { TestApplicationJsonRenderer } from '@dandi/mvc/testing'
 
@@ -23,10 +15,10 @@ describe('HalObjectRenderer', function() {
       useFactory: () => new TestApplicationJsonRenderer(),
     },
     MvcResponseRendererProvider,
-    RequestAcceptTypesProvider,
+    HttpRequestAcceptTypesProvider,
     DefaultObjectRenderer.use(PlainTextObjectRenderer),
     {
-      provide: MvcRequest,
+      provide: HttpRequest,
       useFactory() {
         return {
           get: stub(),

@@ -1,16 +1,9 @@
 import { Url } from '@dandi/common'
 import { testHarness } from '@dandi/core/testing'
+import { HttpRequestPathParamMap, HttpRequestQueryParamMap, HttpRequest } from '@dandi/http'
+import { MissingParamError, PathParam, QueryParam, RequestBody } from '@dandi/http-model'
 import { Required, UrlProperty } from '@dandi/model'
 import { ModelBuilderModule } from '@dandi/model-builder'
-import {
-  MissingParamError,
-  MvcRequest,
-  PathParam,
-  QueryParam,
-  RequestBody,
-  RequestPathParamMap,
-  RequestQueryParamMap,
-} from '@dandi/mvc'
 
 import { expect } from 'chai'
 
@@ -36,7 +29,7 @@ describe('Request Decorators', () => {
 
   const harness = testHarness(ModelBuilderModule,
     {
-      provide: MvcRequest,
+      provide: HttpRequest,
       useFactory: () => ({
         body: {
           url: 'http://localhost',
@@ -44,11 +37,11 @@ describe('Request Decorators', () => {
       }),
     },
     {
-      provide: RequestPathParamMap,
+      provide: HttpRequestPathParamMap,
       useFactory: () => ({}),
     },
     {
-      provide: RequestQueryParamMap,
+      provide: HttpRequestQueryParamMap,
       useFactory: () => ({}),
     },
   )
@@ -74,7 +67,7 @@ describe('Request Decorators', () => {
     })
 
     it('passes the path param value if present', async function() {
-      const paramMap = await harness.inject(RequestPathParamMap)
+      const paramMap = await harness.inject(HttpRequestPathParamMap)
       paramMap.id = 'foo'
 
       expect(await harness.invoke(this.controller, 'testPathParam')).to.equal('foo')
@@ -88,7 +81,7 @@ describe('Request Decorators', () => {
     })
 
     it('passes the query param value if present', async function() {
-      const queryMap = await harness.inject(RequestQueryParamMap)
+      const queryMap = await harness.inject(HttpRequestQueryParamMap)
       queryMap.search = 'foo'
 
       expect(await harness.invoke(this.controller, 'testQueryParam')).to.equal('foo')

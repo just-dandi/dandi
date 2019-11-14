@@ -1,9 +1,9 @@
 import { Constructor } from '@dandi/common'
 import { InjectionToken, Provider } from '@dandi/core'
+import { HttpMethod } from '@dandi/http'
 
 import { AuthorizationCondition } from './authorization.condition'
 import { CorsConfig } from './cors.config'
-import { HttpMethod } from './http.method'
 import { localSymbolToken } from './local.token'
 
 export interface Route {

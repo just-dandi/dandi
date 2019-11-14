@@ -81,11 +81,10 @@ export class MetadataModelBuilder implements ModelBuilder {
     value: any,
     options: MemberBuilderOptions,
   ): any {
-    if (value === null || value === undefined) {
-      return value
+    let result = value
+    if (value !== null && value !== undefined) {
+      result = this.constructMemberByType(metadata, key, value, options)
     }
-
-    const result = this.constructMemberByType(metadata, key, value, options)
 
     if (options.validators) {
       options.validators.forEach((validator) => {

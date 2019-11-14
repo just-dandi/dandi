@@ -1,14 +1,7 @@
 import { Disposable } from '@dandi/common'
 import { Inject, Injector } from '@dandi/core'
-import {
-  ControllerResult,
-  ObjectRendererBase,
-  parseMimeTypes,
-  Renderer,
-  MvcRequest,
-  RequestAcceptTypes,
-  MvcResponseRenderer,
-} from '@dandi/mvc'
+import { HttpRequest, HttpRequestAcceptTypes, parseMimeTypes } from '@dandi/http'
+import { ControllerResult, ObjectRendererBase, Renderer, MvcResponseRenderer } from '@dandi/mvc'
 
 import { HalMimeTypes } from './hal-mime-types'
 
@@ -28,13 +21,13 @@ export class HalObjectRenderer extends ObjectRendererBase {
     const subRendererMimeType = parseMimeTypes(`${halMimeType.type}/${halMimeType.subtypeBase}`)
     const providers = [
       {
-        provide: MvcRequest,
+        provide: HttpRequest,
         useValue: {
           get: () => subRendererMimeType[0].fullType,
         },
       },
       {
-        provide: RequestAcceptTypes,
+        provide: HttpRequestAcceptTypes,
         useValue: subRendererMimeType,
       },
     ]

@@ -1,13 +1,12 @@
 import { AppError, Uuid } from '@dandi/common'
 import { Injector } from '@dandi/core'
 import { stubHarness } from '@dandi/core/testing'
+import { HttpMethod, HttpRequest, HttpResponse, HttpStatusCode } from '@dandi/http'
 import {
   DefaultRouteExecutor,
-  HttpMethod, HttpStatusCode,
-  MvcRequest,
-  MvcResponse,
   RequestInfo,
-  Route, RouteHandler,
+  Route,
+  RouteHandler,
   RouteInitializer,
 } from '@dandi/mvc'
 
@@ -43,14 +42,14 @@ describe('DefaultRouteExecutor', function() {
       }),
     },
     {
-      provide: MvcRequest,
+      provide: HttpRequest,
       useFactory: () => ({
         params: {},
         query: {},
       }),
     },
     {
-      provide: MvcResponse,
+      provide: HttpResponse,
       useFactory: () => ({
         contentType: stub().returnsThis(),
         json: stub().returnsThis(),
@@ -76,8 +75,8 @@ describe('DefaultRouteExecutor', function() {
     this.routeExec = await harness.inject(DefaultRouteExecutor)
     this.route = await harness.inject(Route)
     this.routeInit = await harness.inject(RouteInitializer)
-    this.req = await harness.inject(MvcRequest)
-    this.res = await harness.inject(MvcResponse)
+    this.req = await harness.inject(HttpRequest)
+    this.res = await harness.inject(HttpResponse)
     this.routeHandler = await harness.inject(RouteHandler)
   })
 

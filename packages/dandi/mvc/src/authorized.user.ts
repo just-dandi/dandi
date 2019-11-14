@@ -1,8 +1,8 @@
 import { InjectionToken, Provider } from '@dandi/core'
+import { HttpRequest } from '@dandi/http'
 
 import { AuthorizationService } from './authorization.service'
 import { localOpinionatedToken } from './local.token'
-import { MvcRequest } from './mvc.request'
 import { RequestAuthorizationService } from './request.authorization.service'
 import { RequestInfo } from './request.info'
 
@@ -16,7 +16,7 @@ export const AuthorizedUser: InjectionToken<AuthorizedUser> = localOpinionatedTo
 
 export async function authorizedUserFactory(
   authService: AuthorizationService,
-  req: MvcRequest,
+  req: HttpRequest,
   requestInfo: RequestInfo,
 ): Promise<AuthorizedUser> {
   requestInfo.performance.mark('authorizedUserFactory', 'beforeGetAuthorizedUser')
@@ -30,6 +30,6 @@ export const AuthorizedUserProvider: Provider<AuthorizedUser> = {
   provide: AuthorizedUser,
   useFactory: authorizedUserFactory,
   async: true,
-  deps: [RequestAuthorizationService, MvcRequest, RequestInfo],
+  deps: [RequestAuthorizationService, HttpRequest, RequestInfo],
   singleton: true,
 }

@@ -1,13 +1,10 @@
 import { Constructor } from '@dandi/common'
 import { InjectionToken, Provider, Injector, InjectorContext, ResolverContext } from '@dandi/core'
+import { isRenderableMimeType, MimeTypeInfo, HttpRequest, HttpRequestAcceptTypes } from '@dandi/http'
 
 import { localOpinionatedToken } from './local.token'
-import { isRenderableMimeType } from './mime-type'
-import { MimeTypeInfo } from './mime-type-info'
-import { MvcRequest } from './mvc.request'
 import { DefaultObjectRenderer, ObjectRenderer } from './object-renderer'
 import { RendererInfo, RendererInfoProvider, RendererMetadata } from './renderer-decorator'
-import { RequestAcceptTypes } from './request-accept-types'
 import { Route } from './route'
 
 export const MvcResponseRenderer: InjectionToken<ObjectRenderer> = localOpinionatedToken('MvcResponseRenderer', {
@@ -47,8 +44,8 @@ const SelectedRenderer: InjectionToken<Constructor<ObjectRenderer>> = localOpini
 const SelectedRendererProvider: Provider<Constructor<ObjectRenderer>> = {
   provide: SelectedRenderer,
   useFactory(
-    req: MvcRequest,
-    acceptTypes: RequestAcceptTypes,
+    req: HttpRequest,
+    acceptTypes: HttpRequestAcceptTypes,
     route: Route,
     renderers: RendererInfo[],
     defaultRenderer: Constructor<ObjectRenderer>,
@@ -73,8 +70,8 @@ const SelectedRendererProvider: Provider<Constructor<ObjectRenderer>> = {
     return defaultRenderer
   },
   deps: [
-    MvcRequest,
-    RequestAcceptTypes,
+    HttpRequest,
+    HttpRequestAcceptTypes,
     Route,
     RendererInfo,
     DefaultObjectRenderer,

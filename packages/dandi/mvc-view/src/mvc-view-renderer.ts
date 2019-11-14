@@ -1,11 +1,7 @@
 import { Disposable } from '@dandi/common'
 import { Inject, Injector, InjectorContext, ResolverContext } from '@dandi/core'
-import {
-  ControllerResult,
-  MimeTypes,
-  ObjectRendererBase,
-  Renderer,
-} from '@dandi/mvc'
+import { MimeTypes } from '@dandi/http'
+import { ControllerResult, ObjectRendererBase, Renderer } from '@dandi/mvc'
 import { ViewResult } from '@dandi/mvc-view'
 
 import { ViewResultFactory } from './view-result-factory'

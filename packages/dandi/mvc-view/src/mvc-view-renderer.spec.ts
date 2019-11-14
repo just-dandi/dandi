@@ -1,12 +1,9 @@
 import { testHarness } from '@dandi/core/testing'
+import { HttpRequest, MimeTypes, HttpRequestAcceptTypes, parseMimeTypes } from '@dandi/http'
 import {
   DefaultObjectRenderer,
-  MimeTypes,
-  MvcRequest,
   MvcResponseRenderer,
   MvcResponseRendererProvider,
-  parseMimeTypes,
-  RequestAcceptTypes,
   Route,
 } from '@dandi/mvc'
 import { MvcViewRenderer, ViewResult, ViewResultFactory } from '@dandi/mvc-view'
@@ -28,13 +25,13 @@ describe('MvcViewRenderer', function() {
       },
     },
     {
-      provide: MvcRequest,
+      provide: HttpRequest,
       useValue: {
         get: stub().returns(MimeTypes.textHtml),
       },
     },
     {
-      provide: RequestAcceptTypes,
+      provide: HttpRequestAcceptTypes,
       useValue: parseMimeTypes(MimeTypes.textHtml),
     },
     {

@@ -1,13 +1,12 @@
 import { MethodTarget, isConstructor } from '@dandi/common'
 import { InjectionToken, ParamMetadata, Provider, SyncFactoryProvider, getInjectableParamMetadata } from '@dandi/core'
+import { ParamMap } from '@dandi/http'
 import { MemberMetadata, getMemberMetadata } from '@dandi/model'
 import { ConvertedType, MetadataModelValidator, ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder'
 
-import { ConditionDecorators } from './condition.decorator'
-import { conditionWithinByKeyDecorator } from './condition.within'
-import { localOpinionatedToken, localSymbolTokenFor } from './local.token'
-import { requestParamValidatorFactory } from './request.param.validator'
-import { ParamMap } from './tokens'
+import { ConditionDecorators } from './condition'
+import { localSymbolTokenFor, localOpinionatedToken } from './local-token'
+import { requestParamValidatorFactory } from './request-param-validator'
 
 export interface RequestParamDecorator<T> extends ParameterDecorator, ConditionDecorators {
   (target: Object, propertyKey: string | symbol, parameterIndex: number): {
@@ -80,6 +79,9 @@ export function makeRequestParamDecorator<T>(
       memberMetadata,
     }
   } as any
-  apply.within = conditionWithinByKeyDecorator.bind(null, apply)
+  // FIXME: figure out how to do this without introducing authorization logic to @dandi/http*?
+  //        OR: figure out how to abstract authorization away from @dandi/mvc
+  // apply.within = conditionWithinByKeyDecorator.bind(null, apply)
+  apply.within = () => () => {}
   return apply
 }

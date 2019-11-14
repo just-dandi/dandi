@@ -2,20 +2,22 @@ import { Uuid } from '@dandi/common'
 import { Provider } from '@dandi/core'
 import { testHarness } from '@dandi/core/testing'
 import {
+  ForbiddenError,
+  HttpMethod,
+  HttpRequestBody,
+  HttpRequestPathParamMap,
+  HttpRequestQueryParamMap,
+  HttpRequest,
+  HttpResponse,
+} from '@dandi/http'
+import { RequestBody } from '@dandi/http-model'
+import {
   AuthorizationAuthProviderFactory,
   AuthorizationCondition,
   AuthProviderFactory,
   DefaultRouteInitializer,
-  ForbiddenError,
-  HttpMethod,
-  HttpRequestBody,
-  MvcRequest,
-  MvcResponse,
-  RequestBody,
   RequestController,
-  RequestPathParamMap,
   RequestProviderRegistrar,
-  RequestQueryParamMap,
   Route,
   RouteInitializationError,
 } from '@dandi/mvc'
@@ -79,25 +81,25 @@ describe('DefaultRouteInitializer', function() {
     it('generates a provider for the request object', async function() {
       const providers = await this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)
 
-      expect(await harness.inject(MvcRequest, ...providers)).to.equal(this.req)
+      expect(await harness.inject(HttpRequest, ...providers)).to.equal(this.req)
     })
 
     it('generates a provider for the response object', async function() {
       const providers = await this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)
 
-      expect(await harness.inject(MvcResponse, ...providers)).to.equal(this.res)
+      expect(await harness.inject(HttpResponse, ...providers)).to.equal(this.res)
     })
 
     it('generates a provider for the path params object', async function() {
       const providers = await this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)
 
-      expect(await harness.inject(RequestPathParamMap, ...providers)).to.equal(this.req.params)
+      expect(await harness.inject(HttpRequestPathParamMap, ...providers)).to.equal(this.req.params)
     })
 
     it('generates a provider for the query params object', async function() {
       const providers = await this.initializer.initRouteRequest(this.route, this.req, this.requestInfo, this.res)
 
-      expect(await harness.inject(RequestQueryParamMap, ...providers)).to.equal(this.req.query)
+      expect(await harness.inject(HttpRequestQueryParamMap, ...providers)).to.equal(this.req.query)
     })
 
     it('generates a provider for the route object', async function() {

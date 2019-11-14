@@ -1,5 +1,7 @@
 import { Inject } from '@dandi/core'
-import { Controller, HttpGet, ParamMap, QueryParam, RequestQueryParamMap } from '@dandi/mvc'
+import { HttpRequestQueryParamMap, ParamMap } from '@dandi/http'
+import { QueryParam } from '@dandi/http-model'
+import { Controller, HttpGet } from '@dandi/mvc'
 import { View, ViewResult, ViewResultFactory } from '@dandi/mvc-view'
 
 @Controller('view')
@@ -12,7 +14,7 @@ export class ViewController {
    */
   @HttpGet('auto')
   @View('example-auto')
-  public auto(@Inject(RequestQueryParamMap) query): { query: ParamMap } {
+  public auto(@Inject(HttpRequestQueryParamMap) query): { query: ParamMap } {
     return { query }
   }
 
@@ -22,13 +24,13 @@ export class ViewController {
    */
   @HttpGet('explicit-pug')
   @View('example-explicit.pug')
-  public explicitPug(@Inject(RequestQueryParamMap) query): { query: ParamMap } {
+  public explicitPug(@Inject(HttpRequestQueryParamMap) query): { query: ParamMap } {
     return { query }
   }
 
   @HttpGet('explicit-ejs')
   @View('example-explicit.ejs')
-  public explicitEjs(@Inject(RequestQueryParamMap) query): { query: ParamMap } {
+  public explicitEjs(@Inject(HttpRequestQueryParamMap) query): { query: ParamMap } {
     return { query }
   }
 

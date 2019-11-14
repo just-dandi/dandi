@@ -1,13 +1,12 @@
 import { InjectionToken, Provider } from '@dandi/core'
+import { HttpRequest, HttpResponse } from '@dandi/http'
 
 import { localOpinionatedToken } from './local.token'
-import { MvcRequest } from './mvc.request'
-import { MvcResponse } from './mvc.response'
 import { RequestInfo } from './request.info'
 import { Route } from './route'
 
 export interface RouteInitializer {
-  initRouteRequest(route: Route, req: MvcRequest, requestInfo: RequestInfo, res: MvcResponse): Promise<Provider<any>[]>
+  initRouteRequest(route: Route, req: HttpRequest, requestInfo: RequestInfo, res: HttpResponse): Promise<Provider<any>[]>
 }
 
 export const RouteInitializer: InjectionToken<RouteInitializer> = localOpinionatedToken<RouteInitializer>(

@@ -1,13 +1,14 @@
 import { ParamMetadata } from '@dandi/core'
 import { testHarnessSingle } from '@dandi/core/testing'
+import { HttpRequestPathParamMap } from '@dandi/http'
+import { PathParam, RequestParamModelBuilderOptionsProvider } from '@dandi/http-model'
 import { MemberMetadata } from '@dandi/model'
 import { MetadataModelBuilder, PrimitiveTypeConverter, TypeConverter } from '@dandi/model-builder'
-import { PathParam, RequestPathParamMap } from '@dandi/mvc'
+
 import { expect } from 'chai'
 import { SinonStubbedInstance, createStubInstance, stub } from 'sinon'
 
-import { RequestParamModelBuilderOptionsProvider } from './request.param.decorator'
-import { requestParamValidatorFactory } from './request.param.validator'
+import { requestParamValidatorFactory } from './request-param-validator'
 
 describe('requestParamValidatorFactory', () => {
   let paramMap: { [key: string]: string }
@@ -63,7 +64,7 @@ describe('requestParamValidatorFactory', () => {
         },
       },
       {
-        provide: RequestPathParamMap,
+        provide: HttpRequestPathParamMap,
         useValue: {
           foo: 'bar',
         },

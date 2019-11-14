@@ -1,20 +1,22 @@
 import { Uuid } from '@dandi/common'
 import { stubHarness } from '@dandi/core/testing'
+import {
+  HttpMethod,
+  HttpRequest,
+  HttpRequestAcceptTypesProvider,
+  HttpRequestPathParamMap,
+  HttpResponse,
+  MimeTypes,
+  parseMimeTypes,
+} from '@dandi/http'
+import { MissingParamError, PathParam } from '@dandi/http-model'
 import { ModelBuilderModule } from '@dandi/model-builder'
 import {
   DefaultRouteHandler,
-  HttpMethod, MimeTypes,
-  MissingParamError,
-  MvcRequest,
-  MvcResponse,
   MvcResponseRenderer,
   NativeJsonObjectRenderer,
-  parseMimeTypes,
-  PathParam,
-  RequestAcceptTypesProvider,
   RequestController,
   RequestInfo,
-  RequestPathParamMap,
   Route,
 } from '@dandi/mvc'
 
@@ -24,7 +26,7 @@ import { stub, createStubInstance } from 'sinon'
 describe('DefaultRouteHandler', function() {
 
   const harness = stubHarness(DefaultRouteHandler,
-    RequestAcceptTypesProvider,
+    HttpRequestAcceptTypesProvider,
     ModelBuilderModule,
     {
       provide: Route,
@@ -38,7 +40,7 @@ describe('DefaultRouteHandler', function() {
       singleton: true,
     },
     {
-      provide: MvcRequest,
+      provide: HttpRequest,
       useFactory: () => ({
         params: {},
         query: {},
@@ -50,7 +52,7 @@ describe('DefaultRouteHandler', function() {
       }),
     },
     {
-      provide: MvcResponse,
+      provide: HttpResponse,
       useFactory: () => ({
         contentType: stub().returnsThis(),
         json: stub().returnsThis(),
@@ -71,11 +73,11 @@ describe('DefaultRouteHandler', function() {
       singleton: true,
     },
     {
-      provide: RequestPathParamMap,
-      useFactory(req: MvcRequest) {
+      provide: HttpRequestPathParamMap,
+      useFactory(req: HttpRequest) {
         return req.params
       },
-      deps: [MvcRequest],
+      deps: [HttpRequest],
     },
     {
       provide: MvcResponseRenderer,
@@ -86,8 +88,8 @@ describe('DefaultRouteHandler', function() {
   beforeEach(async function() {
     this.handler = await harness.inject(DefaultRouteHandler)
     this.route = await harness.inject(Route)
-    this.req = await harness.inject(MvcRequest)
-    this.res = await harness.inject(MvcResponse)
+    this.req = await harness.inject(HttpRequest)
+    this.res = await harness.inject(HttpResponse)
     this.requestInfo = await harness.inject(RequestInfo)
     this.renderer = await harness.inject(MvcResponseRenderer)
     this.renderer.render.returns({

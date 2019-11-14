@@ -1,6 +1,7 @@
 import { Uuid } from '@dandi/common'
 import { Inject } from '@dandi/core'
-import { Controller, HttpGet, HttpPost, PathParam, RequestBody } from '@dandi/mvc'
+import { PathParam, RequestBody } from '@dandi/http-model'
+import { Controller, HttpGet, HttpPost } from '@dandi/mvc'
 import { AccessorResourceId, ResourceAccessor, ResourceListAccessor } from '@dandi/mvc-hal'
 
 import { Task, TaskRequest } from '../tasks/task'

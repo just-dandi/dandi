@@ -10,15 +10,14 @@ import {
   ResourceId,
   SELF_RELATION,
 } from '@dandi/hal'
+import { HttpMethod, HttpRequest } from '@dandi/http'
+import { PathParam } from '@dandi/http-model'
 import { Property } from '@dandi/model'
 import { ModelBuilder } from '@dandi/model-builder'
 import {
   Controller,
   DefaultRouteInitializer,
   HttpGet,
-  HttpMethod,
-  MvcRequest,
-  PathParam,
   PerfRecord,
   RequestInfo,
   Route,
@@ -457,8 +456,8 @@ describe('DefaultResourceComposer', function() {
         ],
       }
 
-      const request: Provider<MvcRequest> = {
-        provide: MvcRequest,
+      const request: Provider<HttpRequest> = {
+        provide: HttpRequest,
         useValue: {
           body: null,
           params: {},
@@ -600,8 +599,8 @@ describe('DefaultResourceComposer', function() {
           },
         ],
       }
-      const request: Provider<MvcRequest> = {
-        provide: MvcRequest,
+      const request: Provider<HttpRequest> = {
+        provide: HttpRequest,
         useValue: {
           body: null,
           params: {},
@@ -770,8 +769,8 @@ describe('DefaultResourceComposer', function() {
         ],
       }
 
-      const request: Provider<MvcRequest> = {
-        provide: MvcRequest,
+      const request: Provider<HttpRequest> = {
+        provide: HttpRequest,
         useValue: {
           body: null,
           params: {},
@@ -970,8 +969,8 @@ describe('DefaultResourceComposer', function() {
           },
         ],
       }
-      const request: Provider<MvcRequest> = {
-        provide: MvcRequest,
+      const request: Provider<HttpRequest> = {
+        provide: HttpRequest,
         useValue: {
           body: null,
           params: {},
@@ -1181,8 +1180,8 @@ describe('DefaultResourceComposer', function() {
           },
         ],
       }
-      const request: Provider<MvcRequest> = {
-        provide: MvcRequest,
+      const request: Provider<HttpRequest> = {
+        provide: HttpRequest,
         useValue: {
           body: null,
           params: {},

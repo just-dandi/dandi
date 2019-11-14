@@ -2,15 +2,15 @@ import { Constructor, getMetadata } from '@dandi/common'
 import {
   ClassProvider,
   InjectionToken,
+  Injector,
   Provider,
   Repository,
-  RepositoryRegistrationSource, Injector,
+  RepositoryRegistrationSource,
 } from '@dandi/core'
+import { MimeTypeInfo, parseMimeTypes } from '@dandi/http'
 
 import { localOpinionatedToken } from './local.token'
 import { globalSymbol } from './global.symbol'
-import { parseMimeTypes } from './mime-type'
-import { MimeTypeInfo } from './mime-type-info'
 import { ObjectRenderer } from './object-renderer'
 
 const META_KEY = globalSymbol('meta:renderer')

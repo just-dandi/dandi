@@ -1,11 +1,9 @@
 import { testHarness, underTest } from '@dandi/core/testing'
+import { HttpRequest, HttpRequestAcceptTypesProvider, MimeTypes } from '@dandi/http'
 import {
   DefaultObjectRenderer,
-  MimeTypes,
-  MvcRequest,
   MvcResponseRenderer,
   MvcResponseRendererProvider,
-  RequestAcceptTypesProvider,
   Route,
 } from '@dandi/mvc'
 import { TestApplicationJsonRenderer, TestTextPlainRenderer } from '@dandi/mvc/testing'
@@ -19,9 +17,9 @@ describe('MvcResponseRendererProvider', function() {
   // to determine which renderers are actually registered
   const harness = testHarness(
     underTest(MvcResponseRendererProvider),
-    RequestAcceptTypesProvider,
+    HttpRequestAcceptTypesProvider,
     {
-      provide: MvcRequest,
+      provide: HttpRequest,
       useFactory() {
         return {
           get: stub(),
@@ -42,7 +40,7 @@ describe('MvcResponseRendererProvider', function() {
   beforeEach(async function() {
     this.getRenderer = () => harness.inject(MvcResponseRenderer, false)
     this.defaultRenderer = await harness.inject(DefaultObjectRenderer)
-    this.req = await harness.inject(MvcRequest)
+    this.req = await harness.inject(HttpRequest)
   })
 
   it('falls back to the default renderer if no matching renderers are available', async function() {
