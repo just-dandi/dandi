@@ -1,12 +1,12 @@
 import { Disposable } from '@dandi/common'
 import { Inject, Injector } from '@dandi/core'
 import { HttpRequest, HttpRequestAcceptTypes, parseMimeTypes } from '@dandi/http'
-import { ControllerResult, ObjectRendererBase, Renderer, MvcResponseRenderer } from '@dandi/mvc'
+import { HttpPipelineResult, HttpResponseRendererBase, Renderer, HttpResponseRenderer } from '@dandi/http-pipeline'
 
 import { HalMimeTypes } from './hal-mime-types'
 
 @Renderer(HalMimeTypes.halJson, HalMimeTypes.halXml, HalMimeTypes.halYaml)
-export class HalObjectRenderer extends ObjectRendererBase {
+export class HalObjectRenderer extends HttpResponseRendererBase {
 
   public readonly defaultContentType: string = HalMimeTypes.halJson
 
@@ -16,7 +16,7 @@ export class HalObjectRenderer extends ObjectRendererBase {
     super()
   }
 
-  public async renderControllerResult(contentType: string, controllerResult: ControllerResult): Promise<string> {
+  public async renderPipelineResult(contentType: string, pipelineResult: HttpPipelineResult): Promise<string> {
     const halMimeType = parseMimeTypes(contentType)[0]
     const subRendererMimeType = parseMimeTypes(`${halMimeType.type}/${halMimeType.subtypeBase}`)
     const providers = [
@@ -32,9 +32,9 @@ export class HalObjectRenderer extends ObjectRendererBase {
       },
     ]
 
-    return Disposable.useAsync(this.injector.inject(MvcResponseRenderer, ...providers), async resolveResult => {
+    return Disposable.useAsync(this.injector.inject(HttpResponseRenderer, ...providers), async resolveResult => {
       const renderer = resolveResult.singleValue
-      const result = await renderer.render(subRendererMimeType, controllerResult)
+      const result = await renderer.render(subRendererMimeType, pipelineResult)
       return result.renderedOutput
 
     })

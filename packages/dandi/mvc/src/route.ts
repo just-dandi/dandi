@@ -3,7 +3,7 @@ import { InjectionToken, Provider } from '@dandi/core'
 import { HttpMethod } from '@dandi/http'
 
 import { AuthorizationCondition } from './authorization.condition'
-import { CorsConfig } from './cors.config'
+import { CorsConfig } from './cors-config'
 import { localSymbolToken } from './local.token'
 
 export interface Route {

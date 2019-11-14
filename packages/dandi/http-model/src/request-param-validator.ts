@@ -1,8 +1,9 @@
 import { ParamMetadata } from '@dandi/core'
 import { ParamMap } from '@dandi/http'
-import { MissingParamError } from '@dandi/http-model'
 import { MemberMetadata } from '@dandi/model'
 import { MemberBuilderOptions, ModelBuilder } from '@dandi/model-builder'
+
+import { MissingParamError } from './errors'
 
 export function requestParamValidatorFactory(
   type: any,

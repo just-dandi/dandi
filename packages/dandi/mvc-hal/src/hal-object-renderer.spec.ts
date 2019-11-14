@@ -1,8 +1,9 @@
 import { testHarness } from '@dandi/core/testing'
 import { HttpRequest, HttpRequestAcceptTypesProvider, MimeTypes, parseMimeTypes } from '@dandi/http'
-import { DefaultObjectRenderer, MvcResponseRendererProvider, PlainTextObjectRenderer, Route } from '@dandi/mvc'
+import { HttpResponseRendererProvider, DefaultHttpResponseRenderer, PlainTextObjectRenderer } from '@dandi/http-pipeline'
+import { TestApplicationJsonRenderer } from '@dandi/http-pipeline/testing'
+import { Route } from '@dandi/mvc'
 import { HalMimeTypes, HalObjectRenderer } from '@dandi/mvc-hal'
-import { TestApplicationJsonRenderer } from '@dandi/mvc/testing'
 
 import { expect } from 'chai'
 import { stub } from 'sinon'
@@ -14,9 +15,9 @@ describe('HalObjectRenderer', function() {
       provide: TestApplicationJsonRenderer,
       useFactory: () => new TestApplicationJsonRenderer(),
     },
-    MvcResponseRendererProvider,
+    HttpResponseRendererProvider,
     HttpRequestAcceptTypesProvider,
-    DefaultObjectRenderer.use(PlainTextObjectRenderer),
+    DefaultHttpResponseRenderer.use(PlainTextObjectRenderer),
     {
       provide: HttpRequest,
       useFactory() {
@@ -41,7 +42,7 @@ describe('HalObjectRenderer', function() {
   })
 
 
-  describe('renderControllerResult', function() {
+  describe('renderPipelineResult', function() {
 
     beforeEach(async function() {
       this.renderer = await harness.inject(HalObjectRenderer)
@@ -56,7 +57,7 @@ describe('HalObjectRenderer', function() {
 
       const value = { foo: 'bar' }
 
-      await this.renderer.renderControllerResult(HalMimeTypes.halJson, value)
+      await this.renderer.renderPipelineResult(HalMimeTypes.halJson, value)
 
       expect(this.jsonRenderer.render).to.have.been
         .calledOnce
@@ -74,7 +75,7 @@ describe('HalObjectRenderer', function() {
 
       const value = { foo: 'bar' }
 
-      const result = await this.renderer.renderControllerResult(HalMimeTypes.halJson, value)
+      const result = await this.renderer.renderPipelineResult(HalMimeTypes.halJson, value)
 
       expect(result).to.deep.equal(expected)
     })

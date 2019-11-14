@@ -1,7 +1,7 @@
 import { AppError, Constructor } from '@dandi/common'
 import { Repository, injectableDecorator, RepositoryRegistrationSource } from '@dandi/core'
 
-import { getControllerMetadata } from './controller.metadata'
+import { getControllerMetadata } from './controller-metadata'
 
 export const CONTROLLER_REGISTRATION_SOURCE: RepositoryRegistrationSource = {
   constructor: Controller,

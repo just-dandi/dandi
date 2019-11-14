@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 
-import { getControllerMetadata } from './controller.metadata'
+import { getControllerMetadata } from './controller-metadata'
 
 describe('getControllerMetadata', () => {
   it('initializes the routeMap for the controller', () => {

@@ -1,0 +1,8 @@
+{
+  "name": "@dandi/http-pipeline",
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/core": "*",
+    "@dandi/http": "*"
+  }
+}
