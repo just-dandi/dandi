@@ -9,11 +9,14 @@ export interface MappedInjectionToken<TKey, TService> {
 
 export type MappedInjectionTokenFactory<T> = (<TKey, TService>(key: TKey) => MappedInjectionToken<TKey, TService>)
 
+export type ClassDecoratorToken<T> = () => ClassDecorator
+
 export type InjectionToken<T> =
   | SymbolTokenBase<T>
   | Constructor<T>
   | MappedInjectionToken<any, T>
   | MappedInjectionTokenFactory<T>
+  | ClassDecoratorToken<T>
 
 export function isMappedInjectionToken(obj: any): obj is MappedInjectionToken<any, any> {
   return obj && isInjectionToken(obj.provide) && typeof obj.key !== undefined
