@@ -11,7 +11,7 @@ cd ../../
 
 DANDI_ROOT=${PWD}
 
-if [ $0 != "--skip-build" ]
+if [ "$1" != "--skip-build" ]
 then
   yarn build
 fi
