@@ -5,7 +5,7 @@ import { expect } from 'chai'
 import { HttpEventOptions } from './http.event.options'
 import { HttpResponder } from './http.responder'
 import { HttpResponseInterceptor } from './http.response.interceptor'
-import { LambdaResponder } from './lambda.responder'
+import { LambdaResponder } from './lambda-responder'
 
 describe('HttpResponder', () => {
   let responder: LambdaResponder<any>

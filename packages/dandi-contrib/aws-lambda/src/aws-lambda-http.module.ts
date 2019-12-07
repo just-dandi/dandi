@@ -1,13 +1,14 @@
 import { ModuleBuilder, Registerable } from '@dandi/core'
 
 import { HttpEventOptions } from './http.event.options'
-import { HttpEventTransformer } from './http.event.transformer'
+import { HttpEventTransformer } from './http-event-transformer'
 import { HttpResponder } from './http.responder'
 import { PKG } from './local.token'
 
-export class AwsLambdaModuleBuilder extends ModuleBuilder<AwsLambdaModuleBuilder> {
+// FIXME: refactor to use HttpPipeline from @dandi/http-pipeline
+export class AwsLambdaHttpModuleBuilder extends ModuleBuilder<AwsLambdaHttpModuleBuilder> {
   constructor(...entries: Registerable[]) {
-    super(AwsLambdaModuleBuilder, PKG, ...entries)
+    super(AwsLambdaHttpModuleBuilder, PKG, ...entries)
   }
 
   public configure(options: HttpEventOptions): this {
@@ -18,4 +19,4 @@ export class AwsLambdaModuleBuilder extends ModuleBuilder<AwsLambdaModuleBuilder
   }
 }
 
-export const AwsLambdaModule = new AwsLambdaModuleBuilder(HttpResponder, HttpEventTransformer)
+export const AwsLambdaHttpModule = new AwsLambdaHttpModuleBuilder(HttpResponder, HttpEventTransformer)
