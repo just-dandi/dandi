@@ -3,7 +3,7 @@ import { APIGatewayProxyResult } from 'aws-lambda'
 
 import { HttpEventOptions } from './http.event.options'
 import { HttpResponseInterceptor } from './http.response.interceptor'
-import { LambdaResponder } from './lambda.responder'
+import { LambdaResponder } from './lambda-responder'
 
 const HTTP_OK = 200
 const HTTP_SERVER_ERROR = 500

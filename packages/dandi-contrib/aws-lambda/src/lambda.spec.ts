@@ -1,4 +1,5 @@
 import { LambdaErrorHandler } from '@dandi-contrib/aws-lambda'
+import { Injector, Provider } from '@dandi/core'
 import { TestHarness, stubProvider, testHarness } from '@dandi/core/testing'
 import { Context } from 'aws-lambda'
 import { expect } from 'chai'
@@ -7,19 +8,17 @@ import { SinonStubbedInstance, createStubInstance, spy, stub } from 'sinon'
 import { MockContext } from '../test/mock.context'
 
 import { HandlerFn, Lambda } from './lambda'
-import { LambdaEventTransformer } from './lambda.event.transformer'
-import { LambdaHandler } from './lambda.handler'
-import { LambdaResponder } from './lambda.responder'
+import { LambdaEventTransformer } from './lambda-event-transformer'
+import { LambdaHandler } from './lambda-handler'
+import { LambdaResponder } from './lambda-responder'
 
 interface TestEvent {}
 
-interface TestEventData {}
-
 interface TestResponse {}
 
-class TestTransformer implements LambdaEventTransformer<TestEvent, TestEventData> {
-  public transform(): TestEventData {
-    return undefined
+class TestTransformer implements LambdaEventTransformer<TestEvent> {
+  public transform(): Provider<any>[] {
+    return []
   }
 }
 
@@ -36,8 +35,8 @@ class TestResponder implements LambdaResponder<TestResponse> {
 describe('Lambda', () => {
   TestHarness.scopeGlobalRepository()
 
-  class TestHandler implements LambdaHandler<TestEventData> {
-    public static instance: SinonStubbedInstance<LambdaHandler<TestEventData>>
+  class TestHandler implements LambdaHandler {
+    public static instance: SinonStubbedInstance<LambdaHandler>
 
     constructor() {
       stub(this, 'handleEvent').callsFake(() => {
@@ -53,23 +52,20 @@ describe('Lambda', () => {
 
   let event: TestEvent
   let context: Context
-  let eventData: TestEventData
   let response: TestResponse
   let handlerFn: HandlerFn<TestEvent, any>
 
-  let transformer: SinonStubbedInstance<LambdaEventTransformer<TestEvent, TestEventData>>
+  let transformer: SinonStubbedInstance<LambdaEventTransformer<TestEvent>>
   let responder: SinonStubbedInstance<LambdaResponder<TestResponse>>
 
   beforeEach(async () => {
     event = {}
     context = createStubInstance(MockContext) as unknown as Context
-    eventData = {}
     response = {}
   })
   afterEach(() => {
     event = undefined
     context = undefined
-    eventData = undefined
     response = undefined
 
     handlerFn = undefined
@@ -117,6 +113,9 @@ describe('Lambda', () => {
 
     beforeEach(async () => {
       handlerFn = Lambda.handler(TestHandler, harness.injector)
+
+      transformer = await harness.injectStub(LambdaEventTransformer)
+      transformer.transform.returns([])
     })
 
     describe('handler', () => {
@@ -130,13 +129,20 @@ describe('Lambda', () => {
     })
 
     describe('handleEvent', () => {
+      let transformProviders: Provider<any>[]
+
       beforeEach(async () => {
         transformer = await harness.injectStub(LambdaEventTransformer)
-        transformer.transform.returns(eventData)
+        transformProviders = []
+        transformer.transform.returns(transformProviders)
+        spy(harness.injector, 'invoke')
 
         await handlerFn(event, context)
 
         responder = await harness.injectStub(LambdaResponder)
+      })
+      afterEach(() => {
+        transformProviders = undefined
       })
 
       it('calls the event transformer with the passed event and context', async () => {
@@ -144,7 +150,12 @@ describe('Lambda', () => {
       })
 
       it('passes the result of the event transformer to the handler', async () => {
-        expect(TestHandler.instance.handleEvent).to.have.been.calledOnce.calledWithExactly(eventData, context)
+        expect(harness.injector.invoke).to.have.been
+          .calledOnce
+          .calledWith(TestHandler.instance, 'handleEvent')
+
+        // const passedProviders = harness.invoke()
+        // expect(TestHandler.instance.handleEvent).to.have.been.calledOnce.calledWithExactly(transformProviders, context)
       })
 
       it('passes the result of the handler to the responder', () => {
@@ -191,6 +202,9 @@ describe('Lambda', () => {
 
     beforeEach(async () => {
       responder = await harness.injectStub(LambdaResponder)
+
+      transformer = await harness.injectStub(LambdaEventTransformer)
+      transformer.transform.returns([])
 
       error = new Error('Your llama is lloose!')
       responder.handleResponse.throws(error)

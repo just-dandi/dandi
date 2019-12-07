@@ -1,0 +1,79 @@
+import { Inject, Injectable, Optional, Provider } from '@dandi/core'
+import { HttpMethod, HttpRequest, HttpRequestPathParamMap, HttpRequestQueryParamMap, ParamMap } from '@dandi/http'
+import { APIGatewayProxyEvent } from 'aws-lambda'
+
+import { AwsHttpRequest } from './aws-http-request'
+import { HttpEventOptions } from './http.event.options'
+import { StageVariables } from './http-event-providers'
+import { LambdaEventTransformer } from './lambda-event-transformer'
+
+@Injectable(LambdaEventTransformer)
+export class HttpEventTransformer implements LambdaEventTransformer<APIGatewayProxyEvent> {
+  constructor(
+    @Inject(HttpEventOptions)
+    @Optional()
+    private options: HttpEventOptions,
+  ) {}
+
+  public transform(event: APIGatewayProxyEvent): Provider<any>[] {
+    const providers: Provider<any>[] = []
+
+    providers.push(
+      {
+        provide: HttpRequest,
+        useValue: this.getMvcRequest(event),
+      },
+      {
+        provide: HttpRequestPathParamMap,
+        useValue: Object.assign({}, event.pathParameters),
+      },
+      {
+        provide: HttpRequestQueryParamMap,
+        useValue: this.getQueryStringParams(event),
+      },
+      {
+        provide: StageVariables,
+        useValue: Object.assign({}, event.stageVariables),
+      },
+    )
+    // TODO: add providers as needed:
+    //  event.path, event.rawBody, event.headers, event.httpMethod, event.resource, event.requestContext
+    //  these are available indirectly by injecting the event itself with a parameter using @Inject(AwsEvent)
+
+    return providers
+  }
+
+  private getMvcRequest(event: APIGatewayProxyEvent): HttpRequest {
+    let body: any
+    if (event.body) {
+      let bodyStr = event.body
+      if (event.isBase64Encoded) {
+        bodyStr = Buffer.from(bodyStr, 'base64').toString('utf-8')
+      }
+      body = JSON.parse(bodyStr)
+    }
+
+    return new AwsHttpRequest({
+      body,
+      path: event.path,
+      query: this.getQueryStringParams(event),
+      params: event.pathParameters,
+      method: event.httpMethod.toLowerCase() as HttpMethod,
+    })
+  }
+
+  private getQueryStringParams(event: APIGatewayProxyEvent): ParamMap {
+    if (!event.queryStringParameters) {
+      return {}
+    }
+    return Object.keys(event.queryStringParameters)
+      .reduce((result, key) => {
+        if (event.multiValueQueryStringParameters[key].length > 1) {
+          result[key] = [...event.multiValueQueryStringParameters[key]]
+        } else {
+          result[key] = event.queryStringParameters[key]
+        }
+        return result
+      }, {})
+  }
+}

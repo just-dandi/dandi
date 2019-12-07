@@ -3,7 +3,10 @@
   "peerDependencies": {
     "@dandi/common": "*",
     "@dandi/core": "*",
-    "@dandi/model-builder": "*"
+    "@dandi/model-builder": "*",
+    "@dandi/http": "*",
+    "@dandi/http-model": "*",
+    "@dandi/http-pipeline": "*"
   },
   "dependencies": {
     "aws-lambda": "^0.1.2"
