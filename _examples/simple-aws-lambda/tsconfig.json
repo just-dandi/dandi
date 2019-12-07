@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "sourceMap": true,
+    "target": "es2015",
+    "module": "commonjs",
+    "downlevelIteration": true,
+    "moduleResolution": "node",
+    "declaration": false,
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "outDir": ".build",
+    "lib": ["es2018"],
+    "baseUrl": ".",
+    "paths": {
+      "@dandi/*": ["node_modules/@dandi/*"],
+      "@dandi-contrib/*": ["node_modules/@dandi-contrib/*"]
+    }
+  }
+}
