@@ -13,6 +13,10 @@ export class RequestError extends AppError {
   }
 }
 
+export function isRequestError(obj: any): obj is RequestError {
+  return obj && obj.statusCode && obj.message
+}
+
 export class ServerError extends RequestError {
   constructor(internalMessage?: string) {
     super(HttpStatusCode.internalServerError, internalMessage)
@@ -20,14 +24,14 @@ export class ServerError extends RequestError {
 }
 
 export class NotFoundError extends RequestError {
-  constructor() {
-    super(HttpStatusCode.notFound, null, 'Not Found')
+  constructor(message?: string) {
+    super(HttpStatusCode.notFound, message, 'Not Found')
   }
 }
 
 export class UnauthorizedError extends RequestError {
-  constructor() {
-    super(HttpStatusCode.unauthorized, null, 'Not Authorized')
+  constructor(message?: string) {
+    super(HttpStatusCode.unauthorized, message, 'Not Authorized')
   }
 }
 
