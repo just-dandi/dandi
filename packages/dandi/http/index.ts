@@ -1,4 +1,5 @@
 export * from './src/errors'
+export * from './src/http-headers'
 export * from './src/http.module'
 export * from './src/http-method'
 export * from './src/http-request'
