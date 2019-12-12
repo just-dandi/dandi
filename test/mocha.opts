@@ -3,7 +3,7 @@
 --require ./test/ts-node.js
 --require ts-custom-error-shim
 --require ./test/mocha.config
-test/sandbox.ts
+--file test/sandbox.ts
 packages/*/*/{,(!node_modules)/}index.ts
 packages/*/*/{,(!node_modules)/*/}*/index.ts
 packages/*/*/{,(!node_modules)/}src/**/*.spec.ts

@@ -1,3 +1,4 @@
+import { HttpPipelineModule } from '@dandi/http-pipeline'
 import { ModelBuilderModule } from '@dandi/model-builder'
 import { AwsLambdaHttpModule, Lambda } from '@dandi-contrib/aws-lambda'
 
@@ -6,6 +7,7 @@ import { ReceiveDataHandler } from './src/receive-data.handler'
 
 const HANDLER_DEPS: any[] = [
   ...AwsLambdaHttpModule,
+  ...HttpPipelineModule,
   ...ModelBuilderModule,
 ]
 

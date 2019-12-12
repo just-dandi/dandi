@@ -31,6 +31,7 @@ export interface TestInjector extends Resolver, Invoker {
   inject<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Array<Provider<any> | Constructor<any>>): Promise<T>
   injectMulti<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Array<Provider<any> | Constructor<any>>): Promise<T[]>
   injectStub<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Array<Provider<any> | Constructor<any>>): Promise<SinonStubbedInstance<T>>
+  injectMultiStub<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Array<Provider<any> | Constructor<any>>): Promise<SinonStubbedInstance<T>[]>
 
   register(...providers: (Constructor<any> | Provider<any>)[]): void
 }
@@ -152,7 +153,15 @@ export class TestHarness implements TestInjector, Disposable {
     optional?: boolean,
     ...providers: Array<Provider<any> | Constructor<any>>
   ): Promise<SinonStubbedInstance<T>> {
-    return (await this.inject(token, optional, ...providers)) as any
+    return (await this.inject(token, optional, ...providers)) as SinonStubbedInstance<T>
+  }
+
+  public async injectMultiStub<T>(
+    token: InjectionToken<T>,
+    optional?: boolean,
+    ...providers: Array<Provider<any> | Constructor<any>>
+  ): Promise<SinonStubbedInstance<T>[]> {
+    return (await this.inject(token, optional, ...providers)) as unknown as SinonStubbedInstance<T>[]
   }
 
   public register(...providers: (Constructor<any> | Provider<any>)[]): void {
@@ -234,7 +243,7 @@ export async function stubHarnessSingle(...providers: any[]): Promise<TestInject
   return harness
 }
 
-export function underTest(provider: Provider<any>): TestProvider<any> {
+export function underTest<T>(provider: Constructor<T> | Provider<T>): TestProvider<T> {
   if (isConstructor(provider)) {
     return {
       provide: provider,
