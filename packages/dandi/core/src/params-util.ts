@@ -66,7 +66,10 @@ export function getParamNames<T>(target: Function, memberName?: string): string[
     return storeResult(cacheKey, [])
   }
 
-  const sigStr = sigStrMatch[1]
+  if (!sigStrMatch) {
+    throw new Error(`Could not find signature in ${str}`)
+  }
+  const [, sigStr] = sigStrMatch
 
   if (sigStr.indexOf('...') >= 0) {
     throw new UnsupportedParamTypeError('Rest parameters are not supported', target)
