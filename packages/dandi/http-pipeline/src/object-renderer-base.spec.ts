@@ -29,12 +29,14 @@ describe('ObjectRendererBase', function() {
       this.renderer.renderPipelineResult.resolves('hi')
     })
 
-    it('returns an object with the contentType returned by determineContentType, and the renderedOutput returned by renderPipelineResult', async function() {
+    it('returns an object with the contentType returned by determineContentType, and the renderedBody returned by renderPipelineResult', async function() {
       const result = await this.renderer.render(parseMimeTypes(MimeTypes.textPlain), 'hi')
 
       expect(result).to.deep.equal({
+        statusCode: undefined,
         contentType: MimeTypes.textPlain,
-        renderedOutput: 'hi',
+        headers: undefined,
+        renderedBody: 'hi',
       })
     })
 

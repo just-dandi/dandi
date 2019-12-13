@@ -1,10 +1,10 @@
 import { MimeTypes } from '@dandi/http'
-import { HttpResponseRendererBase, Renderer } from '@dandi/http-pipeline'
+import { HttpPipelineRendererBase, Renderer } from '@dandi/http-pipeline'
 
 import { stub } from 'sinon'
 
 @Renderer(MimeTypes.applicationJson)
-export class TestApplicationJsonRenderer extends HttpResponseRendererBase {
+export class TestApplicationJsonRenderer extends HttpPipelineRendererBase {
 
   protected readonly defaultContentType: string = MimeTypes.applicationJson
 

@@ -1,11 +1,11 @@
 import { MimeTypes } from '@dandi/http'
 
 import { HttpPipelineResult } from './http-pipeline-result'
-import { HttpResponseRendererBase } from './http-response-renderer-base'
+import { HttpPipelineRendererBase } from './http-pipeline-renderer-base'
 import { Renderer } from './renderer-decorator'
 
 @Renderer(MimeTypes.textPlain)
-export class PlainTextObjectRenderer extends HttpResponseRendererBase {
+export class PlainTextObjectRenderer extends HttpPipelineRendererBase {
 
   protected readonly defaultContentType: string = MimeTypes.textPlain
 

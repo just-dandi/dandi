@@ -1,21 +1,22 @@
 import { testHarness, underTest } from '@dandi/core/testing'
 import { HttpRequest, HttpRequestAcceptTypesProvider, MimeTypes } from '@dandi/http'
 import {
-  DefaultHttpResponseRenderer,
-  HttpResponseRenderer,
-  HttpResponseRendererProvider,
+  defaultHttpPipelineRenderer,
+  DefaultHttpPipelineRenderer,
+  HttpPipelineRenderer,
+  HttpPipelineRendererProvider,
 } from '@dandi/http-pipeline'
 import { TestApplicationJsonRenderer, TestTextPlainRenderer } from '@dandi/http-pipeline/testing'
 
 import { stub } from 'sinon'
 import { expect } from 'chai'
 
-describe('MvcResponseRendererProvider', function() {
+describe('HttpResponseRenderer', function() {
 
   // IMPORTANT! stubHarness cannot be used here, since RendererInfoProvider relies on not being able to resolve classes
   // to determine which renderers are actually registered
   const harness = testHarness(
-    underTest(HttpResponseRendererProvider),
+    underTest(HttpPipelineRendererProvider),
     HttpRequestAcceptTypesProvider,
     {
       provide: HttpRequest,
@@ -26,12 +27,12 @@ describe('MvcResponseRendererProvider', function() {
         }
       },
     },
-    DefaultHttpResponseRenderer.use(TestTextPlainRenderer),
+    defaultHttpPipelineRenderer(TestTextPlainRenderer),
   )
 
   beforeEach(async function() {
-    this.getRenderer = () => harness.inject(HttpResponseRenderer, false)
-    this.defaultRenderer = await harness.inject(DefaultHttpResponseRenderer)
+    this.getRenderer = () => harness.inject(HttpPipelineRenderer, false)
+    this.defaultRenderer = await harness.inject(DefaultHttpPipelineRenderer)
     this.req = await harness.inject(HttpRequest)
   })
 
