@@ -1,19 +1,13 @@
-import { Inject, Injectable, Optional, Provider } from '@dandi/core'
+import { Injectable, Provider } from '@dandi/core'
 import { HttpMethod, HttpRequest, HttpRequestPathParamMap, HttpRequestQueryParamMap, ParamMap } from '@dandi/http'
 import { APIGatewayProxyEvent } from 'aws-lambda'
 
 import { AwsHttpRequest } from './aws-http-request'
-import { HttpEventOptions } from './http.event.options'
 import { StageVariables } from './http-event-providers'
 import { LambdaEventTransformer } from './lambda-event-transformer'
 
 @Injectable(LambdaEventTransformer)
 export class HttpEventTransformer implements LambdaEventTransformer<APIGatewayProxyEvent> {
-  constructor(
-    @Inject(HttpEventOptions)
-    @Optional()
-    private options: HttpEventOptions,
-  ) {}
 
   public transform(event: APIGatewayProxyEvent): Provider<any>[] {
     const providers: Provider<any>[] = []
@@ -21,7 +15,7 @@ export class HttpEventTransformer implements LambdaEventTransformer<APIGatewayPr
     providers.push(
       {
         provide: HttpRequest,
-        useValue: this.getMvcRequest(event),
+        useValue: this.getHttpRequest(event),
       },
       {
         provide: HttpRequestPathParamMap,
@@ -43,7 +37,7 @@ export class HttpEventTransformer implements LambdaEventTransformer<APIGatewayPr
     return providers
   }
 
-  private getMvcRequest(event: APIGatewayProxyEvent): HttpRequest {
+  private getHttpRequest(event: APIGatewayProxyEvent): HttpRequest {
     let body: any
     if (event.body) {
       let bodyStr = event.body

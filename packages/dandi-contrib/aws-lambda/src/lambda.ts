@@ -7,17 +7,15 @@ import {
   InjectionToken,
   Injector,
   isInjector,
-  Optional,
   Provider,
   Registerable,
 } from '@dandi/core'
+import { HttpPipeline, HttpRequestHandler, HttpRequestHandlerMethod } from '@dandi/http-pipeline'
 import { Context } from 'aws-lambda'
 
 import { AwsContext, AwsEvent } from './event-providers'
-import { LambdaErrorHandler } from './lambda-error.handler'
 import { LambdaEventTransformer } from './lambda-event-transformer'
 import { LambdaHandler } from './lambda-handler'
-import { LambdaResponder } from './lambda-responder'
 import { localOpinionatedToken } from './local.token'
 
 const LambdaHandler: InjectionToken<LambdaHandler> = localOpinionatedToken('LambdaHandler', { multi: false })
@@ -76,30 +74,27 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
   constructor(
     @Inject(Injector) private injector: Injector,
     @Inject(LambdaEventTransformer) private transformer: LambdaEventTransformer<any>,
+    @Inject(HttpPipeline) private httpPipeline: HttpPipeline,
     @Inject(LambdaHandler) private handler: LambdaHandler,
-    @Inject(LambdaResponder) private responder: LambdaResponder<any>,
-    @Inject(LambdaErrorHandler)
-    @Optional()
-    private errorHandlers: Array<LambdaErrorHandler<TEvent>>,
   ) {}
 
   public async handleEvent(event: TEvent, context: Context): Promise<any> {
-    try {
-      const providers = this.createProviders(event, context)
-      const result = await this.injector.invoke(this.handler, 'handleEvent', ...providers)
-      return await this.responder.handleResponse(result)
-    } catch (err) {
-      if (this.errorHandlers) {
-        this.errorHandlers.forEach((handler) => handler.handleError(event, err))
-      }
-      return await this.responder.handleError(err)
-    }
+    const providers = this.createProviders(event, context)
+    return await this.injector.invoke(this.httpPipeline, 'handleRequest', ...providers)
   }
 
   private createProviders(event: TEvent, context: Context): Provider<any>[] {
     return this.transformer.transform(event, context).concat([
       { provide: AwsEvent, useValue: event },
       { provide: AwsContext, useValue: context },
+      {
+        provide: HttpRequestHandler,
+        useValue: this.handler,
+      },
+      {
+        provide: HttpRequestHandlerMethod,
+        useValue: 'handleEvent',
+      },
     ])
   }
 }
