@@ -7,7 +7,6 @@ import { createStubInstance } from 'sinon'
 
 import { MockContext } from '../test/mock.context'
 
-import { HttpEventOptions } from './http.event.options'
 import { HttpEventTransformer } from './http-event-transformer'
 import { LambdaEventTransformer } from './lambda-event-transformer'
 
@@ -58,9 +57,9 @@ describe('HttpEventTransformer', () => {
 
     it('creates a provider for HttpRequest', () => {
       const result = transformer.transform(event, context)
-      const mvcProvider = result.find(provider => provider.provide === HttpRequest)
+      const httpProvider = result.find(provider => provider.provide === HttpRequest)
 
-      expect(mvcProvider).to.exist
+      expect(httpProvider).to.exist
     })
 
     it('creates an HttpRequest object using the event values and deserialized body', () => {
@@ -68,8 +67,8 @@ describe('HttpEventTransformer', () => {
       delete eventWithoutBody.body
 
       const result = transformer.transform(event, context)
-      const mvcProvider = result.find(provider => provider.provide === HttpRequest)
-      const request = (mvcProvider as any).useValue
+      const httpProvider = result.find(provider => provider.provide === HttpRequest)
+      const request = (httpProvider as any).useValue
 
       expect(request.path).to.include(event.path)
       expect(request.body).to.deep.equal(body)
@@ -84,8 +83,8 @@ describe('HttpEventTransformer', () => {
       delete eventWithoutBody.isBase64Encoded
 
       const result = transformer.transform(event, context)
-      const mvcProvider = result.find(provider => provider.provide === HttpRequest)
-      const request = (mvcProvider as any).useValue
+      const httpProvider = result.find(provider => provider.provide === HttpRequest)
+      const request = (httpProvider as any).useValue
 
       expect(request.body).to.deep.equal(body)
     })
@@ -93,35 +92,35 @@ describe('HttpEventTransformer', () => {
     it('creates a HttpHandlerRequest object using the event values and no body when none exists', () => {
       delete event.body
       const result = transformer.transform(event, context)
-      const mvcProvider = result.find(provider => provider.provide === HttpRequest)
-      const request = (mvcProvider as any).useValue
+      const httpProvider = result.find(provider => provider.provide === HttpRequest)
+      const request = (httpProvider as any).useValue
 
       expect(request.body).not.to.exist
     })
   })
 
-  describe('with options, no validation', () => {
-    const harness = testHarness(HttpEventTransformer, {
-      provide: HttpEventOptions,
-      useValue: {},
-    })
-
-    beforeEach(async () => {
-      transformer = await harness.inject(LambdaEventTransformer)
-    })
-    afterEach(() => {
-      transformer = undefined
-    })
-
-    it('creates an HttpRequest object using the event values and deserialized body', () => {
-      const eventWithoutBody = Object.assign({}, event)
-      delete eventWithoutBody.body
-
-      const result = transformer.transform(event, context)
-      const mvcProvider = result.find(provider => provider.provide === HttpRequest)
-      const request = (mvcProvider as any).useValue
-
-      expect(request.body).to.deep.equal(body)
-    })
-  })
+  // describe('with options, no validation', () => {
+  //   const harness = testHarness(HttpEventTransformer, {
+  //     provide: HttpEventOptions,
+  //     useValue: {},
+  //   })
+  //
+  //   beforeEach(async () => {
+  //     transformer = await harness.inject(LambdaEventTransformer)
+  //   })
+  //   afterEach(() => {
+  //     transformer = undefined
+  //   })
+  //
+  //   it('creates an HttpRequest object using the event values and deserialized body', () => {
+  //     const eventWithoutBody = Object.assign({}, event)
+  //     delete eventWithoutBody.body
+  //
+  //     const result = transformer.transform(event, context)
+  //     const httpProvider = result.find(provider => provider.provide === HttpRequest)
+  //     const request = (httpProvider as any).useValue
+  //
+  //     expect(request.body).to.deep.equal(body)
+  //   })
+  // })
 })
