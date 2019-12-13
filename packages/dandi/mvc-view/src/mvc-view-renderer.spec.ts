@@ -1,6 +1,10 @@
 import { testHarness } from '@dandi/core/testing'
 import { HttpRequest, MimeTypes, HttpRequestAcceptTypes, parseMimeTypes } from '@dandi/http'
-import { HttpResponseRendererProvider, DefaultHttpResponseRenderer, HttpResponseRenderer } from '@dandi/http-pipeline'
+import {
+  defaultHttpPipelineRenderer,
+  HttpPipelineRendererProvider,
+  HttpPipelineRenderer,
+} from '@dandi/http-pipeline'
 import { TestApplicationJsonRenderer } from '@dandi/http-pipeline/testing'
 import { Route } from '@dandi/mvc'
 import { MvcViewRenderer, ViewResult, ViewResultFactory } from '@dandi/mvc-view'
@@ -12,8 +16,8 @@ describe('MvcViewRenderer', function() {
 
   const harness = testHarness(
     MvcViewRenderer,
-    HttpResponseRendererProvider,
-    DefaultHttpResponseRenderer.use(TestApplicationJsonRenderer),
+    HttpPipelineRendererProvider,
+    defaultHttpPipelineRenderer(TestApplicationJsonRenderer),
     {
       provide: Route,
       useValue: {
@@ -39,7 +43,7 @@ describe('MvcViewRenderer', function() {
   beforeEach(async function() {
     this.viewResult = stub()
     this.transformer = new MvcViewRenderer(this.viewResult, undefined)
-    this.renderer = await harness.inject(HttpResponseRenderer)
+    this.renderer = await harness.inject(HttpPipelineRenderer)
   })
 
   it('is registered as a Renderer for text/html', function() {
@@ -62,7 +66,9 @@ describe('MvcViewRenderer', function() {
     expect(await this.renderer.render(parseMimeTypes(MimeTypes.textHtml), viewResult))
       .to.deep.equal({
         contentType: MimeTypes.textHtml,
-        renderedOutput: 'foo!',
+        statusCode: undefined,
+        headers: undefined,
+        renderedBody: 'foo!',
       })
 
   })
@@ -73,8 +79,10 @@ describe('MvcViewRenderer', function() {
 
     expect(await this.renderer.render(parseMimeTypes(MimeTypes.textHtml), {}))
       .to.deep.equal({
+        statusCode: undefined,
         contentType: MimeTypes.textHtml,
-        renderedOutput: 'foo!',
+        headers: undefined,
+        renderedBody: 'foo!',
       })
   })
 })
