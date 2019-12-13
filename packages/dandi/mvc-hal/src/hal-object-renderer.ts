@@ -1,12 +1,12 @@
 import { Disposable } from '@dandi/common'
 import { Inject, Injector } from '@dandi/core'
 import { HttpRequest, HttpRequestAcceptTypes, parseMimeTypes } from '@dandi/http'
-import { HttpPipelineResult, HttpResponseRendererBase, Renderer, HttpResponseRenderer } from '@dandi/http-pipeline'
+import { HttpPipelineResult, HttpPipelineRendererBase, Renderer, HttpPipelineRenderer } from '@dandi/http-pipeline'
 
 import { HalMimeTypes } from './hal-mime-types'
 
 @Renderer(HalMimeTypes.halJson, HalMimeTypes.halXml, HalMimeTypes.halYaml)
-export class HalObjectRenderer extends HttpResponseRendererBase {
+export class HalObjectRenderer extends HttpPipelineRendererBase {
 
   public readonly defaultContentType: string = HalMimeTypes.halJson
 
@@ -32,10 +32,10 @@ export class HalObjectRenderer extends HttpResponseRendererBase {
       },
     ]
 
-    return Disposable.useAsync(this.injector.inject(HttpResponseRenderer, ...providers), async resolveResult => {
+    return Disposable.useAsync(this.injector.inject(HttpPipelineRenderer, ...providers), async resolveResult => {
       const renderer = resolveResult.singleValue
       const result = await renderer.render(subRendererMimeType, pipelineResult)
-      return result.renderedOutput
+      return result.renderedBody
 
     })
   }

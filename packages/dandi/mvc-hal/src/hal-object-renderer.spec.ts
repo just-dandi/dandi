@@ -1,6 +1,10 @@
 import { testHarness } from '@dandi/core/testing'
 import { HttpRequest, HttpRequestAcceptTypesProvider, MimeTypes, parseMimeTypes } from '@dandi/http'
-import { HttpResponseRendererProvider, DefaultHttpResponseRenderer, PlainTextObjectRenderer } from '@dandi/http-pipeline'
+import {
+  defaultHttpPipelineRenderer,
+  HttpPipelineRendererProvider,
+  PlainTextObjectRenderer,
+} from '@dandi/http-pipeline'
 import { TestApplicationJsonRenderer } from '@dandi/http-pipeline/testing'
 import { Route } from '@dandi/mvc'
 import { HalMimeTypes, HalObjectRenderer } from '@dandi/mvc-hal'
@@ -15,9 +19,9 @@ describe('HalObjectRenderer', function() {
       provide: TestApplicationJsonRenderer,
       useFactory: () => new TestApplicationJsonRenderer(),
     },
-    HttpResponseRendererProvider,
+    HttpPipelineRendererProvider,
     HttpRequestAcceptTypesProvider,
-    DefaultHttpResponseRenderer.use(PlainTextObjectRenderer),
+    defaultHttpPipelineRenderer(PlainTextObjectRenderer),
     {
       provide: HttpRequest,
       useFactory() {
@@ -52,7 +56,7 @@ describe('HalObjectRenderer', function() {
 
       stub(this.jsonRenderer, 'render').resolves({
         contentType: MimeTypes.applicationJson,
-        renderedOutput: '{"foo":"bar"}',
+        renderedBody: '{"foo":"bar"}',
       })
 
       const value = { foo: 'bar' }
@@ -65,12 +69,12 @@ describe('HalObjectRenderer', function() {
 
     })
 
-    it('returns the renderedOutput of the subrenderer', async function() {
+    it('returns the renderedBody of the subrenderer', async function() {
 
       const expected = '{"foo":"bar"}'
       stub(this.jsonRenderer, 'render').resolves({
         contentType: MimeTypes.applicationJson,
-        renderedOutput: expected,
+        renderedBody: expected,
       })
 
       const value = { foo: 'bar' }
@@ -88,12 +92,14 @@ describe('HalObjectRenderer', function() {
       this.renderer = await harness.inject(HalObjectRenderer)
     })
 
-    it('returns the expected HAL mime type with the renderedOutput of the subrenderer', async function() {
+    it('returns the expected HAL mime type with the renderedBody of the subrenderer', async function() {
 
       const expected = '{"foo":"bar"}'
       stub(this.jsonRenderer, 'render').resolves({
+        statusCode: undefined,
         contentType: MimeTypes.applicationJson,
-        renderedOutput: expected,
+        headers: undefined,
+        renderedBody: expected,
       })
 
       const value = { foo: 'bar' }
@@ -101,8 +107,10 @@ describe('HalObjectRenderer', function() {
       const result = await this.renderer.render(parseMimeTypes(HalMimeTypes.halJson), value)
 
       expect(result).to.deep.equal({
+        statusCode: undefined,
         contentType: HalMimeTypes.halJson,
-        renderedOutput: expected,
+        headers: undefined,
+        renderedBody: expected,
       })
 
     })
