@@ -1,0 +1,12 @@
+{
+  "name": "@dandi-contrib/mvc-view-hyperview",
+  "devDependencies": {
+  },
+  "peerDependencies": {
+    "@dandi/cache": "*",
+    "@dandi/common": "*",
+    "@dandi/core": "*",
+    "@dandi/mvc": "*",
+    "@dandi/mvc-view": "*"
+  }
+}

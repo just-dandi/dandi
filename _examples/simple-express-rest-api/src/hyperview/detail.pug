@@ -1,0 +1,22 @@
+doc(xmlns='https://hyperview.org/hyperview')
+  styles
+    style#Header(
+      alignItems = 'center',
+      paddingTop = 48,
+    )
+    style#HeaderText(
+      fontSize = 36,
+      fontWeight = 'bold',
+    )
+    style#List(
+      paddingLeft = 24,
+      paddingRight = 24,
+    )
+  screen
+    body
+      header(style='Header')
+        text(style='HeaderText') Dandi + Hyperview!
+      list(style='List')
+        item
+          view
+            text #{name} is awesome!
