@@ -1,3 +1,4 @@
+import { HyperviewViewRenderer } from '@dandi-contrib/mvc-view-hyperview'
 import { CascadingCache, MemoryCache, ServiceContextCacheKeyGenerator } from '@dandi/cache'
 import { AmbientInjectableScanner, DandiApplication } from '@dandi/core'
 import { ConsoleLogListener, LoggingModule } from '@dandi/core/logging'
@@ -14,8 +15,10 @@ import { ListController } from './lists/list.controller'
 import { Db } from './shared/db'
 import { TaskController } from './tasks/task.controller'
 import { ViewController } from './view/view.controller'
+import { HyperviewController } from './hyperview/hyperview.controller'
 
-const DEFAULT_SERVER_PORT = 7080
+// const DEFAULT_SERVER_PORT = 7080
+const DEFAULT_SERVER_PORT = 8085
 
 export const server = new DandiApplication({
   providers: [
@@ -27,9 +30,10 @@ export const server = new DandiApplication({
     HttpPipelineModule,
     MvcExpressModule.config({ port: parseInt(process.env.PORT, 10) || DEFAULT_SERVER_PORT }),
     MvcViewModule
-      .engine('pug', PugViewEngine)
+      .engine('pug', PugViewEngine.config({ cache: false }))
       .engine('ejs', EjsViewEngine),
     MvcHalModule,
+    HyperviewViewRenderer,
 
     // Model Validation
     ModelBuilderModule,
@@ -42,6 +46,7 @@ export const server = new DandiApplication({
     Db,
 
     // Controllers
+    HyperviewController,
     ListController,
     TaskController,
     ExampleController,
