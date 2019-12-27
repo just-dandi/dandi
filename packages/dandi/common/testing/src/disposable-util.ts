@@ -14,14 +14,4 @@ export class DisposableUtil {
     })
   }
 
-  // public static disableRemap(): void {
-  //   this[DISABLE_REMAP] = Disposable[DISABLE_REMAP]
-  //   Disposable[DISABLE_REMAP] = true
-  // }
-  //
-  // public static restoreRemap(): void {
-  //   Disposable[DISABLE_REMAP] = this[DISABLE_REMAP]
-  //   delete this[DISABLE_REMAP]
-  // }
-
 }
