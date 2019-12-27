@@ -1,9 +1,5 @@
-export * from '../src/root-injector-context'
-export { INJECTABLE_REGISTRATION_SOURCE } from '../src/injectable-decorator'
-export * from '../src/provider-util'
-
 export * from './src/create-stub-object'
 export * from './src/logger-fixture'
 export * from './src/stub-provider'
-export * from './src/stub-resolver-context'
+export * from './src/stub-injector-context'
 export * from './src/test-harness'

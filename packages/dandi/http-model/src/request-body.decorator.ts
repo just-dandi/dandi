@@ -1,5 +1,6 @@
 import { Constructor, MethodTarget } from '@dandi/common'
-import { ParamMetadata, Provider, getInjectableParamMetadata } from '@dandi/core'
+import { Provider } from '@dandi/core'
+import { getInjectableParamMetadata, ParamMetadata } from '@dandi/core/internal/util'
 import { HttpRequest, HttpRequestBody } from '@dandi/http'
 import { ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder'
 

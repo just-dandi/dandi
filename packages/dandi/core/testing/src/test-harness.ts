@@ -2,26 +2,28 @@ import { Constructor, Disposable, isConstructor } from '@dandi/common'
 import {
   DandiApplication,
   InjectionToken,
-  Repository,
   InjectionResult,
   Injector,
+  InjectorContextConstructor,
   InstanceGeneratorFactory,
   Provider,
   Resolver,
   Invoker,
   ResolvedProvider,
   InstanceInvokableFn,
-  ResolverContext,
-  ResolverContextConstructor,
   RootInjector,
-  Registerable, MissingProviderError,
+  Registerable,
+  MissingProviderError,
 } from '@dandi/core'
-import { DandiRootInjector } from '@dandi/core/src/dandi-root-injector'
-import { RootInjectorContext } from '@dandi/core/src/root-injector-context'
-import { isFactoryProvider, StubResolverContext } from '@dandi/core/testing'
+import { DandiRootInjector } from '@dandi/core/internal'
+import { StubInjectorContext } from '@dandi/core/testing'
 
-import { SinonStub, SinonStubbedInstance, stub, createStubInstance } from 'sinon'
-import { expect } from 'chai'
+import { SinonStubbedInstance, createSandbox } from 'sinon'
+import { INJECTABLE_REGISTRATION_DATA, InjectableRegistrationData, isFactoryProvider } from '@dandi/core/internal/util'
+
+const sandbox = createSandbox()
+
+export const { createStubInstance, reset, restore, spy, stub } = sandbox
 
 export type TestProvider<T> = Provider<T> & { underTest?: boolean }
 
@@ -51,65 +53,52 @@ export class TestHarness implements TestInjector, Disposable {
     return this._injector
   }
 
-  private appContext: RootInjectorContext
-
-  /**
-   * Allows the use of {AmbientInjectableScanner} within a test scope without including injectables leaked from other
-   * tests or modules.
-   */
-  public static scopeGlobalRepository(): Repository {
-    let repo: Repository
-    let globalRepoStub: SinonStub
-
-    // eslint-disable-next-line @typescript-eslint/class-name-casing
-    class __TestSanityChecker {}
-
-    beforeEach(function() {
-      repo = Repository.for(Math.random())
-      Object.assign(repo, {
-        _allowSingletons: false,
-      })
-
-      // sanity checking!
-      expect(repo.get(__TestSanityChecker)).not.to.exist
-      // eslint-disable-next-line no-invalid-this
-      repo.register(this, __TestSanityChecker)
-      expect(repo.get(__TestSanityChecker)).to.exist
-
-      globalRepoStub = stub(Repository, 'global').get(() => repo)
-    })
-    afterEach(() => {
-      globalRepoStub.restore()
-      if (!Disposable.isDisposed(repo)) {
-        repo.dispose('test complete')
-      }
-      repo = undefined
-    })
-
-    return Repository.global
-  }
-
   constructor(providers: any[], suite: boolean = true, private readonly stubMissing: boolean = false) {
     if (stubMissing) {
       providers.push({
-        provide: ResolverContextConstructor,
-        useValue: StubResolverContext,
+        provide: InjectorContextConstructor,
+        useValue: StubInjectorContext,
       })
     }
     const injectorFactory = this.testInjectorFactory.bind(this)
+
     if (suite) {
-      beforeEach(async () => {
-        const singletonedProviders = this.singletonizeProviders(providers)
-        this._application = new DandiApplication({ injector: injectorFactory, providers: singletonedProviders })
-        await this._application.start()
-      })
-      afterEach(async () => {
-        await this.dispose()
-      })
+      this.initSandbox()
+      this.stubInjectableRegistration()
+      this.initApplication(providers, injectorFactory)
     } else {
       const singletonedProviders = this.singletonizeProviders(providers)
       this._application = new DandiApplication({ injector: injectorFactory, providers: singletonedProviders })
     }
+  }
+
+  private initSandbox(): void {
+    // restore the default sinon sandbox after every test
+    afterEach(() => restore())
+  }
+
+  private stubInjectableRegistration(): void {
+    // prevents injectables defined in tests from polluting the global registration data array
+    let injectableRegistrationData: InjectableRegistrationData[]
+    beforeEach(() => {
+      injectableRegistrationData = []
+      stub(INJECTABLE_REGISTRATION_DATA, 'push').callsFake(entry => injectableRegistrationData.push(entry))
+      stub(INJECTABLE_REGISTRATION_DATA, 'forEach').callsFake(fn => injectableRegistrationData.forEach(fn))
+    })
+    afterEach(() => {
+      injectableRegistrationData = undefined
+    })
+  }
+
+  private initApplication(providers: any[], injectorFactory: () => RootInjector): void {
+    beforeEach(async () => {
+      const singletonedProviders = this.singletonizeProviders(providers)
+      this._application = new DandiApplication({ injector: injectorFactory, providers: singletonedProviders })
+      await this._application.start()
+    })
+    afterEach(async () => {
+      await this.dispose()
+    })
   }
 
   private singletonizeProviders(providers: any[]): Provider<any>[] {
@@ -131,7 +120,6 @@ export class TestHarness implements TestInjector, Disposable {
   }
 
   public inject<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Registerable[]): Promise<T>
-  public inject<T>(token: InjectionToken<T>, parentResolverContext: ResolverContext<any>, optional?: boolean, ...providers: Registerable[]): Promise<T>
   async inject<T>(token: InjectionToken<T>, ...args: any[]): Promise<T> {
     try {
       const result: InjectionResult<T> = await this._injector.inject.call(this._injector, token, ...args)
@@ -147,7 +135,6 @@ export class TestHarness implements TestInjector, Disposable {
     }
   }
 
-  public async injectMulti<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Registerable[]): Promise<T[]>
   public async injectMulti<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Registerable[]): Promise<T[]>
   async injectMulti<T>(token: InjectionToken<T>, ...args: any[]): Promise<T[]> {
     try {
@@ -180,7 +167,7 @@ export class TestHarness implements TestInjector, Disposable {
     return (await this.inject(token, optional, ...providers)) as unknown as SinonStubbedInstance<T>[]
   }
 
-  public register(...providers: (Constructor<any> | Provider<any>)[]): void {
+  public register(...providers: Registerable[]): void {
     const source = { constructor: this.constructor }
     this._injector.register(source, ...providers)
   }
@@ -199,7 +186,6 @@ export class TestHarness implements TestInjector, Disposable {
   }
 
   canResolve(token: InjectionToken<any>, ...providers: Registerable[]): boolean
-  canResolve(token: InjectionToken<any>, parentInjectorContext: ResolverContext<any>, ...providers: Registerable[]): boolean
   canResolve(): boolean {
     // bound in testInjectorFactory
     return false
@@ -211,13 +197,6 @@ export class TestHarness implements TestInjector, Disposable {
     ...providers: Registerable[]
   ): Promise<TResult>
 
-  invoke<TInstance, TResult>(
-    instance: TInstance,
-    methodName: InstanceInvokableFn<TInstance, TResult>,
-    parentInjectorContext: ResolverContext<any>,
-    ...providers: Registerable[]
-  ): Promise<TResult>
-
   invoke<TInstance, TResult>(): Promise<TResult> {
     // bound in testInjectorFactory
     return undefined
@@ -225,8 +204,6 @@ export class TestHarness implements TestInjector, Disposable {
 
   resolve<T>(token: InjectionToken<T>, ...providers: Registerable[]): ResolvedProvider<T>
   resolve<T>(token: InjectionToken<T>, optional: boolean, ...providers: Registerable[]): ResolvedProvider<T>
-  resolve<T>(token: InjectionToken<T>, parentInjectorContext: ResolverContext<any>, ...providers: Registerable[]): ResolvedProvider<T>
-  resolve<T>(token: InjectionToken<T>, parentInjectorContext: ResolverContext<any>, optional: boolean, ...providers: Registerable[]): ResolvedProvider<T>
   resolve<T>(): ResolvedProvider<T> {
     // bound in testInjectorFactory
     return undefined

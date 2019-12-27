@@ -21,8 +21,8 @@ import {
 } from '@dandi/mvc'
 
 import { ResourceComposer } from './resource.composer'
-import { CompositionContext } from './composition.context'
-import { InheritedResourceType } from './accessor.resource.id.decorator'
+import { CompositionContext } from './composition-context'
+import { InheritedResourceType } from './accessor-resource-id-decorator'
 
 function embedResponseAccess(): HttpResponse {
   throw new InvalidAccessError(`Response object may not be used during embedding`)

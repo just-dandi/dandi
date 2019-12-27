@@ -1,5 +1,5 @@
 import { Constructor } from '@dandi/common'
-import { InjectionToken, Provider, Injector, InjectorContext, ResolverContext } from '@dandi/core'
+import { InjectionToken, Provider, Injector } from '@dandi/core'
 import {
   isRenderableMimeType,
   MimeTypeInfo,
@@ -119,16 +119,14 @@ export const HttpPipelineRendererProvider: Provider<HttpPipelineRenderer> = {
   provide: HttpPipelineRenderer,
   async useFactory(
     injector: Injector,
-    injectorContext: ResolverContext<HttpPipelineRenderer>,
     SelectedRenderer: Constructor<HttpPipelineRenderer>,
   ): Promise<HttpPipelineRenderer> {
-    const resolveResult = await injector.inject(SelectedRenderer, injectorContext)
+    const resolveResult = await injector.inject(SelectedRenderer)
     return resolveResult.singleValue
   },
   async: true,
   deps: [
     Injector,
-    InjectorContext,
     SelectedRenderer,
   ],
   providers: [

@@ -1,11 +1,11 @@
-import { TestHarness, testHarness } from '@dandi/core/testing'
+import { testHarness } from '@dandi/core/testing'
 import { Route } from '@dandi/mvc'
 import { VIEW_RESULT_FACTORY, ViewEngineResolver, ViewResultFactory, ViewResultFactoryError } from '@dandi/mvc-view'
 import { expect } from 'chai'
 import { createStubInstance, stub } from 'sinon'
 
 describe('ViewResultFactory', function() {
-  TestHarness.scopeGlobalRepository()
+
   const harness = testHarness(VIEW_RESULT_FACTORY, {
     provide: ViewEngineResolver,
     useValue: createStubInstance(ViewEngineResolver),

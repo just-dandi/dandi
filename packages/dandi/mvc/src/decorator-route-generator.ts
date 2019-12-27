@@ -1,7 +1,8 @@
-import { ClassProvider, Inject, Injectable, Logger, Optional, Repository } from '@dandi/core'
+import { ClassProvider, Inject, Injectable, Logger, Optional } from '@dandi/core'
+import { Repository } from '@dandi/core/internal'
 
 import { mergeAuthorization } from './authorization-metadata'
-import { Controller } from './controller.decorator'
+import { Controller } from './controller-decorator'
 import { getControllerMetadata } from './controller-metadata'
 import { getCorsConfig } from './cors.decorator'
 import { Route } from './route'

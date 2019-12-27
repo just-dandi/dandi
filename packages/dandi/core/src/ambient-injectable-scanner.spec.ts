@@ -3,19 +3,35 @@ import {
   Inject,
   Injectable,
   NoopLogger,
-  Repository, Injector,
+  Injector,
   Singleton,
 } from '@dandi/core'
-import { TestHarness, testHarnessSingle } from '@dandi/core/testing'
+import { GLOBAL_CONTEXT, Repository } from '@dandi/core/internal'
+import { testHarness, testHarnessSingle } from '@dandi/core/testing'
 import { expect } from 'chai'
+import { SinonStub, stub } from 'sinon'
 
 describe('AmbientInjectableScanner', () => {
-  TestHarness.scopeGlobalRepository()
+
+  testHarness()
+
+  let globalRepo: Repository
+
+  beforeEach(() => {
+    stub(Repository, 'for')
+      .callThrough()
+      .withArgs(GLOBAL_CONTEXT)
+      .callsFake(() => Repository.for(Math.random()))
+    globalRepo = Repository.for(GLOBAL_CONTEXT)
+  })
+  afterEach(() => {
+    (Repository.for as SinonStub).restore()
+  })
 
   describe('scan', () => {
     it('returns the providers from the global repository', async () => {
       const scanner = new AmbientInjectableScanner(new NoopLogger())
-      await expect(scanner.scan()).to.eventually.deep.equal([...Repository.global.entries()])
+      await expect(scanner.scan()).to.eventually.deep.equal([...globalRepo.entries()])
     })
   })
 

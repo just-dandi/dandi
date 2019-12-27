@@ -23,17 +23,20 @@ export class Builder {
     await this.project.updateConfigs(packages)
 
     try {
-      this.logger.debug('')
+      this.logger.info('Compiling project...')
       await this.compile()
+      this.logger.debug('Compilation complete.')
     } catch (err) {
-      this.logger.error('compile failed', err)
+      this.logger.error('Compile failed', err)
       throw err
     }
 
     try {
+      this.logger.info('Finalizing packages...')
       await this.finalizePackages(packages)
+      this.logger.debug('Finalizing packages complete.')
     } catch (err) {
-      this.logger.error('error finalizing packages', err)
+      this.logger.error('Error finalizing packages', err)
       throw err
     }
 
@@ -94,7 +97,7 @@ export class Builder {
       }
       await copy(sourcePath, resolve(info.outPath, packageFileName))
     } catch (err) {
-      this.logger.error('error copying package file', info.name, packageFileName, err)
+      this.logger.error('Error copying package file', info.name, packageFileName, err)
       throw err
     }
   }
@@ -103,7 +106,7 @@ export class Builder {
     try {
       return copy(resolve(this.project.projectPath, projectFileName), resolve(info.outPath, projectFileName))
     } catch (err) {
-      this.logger.error('error copying project file', info.name, projectFileName, err)
+      this.logger.error('Error copying project file', info.name, projectFileName, err)
       throw err
     }
   }
@@ -115,7 +118,7 @@ export class Builder {
     try {
       await Promise.all(info.manifest.map(this.copyPackageFile.bind(this, info)))
     } catch (err) {
-      this.logger.error('error copying manifest files', info.name)
+      this.logger.error('Error copying manifest files', info.name)
       throw err
     }
   }

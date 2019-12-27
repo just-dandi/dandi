@@ -1,8 +1,8 @@
 import { Constructor } from '@dandi/common'
+import { DandiModule } from '@dandi/core/internal'
+import { Registerable } from '@dandi/core/types'
 
-import { Module, Registerable } from './module'
-
-export class ModuleBuilder<TBuilder extends ModuleBuilder<TBuilder>> extends Module {
+export class ModuleBuilder<TBuilder extends ModuleBuilder<TBuilder>> extends DandiModule {
   protected constructor(private cloneCtr: Constructor<TBuilder>, pkg: string, ...entries: Registerable[]) {
     super(pkg, ...entries)
   }

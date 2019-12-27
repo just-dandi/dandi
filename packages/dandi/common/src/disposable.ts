@@ -64,6 +64,12 @@ export class Disposable {
     return obj[DISPOSED_REASON]
   }
 
+  public static async dispose(obj: any, reason: string): Promise<void> {
+    if (Disposable.isDisposable(obj)) {
+      await obj.dispose(reason)
+    }
+  }
+
   /**
    * Modifies the specified object to add the provided {@see DisposeFn} as the {@see Disposable.dispose}
    * implementation. If the object already has a function member named {dispose}, it is wrapped and called

@@ -4,9 +4,9 @@ import {
   InjectionToken,
   Injector,
   Provider,
-  Repository,
-  RepositoryRegistrationSource,
+  RegistrationSource,
 } from '@dandi/core'
+import { Repository } from '@dandi/core/internal'
 import { MimeTypeInfo, parseMimeTypes } from '@dandi/http'
 
 import { HttpPipelineRenderer } from './http-pipeline-renderer'
@@ -15,7 +15,7 @@ import { globalSymbol } from './global.symbol'
 
 const META_KEY = globalSymbol('meta:renderer')
 
-export const RENDERER_REGISTRATION_SOURCE: RepositoryRegistrationSource = {
+export const RENDERER_REGISTRATION_SOURCE: RegistrationSource = {
   constructor: Renderer,
 }
 

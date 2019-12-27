@@ -23,7 +23,8 @@ export class CommandRunner<THost extends any> implements EntryPoint {
   private async safeRun(): Promise<void> {
     try {
       await this.runAction()
-      this.logger.info(`${this.actionName} complete.`)
+      const actionDisplayName = `${this.actionName.toString().substring(0, 1).toLocaleUpperCase()}${this.actionName.toString().substring(1)}`
+      this.logger.info(`${actionDisplayName} complete.`)
     } catch (err) {
       this.logger.error(err.message, err.stack)
       process.exit(-1)

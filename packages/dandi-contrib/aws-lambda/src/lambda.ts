@@ -47,7 +47,7 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
     let injectorReady: Injector | Promise<Injector> =
       modulesOrProviders.length === 1 && isInjector(modulesOrProviders[0]) && modulesOrProviders[0]
 
-    const providers = [{
+    const providers: Registerable[] = [{
       provide: LambdaHandler,
       useClass: handlerServiceType,
     }]

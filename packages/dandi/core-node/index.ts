@@ -1,1 +1,1 @@
-export * from './src/file.system.scanner'
+export * from './src/file-system-scanner'

@@ -4,7 +4,7 @@ import { Resource, SELF_RELATION } from '@dandi/hal'
 import { HttpRequest, HttpRequestQueryParamMap, ParamMap } from '@dandi/http'
 import { HttpPipelineResult, HttpPipelineResultTransformer } from '@dandi/http-pipeline'
 
-import { CompositionContext } from './composition.context'
+import { CompositionContext } from './composition-context'
 import { ResourceComposer } from './resource.composer'
 
 export const EMBED_RELS_KEY = '_embedded'

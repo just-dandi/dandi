@@ -1,6 +1,6 @@
 import { Constructor, getMetadata } from '@dandi/common'
-import { injectableDecorator, InjectionToken, NotMulti, Provider } from '@dandi/core'
-import { Injector } from '@dandi/core/src/injector'
+import { Injectable, InjectionToken, Injector, NotMulti, Provider } from '@dandi/core'
+import {  } from '@dandi/core'
 import { HttpRequest } from '@dandi/http'
 
 import { globalSymbol } from './global.symbol'
@@ -71,7 +71,7 @@ function httpRequestPreparerDecorator(
   depResultTokens: InjectionToken<any>[],
   target: Constructor<HttpRequestPreparer>,
 ): void {
-  injectableDecorator(target, [NotMulti], target)
+  Injectable(target, NotMulti)(target)
   const meta = getHttpRequestPreparerMetadata(target)
   deps.forEach(dep => meta.deps.add(dep))
   depResultTokens.forEach(token => meta.dependencyResultTokens.add(token))

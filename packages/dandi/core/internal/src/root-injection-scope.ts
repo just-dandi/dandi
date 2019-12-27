@@ -1,0 +1,31 @@
+import { DependencyInjectionScope } from '@dandi/core/types'
+
+/**
+ * Represents the root-level injection scope. This is generally only used directly for app initialization, and
+ * as the parent of {@link AppInjectionScope}
+ */
+export const RootInjectionScope = new class RootInjectionScope extends DependencyInjectionScope {
+
+  private static readonly value = '[RootInjector]'
+
+  constructor() {
+    super(RootInjectionScope)
+  }
+
+  public getValue(): string {
+    return RootInjectionScope.value
+  }
+}()
+
+export const AppInjectionScope = new class AppInjectionScope extends DependencyInjectionScope {
+
+  private static readonly value = '[AppInjector]'
+
+  constructor() {
+    super(AppInjectionScope)
+  }
+
+  public getValue(): string {
+    return AppInjectionScope.value
+  }
+}()
