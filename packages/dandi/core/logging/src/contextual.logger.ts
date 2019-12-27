@@ -2,7 +2,7 @@ import {
   createLoggerMethodChain,
   Inject,
   Injectable,
-  InjectionContext,
+  InjectionScope,
   LogCallOptions,
   Logger,
   LoggerMethod,
@@ -33,7 +33,7 @@ export class ContextualLogger implements Logger {
 
   constructor(
     @Inject(LogStream) private stream: LogStream,
-    @Inject(InjectionContext) private context: InjectionContext,
+    @Inject(InjectionScope) private context: InjectionScope,
     @Inject(Now) private now: NowFn,
   ) {}
 

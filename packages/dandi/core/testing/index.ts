@@ -1,4 +1,4 @@
-export * from '../src/app-injector-context'
+export * from '../src/root-injector-context'
 export { INJECTABLE_REGISTRATION_SOURCE } from '../src/injectable-decorator'
 export * from '../src/provider-util'
 

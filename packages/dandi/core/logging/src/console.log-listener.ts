@@ -1,8 +1,8 @@
 import {
-  getInjectionContextName,
+  getInjectionScopeName,
   Inject,
   Injectable,
-  InjectionContext,
+  InjectionScope,
   LogEntry,
   LogLevel,
   Optional,
@@ -150,8 +150,8 @@ export class ConsoleLogListener implements LogListener {
     return formatter(entryInfo)
   }
 
-  private getContextName(context: InjectionContext): string {
-    return getInjectionContextName(context)
+  private getContextName(scope: InjectionScope): string {
+    return getInjectionScopeName(scope)
   }
 
   private getTimestampTag(options: ConsoleLogListenerOptions, entryInfo: ConsoleLogListenerEntryInfo): string {

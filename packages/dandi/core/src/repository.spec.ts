@@ -282,20 +282,20 @@ describe('Repository', function() {
   })
 
   describe('for', function() {
-    it('instantiates a repository with the specified context', function() {
+    it('instantiates a repository with the specified scope', function() {
       const localRepo = Repository.for('foo')
       expect((localRepo as any).context).to.equal('foo')
       localRepo.dispose('done')
     })
 
-    it('returns an existing repository when the same context is used', function() {
+    it('returns an existing repository when the same scope is used', function() {
       const localRepo = Repository.for('foo')
       expect(Repository.for('foo')).to.equal(localRepo)
 
       localRepo.dispose('done')
     })
 
-    it('throws an error if a context is not specified', function() {
+    it('throws an error if a scope is not specified', function() {
       expect(() => Repository.for(null)).to.throw(InvalidRepositoryContextError)
     })
   })

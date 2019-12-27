@@ -1,6 +1,7 @@
 import { CascadingCache, MemoryCache, ServiceContextCacheKeyGenerator } from '@dandi/cache'
 import { AmbientInjectableScanner, DandiApplication } from '@dandi/core'
 import { ConsoleLogListener, LoggingModule } from '@dandi/core/logging'
+import { HttpPipelineModule } from '@dandi/http-pipeline'
 import { ModelBuilderModule } from '@dandi/model-builder'
 import { MvcHalModule } from '@dandi/mvc-hal'
 import { MvcViewModule } from '@dandi/mvc-view'
@@ -23,6 +24,7 @@ export const server = new DandiApplication({
     LoggingModule.use(ConsoleLogListener),
 
     // MVC
+    HttpPipelineModule,
     MvcExpressModule.config({ port: parseInt(process.env.PORT, 10) || DEFAULT_SERVER_PORT }),
     MvcViewModule
       .engine('pug', PugViewEngine)

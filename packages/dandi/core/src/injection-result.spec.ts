@@ -40,7 +40,7 @@ describe('InjectionResult', () => {
   })
 
   describe('dispose', () => {
-    it('calls dispose on the context', () => {
+    it('calls dispose on the scope', () => {
       result.dispose('test')
       expect(context.dispose).to.have.been.called
     })

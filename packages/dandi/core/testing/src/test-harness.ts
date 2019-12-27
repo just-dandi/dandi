@@ -1,7 +1,6 @@
 import { Constructor, Disposable, isConstructor } from '@dandi/common'
 import {
   DandiApplication,
-  DandiInjector,
   InjectionToken,
   Repository,
   InjectionResult,
@@ -14,11 +13,14 @@ import {
   InstanceInvokableFn,
   ResolverContext,
   ResolverContextConstructor,
+  RootInjector,
+  Registerable, MissingProviderError,
 } from '@dandi/core'
-import { AppInjectorContext } from '@dandi/core/src/app-injector-context'
+import { DandiRootInjector } from '@dandi/core/src/dandi-root-injector'
+import { RootInjectorContext } from '@dandi/core/src/root-injector-context'
 import { isFactoryProvider, StubResolverContext } from '@dandi/core/testing'
 
-import { SinonStub, SinonStubbedInstance, stub } from 'sinon'
+import { SinonStub, SinonStubbedInstance, stub, createStubInstance } from 'sinon'
 import { expect } from 'chai'
 
 export type TestProvider<T> = Provider<T> & { underTest?: boolean }
@@ -28,12 +30,12 @@ export interface TestInjector extends Resolver, Invoker {
   readonly application: DandiApplication
   readonly injector: Injector
 
-  inject<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Array<Provider<any> | Constructor<any>>): Promise<T>
-  injectMulti<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Array<Provider<any> | Constructor<any>>): Promise<T[]>
-  injectStub<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Array<Provider<any> | Constructor<any>>): Promise<SinonStubbedInstance<T>>
-  injectMultiStub<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Array<Provider<any> | Constructor<any>>): Promise<SinonStubbedInstance<T>[]>
+  inject<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Registerable[]): Promise<T>
+  injectMulti<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Registerable[]): Promise<T[]>
+  injectStub<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Registerable[]): Promise<SinonStubbedInstance<T>>
+  injectMultiStub<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Registerable[]): Promise<SinonStubbedInstance<T>[]>
 
-  register(...providers: (Constructor<any> | Provider<any>)[]): void
+  register(...providers: Registerable[]): void
 }
 
 export class TestHarness implements TestInjector, Disposable {
@@ -44,15 +46,15 @@ export class TestHarness implements TestInjector, Disposable {
   }
 
 
-  private _injector: Injector
-  public get injector() :Injector {
+  private _injector: RootInjector
+  public get injector(): Injector {
     return this._injector
   }
 
-  private appContext: AppInjectorContext
+  private appContext: RootInjectorContext
 
   /**
-   * Allows the use of {AmbientInjectableScanner} within a test context without including injectables leaked from other
+   * Allows the use of {AmbientInjectableScanner} within a test scope without including injectables leaked from other
    * tests or modules.
    */
   public static scopeGlobalRepository(): Repository {
@@ -87,7 +89,7 @@ export class TestHarness implements TestInjector, Disposable {
     return Repository.global
   }
 
-  constructor(providers: any[], suite: boolean = true, stubMissing: boolean = false) {
+  constructor(providers: any[], suite: boolean = true, private readonly stubMissing: boolean = false) {
     if (stubMissing) {
       providers.push({
         provide: ResolverContextConstructor,
@@ -128,30 +130,44 @@ export class TestHarness implements TestInjector, Disposable {
     })
   }
 
-  public inject<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Array<Provider<any> | Constructor<any>>): Promise<T>
-  public inject<T>(token: InjectionToken<T>, parentResolverContext: ResolverContext<any>, optional?: boolean, ...providers: Array<Provider<any> | Constructor<any>>): Promise<T>
-  async inject<T>(...args: any[]): Promise<T> {
-    const result: InjectionResult<T> = await this._injector.inject.call(this._injector, ...args)
-    if (!result) {
-      return undefined
+  public inject<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Registerable[]): Promise<T>
+  public inject<T>(token: InjectionToken<T>, parentResolverContext: ResolverContext<any>, optional?: boolean, ...providers: Registerable[]): Promise<T>
+  async inject<T>(token: InjectionToken<T>, ...args: any[]): Promise<T> {
+    try {
+      const result: InjectionResult<T> = await this._injector.inject.call(this._injector, token, ...args)
+      if (!result) {
+        return undefined
+      }
+      return result.singleValue
+    } catch(err) {
+      if (err instanceof MissingProviderError && this.stubMissing && isConstructor(token)) {
+        return createStubInstance(token)
+      }
+      throw err
     }
-    return result.singleValue
   }
 
-  public async injectMulti<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Array<Provider<any> | Constructor<any>>): Promise<T[]>
-  public async injectMulti<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Array<Provider<any> | Constructor<any>>): Promise<T[]>
-  async injectMulti<T>(...args: any[]): Promise<T[]> {
-    const result: InjectionResult<T> = await this._injector.inject.call(this._injector, ...args)
-    if (!result) {
-      return undefined
+  public async injectMulti<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Registerable[]): Promise<T[]>
+  public async injectMulti<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Registerable[]): Promise<T[]>
+  async injectMulti<T>(token: InjectionToken<T>, ...args: any[]): Promise<T[]> {
+    try {
+      const result: InjectionResult<T> = await this._injector.inject.call(this._injector, token, ...args)
+      if (!result) {
+        return undefined
+      }
+      return result.arrayValue
+    } catch(err) {
+      if (err instanceof MissingProviderError && this.stubMissing && isConstructor(token)) {
+        return [createStubInstance(token)]
+      }
+      throw err
     }
-    return result.arrayValue
   }
 
   public async injectStub<T>(
     token: InjectionToken<T>,
     optional?: boolean,
-    ...providers: Array<Provider<any> | Constructor<any>>
+    ...providers: Registerable[]
   ): Promise<SinonStubbedInstance<T>> {
     return (await this.inject(token, optional, ...providers)) as SinonStubbedInstance<T>
   }
@@ -159,14 +175,14 @@ export class TestHarness implements TestInjector, Disposable {
   public async injectMultiStub<T>(
     token: InjectionToken<T>,
     optional?: boolean,
-    ...providers: Array<Provider<any> | Constructor<any>>
+    ...providers: Registerable[]
   ): Promise<SinonStubbedInstance<T>[]> {
     return (await this.inject(token, optional, ...providers)) as unknown as SinonStubbedInstance<T>[]
   }
 
   public register(...providers: (Constructor<any> | Provider<any>)[]): void {
     const source = { constructor: this.constructor }
-    this.appContext.register(source, ...providers)
+    this._injector.register(source, ...providers)
   }
 
   public async dispose(): Promise<void> {
@@ -174,17 +190,16 @@ export class TestHarness implements TestInjector, Disposable {
     this._application = undefined
   }
 
-  private testInjectorFactory(appInjectorContext: AppInjectorContext, generator: InstanceGeneratorFactory): Injector {
-    this._injector = new DandiInjector(appInjectorContext, generator)
-    this.appContext = appInjectorContext
+  private testInjectorFactory(generator: InstanceGeneratorFactory): Injector {
+    this._injector = new DandiRootInjector(generator)
     this.canResolve = this._injector.canResolve.bind(this._injector)
     this.invoke = this._injector.invoke.bind(this._injector)
     this.resolve = this._injector.resolve.bind(this._injector)
     return this._injector
   }
 
-  canResolve(token: InjectionToken<any>, ...providers: Array<Provider<any> | Constructor<any>>): boolean
-  canResolve(token: InjectionToken<any>, parentInjectorContext: ResolverContext<any>, ...providers: Array<Provider<any> | Constructor<any>>): boolean
+  canResolve(token: InjectionToken<any>, ...providers: Registerable[]): boolean
+  canResolve(token: InjectionToken<any>, parentInjectorContext: ResolverContext<any>, ...providers: Registerable[]): boolean
   canResolve(): boolean {
     // bound in testInjectorFactory
     return false
@@ -193,14 +208,14 @@ export class TestHarness implements TestInjector, Disposable {
   invoke<TInstance, TResult>(
     instance: TInstance,
     methodName: InstanceInvokableFn<TInstance, TResult>,
-    ...providers: Array<Provider<any> | Constructor<any>>
+    ...providers: Registerable[]
   ): Promise<TResult>
 
   invoke<TInstance, TResult>(
     instance: TInstance,
     methodName: InstanceInvokableFn<TInstance, TResult>,
     parentInjectorContext: ResolverContext<any>,
-    ...providers: Array<Provider<any> | Constructor<any>>
+    ...providers: Registerable[]
   ): Promise<TResult>
 
   invoke<TInstance, TResult>(): Promise<TResult> {
@@ -208,10 +223,10 @@ export class TestHarness implements TestInjector, Disposable {
     return undefined
   }
 
-  resolve<T>(token: InjectionToken<T>, ...providers: Array<Provider<any> | Constructor<any>>): ResolvedProvider<T>
-  resolve<T>(token: InjectionToken<T>, optional: boolean, ...providers: Array<Provider<any> | Constructor<any>>): ResolvedProvider<T>
-  resolve<T>(token: InjectionToken<T>, parentInjectorContext: ResolverContext<any>, ...providers: Array<Provider<any> | Constructor<any>>): ResolvedProvider<T>
-  resolve<T>(token: InjectionToken<T>, parentInjectorContext: ResolverContext<any>, optional: boolean, ...providers: Array<Provider<any> | Constructor<any>>): ResolvedProvider<T>
+  resolve<T>(token: InjectionToken<T>, ...providers: Registerable[]): ResolvedProvider<T>
+  resolve<T>(token: InjectionToken<T>, optional: boolean, ...providers: Registerable[]): ResolvedProvider<T>
+  resolve<T>(token: InjectionToken<T>, parentInjectorContext: ResolverContext<any>, ...providers: Registerable[]): ResolvedProvider<T>
+  resolve<T>(token: InjectionToken<T>, parentInjectorContext: ResolverContext<any>, optional: boolean, ...providers: Registerable[]): ResolvedProvider<T>
   resolve<T>(): ResolvedProvider<T> {
     // bound in testInjectorFactory
     return undefined

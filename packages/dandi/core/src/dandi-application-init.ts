@@ -1,14 +1,14 @@
 import { Disposable } from '@dandi/common'
 
-import { AppInjectorContext } from './app-injector-context'
 import { EntryPoint } from './entry-point'
 import { DandiApplicationConfig } from './dandi-application-config'
 import { DandiApplicationError } from './dandi-application-error'
-import { DandiInjector } from './dandi-injector'
+import { DandiRootInjector } from './dandi-root-injector'
 import { DandiGenerator } from './dandi-generator'
 import { getInstance } from './factory-util'
 import { Inject } from './inject-decorator'
-import { Injector } from './injector'
+import { Injector, RootInjector } from './injector'
+import { AppInjectionScope } from './injection-scope'
 import { InstanceGenerator, InstanceGeneratorFactory } from './instance-generator'
 import { LogStream } from './log-stream'
 import { Logger } from './logger'
@@ -20,12 +20,12 @@ import { QueueingLogger } from './queueing-logger'
 import { RepositoryRegistrationSource } from './repository-registration'
 import { Scanner } from './scanner'
 
-function defaultInjectorFactory(appInjectorContext: AppInjectorContext, generator: InstanceGeneratorFactory): Injector {
-  return new DandiInjector(appInjectorContext, generator)
+function defaultInjectorFactory(generator: InstanceGeneratorFactory): RootInjector {
+  return new DandiRootInjector(generator)
 }
 
-function defaultGeneratorFactory(injector: Injector): InstanceGenerator {
-  return new DandiGenerator(injector)
+function defaultGeneratorFactory(): InstanceGenerator {
+  return new DandiGenerator()
 }
 
 /**
@@ -34,23 +34,23 @@ function defaultGeneratorFactory(injector: Injector): InstanceGenerator {
 export class DandiApplicationInit<TConfig extends DandiApplicationConfig> implements Disposable {
 
   public startTs: number
-  public injector: Injector
+  public get injector(): Injector {
+    return this.appInjector
+  }
 
-  protected appInjectorContext: AppInjectorContext
-
+  private appInjector: Injector
+  private rootInjector: RootInjector
   private initialized: boolean = false
   private started: boolean = false
   private readonly initHost: DandiApplicationInit<TConfig>
 
   constructor(public logger: Logger, private config: TConfig) {
     this.initHost = this
-
-    this.appInjectorContext = new AppInjectorContext()
   }
 
   public async start(ts?: number): Promise<Injector> {
     await this.run(ts)
-    return this.injector
+    return this.rootInjector
   }
 
   public async run(ts?: number): Promise<any> {
@@ -60,11 +60,11 @@ export class DandiApplicationInit<TConfig extends DandiApplicationConfig> implem
       throw new DandiApplicationError('start has already been called')
     }
     await this.preInit()
-    await this.injector.invoke(this.initHost, 'init')
+    await this.rootInjector.invoke(this.initHost, 'init')
     this.started = true
 
-    await this.injector.invoke(this.initHost, 'runConfig')
-    return this.injector.invoke(this.initHost, 'bootstrap')
+    await this.rootInjector.invoke(this.initHost, 'runConfig')
+    return this.rootInjector.invoke(this.initHost, 'bootstrap')
   }
 
   public async preInit(): Promise<void> {
@@ -73,30 +73,31 @@ export class DandiApplicationInit<TConfig extends DandiApplicationConfig> implem
     }
     this.logger.debug('PreInit')
 
-    // register the injector
+    // register the rootInjector
     const source = {
       constructor: this.constructor,
       tag: '.preInit',
     }
 
-    // register explicitly set providers
-    // this must happen before scanning so that scanners can be specified in the providers config
-    if (this.config.providers) {
-      this.registerProviders(source, this.config.providers)
-    }
-
-    this.injector = await getInstance(
+    this.rootInjector = await getInstance(
       this.config.injector || defaultInjectorFactory,
-      this.appInjectorContext,
       this.config.generator || defaultGeneratorFactory,
     )
+    // register explicitly set providers
+    // this must happen before scanning so that scanners can be specified in the providers config
+    this.registerRootProviders(source, this.config.providers)
+
+    // re-register explicitly set providers in the application injector so that they override any implementations
+    // discovered by scanning
+    this.appInjector = this.rootInjector.createChild(AppInjectionScope, this.config.providers)
 
     this.initialized = true
 
-    await this.injector.invoke(this.initHost, 'runConfigInternal')
+    await this.appInjector.invoke(this.initHost, 'runConfigInternal')
   }
 
   public async init(
+    @Inject(Injector) injector: Injector,
     @Inject(Logger) logger: Logger,
     @Inject(Now) now: NowFn,
     @Inject(LogStream) @Optional() logStream?: LogStream,
@@ -108,17 +109,8 @@ export class DandiApplicationInit<TConfig extends DandiApplicationConfig> implem
 
     logger.debug(`Application initializing after ${now() - this.startTs}ms`)
 
-    await this.injector.invoke(this.injector, 'init')
-    await this.injector.invoke(this.initHost, 'scan')
-
-    if (this.config.providers) {
-      const source = {
-        constructor: this.constructor,
-        tag: '.init',
-      }
-      // re-register explicitly set providers - ensures they override anything picked up by scanners
-      this.registerProviders(source, this.config.providers)
-    }
+    // await rootInjector.invoke(this.rootInjector, 'init')
+    await injector.invoke(this.initHost, 'scan')
 
     logger.debug(`Application initialized after ${now() - this.startTs}ms`)
   }
@@ -135,7 +127,7 @@ export class DandiApplicationInit<TConfig extends DandiApplicationConfig> implem
     await Promise.all(
       scanners.map(async (scanner: Scanner) => {
         logger.debug(`Scanning for injectable modules with ${scanner.constructor.name}...`)
-        this.appInjectorContext.register(scanner, ...(await scanner.scan()))
+        this.rootInjector.register(scanner, ...(await scanner.scan()))
       }),
     )
   }
@@ -176,7 +168,7 @@ export class DandiApplicationInit<TConfig extends DandiApplicationConfig> implem
     return result
   }
 
-  public registerProviders(parentSource: RepositoryRegistrationSource, module: any): void {
+  public registerRootProviders(parentSource: RepositoryRegistrationSource, module: any): void {
     if (Array.isArray(module)) {
       const source = module.constructor === Array ?
         // use parentSource if the "module" is just a plain array to avoid an extra useless entry in the source chain
@@ -185,7 +177,7 @@ export class DandiApplicationInit<TConfig extends DandiApplicationConfig> implem
           constructor: module.constructor,
           parent: parentSource,
         }
-      module.forEach((provider) => this.registerProviders(source, provider))
+      module.forEach((provider) => this.registerRootProviders(source, provider))
       return
     }
     const source = {
@@ -193,13 +185,12 @@ export class DandiApplicationInit<TConfig extends DandiApplicationConfig> implem
       parent: parentSource,
       tag: '.config.providers',
     }
-    this.appInjectorContext.register(source, module)
+    this.rootInjector.register(source, module)
   }
 
   public async dispose(reason: string): Promise<void> {
-    await this.appInjectorContext.dispose(reason)
-    if (Disposable.isDisposable(this.injector)) {
-      await this.injector.dispose(reason)
+    if (Disposable.isDisposable(this.rootInjector)) {
+      await this.rootInjector.dispose(reason)
     }
   }
 }
