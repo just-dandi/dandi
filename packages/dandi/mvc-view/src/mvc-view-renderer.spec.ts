@@ -42,7 +42,7 @@ describe('MvcViewRenderer', function() {
 
   beforeEach(async function() {
     this.viewResult = stub()
-    this.transformer = new MvcViewRenderer(this.viewResult, undefined)
+    this.transformer = new MvcViewRenderer(this.viewResult)
     this.renderer = await harness.inject(HttpPipelineRenderer)
   })
 

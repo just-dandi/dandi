@@ -1,4 +1,4 @@
-import { ParamMetadata } from '@dandi/core'
+import { ParamMetadata } from '@dandi/core/internal/util'
 import { ParamMap } from '@dandi/http'
 import { MemberMetadata } from '@dandi/model'
 import { MemberBuilderOptions, ModelBuilder } from '@dandi/model-builder'

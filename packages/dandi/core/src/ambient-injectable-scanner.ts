@@ -1,9 +1,12 @@
-import { Inject } from './inject-decorator'
-import { Injectable } from './injectable-decorator'
-import { Logger } from './logger'
-import { Repository, RepositoryEntry } from './repository'
-import { Scanner } from './scanner'
-import { Registerable } from './module'
+import { Inject, Injectable } from '@dandi/core/decorators'
+import { GLOBAL_CONTEXT, Repository, RepositoryEntry } from '@dandi/core/internal'
+import { INJECTABLE_REGISTRATION_DATA } from '@dandi/core/internal/util'
+import { Logger, Registerable, Scanner } from '@dandi/core/types'
+
+export const INJECTABLE_REGISTRATION_SOURCE = {
+  constructor: Injectable,
+  tag: '.global',
+}
 
 function reducer(result: Registerable[], entry: RepositoryEntry<any>): Registerable[] {
   if (entry instanceof Set) {
@@ -20,8 +23,14 @@ export class AmbientInjectableScanner implements Scanner {
   constructor(@Inject(Logger) private logger: Logger) {}
 
   public async scan(): Promise<Registerable[]> {
+    const globalRepo = Repository.for(GLOBAL_CONTEXT)
+
+    this.logger.debug('Registering injectables with global repository')
+    INJECTABLE_REGISTRATION_DATA.forEach(({ target, providerOptions}) =>
+      globalRepo.register(INJECTABLE_REGISTRATION_SOURCE, target, providerOptions))
+
     this.logger.debug('Adding entries from global repository')
-    const entries: RepositoryEntry<any>[] = [...Repository.global.entries()]
+    const entries: RepositoryEntry<any>[] = [...globalRepo.entries()]
     return entries.reduce(reducer, [] as Registerable[])
   }
 }

@@ -1,5 +1,5 @@
-export * from './src/accessor.resource.id.decorator'
-export * from './src/composition.context'
+export * from './src/accessor-resource-id-decorator'
+export * from './src/composition-context'
 export * from './src/default-resource-composer'
 export * from './src/hal-object-renderer'
 export * from './src/hal-mime-types'

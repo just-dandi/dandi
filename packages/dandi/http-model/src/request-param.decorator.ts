@@ -1,5 +1,6 @@
 import { MethodTarget, isConstructor } from '@dandi/common'
-import { InjectionToken, ParamMetadata, Provider, SyncFactoryProvider, getInjectableParamMetadata } from '@dandi/core'
+import { InjectionToken, Provider, SyncFactoryProvider } from '@dandi/core'
+import { getInjectableParamMetadata, ParamMetadata } from '@dandi/core/internal/util'
 import { ParamMap } from '@dandi/http'
 import { MemberMetadata, getMemberMetadata } from '@dandi/model'
 import { ConvertedType, MetadataModelValidator, ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder'

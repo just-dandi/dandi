@@ -1,4 +1,4 @@
-import { DandiInjector } from '@dandi/core'
+import { DandiInjector } from '@dandi/core/internal'
 import { LoggerFixture } from '@dandi/core/testing'
 import { ViewEngineResolver } from '@dandi/mvc-view'
 

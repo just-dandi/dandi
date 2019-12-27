@@ -6,14 +6,11 @@ import {
   Scanner,
   SymbolToken,
 } from '@dandi/core'
-import { TestHarness } from '@dandi/core/testing'
 
 import { expect } from 'chai'
 import { spy, stub, createStubInstance } from 'sinon'
 
 describe('DandiApplication', function() {
-  TestHarness.scopeGlobalRepository()
-
   beforeEach(function() {
     this.logger = createStubInstance(NoopLogger)
   })
@@ -84,8 +81,8 @@ describe('DandiApplication', function() {
         expect(scanner1.scan).to.have.been.calledOnce
         expect(scanner2.scan).to.have.been.calledOnce
 
-        expect((application as any).initHost.rootInjector.context.repository.get(token1)).to.exist
-        expect((application as any).initHost.rootInjector.context.repository.get(token2)).to.exist
+        expect((application as any).initHost.appInjector.context.find(token1)).to.exist
+        expect((application as any).initHost.appInjector.context.find(token2)).to.exist
       })
     })
   })

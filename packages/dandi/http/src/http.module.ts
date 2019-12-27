@@ -1,6 +1,5 @@
 import { ModuleBuilder, Registerable } from '@dandi/core'
 
-
 import { HttpRequestAcceptTypesProvider } from './http-request-accept-types'
 import { PKG } from './local-token'
 

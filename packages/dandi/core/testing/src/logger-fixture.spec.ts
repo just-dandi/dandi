@@ -1,4 +1,4 @@
-import { MODIFIER_KEYS } from '@dandi/core'
+import { MODIFIER_KEYS } from '@dandi/core/internal/util'
 import { LoggerFixture } from '@dandi/core/testing'
 import { expect } from 'chai'
 
@@ -28,6 +28,5 @@ describe('LoggerFixture', function () {
       .calledOnce
       .calledWithExactly('foo')
   })
-
 
 })

@@ -1,4 +1,4 @@
-import { Repository } from '@dandi/core'
+import { Repository } from '@dandi/core/internal'
 import { stubHarness } from '@dandi/core/testing'
 import { HttpMethod } from '@dandi/http'
 import {

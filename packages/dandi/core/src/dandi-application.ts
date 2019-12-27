@@ -1,13 +1,11 @@
 import { Disposable } from '@dandi/common'
+import { DandiApplicationInit, QueueingLogger, DandiApplicationInternalConfig } from '@dandi/core/internal'
+import { DandiApplicationConfig, Injector } from '@dandi/core/types'
 
-import { DandiApplicationConfig } from './dandi-application-config'
-import { DandiApplicationInit } from './dandi-application-init'
-import { Injector } from './injector'
 import { NativeNow } from './native-now'
 import { NoopLogger } from './noop-logger'
-import { QueueingLogger } from './queueing-logger'
 
-export class DandiApplication<TConfig extends DandiApplicationConfig = DandiApplicationConfig> implements Disposable {
+export class DandiApplication<TConfig extends DandiApplicationConfig = DandiApplicationInternalConfig> implements Disposable {
 
   protected readonly config: TConfig
 
@@ -33,6 +31,6 @@ export class DandiApplication<TConfig extends DandiApplicationConfig = DandiAppl
   }
 
   public async dispose(reason: string): Promise<void> {
-    await this.initHost.dispose(reason)
+    await Disposable.dispose(this.initHost, reason)
   }
 }

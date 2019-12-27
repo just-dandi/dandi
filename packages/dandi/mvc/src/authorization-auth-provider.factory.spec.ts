@@ -1,4 +1,5 @@
-import { DandiInjector, Injector } from '@dandi/core'
+import { Injector } from '@dandi/core'
+import { DandiInjector } from '@dandi/core/internal'
 import { HttpMethod, UnauthorizedError } from '@dandi/http'
 import {
   AuthorizationAuthProviderFactory,

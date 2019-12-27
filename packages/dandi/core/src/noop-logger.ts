@@ -1,6 +1,6 @@
-import { Injectable } from './injectable-decorator'
-import { Logger } from './logger'
-import { createLoggerMethodChain, LoggerMethod } from './logger-method'
+import { Injectable } from '@dandi/core/decorators'
+import { createLoggerMethodChain } from '@dandi/core/internal/util'
+import { Logger, LoggerMethod } from '@dandi/core/types'
 
 function nooper(): () => void {
   return function noop() {}

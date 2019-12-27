@@ -1,3 +1,5 @@
 import { GlobalSymbolFn, packageGlobalSymbol } from '@dandi/common'
 
-export const globalSymbol: GlobalSymbolFn = packageGlobalSymbol.bind(null, '@dandi/core')
+import { localToken } from './local-token'
+
+export const globalSymbol: GlobalSymbolFn = packageGlobalSymbol.bind(null, localToken.PKG)

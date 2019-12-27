@@ -1,5 +1,6 @@
 import { MethodTarget } from '@dandi/common'
-import { FactoryProvider, getInjectableParamMetadata } from '@dandi/core'
+import { FactoryProvider } from '@dandi/core'
+import { getInjectableParamMetadata } from '@dandi/core/internal/util'
 import { HttpRequestBody } from '@dandi/http'
 import { ModelBindingError, RequestBody, requestBodyProvider } from '@dandi/http-model'
 import { ModelBuilder } from '@dandi/model-builder'
@@ -7,7 +8,7 @@ import { ModelBuilder } from '@dandi/model-builder'
 import { expect } from 'chai'
 import { SinonStubbedInstance, stub } from 'sinon'
 
-describe('@HttpRequestBody', () => {
+describe('@RequestBody', () => {
   it('sets the HttpRequestBody token for the decorated parameter', () => {
     class TestModel {}
 

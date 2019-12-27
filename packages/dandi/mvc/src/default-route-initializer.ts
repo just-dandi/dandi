@@ -1,5 +1,4 @@
 import {
-  getInjectableMetadata,
   Inject,
   Injectable,
   Logger,
@@ -7,6 +6,7 @@ import {
   Provider,
   Injector,
 } from '@dandi/core'
+import { getInjectableMetadata } from '@dandi/core/internal/util'
 import {
   ForbiddenError,
   HttpRequest,

@@ -5,18 +5,16 @@ import {
   Injectable,
   InjectionScope,
   Injector,
-  RootInjectionScope,
   Singleton,
   SymbolToken,
 } from '@dandi/core'
-import { testHarnessSingle, testHarness, TestHarness } from '@dandi/core/testing'
+import { RootInjectionScope } from '@dandi/core/internal'
+import { testHarnessSingle, testHarness } from '@dandi/core/testing'
 
 import { expect } from 'chai'
 import { stub } from 'sinon'
 
 describe('DI Integration', function() {
-
-  TestHarness.scopeGlobalRepository()
 
   const harness = testHarness()
 

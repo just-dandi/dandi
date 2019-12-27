@@ -1,4 +1,5 @@
-import { FactoryProvider, SymbolToken, getInjectableParamMetadata, methodTarget } from '@dandi/core'
+import { FactoryProvider, SymbolToken } from '@dandi/core'
+import { getInjectableParamMetadata, methodTarget } from '@dandi/core/internal/util'
 import { HttpRequestPathParamMap, HttpRequestQueryParamMap } from '@dandi/http'
 import { PathParam, QueryParam } from '@dandi/http-model'
 import { ModelBuilder } from '@dandi/model-builder'

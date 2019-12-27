@@ -1,4 +1,6 @@
-import { Injectable, LogCallOptions, Logger, LoggerMethod, MODIFIER_KEYS } from '@dandi/core'
+import { Injectable, LogCallOptions, Logger, LoggerMethod } from '@dandi/core'
+import { MODIFIER_KEYS } from '@dandi/core/internal/util'
+
 import { stub } from 'sinon'
 
 export function createLoggerMethodChain(logAction: (options: LogCallOptions, ...args: any[]) => void): LoggerMethod {

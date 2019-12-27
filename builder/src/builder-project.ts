@@ -229,10 +229,10 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
         manifest,
         subPackages,
       ] = await Promise.all([
-        await this.util.readJson<Package>(packageConfigPath),
-        await this.util.readJson<TsConfig>(tsConfigPath, {}),
-        await this.loadPackageManifest(packagePath),
-        await this.findSubPackages(packagePath),
+        this.util.readJson<Package>(packageConfigPath),
+        this.util.readJson<TsConfig>(tsConfigPath, {}),
+        this.loadPackageManifest(packagePath),
+        this.findSubPackages(packagePath),
       ])
 
       const projectDependencies = Object.keys(packageConfig.peerDependencies)
@@ -263,7 +263,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   }
 
   private async findSubPackages(packagePath: string): Promise<string[]> {
-    const configs = await this.util.glob('*/**/tsconfig.json', { cwd: packagePath, ignore: 'node_modules/**' })
+    const configs = await this.util.glob('*/**/+(tsconfig.json|.builderinclude)', { cwd: packagePath, ignore: 'node_modules/**', dot: true })
     if (!configs.length) {
       return undefined
     }
