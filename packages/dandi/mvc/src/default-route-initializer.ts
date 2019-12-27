@@ -14,7 +14,7 @@ import {
   HttpRequestQueryParamMap,
   HttpResponse,
 } from '@dandi/http'
-import { HttpRequestInfo } from '@dandi/http-pipeline'
+import { HttpRequestHandler, HttpRequestHandlerMethod, HttpRequestInfo } from '@dandi/http-pipeline'
 
 import { AuthProviderFactory } from './auth-provider.factory'
 import { AuthorizationCondition, DeniedAuthorization } from './authorization.condition'
@@ -81,6 +81,14 @@ export class DefaultRouteInitializer implements RouteInitializer {
       {
         provide: RequestController,
         useClass: route.controllerCtr,
+      },
+      {
+        provide: HttpRequestHandler,
+        useClass: route.controllerCtr,
+      },
+      {
+        provide: HttpRequestHandlerMethod,
+        useValue: route.controllerMethod,
       },
       { provide: HttpRequest, useValue: req },
       { provide: HttpResponse, useValue: res },

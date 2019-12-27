@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@dandi/core'
-import { HttpResponse } from '@dandi/http'
+import { HttpResponse, MimeTypes } from '@dandi/http'
 
 import { HttpPipelineRendererResult } from './http-pipeline-renderer'
 import { HttpPipelineTerminator } from './http-pipeline-terminator'
@@ -26,8 +26,8 @@ export class HttpResponsePipelineTerminator implements HttpPipelineTerminator {
         .forEach(headerName => this.response.setHeader(headerName, renderResult.headers[headerName]))
     }
     this.response
-      .contentType(renderResult.contentType)
-      .send(renderResult.renderedBody)
+      .contentType(renderResult.contentType || MimeTypes.textPlain)
+      .send(renderResult.renderedBody || '')
       .end()
   }
 

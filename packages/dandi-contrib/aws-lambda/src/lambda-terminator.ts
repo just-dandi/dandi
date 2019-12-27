@@ -8,7 +8,7 @@ export class LambdaTerminator implements HttpPipelineTerminator {
     return {
       statusCode: result.statusCode,
       headers: result.headers,
-      body: result.renderedBody,
+      body: result.renderedBody || '',
     }
   }
 }

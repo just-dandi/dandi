@@ -3,7 +3,7 @@ import { ParamMap } from '@dandi/http'
 import { MemberMetadata } from '@dandi/model'
 import { MemberBuilderOptions, ModelBuilder } from '@dandi/model-builder'
 
-import { MissingParamError } from './errors'
+import { InvalidParamError, MissingParamError } from './errors'
 
 export function requestParamValidatorFactory(
   type: any,
@@ -21,5 +21,9 @@ export function requestParamValidatorFactory(
     }
     throw new MissingParamError(paramName)
   }
-  return builder.constructMember(memberMetadata, paramName, value, options)
+  try {
+    return builder.constructMember(memberMetadata, paramName, value, options)
+  } catch (err) {
+    throw new InvalidParamError(paramName, err)
+  }
 }

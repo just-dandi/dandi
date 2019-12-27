@@ -1,14 +1,26 @@
 import { AppError, Uuid } from '@dandi/common'
-import { Injector } from '@dandi/core'
+import { Inject, SymbolToken } from '@dandi/core'
 import { stubHarness } from '@dandi/core/testing'
 import { HttpMethod, HttpRequest, HttpResponse, HttpStatusCode } from '@dandi/http'
 import { HttpPipeline, HttpRequestInfo } from '@dandi/http-pipeline'
 import { DefaultRouteExecutor, Route, RouteInitializer } from '@dandi/mvc'
 
 import { expect } from 'chai'
-import { stub } from 'sinon'
+import { SinonStubbedInstance, stub } from 'sinon'
 
-describe('DefaultRouteExecutor', function() {
+describe('DefaultRouteExecutor', () => {
+
+  const fooToken = SymbolToken.for('Foo')
+
+  class FakeHttpPipeline {
+
+    public readonly handleRequestStub = stub()
+
+    public async handleRequest(@Inject(fooToken) foo: string): Promise<any> {
+      this.handleRequestStub(foo)
+      return foo
+    }
+  }
 
   const harness = stubHarness(DefaultRouteExecutor,
     {
@@ -32,9 +44,7 @@ describe('DefaultRouteExecutor', function() {
     },
     {
       provide: HttpPipeline,
-      useFactory: () => ({
-        handleRequest: stub(),
-      }),
+      useFactory: () => httpPipeline,
     },
     {
       provide: HttpRequest,
@@ -65,59 +75,71 @@ describe('DefaultRouteExecutor', function() {
     },
   )
 
-  beforeEach(async function() {
-    this.injector = await harness.inject(Injector)
-    this.routeExec = await harness.inject(DefaultRouteExecutor)
-    this.route = await harness.inject(Route)
-    this.routeInit = await harness.inject(RouteInitializer)
-    this.req = await harness.inject(HttpRequest)
-    this.res = await harness.inject(HttpResponse)
-    this.httpPipeline = await harness.inject(HttpPipeline)
+  let routeExec: DefaultRouteExecutor
+  let route: Route
+  let routeInit: SinonStubbedInstance<RouteInitializer>
+  let req: HttpRequest
+  let res: HttpResponse
+  let httpPipeline: FakeHttpPipeline
+
+  beforeEach(async () => {
+    httpPipeline = new FakeHttpPipeline()
+    routeExec = await harness.inject(DefaultRouteExecutor)
+    route = await harness.injectStub(Route)
+    routeInit = await harness.injectStub(RouteInitializer)
+    req = await harness.injectStub(HttpRequest)
+    res = await harness.injectStub(HttpResponse)
+  })
+  afterEach(() => {
+    routeExec = undefined
+    route = undefined
+    routeInit = undefined
+    req = undefined
+    res = undefined
+    httpPipeline = undefined
   })
 
-  describe('execRoute', function() {
+  describe('execRoute', () => {
 
-    beforeEach(function() {
-      stub(this.injector, 'invoke')
+    it('calls initRouteRequest on the provided RouteInitializer', async () => {
+      await routeExec.execRoute(route, req, res)
+      expect(routeInit.initRouteRequest).to.have.been.calledWith(route, req)
     })
 
-    it('calls initRouteRequest on the provided RouteInitializer', async function() {
-      await this.routeExec.execRoute(this.route, this.req, this.res)
-      expect(this.routeInit.initRouteRequest).to.have.been.calledWith(this.route, this.req)
-    })
-
-    it('uses the providers from initRouteRequest to invoke the HttpPipeline', async function() {
+    it('uses the providers from initRouteRequest to invoke the HttpPipeline', async () => {
 
       const providers = [
         {
-          provide: 'Foo',
+          provide: fooToken,
           useValue: 'foo',
         },
       ]
-      this.routeInit.initRouteRequest.resolves(providers)
+      routeInit.initRouteRequest.resolves(providers)
 
-      await this.routeExec.execRoute(this.route, this.req, this.res)
+      // sanity check - fooToken should not be available for general injection
+      expect(await harness.inject(fooToken, true)).not.to.exist
 
-      expect(this.injector.invoke).to.have.been.calledWith(this.httpPipeline, 'handleRequest', ...providers)
+      await routeExec.execRoute(route, req, res)
+
+      expect(httpPipeline.handleRequestStub).to.have.been.calledWith('foo')
     })
 
-    it('catches errors and sends a JSON response with the message of the object', async function() {
+    it('catches errors and sends a JSON response with the message of the object', async () => {
       class SomeKindOfError extends AppError {
         constructor() {
           super('oh no')
         }
       }
-      this.routeInit.initRouteRequest.resolves([])
-      this.injector.invoke.callsFake(() => Promise.reject(new SomeKindOfError()))
+      routeInit.initRouteRequest.callsFake(() => Promise.reject(new SomeKindOfError()))
 
-      await this.routeExec.execRoute(this.route, this.req, this.res)
+      await routeExec.execRoute(route, req, res)
 
-      expect(this.res.json).to.have.been.calledWith({
+      expect(res.json).to.have.been.calledWith({
         error: { message: 'oh no', type: 'SomeKindOfError' },
       })
     })
 
-    it('uses the status code from thrown errors if present', async function() {
+    it('uses the status code from thrown errors if present', async () => {
       class SomeKindOfError extends AppError {
         public statusCode = HttpStatusCode.teapot
 
@@ -126,28 +148,27 @@ describe('DefaultRouteExecutor', function() {
         }
       }
 
-      this.routeInit.initRouteRequest.resolves([])
-      this.injector.invoke.throws(new SomeKindOfError())
+      routeInit.initRouteRequest.throws(new SomeKindOfError())
 
-      await this.routeExec.execRoute(this.route, this.req, this.res)
+      await routeExec.execRoute(route, req, res)
 
-      expect(this.res.status).to.have.been.calledWith(HttpStatusCode.teapot)
-      expect(this.res.json).to.have.been.calledWith({
+      expect(res.status).to.have.been.calledWith(HttpStatusCode.teapot)
+      expect(res.json).to.have.been.calledWith({
         error: { message: 'oh no, not again!', type: 'SomeKindOfError' },
       })
     })
 
-    it('defaults to the status code 500 if the error does not specify one', async function() {
+    it('defaults to the status code 500 if the error does not specify one', async () => {
       class SomeKindOfError extends AppError {
         constructor() {
           super('oh no')
         }
       }
-      this.injector.invoke.throws(new SomeKindOfError())
+      routeInit.initRouteRequest.throws(new SomeKindOfError())
 
-      await this.routeExec.execRoute(this.route, this.req, this.res)
+      await routeExec.execRoute(route, req, res)
 
-      expect(this.res.status).to.have.been.calledWith(500)
+      expect(res.status).to.have.been.calledWith(500)
     })
 
   })

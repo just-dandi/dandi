@@ -40,7 +40,7 @@
 //   }
 //
 //   let event: TestEvent
-//   let context: Context
+//   let scope: Context
 //   let response: TestResponse
 //   let handlerFn: HandlerFn<TestEvent, any>
 //
@@ -48,12 +48,12 @@
 //
 //   beforeEach(async () => {
 //     event = {}
-//     context = createStubInstance(MockContext) as unknown as Context
+//     scope = createStubInstance(MockContext) as unknown as Context
 //     response = {}
 //   })
 //   afterEach(() => {
 //     event = undefined
-//     context = undefined
+//     scope = undefined
 //     response = undefined
 //
 //     handlerFn = undefined
@@ -62,7 +62,7 @@
 //   })
 //
 //   describe('standalone (no existing application)', () => {
-//     // note: this is the way Lambda will be used in the wild, but there's no way to access the injector
+//     // note: this is the way Lambda will be used in the wild, but there's no way to access the rootInjector
 //     // when it uses its own application instance. This test only ensures that the call goes all the way through.
 //     // The rest of the functionality is tested elsewhere in this suite.
 //
@@ -78,14 +78,14 @@
 //     })
 //
 //     it('can create a Lambda instance', async () => {
-//       await expect(handlerFn(event, context)).to.be.fulfilled
+//       await expect(handlerFn(event, scope)).to.be.fulfilled
 //     })
 //
 //     it('uses the same instance in subsequent calls', async () => {
 //       const handleEvent = spy(Lambda.prototype, 'handleEvent')
 //
-//       await handlerFn(event, context)
-//       await handlerFn(event, context)
+//       await handlerFn(event, scope)
+//       await handlerFn(event, scope)
 //
 //       expect(handleEvent).to.have.been.calledTwice
 //       expect(handleEvent.firstCall.thisValue).to.equal(handleEvent.secondCall.thisValue)
@@ -102,7 +102,7 @@
 //     )
 //
 //     beforeEach(async () => {
-//       handlerFn = Lambda.handler(TestHandler, harness.injector)
+//       handlerFn = Lambda.handler(TestHandler, harness.rootInjector)
 //
 //       transformer = await harness.injectStub(LambdaEventTransformer)
 //       transformer.transform.returns([])
@@ -114,7 +114,7 @@
 //       })
 //
 //       it('can create a Lambda instance', async () => {
-//         await expect(handlerFn(event, context)).to.be.fulfilled
+//         await expect(handlerFn(event, scope)).to.be.fulfilled
 //       })
 //     })
 //
@@ -125,9 +125,9 @@
 //         transformer = await harness.injectStub(LambdaEventTransformer)
 //         transformProviders = []
 //         transformer.transform.returns(transformProviders)
-//         spy(harness.injector, 'invoke')
+//         spy(harness.rootInjector, 'invoke')
 //
-//         await handlerFn(event, context)
+//         await handlerFn(event, scope)
 //
 //         responder = await harness.injectStub(LambdaResponder)
 //       })
@@ -135,18 +135,18 @@
 //         transformProviders = undefined
 //       })
 //
-//       it('calls the event transformer with the passed event and context', async () => {
-//         expect(transformer.transform).to.have.been.calledOnce.calledWithExactly(event, context)
+//       it('calls the event transformer with the passed event and scope', async () => {
+//         expect(transformer.transform).to.have.been.calledOnce.calledWithExactly(event, scope)
 //       })
 //
 //       it('passes the result of the event transformer to the handler', async () => {
 //         const pipeline = await harness.inject(HttpPipeline)
-//         expect(harness.injector.invoke).to.have.been
+//         expect(harness.rootInjector.invoke).to.have.been
 //           .calledOnce
 //           .calledWith(pipeline, 'handleRequest')
 //
 //         // const passedProviders = harness.invoke()
-//         // expect(TestHandler.instance.handleEvent).to.have.been.calledOnce.calledWithExactly(transformProviders, context)
+//         // expect(TestHandler.instance.handleEvent).to.have.been.calledOnce.calledWithExactly(transformProviders, scope)
 //       })
 //
 //       it('passes the result of the handler to the responder', () => {
@@ -160,9 +160,9 @@
 //           error = new Error('Your llama is lloose!')
 //           responder.handleResponse.throws(error)
 //
-//           handlerFn = Lambda.handler(TestHandler, harness.injector)
+//           handlerFn = Lambda.handler(TestHandler, harness.rootInjector)
 //
-//           await handlerFn(event, context)
+//           await handlerFn(event, scope)
 //         })
 //         afterEach(() => {
 //           error = undefined
@@ -203,9 +203,9 @@
 //
 //       errorHandler = (await harness.injectStub(LambdaErrorHandler))[0]
 //
-//       handlerFn = Lambda.handler(TestHandler, harness.injector)
+//       handlerFn = Lambda.handler(TestHandler, harness.rootInjector)
 //
-//       await handlerFn(event, context)
+//       await handlerFn(event, scope)
 //     })
 //     afterEach(() => {
 //       error = undefined

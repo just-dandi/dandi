@@ -116,7 +116,7 @@ describe('HttpEventTransformer', () => {
   //     const eventWithoutBody = Object.assign({}, event)
   //     delete eventWithoutBody.body
   //
-  //     const result = transformer.transform(event, context)
+  //     const result = transformer.transform(event, scope)
   //     const httpProvider = result.find(provider => provider.provide === HttpRequest)
   //     const request = (httpProvider as any).useValue
   //

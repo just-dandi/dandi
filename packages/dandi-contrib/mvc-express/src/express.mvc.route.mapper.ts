@@ -1,4 +1,4 @@
-import { Inject, Injectable, Logger, Injector } from '@dandi/core'
+import { Inject, Injectable, Logger } from '@dandi/core'
 import { HttpMethod } from '@dandi/http'
 import { CorsConfig, Route, RouteExecutor, RouteMapper } from '@dandi/mvc'
 import * as cors from 'cors'
@@ -16,7 +16,6 @@ export class ExpressMvcRouteMapper implements RouteMapper {
   private readonly corsRoutes = new Set<string>()
 
   constructor(
-    @Inject(Injector) private injector: Injector,
     @Inject(ExpressInstance) private app: Express,
     @Inject(RouteExecutor) private routeExecutor: RouteExecutor,
     @Inject(Logger) private logger: Logger,
