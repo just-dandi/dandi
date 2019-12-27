@@ -112,7 +112,7 @@ export class Disposable {
       error = err
     } finally {
       if (Disposable.isDisposable(obj)) {
-        obj.dispose('after Disposable.use()')
+        obj.dispose(`after Disposable.use() for ${obj.constructor.name}`)
       }
     }
 
@@ -128,12 +128,12 @@ export class Disposable {
       return await use(resolvedObj)
     } finally {
       if (Disposable.isDisposable(resolvedObj)) {
-        await resolvedObj.dispose('after Disposable.useAsync()')
+        await resolvedObj.dispose(`after Disposable.useAsync() for ${obj.constructor.name}`)
       }
     }
   }
 
-  public static remapDisposed<T>(target: T, reason: string, options?: RemapOptions): T {
+  public static remapDisposed<T>(target: T, reason: string, options?: RemapOptions): Readonly<T> {
     Object.defineProperty(target, DISPOSED, {
       get: () => true,
       set: undefined,
