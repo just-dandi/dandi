@@ -1,29 +1,27 @@
 import { Disposable } from '@dandi/common'
-import { DisposableUtil } from '@dandi/common/testing'
 import {
+  DandiGenerator,
   DandiInjector,
   Inject,
   Injectable,
   InjectionResult,
-  InjectorContext,
   InstanceGenerator,
   InvalidTokenError,
   Invoker,
-  Logger,
   MissingProviderError,
   MissingTokenError,
-  Optional,
+  Optional, Registerable,
   ResolverContext,
   SymbolToken,
+  Injector,
 } from '@dandi/core'
-import { AppInjectorContext, LoggerFixture } from '@dandi/core/testing'
 
 import { expect } from 'chai'
-import { stub, spy } from 'sinon'
+import { stub, spy, SinonStubbedInstance, SinonSpy } from 'sinon'
 
-describe('DandiInjector', function () {
+import { DandiRootInjector } from './dandi-root-injector'
 
-  DisposableUtil.disableRemap()
+describe('DandiInjector', () => {
 
   @Injectable()
   class TestInjectable {}
@@ -35,175 +33,146 @@ describe('DandiInjector', function () {
   @Injectable()
   class DoesNotExist {}
 
-  beforeEach(function() {
-    this.context = function TestContext() {}
-    this.appInjectorContext = new AppInjectorContext()
-    this.register = this.appInjectorContext.register.bind(this.appInjectorContext, { constructor: this.context })
-    this.register(TestInjectable)
-    this.generator = {
+  let rootInjector: DandiRootInjector
+  let injector: DandiInjector
+  let generator: SinonStubbedInstance<DandiGenerator>
+
+  function createInjector(...providers: Registerable[]): DandiInjector {
+    return injector = rootInjector.createChild('DandiInjector Test Instance', providers)
+  }
+
+  function register(...providers: Registerable[]): void {
+    rootInjector.register(DandiRootInjector, ...providers)
+  }
+
+  beforeEach(() => {
+    generator = {
       generateInstance: stub().resolves(undefined),
-    }
-    this.createInjector = () => new DandiInjector(this.appInjectorContext, () => this.generator)
+    } as unknown as SinonStubbedInstance<DandiGenerator>
+    rootInjector = new DandiRootInjector(() => generator as unknown as DandiGenerator)
   })
-  afterEach(function() {
-    this.appInjectorContext.dispose('test complete')
+  afterEach(async () => {
+    await rootInjector.dispose('test complete')
   })
 
-  describe('init', function() {
+  describe('Resolver', () => {
 
-    it('logs a debug message', async function() {
-      const logger: Logger = new LoggerFixture()
-      const injector = this.createInjector()
-      await injector.init(undefined, logger)
-
-      expect(logger.debug).to.have.been.called
+    beforeEach(() => {
+      createInjector(TestInjectable)
     })
 
-  })
+    describe('canResolve', () => {
 
-  describe('Resolver', function() {
-
-    beforeEach(function() {
-      this.register(TestInjectable)
-      this.resolver = this.createInjector()
-    })
-
-    describe('canResolve', function() {
-
-      it('throws an error when called without an injection token', function() {
-        expect(() => this.resolver.canResolve(undefined)).to.throw(MissingTokenError)
+      it('throws an error when called without an injection token', () => {
+        expect(() => injector.canResolve(undefined)).to.throw(MissingTokenError)
       })
 
-      it('throws an error when called with an invalid injection token', function() {
-        expect(() => this.resolver.canResolve({})).to.throw(InvalidTokenError)
+      it('throws an error when called with an invalid injection token', () => {
+        expect(() => injector.canResolve({} as any)).to.throw(InvalidTokenError)
       })
 
-      it('returns true when there is a provider for the requested token', function() {
-        expect(this.resolver.canResolve(TestInjectable)).to.be.true
+      it('returns true when there is a provider for the requested token', () => {
+        expect(injector.canResolve(TestInjectable)).to.be.true
       })
 
-      it('returns false when there is no provider for the requested token', function() {
-        expect(this.resolver.canResolve(TestWithDependency)).to.be.false
+      it('returns false when there is no provider for the requested token', () => {
+        expect(injector.canResolve(TestWithDependency)).to.be.false
       })
 
-      it('returns true when a provider is specified in the auxiliary providers', function() {
-        expect(this.resolver.canResolve(TestWithDependency)).to.be.false // sanity check
+      it('returns true when a provider is specified in the auxiliary providers', () => {
+        expect(injector.canResolve(TestWithDependency)).to.be.false // sanity check
 
-        expect(this.resolver.canResolve(TestWithDependency, TestWithDependency)).to.be.true
+        expect(injector.canResolve(TestWithDependency, TestWithDependency)).to.be.true
       })
 
-      it('returns true when a provider can be found in a parent injector context', function() {
-        const injectorContext = new InjectorContext(undefined, function TestContext(){}, [TestWithDependency])
+      it('returns true when a provider can be found in a parent injector', () => {
+        expect(injector.canResolve(TestWithDependency)).to.be.false // sanity check
+        register(TestWithDependency)
 
-        expect(this.resolver.canResolve(TestWithDependency)).to.be.false // sanity check
-
-        expect(this.resolver.canResolve(TestWithDependency, injectorContext)).to.be.true
+        expect(injector.canResolve(TestWithDependency)).to.be.true
       })
 
-      it('returns false when there is not provider for the specified token, including in a parent injector context', function() {
-        const injectorContext = new InjectorContext(undefined, function TestContext(){})
-        expect(this.resolver.canResolve(TestWithDependency, injectorContext)).to.be.false
+      it('returns false when there is not provider for the specified token, including in a parent rootInjector scope', () => {
+        expect(injector.canResolve(TestWithDependency)).to.be.false
       })
 
     })
 
-    describe('resolve', function() {
+    describe('resolve', () => {
 
-      it('throws an error when called without an injection token', function() {
-        expect(() => this.resolver.resolve(undefined)).to.throw(MissingTokenError)
+      it('throws an error when called without an injection token', () => {
+        expect(() => injector.resolve(undefined)).to.throw(MissingTokenError)
       })
 
-      it('throws an error when called with an invalid injection token', function() {
-        expect(() => this.resolver.resolve({})).to.throw(InvalidTokenError)
+      it('throws an error when called with an invalid injection token', () => {
+        expect(() => injector.resolve({} as any)).to.throw(InvalidTokenError)
       })
 
-      it('returns the provider for a resolved injection token', function() {
-        expect(this.resolver.resolve(TestInjectable)).to.deep.equal({
+      it('returns the provider for a resolved injection token', () => {
+        expect(injector.resolve(TestInjectable)).to.deep.equal({
           provide: TestInjectable,
           useClass: TestInjectable,
         })
       })
 
-      it('throws a MissingProviderError when there is no provider for the requested token', function() {
-        expect(() => this.resolver.resolve(TestWithDependency)).to.throw(MissingProviderError)
+      it('throws a MissingProviderError when there is no provider for the requested token', () => {
+        expect(() => injector.resolve(TestWithDependency)).to.throw(MissingProviderError)
       })
 
-      it('returns undefined when there is no provider for the requested token, and the token is optional', function() {
-        expect(this.resolver.resolve(TestWithDependency, true)).to.be.undefined
+      it('returns undefined when there is no provider for the requested token, and the token is optional', () => {
+        expect(injector.resolve(TestWithDependency, true)).to.be.undefined
       })
 
-      it('returns the provider when it is specified in the auxiliary providers', function() {
+      it('returns the provider when it is specified in the auxiliary providers', () => {
 
-        expect(this.resolver.resolve(TestWithDependency, true)).to.be.undefined // sanity check
+        expect(injector.resolve(TestWithDependency, true)).to.be.undefined // sanity check
 
-        expect(this.resolver.resolve(TestWithDependency, TestWithDependency)).to.deep.equal({
+        expect(injector.resolve(TestWithDependency, TestWithDependency)).to.deep.equal({
           provide: TestWithDependency,
           useClass: TestWithDependency,
         })
-      })
-
-      it('returns the provider when it can be found in a parent injector context', function() {
-
-        const injectorContext = new InjectorContext(undefined, function TestContext(){}, [TestWithDependency])
-
-        expect(this.resolver.resolve(TestWithDependency, true)).to.be.undefined // sanity check
-
-        expect(this.resolver.resolve(TestWithDependency, injectorContext)).to.deep.equal({
-          provide: TestWithDependency,
-          useClass: TestWithDependency,
-        })
-
-      })
-
-      it('returns undefined when the provider is not in a parent injector context, and the token is optional', function() {
-        const injectorContext = new InjectorContext(undefined, function TestContext(){})
-        expect(this.resolver.resolve(TestWithDependency, injectorContext, true)).to.be.undefined
       })
 
     })
 
   })
 
-  describe('TokenInjector', function() {
+  describe('TokenInjector', () => {
 
-    beforeEach(function() {
-      this.injector = this.createInjector()
+    let resolveInternal: SinonSpy
+
+    beforeEach(() => {
+      createInjector()
+      const ogCreateChild = injector.createChild
+      stub(injector, 'createChild').callsFake((...args: any[]) => {
+        const child = ogCreateChild.apply(injector, args)
+        resolveInternal = spy(child, 'resolveInternal')
+        return child
+      })
+    })
+    afterEach(() => {
+      resolveInternal = undefined
     })
 
     describe('inject', () => {
 
-      it('returns undefined without invoking the generator if the token resolves to an undefined provider', async function() {
+      it('returns undefined without invoking the generator if the token resolves to an undefined provider', async () => {
 
-        const result = await this.injector.inject(DoesNotExist, true)
+        const result = await injector.inject(DoesNotExist, true)
 
         expect(result).to.be.undefined
-        expect(this.generator.generateInstance).not.to.have.been.called
+        expect(generator.generateInstance).not.to.have.been.called
 
       })
 
-      it('does not automatically dispose the injector context if there was a parent injector context when returning due to an undefined provider', async function() {
-
-        spy(this.injector, 'resolveInternal')
-        const parentInjectorContext = new InjectorContext(this.appInjectorContext, function TestContext(){})
-
-        await this.injector.inject(DoesNotExist, parentInjectorContext, true)
-
-        const injectorContext = this.injector.resolveInternal.firstCall.returnValue
-        expect(Disposable.isDisposed(injectorContext)).to.be.false
-
-      })
-
-      it('waits for the generator to be ready before attempting to call generateInstance', async function() {
-        const generator = {
-          generateInstance: stub(),
-        }
+      it('waits for the generator to be ready before attempting to call generateInstance', async () => {
         let resolve
         const generatorFactory: Promise<InstanceGenerator> = new Promise<InstanceGenerator>(r => {
           resolve = r
         })
-        const injector = new DandiInjector(this.appInjectorContext, generatorFactory)
+        const injector = new DandiRootInjector(generatorFactory)
 
-        const resultPromise = injector.inject(TestInjectable)
+        const resultPromise = injector.inject(TestInjectable, TestInjectable)
         expect(generator.generateInstance).not.to.have.been.called
 
         resolve(generator)
@@ -213,66 +182,40 @@ describe('DandiInjector', function () {
 
       })
 
-      it('returns an InjectionResult with the value returned by generator.generateInstance', async function() {
+      it('returns an InjectionResult with the value returned by generator.generateInstance', async () => {
 
         const instance = new TestInjectable()
-        this.generator.generateInstance.resolves(instance)
+        generator.generateInstance.resolves(instance)
 
-        const result = await this.injector.inject(TestInjectable)
+        const result = await injector.inject(TestInjectable, TestInjectable)
 
         expect(result).to.be.instanceof(InjectionResult)
         expect(result.value).to.equal(instance)
 
       })
 
-      it('does not automatically dispose the injection context used to create the instance', async function() {
+      it('does not automatically dispose the resolver scope used to create the instance', async () => {
 
         const instance = new TestInjectable()
-        this.generator.generateInstance.resolves(instance)
+        generator.generateInstance.resolves(instance)
 
-        spy(this.injector, 'resolveInternal')
+        const result = await injector.inject(TestInjectable, TestInjectable)
+        expect(result).to.exist
+        expect(resolveInternal).to.have.been.called
+        const resolverContext = resolveInternal.firstCall.returnValue
 
-        await this.injector.inject(TestInjectable)
-        const injectorContext = this.injector.resolveInternal.firstCall.returnValue
-
-        expect(Disposable.isDisposed(injectorContext)).to.be.false
-
-      })
-
-      it('immediately disposes the injectorContext if the generator returns undefined and there was no parent injection context', async function() {
-
-        spy(this.injector, 'resolveInternal')
-
-        await this.injector.inject(TestInjectable)
-        const injectorContext = this.injector.resolveInternal.firstCall.returnValue
-
-        expect(Disposable.isDisposed(injectorContext)).to.be.true
+        expect(Disposable.isDisposed(resolverContext)).to.be.false
 
       })
 
-      it('does not automatically dispose the injectorContext if the generator returns undefined and there was a parent injection context', async function() {
+      it('immediately disposes the resolver scope if the generator returns undefined', async () => {
 
-        spy(this.injector, 'resolveInternal')
+        const result = await injector.inject(TestInjectable, TestInjectable)
+        expect(resolveInternal).to.have.been.called
+        const resolverContext = resolveInternal.firstCall.returnValue
 
-        const parentInjectorContext = new InjectorContext(this.appInjectorContext, function TestContext(){})
-        await this.injector.inject(TestInjectable, parentInjectorContext)
-        const injectorContext = this.injector.resolveInternal.firstCall.returnValue
-
-        expect(Disposable.isDisposed(injectorContext)).to.be.false
-
-      })
-
-      it('automatically disposes the injectorContext if an error is encountered and rethrows the error', async function() {
-
-        const err = new Error('oh no!')
-        this.generator.generateInstance.rejects(err)
-
-        spy(this.injector, 'resolveInternal')
-
-        await expect(this.injector.inject(TestInjectable)).to.be.rejectedWith(err)
-        const injectorContext = this.injector.resolveInternal.firstCall.returnValue
-
-        expect(Disposable.isDisposed(injectorContext)).to.be.true
+        expect(result).to.be.undefined // sanity check
+        expect(Disposable.isDisposed(resolverContext)).to.be.true
 
       })
 
@@ -280,15 +223,15 @@ describe('DandiInjector', function () {
 
   })
 
-  describe('Invoker', function() {
+  describe('Invoker', () => {
 
     describe('invoke', () => {
 
-      beforeEach(function() {
-        this.invoker = this.createInjector()
+      beforeEach(() => {
+        createInjector()
       })
 
-      it('calls the invoked method with injected parameters', async function() {
+      it('calls the invoked method with injected parameters', async () => {
         const token1 = new SymbolToken('test-1')
         const token2 = new SymbolToken('test2')
         const provider1 = {
@@ -307,25 +250,25 @@ describe('DandiInjector', function () {
           }
         }
         const instance = new TestClass()
-        this.register(provider1)
-        this.register(provider2)
-        this.generator.generateInstance.callsFake((injectorContext: ResolverContext<any>) => {
-          if (injectorContext.target === provider1.provide) {
+        register(provider1)
+        register(provider2)
+        generator.generateInstance.callsFake((injector: Injector, resolverContext: ResolverContext<any>) => {
+          if (resolverContext.target === provider1.provide) {
             return Promise.resolve(provider1.useValue)
           }
-          if (injectorContext.target === provider2.provide) {
+          if (resolverContext.target === provider2.provide) {
             return Promise.resolve(provider2.useValue)
           }
           return Promise.resolve()
         })
 
-        await (this.invoker as Invoker).invoke(instance, 'method')
+        await (injector as Invoker).invoke(instance, 'method')
 
         expect(method).to.have.been.called
         expect(method).to.have.been.calledWithExactly('foo', 'bar')
       })
 
-      it('calls the invoked method with injected parameters, using undefined for optional parameters that cannot be resolved', async function() {
+      it('calls the invoked method with injected parameters, using undefined for optional parameters that cannot be resolved', async () => {
         const token1 = new SymbolToken('test-1')
         const token2 = new SymbolToken('test2')
         const provider1 = {
@@ -344,8 +287,8 @@ describe('DandiInjector', function () {
             return method(a, b)
           }
         }
-        this.register(provider1)
-        this.generator.generateInstance.callsFake((injectorContext: ResolverContext<any>) => {
+        register(provider1)
+        generator.generateInstance.callsFake((injector: Injector, injectorContext: ResolverContext<any>) => {
           if (injectorContext.target === provider1.provide) {
             return Promise.resolve(provider1.useValue)
           }
@@ -353,12 +296,12 @@ describe('DandiInjector', function () {
         })
 
         const instance = new TestClass()
-        await (this.invoker as Invoker).invoke(instance, 'method')
+        await (injector as Invoker).invoke(instance, 'method')
         expect(method).to.have.been.called
         expect(method).to.have.been.calledWithExactly('foo', undefined)
       })
 
-      it('calls the invoked method even if it has no parameters', async function() {
+      it('calls the invoked method even if it has no parameters', async () => {
         const method = stub()
         class TestClass {
           public method(): any {
@@ -368,7 +311,7 @@ describe('DandiInjector', function () {
         }
 
         const instance = new TestClass()
-        await (this.invoker as Invoker).invoke(instance, 'method')
+        await (injector as Invoker).invoke(instance, 'method')
         expect(method).to.have.been.called
         expect(method).to.have.been.calledWithExactly()
 

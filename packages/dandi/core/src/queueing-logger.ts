@@ -1,7 +1,7 @@
 import { Logger } from './logger'
 import { LoggerMethod, createLoggerMethodChain, LogCallOptions } from './logger-method'
 import { LogLevel } from './log-level'
-import { InjectionContext } from './injection-context'
+import { InjectionScope } from './injection-scope'
 import { NowFn } from './now'
 import { LogEntry } from './log-entry'
 import { LogStream } from './log-stream'
@@ -26,7 +26,7 @@ export class QueueingLogger implements Logger {
 
   private readonly entries: LogEntry[] = []
 
-  constructor(private context: InjectionContext, private now: NowFn) {}
+  constructor(private context: InjectionScope, private now: NowFn) {}
 
   public flush(stream: LogStream): void {
     while(this.entries.length) {

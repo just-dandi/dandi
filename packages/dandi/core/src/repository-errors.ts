@@ -34,6 +34,6 @@ export class ConflictingRegistrationOptionsError extends AppError {
 
 export class InvalidRepositoryContextError extends AppError {
   constructor(public readonly context: any) {
-    super('A context must be specified')
+    super('A scope must be specified')
   }
 }

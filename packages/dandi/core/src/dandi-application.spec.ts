@@ -43,12 +43,14 @@ describe('DandiApplication', function() {
 
       await (application as any).initHost.preInit()
 
-      expect((application as any).initHost.appInjectorContext.repository.providers).to.contain.keys([token1, token2])
+      const appInjector = (application as any).initHost.appInjector
+
+      expect(appInjector.context.repository.providers).to.contain.keys([token1, token2])
     })
 
     describe('init', function() {
 
-      it('runs any scanners registered in the constructor configuration', async function() {
+      it('runs any scanners registered in the constructor configuration and adds the resulting providers to the root injector', async function() {
         const token1 = SymbolToken.for('Foo')
         const provider1 = {
           provide: token1,
@@ -77,13 +79,13 @@ describe('DandiApplication', function() {
         })
 
         await (application as any).initHost.preInit()
-        await (application as any).initHost.init(this.logger, () => new Date().valueOf())
+        await (application as any).initHost.init((application as any).initHost.appInjector, this.logger, () => new Date().valueOf())
 
         expect(scanner1.scan).to.have.been.calledOnce
         expect(scanner2.scan).to.have.been.calledOnce
 
-        expect((application as any).initHost.appInjectorContext.repository.get(token1)).to.exist
-        expect((application as any).initHost.appInjectorContext.repository.get(token2)).to.exist
+        expect((application as any).initHost.rootInjector.context.repository.get(token1)).to.exist
+        expect((application as any).initHost.rootInjector.context.repository.get(token2)).to.exist
       })
     })
   })

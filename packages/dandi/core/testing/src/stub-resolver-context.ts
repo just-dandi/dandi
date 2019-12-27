@@ -1,7 +1,7 @@
 import { isConstructor } from '@dandi/common'
 import {
   FindCacheEntry,
-  InjectionContext,
+  InjectionScope,
   InjectionToken,
   InjectorContext,
   Provider,
@@ -19,7 +19,7 @@ export class StubResolverContext<T> extends ResolverContext<T> {
   constructor(
     target: InjectionToken<T>,
     parent: InjectorContext,
-    context: InjectionContext,
+    context: InjectionScope,
     providers: Array<Provider<any>> = [],
   ) {
     super(target, parent, context, providers)

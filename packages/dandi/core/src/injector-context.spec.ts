@@ -2,7 +2,6 @@ import { Disposable } from '@dandi/common'
 import { InjectionToken, Provider, InjectorContext, SymbolToken } from '@dandi/core'
 
 import { expect } from 'chai'
-import { spy } from 'sinon'
 
 const chaiInspect = Symbol.for('chai/inspect')
 
@@ -88,18 +87,14 @@ describe('InjectorContext', function() {
     })
   })
 
-  describe('context', () => {
-    it('creates a ResolveContext instance that is a child of the call target', () => {
+  describe('createChild', () => {
+    it('creates an InjectorContext instance that is a child of the call target', () => {
       expect((childContext as any).parent).to.equal(parentContext)
     })
 
     it('creates a new repository containing any specified providers', () => {
       expect((childContext as any).repository.providers).to.include.keys(childToken1)
       expect((childContext as any).repository.providers).to.include.keys(childToken2)
-    })
-
-    it('adds the child context to its array of children', () => {
-      expect((parentContext as any).children).to.include(childContext)
     })
   })
 
@@ -128,24 +123,11 @@ describe('InjectorContext', function() {
   })
 
   describe('dispose', () => {
-    it('clears local arrays/sets/maps', () => {
-      childContext.createChild(function TestContext(){})
-
-      expect((childContext as any).children).not.to.be.empty
-
+    it('clears local maps and repository', () => {
       childContext.dispose('test')
 
-      expect(() => (childContext as any).children).to.throw
-      expect(() => (childContext as any).instances).to.throw
+      expect(() => (childContext as any).repository).to.throw
       expect(() => (childContext as any).findCache).to.throw
-    })
-
-    it('disposes all child contexts', () => {
-      const childDispose = spy(childContext, 'dispose')
-
-      parentContext.dispose('test')
-
-      expect(childDispose).to.have.been.calledOnce
     })
   })
 })

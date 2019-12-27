@@ -1,23 +1,24 @@
 import {
   DandiGenerator,
-  getInjectionContext,
+  DandiInjector,
+  getInjectionScope,
   Inject,
   Injectable,
-  InjectionToken,
+  InjectionToken, Injector,
   InjectorContext,
   Optional,
   Provider,
   ProviderTypeError,
   ResolverContext,
   SymbolToken,
+  Registerable,
 } from '@dandi/core'
-import { Constructor } from '@dandi/common'
-import { AppInjectorContext } from '@dandi/core/testing'
+import { RootInjectorContext } from '@dandi/core/src/root-injector-context'
 
 import { expect } from 'chai'
-import { stub, spy } from 'sinon'
+import { spy, SinonStubbedInstance, createStubInstance } from 'sinon'
 
-describe('DandiGenerator', function() {
+describe('DandiGenerator', () => {
 
   @Injectable()
   class TestInjectable {}
@@ -35,69 +36,78 @@ describe('DandiGenerator', function() {
     constructor(@Inject(DoesNotExist) @Optional() public dep: DoesNotExist) {}
   }
 
-  beforeEach(function() {
-    this.testContext = function TestContext() {}
-    this.injector = {
-      inject: stub(),
-      injectParam: stub(),
+  let rootInjectorContext: RootInjectorContext
+  let parentInjectorContext: InjectorContext
+  let injector: SinonStubbedInstance<Injector>
+  let generator: DandiGenerator
+  let resolverContext: ResolverContext
+
+  function initResolverContext<T>(target?: InjectionToken<T>, match?: Provider<T>): void {
+    if (match) {
+      parentInjectorContext = rootInjectorContext.createChild('because', match)
+      spy(parentInjectorContext, 'createChild')
     }
-    // this.injectorContext = new InjectorContext(undefined, [], undefined, undefined)
-    this.generator = new DandiGenerator(this.injector)
-    this.appInjectorContext = new AppInjectorContext()
-    this.initResolverContext = <T>(target?: InjectionToken<T>, match?: Provider<T>): void => {
-      if (match) {
-        this.parentInjectorContext = new InjectorContext(this.appInjectorContext, this.testContext, [match])
-      }
-      this.resolverContext = new ResolverContext<T>(target, this.parentInjectorContext || this.appInjectorContext, this.testContext)
-      spy(this.resolverContext, 'addInstance')
-      spy(this.resolverContext, 'createChild')
-      spy(this.resolverContext, 'createResolverContext')
-    }
-    this.generate = () => this.generator.generateInstance(this.resolverContext)
-    this.register = (...providers: (Provider<any> | Constructor<any>)[]) => this.appInjectorContext.register({ constructor: this.testContext }, ...providers)
+    resolverContext = new ResolverContext<T>(target, parentInjectorContext || rootInjectorContext)
+    spy(resolverContext, 'addInstance')
+  }
+  const generate = (): any => generator.generateInstance(injector as unknown as Injector, resolverContext)
+  const register = (...providers: Registerable[]): any => rootInjectorContext.register('Test', ...providers)
+  const injectorStub = (): SinonStubbedInstance<Injector> => {
+    const instance = createStubInstance(DandiInjector)
+    instance.createResolverContext.callsFake((token: InjectionToken<any>) => {
+      return new ResolverContext(token, parentInjectorContext || rootInjectorContext)
+    })
+    instance.createChild.callsFake(() => injectorStub() as unknown as DandiInjector)
+    return instance
+  }
+  beforeEach(() => {
+    injector = injectorStub()
+    rootInjectorContext = new RootInjectorContext()
+    generator = new DandiGenerator()
+
   })
-  afterEach(function() {
-    this.appInjectorContext.dispose('test complete')
-    this.parentInjectorContext = undefined
+  afterEach(() => {
+    rootInjectorContext.dispose('test complete')
+    parentInjectorContext = undefined
   })
 
   describe('generateInstance', () => {
 
-    it('returns undefined if the injection context has an undefined match', async function() {
+    it('returns undefined if the injection scope has an undefined match', async () => {
 
-      this.initResolverContext()
+      initResolverContext()
 
-      const result = await this.generate()
+      const result = await generate()
 
       expect(result).to.be.undefined
 
     })
 
-    it('instantiates an injectable class and tracks the instance with the injectorContext', async function() {
+    it('instantiates an injectable class and tracks the instance with the injectorContext', async () => {
 
-      this.initResolverContext(TestInjectable, {
+      initResolverContext(TestInjectable, {
         provide: TestInjectable,
         useClass: TestInjectable,
       })
 
-      const result = await this.generate()
+      const result = await generate()
 
       expect(result).to.exist
       expect(result).to.be.instanceOf(TestInjectable)
-      expect(this.resolverContext.addInstance).to.have.been
+      expect(resolverContext.addInstance).to.have.been
         .calledOnce
         .calledWithExactly(result)
     })
 
-    it('can instantiate an injectable class with dependencies', async function() {
+    it('can instantiate an injectable class with dependencies', async () => {
 
-      this.initResolverContext(TestWithDependency, {
+      initResolverContext(TestWithDependency, {
         provide: TestWithDependency,
         useClass: TestWithDependency,
       })
-      this.injector.injectParam.resolves(new TestInjectable())
+      injector.injectParam.resolves(new TestInjectable())
 
-      const result = await this.generate()
+      const result = await generate()
 
       expect(result).to.exist
       expect(result).to.be.instanceOf(TestWithDependency)
@@ -105,15 +115,15 @@ describe('DandiGenerator', function() {
       expect(result.dep).to.be.instanceof(TestInjectable)
     })
 
-    it('can instantiate an injectable class with missing optional dependencies', async function() {
+    it('can instantiate an injectable class with missing optional dependencies', async () => {
 
-      this.initResolverContext(TestWithMissingOptionalDependency, {
+      initResolverContext(TestWithMissingOptionalDependency, {
         provide: TestWithMissingOptionalDependency,
         useClass: TestWithMissingOptionalDependency,
       })
-      // this.injector.injectParam.resolves(new TestInjectable())
+      // rootInjector.injectParam.resolves(new TestInjectable())
 
-      const result = await this.generate()
+      const result = await generate()
 
       expect(result).to.exist
       expect(result).to.be.instanceOf(TestWithMissingOptionalDependency)
@@ -121,7 +131,7 @@ describe('DandiGenerator', function() {
 
     })
 
-    it('instantiates an array of instances for multi providers, using a child injector context for each provider', async function() {
+    it('instantiates an array of instances for multi providers, using a child injector for each provider', async () => {
 
       const token = SymbolToken.for('test')
       const provider1 = {
@@ -134,20 +144,20 @@ describe('DandiGenerator', function() {
         useFactory: () => 2,
         multi: true,
       }
-      this.register(provider1, provider2)
-      this.initResolverContext(token)
+      register(provider1, provider2)
+      initResolverContext(token)
 
-      const result = await this.generate()
+      const result = await generate()
 
       expect(result).to.deep.equal([1, 2])
-      expect(this.resolverContext.createResolverContext).to.have.been
+      expect(injector.createChild).to.have.been
         .calledTwice
-        .calledWithExactly(ResolverContext, token, getInjectionContext(provider1))
-        .calledWithExactly(ResolverContext, token, getInjectionContext(provider2))
+        .calledWithExactly(getInjectionScope(provider1))
+        .calledWithExactly(getInjectionScope(provider2))
 
     })
 
-    it('includes providers specified by a provider when resolving parameters', async function() {
+    it('includes providers specified by a provider when resolving parameters', async () => {
 
       const token = SymbolToken.for('test')
       const depToken = SymbolToken.for('test-dep')
@@ -163,17 +173,17 @@ describe('DandiGenerator', function() {
           depProvider,
         ],
       }
-      this.register(provider)
-      this.initResolverContext(token)
-      this.injector.injectParam.resolves(depProvider.useFactory())
+      register(provider)
+      initResolverContext(token)
+      injector.injectParam.resolves(depProvider.useFactory())
 
-      const result = await this.generate()
+      const result = await generate()
 
       expect(result).to.deep.equal({ dep: 1 })
 
     })
 
-    it('creates instances from async factory providers', async function() {
+    it('creates instances from async factory providers', async () => {
 
       const token = SymbolToken.for('test')
       const provider = {
@@ -181,78 +191,78 @@ describe('DandiGenerator', function() {
         useFactory: () => new Promise(resolve => setTimeout(resolve.bind(undefined, 1), 0)),
         async: true,
       }
-      this.register(provider)
-      this.initResolverContext(token)
+      register(provider)
+      initResolverContext(token)
 
-      const result = await this.generate()
+      const result = await generate()
 
       expect(result).to.equal(1)
 
     })
 
-    it('returns values from value providers', async function() {
+    it('returns values from value providers', async () => {
 
       const token = SymbolToken.for('test')
       const provider = {
         provide: token,
         useValue: 1,
       }
-      this.register(provider)
-      this.initResolverContext(token)
+      register(provider)
+      initResolverContext(token)
 
-      const result = await this.generate()
+      const result = await generate()
 
       expect(result).to.equal(1)
 
     })
 
-    it('throws a ProviderTypeError if the resolved provider is not a supported provider type', async function() {
+    it('throws a ProviderTypeError if the resolved provider is not a supported provider type', async () => {
 
       const token = SymbolToken.for('test')
       const provider = {
         provide: token,
         useValue: 1,
       }
-      this.register(provider)
+      register(provider)
       delete provider.useValue // contexts won't let you register invalid providers
 
-      this.initResolverContext(token)
+      initResolverContext(token)
 
-      await expect(this.generate()).to.be.rejectedWith(ProviderTypeError)
+      await expect(generate()).to.be.rejectedWith(ProviderTypeError)
 
     })
 
-    describe('singletons', function() {
+    describe('singletons', () => {
 
-      it('creates singleton instances from class providers', async function() {
+      it('creates singleton instances from class providers', async () => {
 
         const provider = {
           provide: TestInjectable,
           useClass: TestInjectable,
           singleton: true,
         }
-        this.register(provider)
-        this.initResolverContext(TestInjectable)
+        register(provider)
+        initResolverContext(TestInjectable)
 
-        const result = await this.generate()
+        const result = await generate()
 
         expect(result).to.exist
         expect(result).to.be.instanceof(TestInjectable)
 
       })
 
-      it('does not create duplicate instances from singleton providers', async function() {
+      it('does not create duplicate instances from singleton providers', async () => {
 
         const provider = {
           provide: TestInjectable,
           useClass: TestInjectable,
           singleton: true,
         }
-        this.register(provider)
-        this.initResolverContext(TestInjectable)
+        register(provider)
+        initResolverContext(TestInjectable)
 
-        const result1 = await this.generate()
-        const result2 = await this.generate()
+        const result1 = await generate()
+        const result2 = await generate()
 
         expect(result1).to.exist
         expect(result1).to.be.instanceof(TestInjectable)
@@ -260,10 +270,10 @@ describe('DandiGenerator', function() {
 
       })
 
-      it('does not create duplicate singletons when a second request is made before the first is generated', async function() {
+      it('does not create duplicate singletons when a second request is made before the first is generated', async () => {
 
         const generated = []
-        const generate = (): TestInjectable => {
+        const generateInjectable = (): TestInjectable => {
           const instance = new TestInjectable()
           generated.push(instance)
           return instance
@@ -271,15 +281,15 @@ describe('DandiGenerator', function() {
         let resolve
         const provider = {
           provide: TestInjectable,
-          useFactory: () => new Promise(r => resolve = r.bind(undefined, generate())),
+          useFactory: () => new Promise(r => resolve = r.bind(undefined, generateInjectable())),
           singleton: true,
         }
-        this.register(provider)
-        this.initResolverContext(TestInjectable)
+        register(provider)
+        initResolverContext(TestInjectable)
 
         // tests the singleton request locking in DandiGenerator.fetchProviderInstance
-        const result1 = this.generate()
-        const result2 = this.generate()
+        const result1 = generate()
+        const result2 = generate()
 
         resolve()
 

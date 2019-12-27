@@ -1,12 +1,12 @@
-import { Constructor, CUSTOM_INSPECTOR, Disposable, isConstructor } from '@dandi/common'
+import { CUSTOM_INSPECTOR, Disposable, isConstructor } from '@dandi/common'
 
-import { InjectionContext, DependencyInjectionContext } from './injection-context'
-import { getInjectionContextName } from './injection-context-util'
+import { getInjectionScopeName } from './injection-scope-util'
+import { InjectionScope, DependencyInjectionScope } from './injection-scope'
 import { InjectionToken } from './injection-token'
 import { Provider } from './provider'
 import { Repository, RepositoryEntry } from './repository'
-import { ResolverContext } from './resolver-context'
-import { ResolverContextConstructor } from './resolver-context-constructor'
+import { Registerable } from './module'
+import { RepositoryRegistrationSource } from './repository-registration'
 
 export type FindExecFn<T, TResult> = (repo: Repository, entry: RepositoryEntry<T>) => TResult
 
@@ -16,28 +16,27 @@ export interface FindCacheEntry<T> {
 }
 
 /**
- * A context object containing references to the set of repositories used to resolve an injection token to a provider.
+ * A scope object containing references to the repository and parent contexts used to resolve an injection token to a
+ * provider and access singleton instances.
  */
 export class InjectorContext implements Disposable {
 
-  public get injectionContext(): InjectionContext {
-    return this.context
+  public get injectionScope(): InjectionScope {
+    return this.scope
   }
 
   protected readonly repository: Repository
-  protected readonly injectorSource
+  protected readonly injectorSource: RepositoryRegistrationSource
 
-  private readonly children: Array<InjectorContext> = []
   private readonly findCache = new Map<InjectionToken<any>, FindCacheEntry<any>>()
 
   public constructor(
     public readonly parent: InjectorContext,
-    public readonly context: InjectionContext,
-    providers: Array<Provider<any> | Constructor<any>> = [],
+    public readonly scope: InjectionScope,
+    providers: Registerable[] = [],
   ) {
-
-    if (!this.context) {
-      throw new Error('context is required')
+    if (!this.scope) {
+      throw new Error('scope is required')
     }
 
     this.injectorSource = {
@@ -49,13 +48,29 @@ export class InjectorContext implements Disposable {
       provide: InjectorContext,
       useValue: this,
     })
-    if (this.context instanceof DependencyInjectionContext) {
+    if (this.scope instanceof DependencyInjectionScope) {
       this.repository.register(this.injectorSource, {
-        provide: InjectionContext,
-        useValue: isConstructor(this.context.target) ? this.context.target : this.context,
+        provide: InjectionScope,
+        useValue: isConstructor(this.scope.target) ? this.scope.target : this.scope,
       })
     }
-    providers.forEach((provider) => this.repository.register(this.injectorSource, provider))
+    // this.repository.register(this.injectorSource, {
+    //   provide: InjectionScope,
+    //   useValue: scope,
+    // })
+    this.registerInternal(providers)
+  }
+
+  protected registerInternal(registerable: Registerable[], source?: RepositoryRegistrationSource): this {
+    registerable.forEach(entry => {
+      if (Array.isArray(entry)) {
+        this.registerInternal(entry)
+        return
+      }
+
+      this.repository.register(source || this.injectorSource, entry)
+    })
+    return this
   }
 
   public find<T>(token: InjectionToken<T>): RepositoryEntry<T>
@@ -87,45 +102,16 @@ export class InjectorContext implements Disposable {
   }
 
   public async dispose(reason: string): Promise<void> {
-    await Promise.all(this.children.map((child) => {
-      if (!Disposable.isDisposed(child)) {
-        return child.dispose(`Disposing parent ResolverContext: ${reason}`)
-      }
-    }))
-    this.children.length = 0
     this.findCache.clear()
-    await this.repository.dispose(`Disposed owner ResolverContext: ${reason}`)
+    await this.repository.dispose(`Disposed owner InjectorContext: ${reason}`)
     Disposable.remapDisposed(this, reason)
   }
 
   public createChild(
-    injectionContext: InjectionContext,
-    ...providers: Provider<any>[]
+    reason: InjectionScope,
+    ...providers: Registerable[]
   ): InjectorContext {
-
-    const cloned = new InjectorContext(this, injectionContext, providers)
-    this.children.push(cloned)
-    return cloned
-  }
-
-  public createResolverContext<T>(
-    ctr: ResolverContextConstructor<T>,
-    token: InjectionToken<T>,
-    injectionContext: InjectionContext,
-    ...providers: Array<Provider<any> | Constructor<any>>
-  ): ResolverContext<T> {
-
-    const cloned = new ctr(token, this, injectionContext, providers)
-    this.children.push(cloned)
-    return cloned
-  }
-
-  protected getCustomInspectorString(): string {
-    if (!this.context) {
-      return '???'
-    }
-
-    return getInjectionContextName(this.context)
+    return new InjectorContext(this, reason, providers)
   }
 
   public [CUSTOM_INSPECTOR](): string {
@@ -134,6 +120,14 @@ export class InjectorContext implements Disposable {
       parts.push(this.parent[CUSTOM_INSPECTOR]())
     }
     return parts.reverse().join(' -> ')
+  }
+
+  protected getCustomInspectorString(): string {
+    if (!this.scope) {
+      return '???'
+    }
+
+    return getInjectionScopeName(this.scope)
   }
 
   protected doFind<T>(token: InjectionToken<T>, entryContext: InjectorContext): FindCacheEntry<T> {
@@ -160,7 +154,8 @@ export class InjectorContext implements Disposable {
       if (!entry.size) {
         return false
       }
-      return !![...entry][0].parentsOnly
+      const [first] = entry
+      return !!first.parentsOnly
     }
     return !!entry.parentsOnly
   }

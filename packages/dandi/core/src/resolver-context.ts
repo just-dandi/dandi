@@ -1,82 +1,91 @@
-import { Disposable } from '@dandi/common'
-import {
-  getInjectionContext,
-  getInjectionContextName,
-  getTokenString,
-  InjectionContext,
-  InjectionResult,
-  InjectionToken,
-  Provider,
-  RepositoryEntry,
-} from '@dandi/core'
+import { CUSTOM_INSPECTOR, Disposable } from '@dandi/common'
+import { Provider } from '@dandi/core'
 
 import { InjectorContext } from './injector-context'
+import { getInjectionScope, getInjectionScopeName } from './injection-scope-util'
+import { InjectionResult } from './injection-result'
+import { InjectionScope } from './injection-scope'
+import { InjectionToken, getTokenString } from './injection-token'
+import { RepositoryEntry } from './repository'
 
-export class ResolverContext<T> extends InjectorContext {
+export class ResolverContext<TTarget = unknown> {
 
-  public get injectionContext(): InjectionContext {
-    return getInjectionContext(this.match as any) || super.injectionContext
+  public get injectionScope(): InjectionScope {
+    return getInjectionScope(this.match as any) || this.injectorContext.scope
   }
 
-  public get match(): RepositoryEntry<T> {
+  public get match(): RepositoryEntry<TTarget> {
     if (!this._match) {
-      this._match = this.find(this.target)
+      this._match = this.injectorContext.find(this.target)
     }
     return this._match
   }
 
-  public get result(): InjectionResult<T> {
+  public get result(): InjectionResult<TTarget> {
     return this._result
   }
 
-  private _match: RepositoryEntry<T>
-  private _result: InjectionResult<T>
+  private _match: RepositoryEntry<TTarget>
+  private _result: InjectionResult<TTarget>
 
   private readonly instances: any[] = []
 
   constructor(
-    public readonly target: InjectionToken<T>,
-    parentInjectorContext: InjectorContext,
-    injectionContext: InjectionContext,
-    providers: Provider<any>[] = [],
+    public readonly target: InjectionToken<TTarget>,
+    private readonly injectorContext: InjectorContext,
   ) {
-    super(parentInjectorContext, injectionContext, providers)
 
-    if (!parentInjectorContext) {
+    if (!injectorContext) {
       throw new Error('parentInjectorContext must be specified')
     }
 
   }
 
-  public addInstance(obj: T): T {
+  public addInstance(obj: TTarget): TTarget {
     this.instances.push(obj)
     return obj
   }
 
-  public resolveValue(result: T | T[]): InjectionResult<T> {
-    this._result = new InjectionResult<T>(this, result)
+  public resolveValue(result: TTarget | TTarget[]): InjectionResult<TTarget> {
+    this._result = new InjectionResult<TTarget>(this, result)
     return this._result
+  }
+
+  public getSingleton(provider: Provider<TTarget>): TTarget {
+    return this.injectorContext.getSingleton(provider)
+  }
+
+  public addSingleton(provider: Provider<TTarget>, value: TTarget): TTarget {
+    return this.injectorContext.addSingleton(provider, value)
   }
 
   public async dispose(reason: string): Promise<void> {
     await Promise.all(this.instances.map((instance) => {
       if (Disposable.isDisposable(instance) && !Disposable.isDisposed(instance)) {
-        return instance.dispose(`Disposing ResolverContext: ${reason}`)
+        return instance.dispose(`Disposing ResolverContext for ${this.getCustomInspectorString()}: ${reason}`)
       }
     }))
     this.instances.length = 0
-    return super.dispose(reason)
+    Disposable.remapDisposed(this, reason)
+  }
+
+  public [CUSTOM_INSPECTOR](): string {
+    const parts = [this.getCustomInspectorString()]
+    if (this.injectorContext) {
+      parts.push(this.injectorContext[CUSTOM_INSPECTOR]())
+    }
+    return parts.reverse().join(' -> ')
   }
 
   protected getCustomInspectorString(): string {
 
-    const thisContext = this.context || getInjectionContext(this.match as any)
-    if (!thisContext && !this.target && !this.parent) {
-      // this shouldn't really happen for ResolverContexts
+    const thisContext = getInjectionScope(this.match as any) || this.injectorContext.scope
+    if (!thisContext && !this.target) {
+      // this shouldn't really happen
       return '???'
     }
 
-    return getInjectionContextName(thisContext) || getTokenString(this.target)
+    return getInjectionScopeName(thisContext) || getTokenString(this.target)
   }
 
 }

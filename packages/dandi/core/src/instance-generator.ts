@@ -2,7 +2,7 @@ import { Injector } from './injector'
 import { ResolverContext } from './resolver-context'
 
 export interface InstanceGenerator {
-  generateInstance<T>(resolverContext: ResolverContext<T>): Promise<T | T[]>
+  generateInstance<T>(injector: Injector, resolverContext: ResolverContext<T>): Promise<T | T[]>
 }
 
-export type InstanceGeneratorFactory = ((injector: Injector) => InstanceGenerator) | Promise<InstanceGenerator>
+export type InstanceGeneratorFactory = (() => InstanceGenerator) | Promise<InstanceGenerator>

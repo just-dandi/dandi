@@ -3,9 +3,9 @@ import {
   AsyncFactoryProvider,
   Inject,
   Injectable,
-  InjectionContext,
+  InjectionScope,
   Injector,
-  RootInjectionContext,
+  RootInjectionScope,
   Singleton,
   SymbolToken,
 } from '@dandi/core'
@@ -111,16 +111,16 @@ describe('DI Integration', function() {
 
   })
 
-  it('provides the injection context of the requesting entity when injecting', async function() {
+  it('provides the injection scope of the requesting entity when injecting', async function() {
     @Injectable()
     class ContextTester {
-      constructor(@Inject(InjectionContext) public context: InjectionContext) {
+      constructor(@Inject(InjectionScope) public scope: InjectionScope) {
       }
     }
 
     @Injectable()
     class ContextHost {
-      constructor(@Inject(ContextTester) public tester: any, @Inject(InjectionContext) public context: InjectionContext) {
+      constructor(@Inject(ContextTester) public tester: ContextTester, @Inject(InjectionScope) public scope: InjectionScope) {
       }
     }
 
@@ -128,11 +128,11 @@ describe('DI Integration', function() {
 
     const result = await harness.inject(ContextHost)
 
-    expect(result.context).to.equal(RootInjectionContext.target)
-    expect(result.tester.context).to.equal(ContextHost)
+    expect(result.scope).to.equal(RootInjectionScope.target)
+    expect(result.tester.scope).to.equal(ContextHost)
   })
 
-  it('provides the injection context of the requesting entity when invoking', async function() {
+  it('provides the injection scope of the requesting entity when invoking', async function() {
 
     interface TestResult {
       tester: any
@@ -141,12 +141,12 @@ describe('DI Integration', function() {
 
     @Injectable()
     class ContextTester {
-      constructor(@Inject(InjectionContext) public context: InjectionContext) {
+      constructor(@Inject(InjectionScope) public context: InjectionScope) {
       }
     }
 
     class ContextHost {
-      public test(@Inject(ContextTester) tester: any, @Inject(InjectionContext) context: InjectionContext): TestResult {
+      public test(@Inject(ContextTester) tester: any, @Inject(InjectionScope) context: InjectionScope): TestResult {
         return {
           tester,
           context,
@@ -159,8 +159,13 @@ describe('DI Integration', function() {
 
     const result: TestResult = await harness.invoke(instance, 'test')
 
-    expect(result.context).to.equal(RootInjectionContext.target)
-    expect(result.tester.context).to.deep.equal({ target: instance, methodName: 'test', value: 'ContextHost.test' })
+    expect(result.context).to.equal(RootInjectionScope.target)
+    expect(result.tester.context).to.deep.equal({
+      target: instance,
+      methodName: 'test',
+      paramName: 'tester',
+      value: 'param tester for ContextHost.test',
+    })
   })
 
   it('does not create multiple instances of singletons', async function() {
@@ -319,5 +324,69 @@ describe('DI Integration', function() {
 
     expect(result1).to.be.instanceof(TestClass)
     expect(result1).to.equal(result2)
+  })
+
+  it('can execute nested invocations using providers from the same injector scope', async () => {
+    const Token = SymbolToken.for('test')
+    const provider = {
+      provide: Token,
+      useValue: 'foo',
+    }
+    @Injectable()
+    class TestClassA {
+      public test(@Inject(Token) token: string): string {
+        return token
+      }
+    }
+    @Injectable()
+    class TestClassB {
+      public async test(@Inject(TestClassA) testA: TestClassA, @Inject(Injector) injector: Injector): Promise<string> {
+        return await injector.invoke(testA, 'test')
+      }
+    }
+    class Tester {
+      public async test(@Inject(TestClassB) testB: TestClassB, @Inject(Injector) injector: Injector): Promise<string> {
+        return await injector.invoke(testB, 'test')
+      }
+    }
+    const tester = new Tester()
+
+    harness.register(TestClassA, TestClassB, provider)
+
+    const result = await harness.invoke(tester, 'test')
+    expect(result).to.equal('foo')
+
+  })
+
+  it('can execute nested invocations using providers from the nested injector contexts', async () => {
+    const Token = SymbolToken.for('test')
+    const provider = {
+      provide: Token,
+      useValue: 'foo',
+    }
+    @Injectable()
+    class TestClassA {
+      public test(@Inject(Token) token: string): string {
+        return token
+      }
+    }
+    @Injectable()
+    class TestClassB {
+      public async test(@Inject(TestClassA) testA: TestClassA, @Inject(Injector) injector: Injector): Promise<string> {
+        return await injector.invoke(testA, 'test', provider)
+      }
+    }
+    class Tester {
+      public async test(@Inject(TestClassB) testB: TestClassB, @Inject(Injector) injector: Injector): Promise<string> {
+        return await injector.invoke(testB, 'test', TestClassA)
+      }
+    }
+    const tester = new Tester()
+
+    harness.register(TestClassB)
+
+    const result = await harness.invoke(tester, 'test')
+    expect(result).to.equal('foo')
+
   })
 })

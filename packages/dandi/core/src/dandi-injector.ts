@@ -1,185 +1,180 @@
-import { Disposable, Constructor, isConstructor } from '@dandi/common'
+import { Disposable, isConstructor } from '@dandi/common'
 
-import { AppInjectorContext } from './app-injector-context'
 import { InvalidTokenError, MissingTokenError } from './dandi-application-error'
-import { Inject } from './inject-decorator'
 import { getInjectableMetadata } from './injectable-metadata'
 import { InjectionToken, isInjectionToken } from './injection-token'
 import { InjectionResult } from './injection-result'
 import { InjectorContext } from './injector-context'
 import { Injector, InstanceInvokableFn, InvokableFn, ResolvedProvider } from './injector'
-import { InjectionContext, MethodInjectionContext, RootInjectionContext, DependencyInjectionContext } from './injection-context'
+import { InjectionScope, InvokeInjectionScope, DependencyInjectionScope } from './injection-scope'
 import { InstanceGenerator, InstanceGeneratorFactory } from './instance-generator'
-import { Logger } from './logger'
 import { MissingProviderError } from './missing-provider-error'
-import { Optional } from './optional-decorator'
-import { Provider } from './provider'
+import { Registerable } from './module'
 import { isProvider } from './provider-util'
 import { RepositoryEntry } from './repository'
 import { ResolverContext } from './resolver-context'
 import { ResolverContextConstructor } from './resolver-context-constructor'
+import { getInjectionScopeVerb, getInjectionScopeName } from './injection-scope-util'
 
 interface Args<T> {
   token: InjectionToken<T>
   optional: boolean
-  parentInjectorContext: InjectorContext
-  providers: Array<Provider<any> | Constructor<any>>
+  providers: Registerable[]
   noToken?: boolean
 }
 type KnownArgs<T> = { [TProp in keyof Args<T>]?: Args<T>[TProp] }
 
 const PARSE_ARGS_A1 = 0
-const PARSE_ARGS_A2 = 1
-const PARSE_ARGS_PROVIDERS_START = 2
+const PARSE_ARGS_PROVIDERS_START = 1
 
 export class DandiInjector implements Injector, Disposable {
 
-  private resolverContextConstructor: ResolverContextConstructor<any>
-  private logger: Logger
-  private generator: InstanceGenerator
-  private readonly generatorReady: Promise<void>
-  private readonly rootInjectorContext: InjectorContext
+  private readonly children: Array<DandiInjector> = []
 
-  constructor(appInjectorContext: AppInjectorContext, generatorFactory: InstanceGeneratorFactory) {
-    this.rootInjectorContext = appInjectorContext.createChild(RootInjectionContext,
+  protected generator: InstanceGenerator
+  protected readonly generatorReady: Promise<void>
+
+  public readonly context: InjectorContext
+
+  protected constructor(
+    protected readonly scope: InjectionScope,
+    protected readonly parent: DandiInjector,
+    private readonly generatorFactory: InstanceGeneratorFactory,
+    protected resolverContextConstructor: ResolverContextConstructor<any>,
+    providers: Registerable[],
+  ) {
+    this.context = parent.context.createChild(scope,
       {
         provide: Injector,
         useValue: this,
       },
+      ...providers || [],
     )
-    this.resolverContextConstructor = ResolverContext
     this.generatorReady = this.initGeneratorFactory(generatorFactory)
   }
 
-  public async init(
-    @Inject(ResolverContextConstructor) @Optional() resolverContextConstructor: ResolverContextConstructor<any>,
-    @Inject(Logger) logger: Logger,
-  ): Promise<void> {
-    if (resolverContextConstructor) {
-      this.resolverContextConstructor = resolverContextConstructor
-    }
-    this.logger = logger
-    this.logger.debug('injector initialized')
+  public canResolve(token: InjectionToken<any>, ...providers: Registerable[]): boolean {
+    const injectionScope: InvokeInjectionScope = { instance: this, methodName: 'canResolve' }
+    return Disposable.use(this.createChild(injectionScope, providers), injector => {
+      return !!injector.resolveInternal(this.parseAndValidateArgs({
+        token,
+        optional: true,
+        providers,
+      })).match
+    })
   }
 
-  public canResolve(token: InjectionToken<any>, ...providers: Array<Provider<any> | Constructor<any>>): boolean
-  public canResolve(token: InjectionToken<any>, parentInjectorContext: InjectorContext, ...providers: Array<Provider<any> | Constructor<any>>): boolean
-  canResolve(token: InjectionToken<any>, ...args: any[]): boolean {
-    const injectionContext: MethodInjectionContext = { instance: this, methodName: 'canResolve' }
-    return !!this.resolveInternal(injectionContext, this.parseArgs({ token, optional: true }, ...args)).match
-  }
-
-  public resolve<T>(token: InjectionToken<T>, ...providers: Array<Provider<any> | Constructor<any>>): ResolvedProvider<T>
-  public resolve<T>(token: InjectionToken<T>, optional: boolean, ...providers: Array<Provider<any> | Constructor<any>>): ResolvedProvider<T>
-  public resolve<T>(token: InjectionToken<T>, parentInjectorContext: InjectorContext, ...providers: Array<Provider<any> | Constructor<any>>): ResolvedProvider<T>
-  public resolve<T>(token: InjectionToken<T>, parentInjectorContext: InjectorContext, optional: boolean, ...providers: Array<Provider<any> | Constructor<any>>): ResolvedProvider<T>
+  public resolve<T>(token: InjectionToken<T>, ...providers: Registerable[]): ResolvedProvider<T>
+  public resolve<T>(token: InjectionToken<T>, optional: boolean, ...providers: Registerable[]): ResolvedProvider<T>
   resolve<T>(token: InjectionToken<T>, ...args: any[]): ResolvedProvider<T> {
-    const injectionContext: MethodInjectionContext = { instance: this, methodName: 'resolve' }
-    return this.resolveInternal(injectionContext, this.parseArgs({ token }, ...args)).match
+    const injectionScope: InvokeInjectionScope = { instance: this, methodName: 'resolve' }
+    const parsedArgs = this.parseAndValidateArgs({ token }, ...args)
+    return Disposable.use(this.createChild(injectionScope, parsedArgs.providers), injector => {
+      return injector.resolveInternal(parsedArgs).match
+    })
   }
 
-  public inject<T>(token: InjectionToken<T>, ...providers: Array<Provider<any> | Constructor<any>>): Promise<InjectionResult<T>>
-  public inject<T>(token: InjectionToken<T>, optional: boolean, ...providers: Array<Provider<any> | Constructor<any>>): Promise<InjectionResult<T>>
-  public inject<T>(token: InjectionToken<T>, parentInjectorContext: InjectorContext, ...providers: Array<Provider<any> | Constructor<any>>): Promise<InjectionResult<T>>
-  public inject<T>(token: InjectionToken<T>, parentInjectorContext: InjectorContext, optional: boolean, ...providers: Array<Provider<any> | Constructor<any>>): Promise<InjectionResult<T>>
+  public inject<T>(token: InjectionToken<T>, ...providers: Registerable[]): Promise<InjectionResult<T>>
+  public inject<T>(token: InjectionToken<T>, optional: boolean, ...providers: Registerable[]): Promise<InjectionResult<T>>
   async inject<T>(token: InjectionToken<T>, ...args: any[]): Promise<InjectionResult<T>> {
+    const injectArgs: Args<T> = this.parseAndValidateArgs({ token }, ...args)
+    const injectionScope: InvokeInjectionScope = { instance: this, methodName: 'inject' }
+    // FIXME: where/when does the injector get disposed?
+    const injector = this.createChild(injectionScope, injectArgs.providers)
+    const resolverContext: ResolverContext<T> = injector.resolveInternal(injectArgs)
 
-    const injectArgs: Args<T> = this.parseArgs({ token }, ...args)
-    const injectionContext: MethodInjectionContext = { instance: this, methodName: 'inject' }
-    const injectorContext: ResolverContext<T> = this.resolveInternal(injectionContext, injectArgs)
-
-    if (!injectorContext.match) {
-      if (this.shouldDisposeResolverContext(injectorContext)) {
-        await injectorContext.dispose('Disposed after resolving to an undefined provider')
-      }
+    if (!resolverContext.match) {
+      await resolverContext.dispose('Disposed after resolving to an undefined provider')
       return undefined
     }
 
     try {
-      this.generator || await this.generatorReady
-      const result = await this.generator.generateInstance(injectorContext)
+      const result = await injector.generateInstance(resolverContext)
       if (result === undefined || result === null) {
-        if (this.shouldDisposeResolverContext(injectorContext)) {
-          await injectorContext.dispose('Disposed after generating a null or undefined instance value')
-        }
+        await resolverContext.dispose('Disposed after generating a null or undefined instance value')
         return undefined
       }
-      return injectorContext.resolveValue(result)
+      return resolverContext.resolveValue(result)
     } catch (err) {
-      await injectorContext.dispose(`Container error during inject: ${err.message}`)
+      await resolverContext.dispose(`Error during inject: ${err.message}`)
       throw err
     }
   }
 
-  public invoke<TInstance, TResult>(
+  public async invoke<TInstance extends object, TResult>(
     instance: TInstance,
     methodName: InstanceInvokableFn<TInstance, TResult>,
-    ...providers: Array<Provider<any> | Constructor<any>>
-  ): Promise<TResult>
-
-  public invoke<TInstance, TResult>(
-    instance: TInstance,
-    methodName: InstanceInvokableFn<TInstance, TResult>,
-    parentInjectorContext: InjectorContext,
-    ...providers: Array<Provider<any> | Constructor<any>>
-  ): Promise<TResult>
-
-  async invoke<TInstance extends object, TResult>(
-    instance: TInstance,
-    methodName: InstanceInvokableFn<TInstance, TResult>,
-    ...args: any[]
+    ...providers: Registerable[]
   ): Promise<TResult> {
-    const invokeArgs = this.parseArgs({ noToken: true }, ...args)
-    const invokeInjectionContext: MethodInjectionContext = { instance: this, methodName: 'invoke' }
-
-    const method: InvokableFn<TResult> = instance[methodName] as unknown as InvokableFn<TResult>
-    const meta = getInjectableMetadata(method)
+    const invokeInjectionScope: InvokeInjectionScope = { instance, methodName: methodName.toString() }
     this.generator || await this.generatorReady
-    return Disposable.useAsync(this.getResolverContext(undefined, invokeArgs.parentInjectorContext, invokeInjectionContext, invokeArgs.providers), async (injectorContext) => {
-      const methodInjectionContext = new DependencyInjectionContext(instance, methodName as string)
-
-      const invokeTargetArgs = (meta.params && meta.params.length)
-        ? await Promise.all(meta.params.map(param =>
-          this.injectParam(
-            param.token,
-            param.optional,
-            injectorContext,
-            [...param.providers || [], ...invokeArgs.providers],
-            methodInjectionContext),
-        ))
-        : []
-      return method.apply(instance, invokeTargetArgs)
+    return await Disposable.useAsync(this.createChild(invokeInjectionScope, providers), async (injector) => {
+      return await injector.invokeInternal(instance, methodName)
     })
   }
 
-  public injectParam<T>(
+  public async injectParam<T>(
     token: InjectionToken<T>,
     optional: boolean,
-    parentInjectorContext: InjectorContext,
-    providers: Array<Provider<any> | Constructor<any>>,
-    injectionContext: InjectionContext,
+    providers: Registerable[],
+    scope: InjectionScope,
   ): Promise<T | T[]> {
-    const paramInjectorContext = (parentInjectorContext || this.rootInjectorContext).createResolverContext(
-      this.resolverContextConstructor,
-      token,
-      injectionContext,
-      ...providers,
-    )
-    this.validateResolution(token, optional, paramInjectorContext)
-    return this.generator.generateInstance(paramInjectorContext)
+    const injector = this.createChild(scope, providers)
+    const paramResolverContext = injector.createResolverContext(token)
+    this.validateResolution(token, optional, paramResolverContext)
+    return await injector.generateInstance(paramResolverContext)
   }
 
   public async dispose(reason: string): Promise<void> {
-    if (!Disposable.isDisposed(this.rootInjectorContext)) {
-      await this.rootInjectorContext.dispose(reason)
-    }
+    const injectorReason = `${reason}\n\t${getInjectionScopeVerb(this.scope)} ${getInjectionScopeName(this.scope)}`
+    await Promise.all(this.children.map((child) => {
+      if (!Disposable.isDisposed(child)) {
+        return child.dispose(`Disposing parent Injector: ${injectorReason}`)
+      }
+    }))
+    this.children.length = 0
+    await this.context.dispose(injectorReason)
+    Disposable.remapDisposed(this, reason)
+  }
+
+  public createChild(scope: InjectionScope, providers?: Registerable[]): DandiInjector {
+    const child = new DandiInjector(scope, this, this.generatorFactory, this.resolverContextConstructor, providers)
+    this.children.push(child)
+    return child
+  }
+
+  public createResolverContext<T>(
+    token: InjectionToken<T>,
+  ): ResolverContext<T> {
+    return new this.resolverContextConstructor(token, this.context)
+  }
+
+  protected async invokeInternal<TInstance extends object, TResult>(
+    instance: TInstance,
+    methodName: InstanceInvokableFn<TInstance, TResult>,
+  ): Promise<TResult> {
+    const method: InvokableFn<TResult> = instance[methodName] as unknown as InvokableFn<TResult>
+    const meta = getInjectableMetadata(method)
+    this.generator || await this.generatorReady
+    const invokeTargetArgs = (meta.params && meta.params.length)
+      ? await Promise.all(meta.params.map(param => {
+        const paramScope = new DependencyInjectionScope(instance, methodName as string, param.name)
+        return this.injectParam(
+          param.token,
+          param.optional,
+          [...param.providers || []],
+          paramScope)
+        },
+      ))
+      : []
+    return await method.apply(instance, invokeTargetArgs)
   }
 
   private async initGeneratorFactory(generatorFactory: InstanceGeneratorFactory): Promise<void> {
-    this.generator = await (typeof generatorFactory === 'function' ? generatorFactory(this) : generatorFactory)
+    this.generator = await (typeof generatorFactory === 'function' ? generatorFactory() : generatorFactory)
   }
 
-  private parseArgs<T>(knownArgs: KnownArgs<T>, ...args: any[]): Args<T> {
+  private parseAndValidateArgs<T>(knownArgs: KnownArgs<T>, ...args: any[]): Args<T> {
     if (!knownArgs.token && !knownArgs.noToken) {
       throw new MissingTokenError()
     }
@@ -187,29 +182,22 @@ export class DandiInjector implements Injector, Disposable {
       throw new InvalidTokenError(knownArgs.token)
     }
 
-    const a1 = args[PARSE_ARGS_A1]
-    const a2 = args[PARSE_ARGS_A2]
-    knownArgs.providers = args.slice(PARSE_ARGS_PROVIDERS_START)
+    if (!knownArgs.providers) {
+      knownArgs.providers = args.slice(PARSE_ARGS_PROVIDERS_START)
+    }
 
-    if (a1 instanceof InjectorContext) {
-      knownArgs.parentInjectorContext = a1
-    } else if (typeof a1 === 'boolean') {
+    const a1 = args[PARSE_ARGS_A1]
+    if (typeof a1 === 'boolean') {
       knownArgs.optional = a1
     } else if (isConstructor(a1) || isProvider(a1)) {
       knownArgs.providers.unshift(a1)
     }
 
-    if (typeof a2 === 'boolean') {
-      knownArgs.optional = a2
-    } else if (isConstructor(a2) || isProvider(a2)) {
-      knownArgs.providers.unshift(a2)
-    }
-
     return knownArgs as Args<T>
   }
 
-  private resolveInternal<T>(injectionContext: InjectionContext, args: Args<T>): ResolverContext<T> {
-    const resolverContext = this.getResolverContext(args.token, args.parentInjectorContext, injectionContext, args.providers)
+  private resolveInternal<T>(args: Args<T>): ResolverContext<T> {
+    const resolverContext = this.createResolverContext(args.token)
     try {
       this.validateResolution(args.token, args.optional, resolverContext)
     } catch (err) {
@@ -217,17 +205,6 @@ export class DandiInjector implements Injector, Disposable {
       throw err
     }
     return resolverContext
-  }
-
-  private getResolverContext<T>(
-    token: InjectionToken<T>,
-    parentInjectorContext: InjectorContext,
-    injectionContext: InjectionContext,
-    providers: Array<Provider<any> | Constructor<any>>,
-  ): ResolverContext<T> {
-    return parentInjectorContext ?
-      parentInjectorContext.createResolverContext(this.resolverContextConstructor, token, injectionContext, ...providers) :
-      this.rootInjectorContext.createResolverContext(this.resolverContextConstructor, token, injectionContext, ...providers)
   }
 
   private validateResolution<T>(
@@ -244,8 +221,9 @@ export class DandiInjector implements Injector, Disposable {
     return entry
   }
 
-  private shouldDisposeResolverContext(resolverContext: ResolverContext<any>): boolean {
-    return resolverContext.parent instanceof AppInjectorContext || resolverContext.parent === this.rootInjectorContext
+  private async generateInstance<T>(resolverContext: ResolverContext<T>): Promise<T | T[]> {
+    this.generator || await this.generatorReady
+    return await this.generator.generateInstance(this, resolverContext)
   }
 
 }

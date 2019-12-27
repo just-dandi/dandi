@@ -1,4 +1,4 @@
-import { InjectionContext, LogCallOptions, LogEntry, LogLevel } from '@dandi/core'
+import { InjectionScope, LogCallOptions, LogEntry, LogLevel } from '@dandi/core'
 import { ConsoleLogListener } from '@dandi/core/logging'
 import { DateTime } from 'luxon'
 
@@ -6,7 +6,7 @@ import { expect } from 'chai'
 
 describe('ConsoleLogListener', function() {
 
-  function entry(level: LogLevel, context?: InjectionContext, ts?: number, options: LogCallOptions = {}): (...args: any[]) => LogEntry {
+  function entry(level: LogLevel, context?: InjectionScope, ts?: number, options: LogCallOptions = {}): (...args: any[]) => LogEntry {
     return (...args: any[]) => ({
       level,
       context,
