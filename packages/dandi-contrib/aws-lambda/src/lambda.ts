@@ -10,7 +10,12 @@ import {
   Provider,
   Registerable,
 } from '@dandi/core'
-import { HttpPipeline, HttpRequestHandler, HttpRequestHandlerMethod } from '@dandi/http-pipeline'
+import {
+  DefaultHttpRequestInfo,
+  HttpPipeline,
+  HttpRequestHandler,
+  HttpRequestHandlerMethod,
+} from '@dandi/http-pipeline'
 import { Context } from 'aws-lambda'
 
 import { AwsContext, AwsEvent } from './event-providers'
@@ -67,7 +72,7 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
         lambda = (await injector.inject(Lambda, ...providers)).singleValue
       }
 
-      return lambda.handleEvent(event, context)
+      return await lambda.handleEvent(event, context)
     }
   }
 
@@ -95,6 +100,7 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
         provide: HttpRequestHandlerMethod,
         useValue: 'handleEvent',
       },
+      DefaultHttpRequestInfo,
     ])
   }
 }

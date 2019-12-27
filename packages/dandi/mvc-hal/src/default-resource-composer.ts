@@ -208,7 +208,7 @@ export class DefaultResourceComposer implements ResourceComposer {
         rt.controllerCtr === accessor.controller &&
         rt.controllerMethod === accessor.method,
     )
-    const ogRequest = (await this.injector.inject(HttpRequest, this.injectorContext)).singleValue
+    const ogRequest = (await this.injector.inject(HttpRequest)).singleValue
     const requestParams = Object.keys(accessor.paramMap).reduce((params, key) => {
       params[key] = this.getParamValue(resource, meta, relMeta, key, accessor)
       return params
@@ -236,7 +236,7 @@ export class DefaultResourceComposer implements ResourceComposer {
       status: embedResponseAccess,
     }
 
-    const requestInfo = (await this.injector.inject(HttpRequestInfo, this.injectorContext)).singleValue
+    const requestInfo = (await this.injector.inject(HttpRequestInfo)).singleValue
     const embedProviders = await this.routeInitializer.initRouteRequest(route, req, requestInfo, res)
 
     embedProviders.push({
@@ -248,12 +248,12 @@ export class DefaultResourceComposer implements ResourceComposer {
   }
 
   public async invokeController(
-    @Inject(InjectorContext) resolverContext: ResolverContext<any>,
+    @Inject(Injector) injector: Injector,
     @Inject(RequestController) controller: any,
     @Inject(Route) route: Route,
     @Inject(CompositionContext) compositionContext: CompositionContext,
   ): Promise<ComposedResource<any> | ComposedResource<any>[]> {
-    const result = await this.injector.invoke(controller, route.controllerMethod as any, resolverContext)
+    const result = await injector.invoke(controller, route.controllerMethod as string)
     const resultResource: any = isHttpPipelineResult(result) ? result.data : result
     if (Array.isArray(resultResource)) {
       return Promise.all(

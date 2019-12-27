@@ -3,12 +3,10 @@ import {
   Injectable,
   InjectionToken,
   Injector,
-  InjectorContext,
   InstanceInvokableFn,
   Logger,
   Optional,
   Provider,
-  ResolverContext,
 } from '@dandi/core'
 import { HttpRequest, HttpRequestAcceptTypes, HttpStatusCode, MimeTypes } from '@dandi/http'
 
@@ -27,12 +25,11 @@ import { HttpRequestPreparerResult, httpRequestPreparerResultProvider } from './
 @Injectable()
 export class HttpPipeline {
   constructor(
-    @Inject(Injector) private injector: Injector,
     @Inject(Logger) private logger: Logger,
   ) {}
 
   public async handleRequest(
-    @Inject(InjectorContext) injectorContext: ResolverContext<any>,
+    @Inject(Injector) injector: Injector,
     @Inject(HttpRequestHandler) handler: any,
     @Inject(HttpRequestHandlerMethod) handlerMethod: string,
     @Inject(HttpRequest) req: HttpRequest,
@@ -47,19 +44,19 @@ export class HttpPipeline {
       req.path,
     )
 
-    const preparedProviders = await this.invokeStep(injectorContext, this.prepare, requestInfo)
+    const preparedProviders = await this.invokeStep(injector, this.prepare, requestInfo)
 
     preparedProviders.push(
-      await this.safeInvokeStepAsProvider(injectorContext, this.invokeHandler, requestInfo, preparedProviders, errorHandlers, HttpPipelineHandlerResult),
+      await this.safeInvokeStepAsProvider(injector, this.invokeHandler, requestInfo, preparedProviders, errorHandlers, HttpPipelineHandlerResult),
     )
     preparedProviders.push(
-      await this.safeInvokeStepAsProvider(injectorContext, this.transformResult, requestInfo, preparedProviders, errorHandlers, HttpPipelineResult),
+      await this.safeInvokeStepAsProvider(injector, this.transformResult, requestInfo, preparedProviders, errorHandlers, HttpPipelineResult),
     )
     preparedProviders.push(
-      await this.safeInvokeStepAsProvider(injectorContext, this.renderResult, requestInfo, preparedProviders, errorHandlers, HttpPipelineRendererResult),
+      await this.safeInvokeStepAsProvider(injector, this.renderResult, requestInfo, preparedProviders, errorHandlers, HttpPipelineRendererResult),
     )
 
-    const terminatorResult = await this.safeInvokeStep(injectorContext, this.terminateResponse, requestInfo, preparedProviders, errorHandlers)
+    const terminatorResult = await this.safeInvokeStep(injector, this.terminateResponse, requestInfo, preparedProviders, errorHandlers)
 
     this.logger.debug(
       `end handleRequest ${handler.constructor.name}.${handlerMethod}:`,
@@ -73,48 +70,51 @@ export class HttpPipeline {
   }
 
   private async invokeStep<TResult>(
-    injectorContext: ResolverContext<any>,
+    injector: Injector,
     step: (...args: any[]) => TResult,
     requestInfo: HttpRequestInfo,
     providers: Provider<any>[] = [],
   ): Promise<TResult> {
-    requestInfo.performance.mark('HttpPipeline.step', `before ${step}`)
+    requestInfo.performance.mark('HttpPipeline.step', `before ${step.name}`)
     const stepMethodName = step.name as InstanceInvokableFn<this, Promise<TResult>>
-    const result = await this.injector.invoke(this, stepMethodName, injectorContext, ...providers)
-    requestInfo.performance.mark('HttpPipeline.step', `after ${step}`)
+    const result = await injector.invoke(this, stepMethodName, ...providers)
+    requestInfo.performance.mark('HttpPipeline.step', `after ${step.name}`)
     return result
   }
 
   private async safeInvokeStep<TResult>(
-    injectorContext: ResolverContext<any>,
+    injector: Injector,
     step: (...args: any[]) => TResult,
     requestInfo: HttpRequestInfo,
     providers: Provider<any>[],
     errorHandlers: HttpPipelineErrorResultHandler[],
   ): Promise<TResult | HttpPipelineErrorResult> {
     try {
-      return await this.invokeStep(injectorContext, step, requestInfo, providers)
+      return await this.invokeStep(injector, step, requestInfo, providers)
     } catch (err) {
       return this.handleError({ errors: [err] }, errorHandlers, requestInfo)
     }
   }
 
   private async safeInvokeStepAsProvider<TResult>(
-    injectorContext: ResolverContext<any>,
+    injector: Injector,
     step: (...args: any[]) => TResult,
     requestInfo: HttpRequestInfo,
     providers: Provider<any>[] = [],
     errorHandlers: HttpPipelineErrorResultHandler[],
     provide: InjectionToken<any>,
   ): Promise<Provider<any>> {
-    const result = await this.safeInvokeStep(injectorContext, step, requestInfo, providers, errorHandlers)
+    const result = await this.safeInvokeStep(injector, step, requestInfo, providers, errorHandlers)
     return {
       provide,
       useValue: result,
     }
   }
 
-  public async prepare(@Inject(HttpPipelineConfig) @Optional() config: HttpPipelineConfig): Promise<Provider<any>[]> {
+  public async prepare(
+    @Inject(Injector) injector: Injector,
+    @Inject(HttpPipelineConfig) @Optional() config: HttpPipelineConfig,
+  ): Promise<Provider<any>[]> {
     if (!config?.before) {
       return []
     }
@@ -122,18 +122,18 @@ export class HttpPipeline {
     for (const preparer of config.before) {
       const token = HttpRequestPreparerResult(preparer)
       const provider = httpRequestPreparerResultProvider(preparer)
-      const preparerResult = (await this.injector.inject(token, provider, ...providers)).singleValue
+      const preparerResult = (await injector.inject(token, provider, ...providers)).singleValue
       providers.push(...preparerResult)
     }
     return providers
   }
 
   private async invokeHandler(
+    @Inject(Injector) injector: Injector,
     @Inject(HttpRequestHandler) handler: any,
     @Inject(HttpRequestHandlerMethod) handlerMethod: string,
-    @Inject(InjectorContext) injectorContext: ResolverContext<any>,
   ): Promise<Provider<any>> {
-    return await this.injector.invoke(handler, handlerMethod, injectorContext)
+    return await injector.invoke(handler, handlerMethod)
   }
 
   private async transformResult(

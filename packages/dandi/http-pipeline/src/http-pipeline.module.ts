@@ -5,7 +5,11 @@ import { DefaultHttpPipelineErrorHandler } from './default-http-pipeline-error-h
 import { DefaultHttpRequestInfo } from './default-http-request-info'
 import { HttpPipeline } from './http-pipeline'
 import { HttpPipelineConfig } from './http-pipeline-config'
-import { defaultHttpPipelineRenderer, HttpPipelineRenderer } from './http-pipeline-renderer'
+import {
+  defaultHttpPipelineRenderer,
+  HttpPipelineRenderer,
+  HttpPipelineRendererProvider,
+} from './http-pipeline-renderer'
 import { HttpResponsePipelineTerminator } from './http-response-pipeline-terminator'
 import { PKG } from './local-token'
 import { NativeJsonObjectRenderer } from './native-json-object-renderer'
@@ -34,5 +38,6 @@ export const HttpPipelineModule = new HttpPipelineModuleBuilder(
   HttpPipeline,
   NativeJsonObjectRenderer,
   PlainTextObjectRenderer,
+  HttpPipelineRendererProvider,
   HttpResponsePipelineTerminator,
 ).defaultRenderer(NativeJsonObjectRenderer)

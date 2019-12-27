@@ -3,16 +3,16 @@ import { Inject, Injectable, Logger, Optional, Injector } from '@dandi/core'
 import { DbClient, DbTransactionClient, TransactionFn } from '@dandi/data'
 import { ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder'
 
-import { PgDbPool } from './pg-db-pool'
 import { PgDbQueryableBase } from './pg-db-queryable'
 import { PgDbModelBuilderOptions } from './pg-db-model-builder-options'
+import { PgDbPoolClient } from './pg-db-pool-client'
 
 @Injectable(DbClient)
-export class PgDbClient extends PgDbQueryableBase<PgDbPool> implements DbClient, Disposable {
+export class PgDbClient extends PgDbQueryableBase<PgDbPoolClient> implements DbClient, Disposable {
   private activeTransactions: DbTransactionClient[] = []
 
   constructor(
-    @Inject(PgDbPool) private pool: PgDbPool,
+    @Inject(PgDbPoolClient) private pool: PgDbPoolClient,
     @Inject(ModelBuilder) modelValidator: ModelBuilder,
     @Inject(Injector) private injector: Injector,
     @Inject(Logger) private logger: Logger,
@@ -36,7 +36,7 @@ export class PgDbClient extends PgDbQueryableBase<PgDbPool> implements DbClient,
   }
 
   public async transaction<T>(transactionFn: TransactionFn<T>): Promise<T> {
-    return Disposable.useAsync(this.injector.inject(DbTransactionClient), async transactionResult => {
+    return await Disposable.useAsync(this.injector.inject(DbTransactionClient), async transactionResult => {
       const transaction = transactionResult.singleValue
       this.activeTransactions.push(transaction)
 

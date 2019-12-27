@@ -44,7 +44,7 @@ import { HttpHandlerRequest, LambdaHandler } from '@dandi-contrib/aws-lambda';
 import { Context } from 'aws-lambda';
 
 export class MyHandler implements LambdaHandler<HttpHandlerRequest> {
-    public handleEvent(eventData: HttpHandlerRequest, context?: Context): Promise<any> {
+    public handleEvent(eventData: HttpHandlerRequest, scope?: Context): Promise<any> {
         ...
     }
 

@@ -13,7 +13,7 @@ export class DefaultHttpPipelineErrorHandler implements HttpPipelineErrorResultH
       statusCode: isRequestError(error) ? error.statusCode : HttpStatusCode.internalServerError,
       headers: result.headers,
       errors: result.errors,
-      data: result.data,
+      data: result.data || error.message,
     }
   }
 
