@@ -1,3 +1,4 @@
+export * from './src/bootstrapper'
 export * from './src/dandi-application-init'
 export * from './src/dandi-generator'
 export * from './src/dandi-injector'

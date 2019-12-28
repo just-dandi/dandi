@@ -1,10 +1,10 @@
 import { Disposable } from '@dandi/common'
 import { Inject, Optional } from '@dandi/core/decorators'
 import { DandiApplicationError } from '@dandi/core/errors'
+import { Bootstrapper } from '@dandi/core/internal'
 import { getInstance } from '@dandi/core/internal/util'
 import {
   DandiApplicationConfig,
-  EntryPoint,
   Injector,
   InstanceGenerator,
   InstanceGeneratorFactory,
@@ -76,7 +76,8 @@ export class DandiApplicationInit<TConfig extends DandiApplicationInternalConfig
     this.started = true
 
     await this.appInjector.invoke(this.initHost, 'runConfig')
-    return this.appInjector.invoke(this.initHost, 'bootstrap')
+
+    return this.bootstrap()
   }
 
   public async preInit(): Promise<void> {
@@ -173,19 +174,9 @@ export class DandiApplicationInit<TConfig extends DandiApplicationInternalConfig
   }
 
   public async bootstrap(
-    @Inject(Logger) logger,
-    @Inject(Now) now: NowFn,
-    @Inject(EntryPoint) @Optional() entryPoint?: EntryPoint<any>,
-  ): Promise<void> {
-    logger.debug(`Application starting after ${now() - this.startTs}ms`)
-    let result: any
-    if (entryPoint) {
-      result = await entryPoint.run()
-    } else {
-      logger.debug('No EntryPoint implementation found.')
-    }
-    logger.debug(`Application started after ${now() - this.startTs}ms`)
-    return result
+  ): Promise<any> {
+    const bootstrapper = (await this.appInjector.inject(Bootstrapper)).singleValue
+    return await bootstrapper.run(this.startTs)
   }
 
   public registerRootProviders(rootInjector: RootInjector, parentSource: RegistrationSource, module: any): void {
