@@ -17,7 +17,29 @@ export class DefaultRouteExecutor implements RouteExecutor {
     @Inject(Logger) private logger: Logger,
   ) {}
 
-  public async execRoute(route: Route, req: HttpRequest, res: HttpResponse): Promise<void> {
+  public execRoute(route: Route, req: HttpRequest, res: HttpResponse): Promise<void> {
+    return this.injector.invoke(this as DefaultRouteExecutor, 'execRouteInternal',
+      {
+        provide: Route,
+        useValue: route,
+      },
+      {
+        provide: HttpRequest,
+        useValue: req,
+      },
+      {
+        provide: HttpResponse,
+        useValue: res,
+      },
+    )
+  }
+
+  public async execRouteInternal(
+    @Inject(Injector) injector: Injector,
+    @Inject(Route) route: Route,
+    @Inject(HttpRequest) req: HttpRequest,
+    @Inject(HttpResponse) res: HttpResponse,
+  ): Promise<void> {
     const requestId = Uuid.create()
     const performance = new PerfRecord('DefaultRouteExecutor.execRoute', 'begin')
 
@@ -35,7 +57,7 @@ export class DefaultRouteExecutor implements RouteExecutor {
       )
 
       performance.mark('DefaultRouteExecutor.execRoute', 'beforeInitRouteRequest')
-      const requestProviders = await this.routeInitializer.initRouteRequest(route, req, { requestId, performance }, res)
+      const requestProviders = await this.routeInitializer.initRouteRequest(injector, route, req, { requestId, performance }, res)
       performance.mark('DefaultRouteExecutor.execRoute', 'afterInitRouteRequest')
 
       this.logger.debug(
@@ -51,7 +73,7 @@ export class DefaultRouteExecutor implements RouteExecutor {
       )
 
       performance.mark('DefaultRouteExecutor.execRoute', 'beforeHandleRequest')
-      await this.injector.invoke(this.pipeline, 'handleRequest', ...requestProviders)
+      await injector.invoke(this.pipeline, 'handleRequest', ...requestProviders)
       performance.mark('DefaultRouteExecutor.execRoute', 'afterHandleRequest')
 
       this.logger.debug(

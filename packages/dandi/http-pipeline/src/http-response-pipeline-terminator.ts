@@ -1,5 +1,5 @@
-import { Inject, Injectable } from '@dandi/core'
-import { HttpResponse, MimeTypes } from '@dandi/http'
+import { Inject, Injectable, Logger } from '@dandi/core'
+import { HttpRequest, HttpResponse, HttpStatusCode, MimeTypes } from '@dandi/http'
 
 import { HttpPipelineRendererResult } from './http-pipeline-renderer'
 import { HttpPipelineTerminator } from './http-pipeline-terminator'
@@ -13,7 +13,9 @@ import { HttpPipelineTerminator } from './http-pipeline-terminator'
 export class HttpResponsePipelineTerminator implements HttpPipelineTerminator {
 
   constructor(
+    @Inject(HttpRequest) private request: HttpRequest,
     @Inject(HttpResponse) private response: HttpResponse,
+    @Inject(Logger) private logger: Logger,
   ) {}
 
   public async terminateResponse(renderResult: HttpPipelineRendererResult): Promise<void> {
@@ -29,6 +31,8 @@ export class HttpResponsePipelineTerminator implements HttpPipelineTerminator {
       .contentType(renderResult.contentType || MimeTypes.textPlain)
       .send(renderResult.renderedBody || '')
       .end()
+
+    this.logger.debug(this.request.method, this.request.path, renderResult.statusCode || HttpStatusCode.ok)
   }
 
 }
