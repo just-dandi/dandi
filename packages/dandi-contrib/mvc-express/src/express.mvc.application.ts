@@ -18,7 +18,7 @@ export class ExpressMvcApplication implements EntryPoint {
   ) {}
 
   public run(): void {
-    this.app.use(bodyParser.json())
+    this.app.use(bodyParser.raw({ type: '*/*' }))
 
     for (const route of this.routes) {
       this.routeMapper.mapRoute(route)

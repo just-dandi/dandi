@@ -1,4 +1,4 @@
-import { isRenderableMimeType, MimeTypes, parseMimeTypes } from '@dandi/http'
+import { mimeTypesAreCompatible, MimeTypes, parseMimeTypes } from '@dandi/http'
 
 import { expect } from 'chai'
 
@@ -163,7 +163,7 @@ describe('mime type', function() {
       const accept = parseMimeTypes(MimeTypes.applicationJson)[0]
       const renderable = parseMimeTypes(MimeTypes.applicationJson)[0]
 
-      expect(isRenderableMimeType(accept, renderable)).to.be.true
+      expect(mimeTypesAreCompatible(accept, renderable)).to.be.true
 
     })
 
@@ -172,7 +172,7 @@ describe('mime type', function() {
       const accept = parseMimeTypes(MimeTypes.any)[0]
       const renderable = parseMimeTypes(MimeTypes.applicationJson)[0]
 
-      expect(isRenderableMimeType(accept, renderable)).to.be.true
+      expect(mimeTypesAreCompatible(accept, renderable)).to.be.true
 
     })
 
@@ -181,7 +181,7 @@ describe('mime type', function() {
       const accept = parseMimeTypes(MimeTypes.anyApplication)[0]
       const renderable = parseMimeTypes(MimeTypes.applicationJson)[0]
 
-      expect(isRenderableMimeType(accept, renderable)).to.be.true
+      expect(mimeTypesAreCompatible(accept, renderable)).to.be.true
 
     })
 
@@ -190,7 +190,7 @@ describe('mime type', function() {
       const accept = parseMimeTypes(MimeTypes.textPlain)[0]
       const renderable = parseMimeTypes(MimeTypes.applicationJson)[0]
 
-      expect(isRenderableMimeType(accept, renderable)).to.be.false
+      expect(mimeTypesAreCompatible(accept, renderable)).to.be.false
 
     })
 
@@ -199,7 +199,7 @@ describe('mime type', function() {
       const accept = parseMimeTypes(MimeTypes.textPlain)[0]
       const renderable = parseMimeTypes(MimeTypes.textHtml)[0]
 
-      expect(isRenderableMimeType(accept, renderable)).to.be.false
+      expect(mimeTypesAreCompatible(accept, renderable)).to.be.false
 
     })
 
@@ -208,7 +208,7 @@ describe('mime type', function() {
       const accept = parseMimeTypes(MimeTypes.anyApplication)[0]
       const renderable = parseMimeTypes(MimeTypes.textHtml)[0]
 
-      expect(isRenderableMimeType(accept, renderable)).to.be.false
+      expect(mimeTypesAreCompatible(accept, renderable)).to.be.false
 
     })
 

@@ -1,3 +1,4 @@
+export * from './src/pass-through-body-parser'
 export * from './src/test-application-json-renderer'
 export * from './src/test-multi-text-renderer'
 export * from './src/test-text-html-renderer'

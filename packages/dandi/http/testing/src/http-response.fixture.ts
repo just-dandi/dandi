@@ -18,6 +18,6 @@ const PROPS: (keyof HttpResponse)[] = [
 
 export function httpResponseFixture(): SinonStubbedInstance<HttpResponse> {
   const instance = createStubObject<HttpResponse>(...PROPS)
-  PROPS.forEach(prop => instance[prop].returns(instance as any))
+  PROPS.forEach(prop => instance[prop].returnsThis())
   return instance
 }

@@ -11,7 +11,7 @@ import { TestApplicationJsonRenderer, TestTextPlainRenderer } from '@dandi/http-
 import { stub } from 'sinon'
 import { expect } from 'chai'
 
-describe('HttpResponseRenderer', function() {
+describe('HttpPipelineRenderer', function() {
 
   // IMPORTANT! stubHarness cannot be used here, since RendererInfoProvider relies on not being able to resolve classes
   // to determine which renderers are actually registered

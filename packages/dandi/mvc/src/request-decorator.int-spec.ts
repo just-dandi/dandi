@@ -1,7 +1,15 @@
 import { Url } from '@dandi/common'
 import { testHarness } from '@dandi/core/testing'
-import { HttpRequestPathParamMap, HttpRequestQueryParamMap, HttpRequest } from '@dandi/http'
+import {
+  HttpRequest,
+  HttpRequestHeaders,
+  HttpRequestPathParamMap,
+  HttpRequestQueryParamMap,
+  HttpRequestRawBodyProvider,
+} from '@dandi/http'
 import { MissingParamError, PathParam, QueryParam, RequestBody } from '@dandi/http-model'
+import { BodyParserInfo, HttpBodyParser, HttpRequestBodySourceProvider } from '@dandi/http-pipeline'
+import { PassThroughBodyParser } from '@dandi/http-pipeline/testing'
 import { Required, UrlProperty } from '@dandi/model'
 import { ModelBuilderModule } from '@dandi/model-builder'
 
@@ -36,6 +44,13 @@ describe('Request Decorators', () => {
         },
       }),
     },
+    HttpRequestRawBodyProvider,
+    HttpRequestBodySourceProvider,
+    {
+      provide: HttpBodyParser,
+      useClass: PassThroughBodyParser,
+    },
+    HttpRequestHeaders,
     {
       provide: HttpRequestPathParamMap,
       useFactory: () => ({}),
@@ -43,6 +58,10 @@ describe('Request Decorators', () => {
     {
       provide: HttpRequestQueryParamMap,
       useFactory: () => ({}),
+    },
+    {
+      provide: BodyParserInfo,
+      useValue: [],
     },
   )
 

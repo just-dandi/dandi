@@ -1,6 +1,6 @@
 import { MimeTypes } from '@dandi/http'
 
-import { HttpPipelineResult } from './http-pipeline-result'
+import { HttpPipelineResult } from '../http-pipeline-result'
 import { HttpPipelineRendererBase } from './http-pipeline-renderer-base'
 import { Renderer } from './renderer-decorator'
 

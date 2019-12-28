@@ -1,5 +1,5 @@
 import { MethodTarget } from '@dandi/common'
-import { getInjectableMetadata, getInjectableParamMetadata, methodTarget } from '@dandi/core/internal'
+import { getInjectableMetadata, getInjectableParamMetadata, methodTarget } from '@dandi/core/internal/util'
 import { expect } from 'chai'
 
 class TestClass {

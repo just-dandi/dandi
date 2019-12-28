@@ -1,17 +1,26 @@
-import { HttpResponse, HttpStatusCode, MimeTypes } from '@dandi/http'
+import { Logger, NoopLogger } from '@dandi/core'
+import { HttpMethod, HttpRequest, HttpResponse, HttpStatusCode, MimeTypes } from '@dandi/http'
 import { HttpPipelineRendererResult, HttpResponsePipelineTerminator } from '@dandi/http-pipeline'
 import { httpResponseFixture } from '@dandi/http/testing'
+
 import { expect } from 'chai'
 
 describe('HttpResponsePipelineTerminator', () => {
 
+  let request: HttpRequest
   let response: HttpResponse
+  let logger: Logger
   let classUnderTest: HttpResponsePipelineTerminator
   let renderResult: HttpPipelineRendererResult
 
   beforeEach(() => {
+    request = {
+      method: HttpMethod.get,
+      path: '/test',
+    } as HttpRequest
     response = httpResponseFixture()
-    classUnderTest = new HttpResponsePipelineTerminator(response)
+    logger = new NoopLogger()
+    classUnderTest = new HttpResponsePipelineTerminator(request, response, logger)
     renderResult = {
       contentType: MimeTypes.textPlain,
       headers: {},
@@ -19,7 +28,9 @@ describe('HttpResponsePipelineTerminator', () => {
     }
   })
   afterEach(() => {
+    request = undefined
     response = undefined
+    logger = undefined
     classUnderTest = undefined
     renderResult = undefined
   })

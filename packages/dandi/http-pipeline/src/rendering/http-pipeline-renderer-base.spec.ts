@@ -5,7 +5,7 @@ import { TestTextPlainRenderer, TestMultiTextRenderer } from '@dandi/http-pipeli
 import { expect } from 'chai'
 import { stub } from 'sinon'
 
-describe('ObjectRendererBase', function() {
+describe('HttpPipelineRendererBase', function() {
 
   const harness = stubHarness(TestTextPlainRenderer)
 

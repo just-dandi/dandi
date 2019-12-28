@@ -54,8 +54,8 @@ export function parseMimeTypes(...acceptHeaders: string[]): MimeTypeInfo[] {
     })
 }
 
-export function isRenderableMimeType(acceptType: MimeTypeInfo, renderableType: MimeTypeInfo): boolean {
-  const matchesType = acceptType.type === '*' || acceptType.type === renderableType.type
-  const matchesSubtype = acceptType.subtype === '*' || acceptType.subtype === renderableType.subtype
+export function mimeTypesAreCompatible(allowed: MimeTypeInfo, target: MimeTypeInfo): boolean {
+  const matchesType = allowed.type === '*' || allowed.type === target.type
+  const matchesSubtype = allowed.subtype === '*' || allowed.subtype === target.subtype
   return matchesType && matchesSubtype
 }

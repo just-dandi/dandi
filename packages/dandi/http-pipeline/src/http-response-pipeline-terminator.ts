@@ -1,7 +1,7 @@
 import { Inject, Injectable, Logger } from '@dandi/core'
 import { HttpRequest, HttpResponse, HttpStatusCode, MimeTypes } from '@dandi/http'
 
-import { HttpPipelineRendererResult } from './http-pipeline-renderer'
+import { HttpPipelineRendererResult } from './rendering/http-pipeline-renderer'
 import { HttpPipelineTerminator } from './http-pipeline-terminator'
 
 /**

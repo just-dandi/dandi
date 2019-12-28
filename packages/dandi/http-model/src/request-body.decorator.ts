@@ -1,7 +1,7 @@
 import { Constructor, MethodTarget } from '@dandi/common'
 import { Provider } from '@dandi/core'
 import { getInjectableParamMetadata, ParamMetadata } from '@dandi/core/internal/util'
-import { HttpRequest, HttpRequestBody } from '@dandi/http'
+import { HttpRequestBody, HttpRequestBodySource } from '@dandi/http'
 import { ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder'
 
 import { ModelBindingError } from './errors'
@@ -14,21 +14,21 @@ export interface RequestBody<TModel, TTarget> extends ParamMetadata<TTarget> {
 export function requestBodyProvider(model: Constructor<any>): Provider<any> {
   return {
     provide: HttpRequestBody,
-    useFactory: (req: HttpRequest, builder: ModelBuilder, options: ModelBuilderOptions) => {
-      if (!req.body) {
+    useFactory: (source: object, builder: ModelBuilder, options: ModelBuilderOptions) => {
+      if (!source) {
         return undefined
       }
       if (!model) {
-        return req.body
+        return source
       }
       try {
-        return builder.constructModel(model, req.body, options)
+        return builder.constructModel(model, source, options)
       } catch (err) {
         throw new ModelBindingError(err)
       }
     },
     singleton: true,
-    deps: [HttpRequest, ModelBuilder, RequestParamModelBuilderOptions],
+    deps: [HttpRequestBodySource, ModelBuilder, RequestParamModelBuilderOptions],
     providers: [RequestParamModelBuilderOptionsProvider],
   }
 }
