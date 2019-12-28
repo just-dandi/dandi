@@ -1,7 +1,6 @@
 import { Disposable } from '@dandi/common'
 import { Inject, Optional } from '@dandi/core/decorators'
 import { DandiApplicationError } from '@dandi/core/errors'
-import { Bootstrapper } from '@dandi/core/internal'
 import { getInstance } from '@dandi/core/internal/util'
 import {
   DandiApplicationConfig,
@@ -20,6 +19,7 @@ import {
 
 import { localToken } from '../../src/local-token'
 
+import { Bootstrapper } from './bootstrapper'
 import { DandiRootInjector } from './dandi-root-injector'
 import { DandiGenerator } from './dandi-generator'
 import { AppInjectionScope } from './root-injection-scope'
@@ -175,7 +175,7 @@ export class DandiApplicationInit<TConfig extends DandiApplicationInternalConfig
 
   public async bootstrap(
   ): Promise<any> {
-    const bootstrapper = (await this.appInjector.inject(Bootstrapper)).singleValue
+    const bootstrapper = (await this.appInjector.inject(Bootstrapper, Bootstrapper)).singleValue
     return await bootstrapper.run(this.startTs)
   }
 
