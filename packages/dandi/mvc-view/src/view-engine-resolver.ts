@@ -2,7 +2,7 @@ import { access, constants } from 'fs'
 import { basename, dirname, extname, resolve } from 'path'
 
 import { Constructor } from '@dandi/common'
-import { Inject, Injectable, Logger, Injector, Singleton } from '@dandi/core'
+import { Inject, Injectable, Logger, Injector } from '@dandi/core'
 
 import { MissingTemplateError } from './missing-template.error'
 import { ViewEngine } from './view-engine'
@@ -19,10 +19,15 @@ interface ViewEngineIndexedConfig extends ViewEngineConfig {
   ignored: boolean;
 }
 
-@Injectable(Singleton)
+
+const extensions: Map<string, Constructor<ViewEngine>> = new Map<string, Constructor<ViewEngine>>()
+const resolvedViews = new Map<string, ResolvedView>()
+let initialized: boolean = false
+
+// FIXME: make singletons work when they are instantiated via invoke - their injectors get disposed due to invoke behavior
+// @Injectable(Singleton)
+@Injectable()
 export class ViewEngineResolver {
-  private extensions: Map<string, Constructor<ViewEngine>> = new Map<string, Constructor<ViewEngine>>()
-  private resolvedViews = new Map<string, ResolvedView>()
 
   private static exists(path: string): Promise<boolean> {
     return new Promise((resolve) => {
@@ -40,6 +45,9 @@ export class ViewEngineResolver {
     @Inject(ViewEngineConfig) private configs: ViewEngineIndexedConfig[],
     @Inject(Injector) private injector: Injector,
   ) {
+    if (initialized) {
+      return
+    }
     this.configs.forEach((config, index) => (config.index = index))
 
     // order the configs by preference:
@@ -60,25 +68,26 @@ export class ViewEngineResolver {
     })
 
     this.configs.forEach((config) => {
-      if (this.extensions.has(config.extension)) {
+      if (extensions.has(config.extension)) {
         this.logger.warn(
           `ignoring duplicate view engine configuration for extension '${config.extension}' (${config.engine.name})`,
         )
         config.ignored = true
         return
       }
-      this.extensions.set(config.extension, config.engine)
+      extensions.set(config.extension, config.engine)
     })
+    initialized = true
   }
 
   public async resolve(view: ViewMetadata, name?: string): Promise<ResolvedView> {
     const knownPath = resolve(view.context, name || view.name)
-    let resolvedView = this.resolvedViews.get(knownPath)
+    let resolvedView = resolvedViews.get(knownPath)
     if (resolvedView) {
       return resolvedView
     }
     resolvedView = await this.resolveFile(knownPath)
-    this.resolvedViews.set(knownPath, resolvedView)
+    resolvedViews.set(knownPath, resolvedView)
     return resolvedView
   }
 
@@ -86,7 +95,7 @@ export class ViewEngineResolver {
     const ext = extname(knownPath).substring(1)
 
     // if the view name already has a supported extension, check to see if that file exists
-    const existingExtConfig = ext && this.extensions.get(ext)
+    const existingExtConfig = ext && extensions.get(ext)
     if (existingExtConfig && (await ViewEngineResolver.exists(knownPath))) {
       return {
         templatePath: knownPath,

@@ -56,7 +56,7 @@ export class HttpPipeline {
       await this.safeInvokeStepAsProvider(injector, this.renderResult, requestInfo, preparedProviders, errorHandlers, HttpPipelineRendererResult),
     )
 
-    const terminatorResult = await this.safeInvokeStep(injector, this.terminateResponse, requestInfo, preparedProviders, errorHandlers)
+    const terminatorResult = await this.invokeStep(injector, this.terminateResponse, requestInfo, preparedProviders)
 
     this.logger.debug(
       `end handleRequest ${handler.constructor.name}.${handlerMethod}:`,
@@ -132,8 +132,12 @@ export class HttpPipeline {
     @Inject(Injector) injector: Injector,
     @Inject(HttpRequestHandler) handler: any,
     @Inject(HttpRequestHandlerMethod) handlerMethod: string,
-  ): Promise<Provider<any>> {
-    return await injector.invoke(handler, handlerMethod)
+  ): Promise<any> {
+    const result = await injector.invoke(handler, handlerMethod)
+    if (result === undefined) {
+      return {}
+    }
+    return result
   }
 
   private async transformResult(

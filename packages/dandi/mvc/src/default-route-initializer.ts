@@ -12,7 +12,6 @@ import {
   HttpRequest,
   HttpRequestPathParamMap,
   HttpRequestQueryParamMap,
-  HttpResponse,
 } from '@dandi/http'
 import { HttpRequestHandler, HttpRequestHandlerMethod, HttpRequestInfo } from '@dandi/http-pipeline'
 
@@ -27,7 +26,6 @@ import { RequestController, HttpRequestId } from './tokens'
 @Injectable(RouteInitializer)
 export class DefaultRouteInitializer implements RouteInitializer {
   constructor(
-    @Inject(Injector) private injector: Injector,
     @Inject(RequestProviderRegistrar)
     @Optional()
     private registrars: RequestProviderRegistrar[],
@@ -38,10 +36,10 @@ export class DefaultRouteInitializer implements RouteInitializer {
   ) {}
 
   public async initRouteRequest(
+    injector: Injector,
     route: Route,
     req: HttpRequest,
     requestInfo: HttpRequestInfo,
-    res: HttpResponse,
   ): Promise<Provider<any>[]> {
     this.logger.debug(
       `begin initRouteRequest ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
@@ -51,10 +49,10 @@ export class DefaultRouteInitializer implements RouteInitializer {
     const providers: Provider<any>[] = []
 
     try {
-      providers.push(...this.generateRequestProviders(route, req, requestInfo, res))
+      providers.push(...this.generateRequestProviders(route, req, requestInfo))
       providers.push(...(await this.generateAuthProviders(route, req)))
-      providers.push(...(await this.generateRequestRegistrarProviders(providers)))
-      await this.handleAuthorizationConditions(providers)
+      providers.push(...(await this.generateRequestRegistrarProviders(injector, providers)))
+      await this.handleAuthorizationConditions(injector, providers)
       return providers
     } catch (err) {
       throw new RouteInitializationError(err, route)
@@ -75,7 +73,6 @@ export class DefaultRouteInitializer implements RouteInitializer {
     route: Route,
     req: HttpRequest,
     requestInfo: HttpRequestInfo,
-    res: HttpResponse,
   ): Provider<any>[] {
     const result: Provider<any>[] = [
       {
@@ -90,11 +87,8 @@ export class DefaultRouteInitializer implements RouteInitializer {
         provide: HttpRequestHandlerMethod,
         useValue: route.controllerMethod,
       },
-      { provide: HttpRequest, useValue: req },
-      { provide: HttpResponse, useValue: res },
       { provide: HttpRequestPathParamMap, useValue: req.params },
       { provide: HttpRequestQueryParamMap, useValue: req.query },
-      { provide: Route, useValue: route },
       { provide: HttpRequestId, useValue: requestInfo.requestId },
       { provide: HttpRequestInfo, useValue: requestInfo },
     ]
@@ -114,8 +108,8 @@ export class DefaultRouteInitializer implements RouteInitializer {
     return this.authProviderFactory.generateAuthProviders(route, req)
   }
 
-  private async handleAuthorizationConditions(providers: Provider<any>[]): Promise<void> {
-    const results = await this.injector.inject(AuthorizationCondition, true, ...providers)
+  private async handleAuthorizationConditions(injector: Injector, providers: Provider<any>[]): Promise<void> {
+    const results = await injector.inject(AuthorizationCondition, true, ...providers)
     if (!results) {
       return
     }
@@ -126,12 +120,12 @@ export class DefaultRouteInitializer implements RouteInitializer {
     }
   }
 
-  private async generateRequestRegistrarProviders(providers: Provider<any>[]): Promise<Provider<any>[]> {
+  private async generateRequestRegistrarProviders(injector: Injector, providers: Provider<any>[]): Promise<Provider<any>[]> {
     if (!this.registrars) {
       return []
     }
     return (await Promise.all(this.registrars.map(async (registrar: RequestProviderRegistrar) =>
-      await this.injector.invoke<RequestProviderRegistrar, Provider<any>[]>(registrar, 'provide', ...providers)),
+      await injector.invoke<RequestProviderRegistrar, Provider<any>[]>(registrar, 'provide', ...providers)),
     ))
       .reduce((result, providers) => {
         result.push(...providers || [])
