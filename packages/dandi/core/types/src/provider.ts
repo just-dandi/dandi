@@ -44,13 +44,13 @@ export interface ValueProvider<T> extends ProviderOptions<T> {
 
 export interface GeneratorProvider<T> extends ProviderOptions<T> {
   provide: InjectionToken<T>
-  providers?: Array<Provider<any>>
+  providers?: (Provider<any> | Constructor)[]
 }
 
 export interface SyncFactoryProvider<T> extends GeneratorProvider<T> {
   useFactory: (...args: any[]) => T
   async?: false
-  deps?: Array<InjectionToken<any>>
+  deps?: InjectionToken<any>[]
 }
 
 export interface AsyncFactoryProvider<T> extends GeneratorProvider<T> {

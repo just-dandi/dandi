@@ -2,6 +2,7 @@ import { Constructor, MetadataAccessor, MethodTarget, getMetadata } from '@dandi
 import { InjectionToken, Provider } from '@dandi/core/types'
 
 import { globalSymbol } from '../../../src/global-symbol'
+
 import { getParamNames } from './params-util'
 
 const META_KEY = globalSymbol('meta:injectable')
