@@ -32,6 +32,7 @@ export interface TestInjector extends Resolver, Invoker {
   readonly application: DandiApplication
   readonly injector: Injector
 
+  inject<T>(token: InjectionToken<T>, ...providers: Registerable[]): Promise<T>
   inject<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Registerable[]): Promise<T>
   injectMulti<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Registerable[]): Promise<T[]>
   injectStub<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Registerable[]): Promise<SinonStubbedInstance<T>>
@@ -119,6 +120,7 @@ export class TestHarness implements TestInjector, Disposable {
     })
   }
 
+  public inject<T>(token: InjectionToken<T>, ...providers: Registerable[]): Promise<T>
   public inject<T>(token: InjectionToken<T>, optional?: boolean, ...providers: Registerable[]): Promise<T>
   async inject<T>(token: InjectionToken<T>, ...args: any[]): Promise<T> {
     try {

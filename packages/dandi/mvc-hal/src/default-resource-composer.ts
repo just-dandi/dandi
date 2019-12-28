@@ -237,7 +237,7 @@ export class DefaultResourceComposer implements ResourceComposer {
     }
 
     const requestInfo = (await this.injector.inject(HttpRequestInfo)).singleValue
-    const embedProviders = await this.routeInitializer.initRouteRequest(route, req, requestInfo, res)
+    const embedProviders = await this.routeInitializer.initRouteRequest(this.injector, route, req, requestInfo, res)
 
     embedProviders.push({
       provide: CompositionContext,

@@ -1,7 +1,7 @@
 import { Constructor } from '@dandi/common'
 import { InjectionToken, Provider, Injector } from '@dandi/core'
 import {
-  isRenderableMimeType,
+  mimeTypesAreCompatible,
   MimeTypeInfo,
   HttpHeaders,
   HttpRequest,
@@ -9,8 +9,9 @@ import {
   HttpStatusCode,
 } from '@dandi/http'
 
-import { localOpinionatedToken } from './local-token'
-import { HttpPipelineResult } from './http-pipeline-result'
+import { HttpPipelineResult } from '../http-pipeline-result'
+import { localOpinionatedToken } from '../local-token'
+
 import { RendererInfo, RendererInfoProvider, RendererMetadata } from './renderer-decorator'
 
 export interface HttpPipelineRendererResult {
@@ -58,7 +59,7 @@ const HttpPipelineRendererCacheProvider: Provider<HttpPipelineRendererCache> = {
 }
 
 export function isSupportingRenderer(renderer: RendererMetadata, acceptType: MimeTypeInfo): boolean {
-  return !!renderer.acceptTypes.find(isRenderableMimeType.bind(null, acceptType))
+  return !!renderer.acceptTypes.find(mimeTypesAreCompatible.bind(null, acceptType))
 }
 
 export function selectRenderer(acceptTypes: MimeTypeInfo[], renderers: RendererInfo[]): Constructor<HttpPipelineRenderer> {

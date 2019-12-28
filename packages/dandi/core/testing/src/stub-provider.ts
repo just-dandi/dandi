@@ -12,3 +12,13 @@ export function stubProvider<TService extends TToken, TToken = TService>(
     singleton: true,
   }
 }
+
+export function stubValueProvider<TToken>(
+  token: InjectionToken<TToken> | Constructor<TToken>,
+  useFactory: () => TToken,
+): Provider<TToken> {
+  return {
+    provide: token,
+    useFactory,
+  }
+}

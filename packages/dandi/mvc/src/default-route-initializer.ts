@@ -11,7 +11,7 @@ import {
   ForbiddenError,
   HttpRequest,
   HttpRequestPathParamMap,
-  HttpRequestQueryParamMap,
+  HttpRequestQueryParamMap, HttpResponse,
 } from '@dandi/http'
 import { HttpRequestHandler, HttpRequestHandlerMethod, HttpRequestInfo } from '@dandi/http-pipeline'
 
@@ -40,6 +40,7 @@ export class DefaultRouteInitializer implements RouteInitializer {
     route: Route,
     req: HttpRequest,
     requestInfo: HttpRequestInfo,
+    res: HttpResponse,
   ): Promise<Provider<any>[]> {
     this.logger.debug(
       `begin initRouteRequest ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
@@ -49,7 +50,7 @@ export class DefaultRouteInitializer implements RouteInitializer {
     const providers: Provider<any>[] = []
 
     try {
-      providers.push(...this.generateRequestProviders(route, req, requestInfo))
+      providers.push(...this.generateRequestProviders(route, req, res, requestInfo))
       providers.push(...(await this.generateAuthProviders(route, req)))
       providers.push(...(await this.generateRequestRegistrarProviders(injector, providers)))
       await this.handleAuthorizationConditions(injector, providers)
@@ -72,9 +73,22 @@ export class DefaultRouteInitializer implements RouteInitializer {
   private generateRequestProviders(
     route: Route,
     req: HttpRequest,
+    res: HttpResponse,
     requestInfo: HttpRequestInfo,
   ): Provider<any>[] {
     const result: Provider<any>[] = [
+      {
+        provide: HttpRequest,
+        useValue: req,
+      },
+      {
+        provide: HttpResponse,
+        useValue: res,
+      },
+      {
+        provide: Route,
+        useValue: route,
+      },
       {
         provide: RequestController,
         useClass: route.controllerCtr,

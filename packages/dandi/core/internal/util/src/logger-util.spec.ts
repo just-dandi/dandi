@@ -1,4 +1,4 @@
-import { createLoggerMethodChain, MODIFIER_KEYS } from '@dandi/core/internal'
+import { createLoggerMethodChain, MODIFIER_KEYS } from '@dandi/core/internal/util'
 
 import { stub } from 'sinon'
 import { expect } from 'chai'

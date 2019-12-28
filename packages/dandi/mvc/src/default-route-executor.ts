@@ -17,8 +17,8 @@ export class DefaultRouteExecutor implements RouteExecutor {
     @Inject(Logger) private logger: Logger,
   ) {}
 
-  public execRoute(route: Route, req: HttpRequest, res: HttpResponse): Promise<void> {
-    return this.injector.invoke(this as DefaultRouteExecutor, 'execRouteInternal',
+  public async execRoute(route: Route, req: HttpRequest, res: HttpResponse): Promise<void> {
+    return await this.injector.invoke(this as DefaultRouteExecutor, 'execRouteInternal',
       {
         provide: Route,
         useValue: route,

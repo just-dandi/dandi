@@ -1,4 +1,4 @@
-import { HttpPipelineRendererResult } from './http-pipeline-renderer'
+import { HttpPipelineRendererResult } from './rendering/http-pipeline-renderer'
 import { localOpinionatedToken } from './local-token'
 
 /**
