@@ -21,6 +21,7 @@ doc(xmlns='https://hyperview.org/hyperview')
           view
             text It's awesome!
         item
-          view
-            text-field(name='name', placeholder='someone')
-            text(href='/detail.xml', target='someForm', action='replace', verb='POST') Go!
+          form#awesome-form
+            view
+              text-field(name='name', placeholder='someone')
+              text(href='/detail.xml', target='someForm', action='replace', verb='POST') Go!

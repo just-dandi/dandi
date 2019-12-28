@@ -1,5 +1,6 @@
+import { RequestBody } from '@dandi/http-model'
 import { Property, Required } from '@dandi/model'
-import { Controller, HttpGet, HttpPost, RequestBody } from '@dandi/mvc'
+import { Controller, HttpGet, HttpPost } from '@dandi/mvc'
 import { View } from '@dandi/mvc-view'
 
 class FormModel {

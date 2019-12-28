@@ -12,9 +12,6 @@ export function isInjectionToken<T>(obj: any): obj is InjectionToken<T> {
   if (isConstructor(obj)) {
     return true
   }
-  if (!(obj instanceof SymbolTokenBase || isMappedInjectionToken(obj))) {
-    console.log('wtf', obj, SymbolTokenBase, obj instanceof SymbolTokenBase, isMappedInjectionToken(obj))
-  }
   return obj instanceof SymbolTokenBase || isMappedInjectionToken(obj)
 }
 
