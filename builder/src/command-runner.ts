@@ -23,7 +23,10 @@ export class CommandRunner<THost extends any> implements EntryPoint {
   private async safeRun(): Promise<void> {
     try {
       await this.runAction()
-      const actionDisplayName = `${this.actionName.toString().substring(0, 1).toLocaleUpperCase()}${this.actionName.toString().substring(1)}`
+      const firstLetter = this.actionName.toString()
+        .substring(0, 1)
+        .toLocaleUpperCase()
+      const actionDisplayName = `${firstLetter}${this.actionName.toString().substring(1)}`
       this.logger.info(`${actionDisplayName} complete.`)
     } catch (err) {
       this.logger.error(err.message, err.stack)

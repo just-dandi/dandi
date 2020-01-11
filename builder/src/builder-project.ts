@@ -87,7 +87,9 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
 
   public async discoverPackages(): Promise<PackageInfo[]> {
     this.logger.debug('discoverPackages')
-    this._packages = this.scopes ? await this.findScopedPackages(this.packagesPath, this.scopes) : await this.findPackages(this.packagesPath)
+    this._packages = this.scopes ?
+      await this.findScopedPackages(this.packagesPath, this.scopes) :
+      await this.findPackages(this.packagesPath)
     return this._packages
   }
 
