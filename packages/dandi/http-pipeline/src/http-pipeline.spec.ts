@@ -20,8 +20,8 @@ import {
   HttpPipelineTerminator,
   HttpRequestHandler,
   HttpRequestInfo,
-  HttpRequestPreparer,
-  HttpRequestPreparerResult,
+  HttpPipelinePreparer,
+  HttpPipelinePreparerResult,
   HttpPipelineRenderer,
   HttpRequestHandlerMethod,
   HttpResponsePipelineTerminator,
@@ -253,9 +253,9 @@ describe('HttpPipeline', () => {
       const testPreparerProvides = SymbolToken.for('http-pipeline-test-preparer')
       const dependentTestPreparerProvides = SymbolToken.for('http-pipeline-dependent-test-preparer')
 
-      @HttpRequestPreparer()
-      class TestPreparer implements HttpRequestPreparer {
-        public async prepare(): Promise<HttpRequestPreparerResult> {
+      @HttpPipelinePreparer()
+      class TestPreparer implements HttpPipelinePreparer {
+        public async prepare(): Promise<HttpPipelinePreparerResult> {
           return [{
             provide: testPreparerProvides,
             useValue: 'foo',
@@ -263,9 +263,9 @@ describe('HttpPipeline', () => {
         }
       }
 
-      @HttpRequestPreparer(TestPreparer)
-      class DependentTestPreparer implements HttpRequestPreparer {
-        public async prepare(): Promise<HttpRequestPreparerResult> {
+      @HttpPipelinePreparer(TestPreparer)
+      class DependentTestPreparer implements HttpPipelinePreparer {
+        public async prepare(): Promise<HttpPipelinePreparerResult> {
           return [{
             provide: dependentTestPreparerProvides,
             useValue: 'bar',

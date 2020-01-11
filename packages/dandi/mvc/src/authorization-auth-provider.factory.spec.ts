@@ -1,10 +1,9 @@
-import { Injector } from '@dandi/core'
+import { InjectionResult, Injector } from '@dandi/core'
 import { DandiInjector } from '@dandi/core/internal'
 import { HttpMethod, UnauthorizedError } from '@dandi/http'
 import {
   AuthorizationAuthProviderFactory,
   AuthorizationService,
-  AuthorizedUser,
   IsAuthorized,
   RequestAuthorizationService,
   Route,
@@ -21,7 +20,7 @@ describe('AuthorizationAuthProviderFactory', () => {
 
   beforeEach(() => {
     injector = createStubInstance(DandiInjector)
-    authProviderFactory = new AuthorizationAuthProviderFactory(injector as unknown as Injector)
+    authProviderFactory = new AuthorizationAuthProviderFactory()
     route = {
       path: '/',
       controllerCtr: null,
@@ -45,31 +44,23 @@ describe('AuthorizationAuthProviderFactory', () => {
   describe('createAuthProviders', () => {
     it('throws an UnauthorizedError if there is no Authorization header and the route has authorization conditions', async () => {
       route.authorization = [IsAuthorized]
-      await expect(authProviderFactory.generateAuthProviders(route, req)).to.be.rejectedWith(UnauthorizedError)
+      await expect(() => authProviderFactory.generateAuthProviders(route, req)).to.throw(UnauthorizedError)
     })
 
-    it('returns a provider for AuthorizedUser that provides a null value if there are no authorization conditions', async () => {
+    it('returns an empty array if there are no authorization conditions', async () => {
       const result = await authProviderFactory.generateAuthProviders(route, req)
-      expect(result).to.deep.equal([
-        {
-          provide: AuthorizedUser,
-          useValue: null,
-        },
-      ])
+      expect(result).to.be.empty
     })
 
     it('adds a provider for a scheme-specific AuthorizationService', async () => {
       const authService = {}
       req.get.returns('Bearer foo')
-      // @ts-ignore
-      injector.inject.withArgs(AuthorizationService('Bearer'), true).resolves({ singleValue: authService })
+      injector.inject.withArgs(AuthorizationService('Bearer'), true).resolves(new InjectionResult(authService))
 
       const result = await authProviderFactory.generateAuthProviders(route, req)
 
-      expect(result).to.deep.include({
-        provide: RequestAuthorizationService,
-        useValue: authService,
-      })
+      const requestAuthProvider = result.find(provider => provider.provide === RequestAuthorizationService)
+      expect(requestAuthProvider).to.exist
     })
 
     it('adds providers from each of the authorization conditions', async () => {

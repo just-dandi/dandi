@@ -1,7 +1,8 @@
 import { AppError, Disposable, Uuid } from '@dandi/common'
-import { Inject, Injectable, Logger, Injector } from '@dandi/core'
-import { createHttpRequestScope, HttpRequest, HttpResponse, HttpStatusCode } from '@dandi/http'
+import { Inject, Injectable, Logger, Injector, Optional } from '@dandi/core'
+import { createHttpRequestScope, ForbiddenError, HttpRequest, HttpResponse, HttpStatusCode } from '@dandi/http'
 import { HttpPipeline } from '@dandi/http-pipeline'
+import { AuthorizationCondition, DeniedAuthorization } from '@dandi/mvc'
 
 import { PerfRecord } from './perf-record'
 import { Route } from './route'
@@ -18,33 +19,6 @@ export class DefaultRouteExecutor implements RouteExecutor {
   ) {}
 
   public async execRoute(route: Route, req: HttpRequest, res: HttpResponse): Promise<void> {
-    const providers = [
-      {
-        provide: Route,
-        useValue: route,
-      },
-      {
-        provide: HttpRequest,
-        useValue: req,
-      },
-      {
-        provide: HttpResponse,
-        useValue: res,
-      },
-    ]
-    return Disposable.useAsync(
-      this.injector.createChild(createHttpRequestScope(req), providers),
-      async requestInjector => await requestInjector.invoke(this as DefaultRouteExecutor, 'execRouteInternal'),
-    )
-  }
-
-  public async execRouteInternal(
-    @Inject(Injector) injector: Injector,
-    @Inject(Route) route: Route,
-    @Inject(HttpRequest) req: HttpRequest,
-    @Inject(HttpResponse) res: HttpResponse,
-  ): Promise<void> {
-    const requestId = Uuid.create()
     const performance = new PerfRecord('DefaultRouteExecutor.execRoute', 'begin')
 
     this.logger.debug(
@@ -52,6 +26,7 @@ export class DefaultRouteExecutor implements RouteExecutor {
       route.httpMethod.toUpperCase(),
       route.path,
     )
+    const requestId = Uuid.create()
 
     try {
       this.logger.debug(
@@ -61,7 +36,7 @@ export class DefaultRouteExecutor implements RouteExecutor {
       )
 
       performance.mark('DefaultRouteExecutor.execRoute', 'beforeInitRouteRequest')
-      const requestProviders = await this.routeInitializer.initRouteRequest(injector, route, req, { requestId, performance }, res)
+      const requestProviders = this.routeInitializer.initRouteRequest(route, req, { requestId, performance }, res)
       performance.mark('DefaultRouteExecutor.execRoute', 'afterInitRouteRequest')
 
       this.logger.debug(
@@ -77,7 +52,10 @@ export class DefaultRouteExecutor implements RouteExecutor {
       )
 
       performance.mark('DefaultRouteExecutor.execRoute', 'beforeHandleRequest')
-      await injector.invoke(this.pipeline, 'handleRequest', ...requestProviders)
+      await Disposable.useAsync(this.injector.createChild(createHttpRequestScope(req), requestProviders), async requestInjector => {
+        await requestInjector.invoke(this as DefaultRouteExecutor, 'checkAuthorizationConditions')
+        await requestInjector.invoke(this.pipeline, 'handleRequest')
+      })
       performance.mark('DefaultRouteExecutor.execRoute', 'afterHandleRequest')
 
       this.logger.debug(
@@ -109,6 +87,15 @@ export class DefaultRouteExecutor implements RouteExecutor {
 
       performance.mark('DefaultRouteExecutor.execRoute', 'end')
       this.logger.debug(performance.toString())
+    }
+  }
+
+  public checkAuthorizationConditions(
+    @Inject(AuthorizationCondition) @Optional() conditions: AuthorizationCondition[],
+  ): void {
+    const denied = conditions?.filter((result) => !result.allowed) as DeniedAuthorization[]
+    if (denied?.length) {
+      throw new ForbiddenError(denied.map((d) => d.reason).join('; '))
     }
   }
 }

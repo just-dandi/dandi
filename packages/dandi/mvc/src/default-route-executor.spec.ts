@@ -1,10 +1,10 @@
 import { AppError, Uuid } from '@dandi/common'
 import { DisposableUtil } from '@dandi/common/testing'
-import { Inject, SymbolToken } from '@dandi/core'
+import { Inject, Provider, SymbolToken } from '@dandi/core'
 import { stubHarness, stub } from '@dandi/core/testing'
 import { HttpMethod, HttpRequest, HttpResponse, HttpStatusCode } from '@dandi/http'
 import { HttpPipeline, HttpRequestInfo } from '@dandi/http-pipeline'
-import { DefaultRouteExecutor, Route, RouteInitializer } from '@dandi/mvc'
+import { AuthorizationCondition, DefaultRouteExecutor, Route, RouteInitializer } from '@dandi/mvc'
 
 import { expect } from 'chai'
 import { SinonStubbedInstance } from 'sinon'
@@ -55,6 +55,7 @@ describe('DefaultRouteExecutor', () => {
     },
   )
 
+  let providers: Provider<any>[]
   let routeExec: DefaultRouteExecutor
   let routeInit: SinonStubbedInstance<RouteInitializer>
   let route: Route
@@ -67,8 +68,15 @@ describe('DefaultRouteExecutor', () => {
 
   beforeEach(async () => {
     httpPipeline = new FakeHttpPipeline()
+    providers = [
+      {
+        provide: fooToken,
+        useValue: 'foo',
+      },
+    ]
     routeInit = {
-      initRouteRequest: stub(),
+      initRouteRequest: stub<[Route, HttpRequest, HttpRequestInfo, HttpResponse], Provider<any>[]>()
+        .callsFake(() => providers),
     }
     route = {
       // eslint-disable-next-line brace-style
@@ -95,6 +103,7 @@ describe('DefaultRouteExecutor', () => {
     routeExec = await harness.inject(DefaultRouteExecutor)
   })
   afterEach(() => {
+    providers = undefined
     routeExec = undefined
     routeInit = undefined
     route = undefined
@@ -114,14 +123,6 @@ describe('DefaultRouteExecutor', () => {
 
     it('uses the providers from initRouteRequest to invoke the HttpPipeline', async () => {
 
-      const providers = [
-        {
-          provide: fooToken,
-          useValue: 'foo',
-        },
-      ]
-      routeInit.initRouteRequest.resolves(providers)
-
       // sanity check - fooToken should not be available for general injection
       expect(await harness.inject(fooToken, true)).not.to.exist
 
@@ -136,7 +137,7 @@ describe('DefaultRouteExecutor', () => {
           super('oh no')
         }
       }
-      routeInit.initRouteRequest.callsFake(() => Promise.reject(new SomeKindOfError()))
+      routeInit.initRouteRequest.throws(new SomeKindOfError())
 
       await routeExec.execRoute(route, req, res)
 
@@ -175,6 +176,24 @@ describe('DefaultRouteExecutor', () => {
       await routeExec.execRoute(route, req, res)
 
       expect(res.status).to.have.been.calledWith(500)
+    })
+
+    it('invokes the pipeline if authorization conditions pass', async () => {
+      providers.push({ provide: AuthorizationCondition, useValue: { allowed: true } })
+
+      await routeExec.execRoute(route, req, res)
+
+      expect(res.status).not.to.have.been.called
+      expect(httpPipeline.handleRequestStub).to.have.been.called
+    })
+
+    it('does not invoke the pipeline, and sends a 403 response if authorization conditions do not pass', async () => {
+      providers.push({ provide: AuthorizationCondition, useValue: { allowed: false, reason: 'test' } })
+
+      await routeExec.execRoute(route, req, res)
+
+      expect(httpPipeline.handleRequestStub).not.to.have.been.called
+      expect(res.status).to.have.been.calledWith(HttpStatusCode.forbidden)
     })
 
   })

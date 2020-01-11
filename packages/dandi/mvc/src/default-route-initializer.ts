@@ -4,20 +4,17 @@ import {
   Logger,
   Optional,
   Provider,
-  Injector,
 } from '@dandi/core'
 import { getInjectableMetadata } from '@dandi/core/internal/util'
 import {
-  ForbiddenError,
   HttpRequest,
   HttpRequestPathParamMap,
-  HttpRequestQueryParamMap, HttpResponse,
+  HttpRequestQueryParamMap,
+  HttpResponse,
 } from '@dandi/http'
 import { HttpRequestHandler, HttpRequestHandlerMethod, HttpRequestInfo } from '@dandi/http-pipeline'
 
 import { AuthProviderFactory } from './auth-provider.factory'
-import { AuthorizationCondition, DeniedAuthorization } from './authorization.condition'
-import { RequestProviderRegistrar } from './request-provider-registrar'
 import { Route } from './route'
 import { RouteInitializationError } from './route-initialization.error'
 import { RouteInitializer } from './route-initializer'
@@ -26,22 +23,18 @@ import { RequestController, HttpRequestId } from './tokens'
 @Injectable(RouteInitializer)
 export class DefaultRouteInitializer implements RouteInitializer {
   constructor(
-    @Inject(RequestProviderRegistrar)
-    @Optional()
-    private registrars: RequestProviderRegistrar[],
     @Inject(Logger) private logger: Logger,
     @Inject(AuthProviderFactory)
     @Optional()
     private authProviderFactory?: AuthProviderFactory,
   ) {}
 
-  public async initRouteRequest(
-    injector: Injector,
+  public initRouteRequest(
     route: Route,
     req: HttpRequest,
     requestInfo: HttpRequestInfo,
     res: HttpResponse,
-  ): Promise<Provider<any>[]> {
+  ): Provider<any>[] {
     this.logger.debug(
       `begin initRouteRequest ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,
       route.httpMethod.toUpperCase(),
@@ -51,9 +44,7 @@ export class DefaultRouteInitializer implements RouteInitializer {
 
     try {
       providers.push(...this.generateRequestProviders(route, req, res, requestInfo))
-      providers.push(...(await this.generateAuthProviders(route, req)))
-      providers.push(...(await this.generateRequestRegistrarProviders(injector, providers)))
-      await this.handleAuthorizationConditions(injector, providers)
+      providers.push(...this.generateAuthProviders(route, req))
       return providers
     } catch (err) {
       throw new RouteInitializationError(err, route)
@@ -115,36 +106,10 @@ export class DefaultRouteInitializer implements RouteInitializer {
     return result
   }
 
-  private async generateAuthProviders(route: Route, req: HttpRequest): Promise<Provider<any>[]> {
+  private generateAuthProviders(route: Route, req: HttpRequest): Provider<any>[] {
     if (!this.authProviderFactory) {
       return []
     }
     return this.authProviderFactory.generateAuthProviders(route, req)
-  }
-
-  private async handleAuthorizationConditions(injector: Injector, providers: Provider<any>[]): Promise<void> {
-    await injector.invoke(this as DefaultRouteInitializer, 'checkAuthorizationConditions', ...providers)
-  }
-
-  public checkAuthorizationConditions(
-    @Inject(AuthorizationCondition) @Optional() conditions: AuthorizationCondition[],
-  ): void {
-    const denied = conditions?.filter((result) => !result.allowed) as DeniedAuthorization[]
-    if (denied?.length) {
-      throw new ForbiddenError(denied.map((d) => d.reason).join('; '))
-    }
-  }
-
-  private async generateRequestRegistrarProviders(injector: Injector, providers: Provider<any>[]): Promise<Provider<any>[]> {
-    if (!this.registrars) {
-      return []
-    }
-    return (await Promise.all(this.registrars.map(async (registrar: RequestProviderRegistrar) =>
-      await injector.invoke<RequestProviderRegistrar, Provider<any>[]>(registrar, 'provide', ...providers)),
-    ))
-      .reduce((result, providers) => {
-        result.push(...providers || [])
-        return result
-      }, [])
   }
 }
