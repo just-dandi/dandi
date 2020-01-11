@@ -1,34 +1,32 @@
 import { Inject, InjectionToken, OpinionatedToken, Provider } from '@dandi/core'
 import { stubHarness, TestInjector } from '@dandi/core/testing'
 import { HttpMethod, HttpRequest, HttpRequestScope } from '@dandi/http'
-import { HttpRequestPreparer, HttpRequestPreparerResult, httpRequestPreparerResultProvider } from '@dandi/http-pipeline'
+import { HttpPipelinePreparer, HttpPipelinePreparerResult, httpPipelinePreparerResultProvider } from '@dandi/http-pipeline'
 
 import { expect } from 'chai'
 
-describe('httpRequestPreparerResultProvider', () => {
+describe('httpPipelinePreparerResultProvider', () => {
 
   const testPreparerProvides = OpinionatedToken.local('@dandi/http-pipeline/test', 'test-preparer-result', {
     restrictScope: HttpRequestScope,
   })
-  // const testPreparerProvides = SymbolToken.for('test-preparer-result')
-  // const dependentTestPreparerProvides = SymbolToken.for('dependent-test-preparer-result')
   const dependentTestPreparerProvides = OpinionatedToken.local('@dandi/http-pipeline/test', 'dependent-test-preparer-result', {
     restrictScope: HttpRequestScope,
   })
 
-  @HttpRequestPreparer()
-  class TestPreparer implements HttpRequestPreparer {
-    public async prepare(): Promise<HttpRequestPreparerResult> {
+  @HttpPipelinePreparer()
+  class TestPreparer implements HttpPipelinePreparer {
+    public async prepare(): Promise<HttpPipelinePreparerResult> {
       return testPreparerResult
     }
   }
 
-  @HttpRequestPreparer(TestPreparer)
-  class DependentTestPreparer implements HttpRequestPreparer {
+  @HttpPipelinePreparer(TestPreparer)
+  class DependentTestPreparer implements HttpPipelinePreparer {
 
     constructor(@Inject(testPreparerProvides) private testPreparerValue: string) {}
 
-    public async prepare(): Promise<HttpRequestPreparerResult> {
+    public async prepare(): Promise<HttpPipelinePreparerResult> {
       return dependentTestPreparerResult
     }
 
@@ -43,14 +41,14 @@ describe('httpRequestPreparerResultProvider', () => {
     },
   )
 
-  let testPreparerResult: HttpRequestPreparerResult
-  let dependentTestPreparerResult: HttpRequestPreparerResult
+  let testPreparerResult: HttpPipelinePreparerResult
+  let dependentTestPreparerResult: HttpPipelinePreparerResult
 
-  let testPreparerResultToken: InjectionToken<HttpRequestPreparerResult>
-  let dependentTestPreparerResultToken: InjectionToken<HttpRequestPreparerResult>
+  let testPreparerResultToken: InjectionToken<HttpPipelinePreparerResult>
+  let dependentTestPreparerResultToken: InjectionToken<HttpPipelinePreparerResult>
 
-  let testPreparerResultProvider: Provider<HttpRequestPreparerResult>
-  let dependentTestPreparerResultProvider: Provider<HttpRequestPreparerResult>
+  let testPreparerResultProvider: Provider<HttpPipelinePreparerResult>
+  let dependentTestPreparerResultProvider: Provider<HttpPipelinePreparerResult>
 
   let httpRequest: HttpRequest
   let requestInjector: TestInjector
@@ -69,11 +67,11 @@ describe('httpRequestPreparerResultProvider', () => {
     testPreparerResult = [{ provide: testPreparerProvides, useValue: 'bar' }]
     dependentTestPreparerResult = [{ provide: dependentTestPreparerProvides, useValue: 'dependent-bar' }]
 
-    testPreparerResultToken = HttpRequestPreparerResult(TestPreparer)
-    dependentTestPreparerResultToken = HttpRequestPreparerResult(DependentTestPreparer)
+    testPreparerResultToken = HttpPipelinePreparerResult(TestPreparer)
+    dependentTestPreparerResultToken = HttpPipelinePreparerResult(DependentTestPreparer)
 
-    testPreparerResultProvider = httpRequestPreparerResultProvider(TestPreparer)
-    dependentTestPreparerResultProvider = httpRequestPreparerResultProvider(DependentTestPreparer)
+    testPreparerResultProvider = httpPipelinePreparerResultProvider(TestPreparer)
+    dependentTestPreparerResultProvider = httpPipelinePreparerResultProvider(DependentTestPreparer)
   })
   afterEach(() => {
     requestInjector = undefined

@@ -5,7 +5,7 @@ import { Route } from './route'
 import { localOpinionatedToken } from './local.token'
 
 export interface AuthProviderFactory {
-  generateAuthProviders(route: Route, req: HttpRequest): Promise<Provider<any>[]>
+  generateAuthProviders(route: Route, req: HttpRequest): Provider<any>[]
 }
 
 export const AuthProviderFactory: InjectionToken<AuthProviderFactory> = localOpinionatedToken('AuthProviderFactory', {

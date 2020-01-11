@@ -20,7 +20,7 @@ import { HttpPipelineResultTransformer } from './http-pipeline-result-transforme
 import { HttpPipelineTerminator } from './http-pipeline-terminator'
 import { HttpRequestHandler, HttpRequestHandlerMethod } from './http-request-handler'
 import { HttpRequestInfo } from './http-request-info'
-import { HttpRequestPreparerResult, httpRequestPreparerResultProvider } from './http-request-preparer'
+import { HttpPipelinePreparerResult, httpPipelinePreparerResultProvider } from './http-pipeline-preparer'
 
 @Injectable()
 export class HttpPipeline {
@@ -120,8 +120,8 @@ export class HttpPipeline {
     }
     const providers: Provider<any>[] = []
     for (const preparer of config.before) {
-      const token = HttpRequestPreparerResult(preparer)
-      const provider = httpRequestPreparerResultProvider(preparer)
+      const token = HttpPipelinePreparerResult(preparer)
+      const provider = httpPipelinePreparerResultProvider(preparer)
       const preparerInjector = injector.createChild(preparer, [provider].concat(providers))
       const preparerResult = (await preparerInjector.inject(token)).singleValue
       providers.push(...preparerResult)

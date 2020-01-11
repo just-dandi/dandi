@@ -1,17 +1,18 @@
-import { Inject, Injectable, Provider, Injector } from '@dandi/core'
+import { Injectable, Provider, Injector } from '@dandi/core'
 import { HttpRequest, UnauthorizedError } from '@dandi/http'
+import { HttpPipelinePreparer } from '@dandi/http-pipeline'
 
 import { AuthProviderFactory } from './auth-provider.factory'
 import { AuthorizationService } from './authorization.service'
-import { AuthorizedUser, AuthorizedUserProvider } from './authorized.user'
+import { AuthorizedUserProvider } from './authorized.user'
 import { RequestAuthorizationService } from './request-authorization.service'
 import { Route } from './route'
 
 @Injectable(AuthProviderFactory)
+@HttpPipelinePreparer()
 export class AuthorizationAuthProviderFactory implements AuthProviderFactory {
-  constructor(@Inject(Injector) private injector: Injector) {}
 
-  public async generateAuthProviders(route: Route, req: HttpRequest): Promise<Provider<any>[]> {
+  public generateAuthProviders(route: Route, req: HttpRequest): Provider<any>[] {
     const authHeader = req.get('Authorization')
 
     if (!authHeader) {
@@ -19,25 +20,24 @@ export class AuthorizationAuthProviderFactory implements AuthProviderFactory {
         throw new UnauthorizedError()
       }
 
-      return [{
-        provide: AuthorizedUser,
-        useValue: null,
-      }]
+      return []
     }
 
     const authSchemeEndIndex = authHeader.indexOf(' ')
     const authScheme = authHeader.substring(0, authSchemeEndIndex > 0 ? authSchemeEndIndex : undefined)
-    const authServiceResult = await this.injector.inject(AuthorizationService(authScheme), !route.authorization)
-    const providers: Provider<any>[] = []
-    if (authServiceResult) {
-      providers.push(
-        {
-          provide: RequestAuthorizationService,
-          useValue: authServiceResult.singleValue,
-        },
-        AuthorizedUserProvider,
-      )
+    async function authServiceResultFactory(injector: Injector): Promise<any> {
+      return (await injector.inject(AuthorizationService(authScheme), !route.authorization))?.singleValue
     }
+    const providers: Provider<any>[] = [
+      {
+        provide: RequestAuthorizationService,
+        useFactory: authServiceResultFactory,
+        deps: [
+          Injector,
+        ],
+      },
+      AuthorizedUserProvider,
+    ]
 
     if (Array.isArray(route.authorization) && route.authorization.length) {
       providers.push(...route.authorization)

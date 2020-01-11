@@ -105,7 +105,7 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
 
   public getInstance<T>(provider: Provider<T>): T {
     return this.withInstanceContext(provider, instanceContext => {
-      return instanceContext.repository.getInstance(provider.provide)
+      return instanceContext?.repository.getInstance(provider.provide)
     })
   }
 
