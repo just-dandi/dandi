@@ -5,7 +5,6 @@ import {
   LogEntry,
   LogLevel,
   Optional,
-  Singleton,
 } from '@dandi/core'
 import { getInjectionScopeName } from '@dandi/core/internal/util'
 import { DateTime, DateTimeFormatOptions } from 'luxon'
@@ -35,7 +34,7 @@ function coalesceByDefined<T>(a: T, b: T): T {
   return typeof a === 'undefined' ? b : a
 }
 
-@Injectable(LogListener, Singleton)
+@Injectable(LogListener)
 export class ConsoleLogListener implements LogListener {
 
   private tagLengthHighWater = 0

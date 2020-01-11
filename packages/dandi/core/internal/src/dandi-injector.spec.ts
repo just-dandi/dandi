@@ -1,18 +1,17 @@
-import { Disposable } from '@dandi/common'
 import {
   Inject,
   Injectable,
-  InjectionResult,
+  InjectionResult, InjectionToken,
+  Injector,
   InstanceGenerator,
   InvalidTokenError,
   Invoker,
   MissingProviderError,
-  MissingTokenError,
-  Optional,
+  MissingTokenError, OpinionatedToken,
+  Optional, Provider,
   Registerable,
   ResolverContext,
   SymbolToken,
-  Injector,
 } from '@dandi/core'
 import { DandiGenerator, DandiInjector } from '@dandi/core/internal'
 
@@ -61,43 +60,6 @@ describe('DandiInjector', () => {
       createInjector(TestInjectable)
     })
 
-    describe('canResolve', () => {
-
-      it('throws an error when called without an injection token', () => {
-        expect(() => injector.canResolve(undefined)).to.throw(MissingTokenError)
-      })
-
-      it('throws an error when called with an invalid injection token', () => {
-        expect(() => injector.canResolve({} as any)).to.throw(InvalidTokenError)
-      })
-
-      it('returns true when there is a provider for the requested token', () => {
-        expect(injector.canResolve(TestInjectable)).to.be.true
-      })
-
-      it('returns false when there is no provider for the requested token', () => {
-        expect(injector.canResolve(TestWithDependency)).to.be.false
-      })
-
-      it('returns true when a provider is specified in the auxiliary providers', () => {
-        expect(injector.canResolve(TestWithDependency)).to.be.false // sanity check
-
-        expect(injector.canResolve(TestWithDependency, TestWithDependency)).to.be.true
-      })
-
-      it('returns true when a provider can be found in a parent injector', () => {
-        expect(injector.canResolve(TestWithDependency)).to.be.false // sanity check
-        register(TestWithDependency)
-
-        expect(injector.canResolve(TestWithDependency)).to.be.true
-      })
-
-      it('returns false when there is not provider for the specified token, including in a parent rootInjector scope', () => {
-        expect(injector.canResolve(TestWithDependency)).to.be.false
-      })
-
-    })
-
     describe('resolve', () => {
 
       it('throws an error when called without an injection token', () => {
@@ -123,14 +85,90 @@ describe('DandiInjector', () => {
         expect(injector.resolve(TestWithDependency, true)).to.be.undefined
       })
 
-      it('returns the provider when it is specified in the auxiliary providers', () => {
+      // it('returns the provider when it is specified in the auxiliary providers', () => {
+      //
+      //   expect(injector.resolve(TestWithDependency, true)).to.be.undefined // sanity check
+      //
+      //   expect(injector.resolve(TestWithDependency, TestWithDependency)).to.deep.equal({
+      //     provide: TestWithDependency,
+      //     useClass: TestWithDependency,
+      //   })
+      // })
 
-        expect(injector.resolve(TestWithDependency, true)).to.be.undefined // sanity check
+      describe('scope restrictions', () => {
+        class ScopeRestriction {}
 
-        expect(injector.resolve(TestWithDependency, TestWithDependency)).to.deep.equal({
-          provide: TestWithDependency,
-          useClass: TestWithDependency,
+        let scopeRestrictedToken: InjectionToken<any>
+        let scopeRestrictedProvider: Provider<any>
+        let childInjector: Injector
+
+        beforeEach(() => {
+          scopeRestrictedToken = new OpinionatedToken('test-scoped', { restrictScope: ScopeRestriction })
+          scopeRestrictedProvider = {
+            provide: scopeRestrictedToken,
+            useValue: {},
+          }
+          childInjector = injector.createChild(class ChildScope {}, [scopeRestrictedProvider])
         })
+        afterEach(() => {
+          scopeRestrictedToken = undefined
+          scopeRestrictedProvider = undefined
+        })
+
+        it('returns the provider for a resolved, scope-restricted token if the injector has a compatible scope', () => {
+          const validScopeInjector = childInjector.createChild(ScopeRestriction)
+
+          expect(validScopeInjector.resolve(scopeRestrictedToken)).to.exist
+        })
+
+        it('returns the provider for a resolved, scope-restricted token if the injector hierarchy has a compatible scope', () => {
+          const validScopeInjector = childInjector.createChild(ScopeRestriction)
+          const childOfValidScopeInjector = validScopeInjector.createChild(class YetAnotherChildScope {})
+
+          expect(childOfValidScopeInjector.resolve(scopeRestrictedToken)).to.exist
+        })
+
+        it('throws an error when attempting to resolve a scope restricted token if the injector hierarchy does not have a compatible scope', () => {
+          expect(() => childInjector.resolve(scopeRestrictedToken)).to.throw
+        })
+
+      })
+
+    })
+
+    describe('canResolve', () => {
+
+      it('throws an error when called without an injection token', () => {
+        expect(() => injector.canResolve(undefined)).to.throw(MissingTokenError)
+      })
+
+      it('throws an error when called with an invalid injection token', () => {
+        expect(() => injector.canResolve({} as any)).to.throw(InvalidTokenError)
+      })
+
+      it('returns true when there is a provider for the requested token', () => {
+        expect(injector.canResolve(TestInjectable)).to.be.true
+      })
+
+      it('returns false when there is no provider for the requested token', () => {
+        expect(injector.canResolve(TestWithDependency)).to.be.false
+      })
+
+      // it('returns true when a provider is specified in the auxiliary providers', () => {
+      //   expect(injector.canResolve(TestWithDependency)).to.be.false // sanity check
+      //
+      //   expect(injector.canResolve(TestWithDependency, TestWithDependency)).to.be.true
+      // })
+
+      it('returns true when a provider can be found in a parent injector', () => {
+        expect(injector.canResolve(TestWithDependency)).to.be.false // sanity check
+        register(TestWithDependency)
+
+        expect(injector.canResolve(TestWithDependency)).to.be.true
+      })
+
+      it('returns false when there is not provider for the specified token, including in a parent rootInjector scope', () => {
+        expect(injector.canResolve(TestWithDependency)).to.be.false
       })
 
     })
@@ -172,7 +210,8 @@ describe('DandiInjector', () => {
         })
         const injector = new DandiRootInjector(generatorFactory)
 
-        const resultPromise = injector.inject(TestInjectable, TestInjectable)
+        register(TestInjectable)
+        const resultPromise = injector.inject(TestInjectable)
         expect(generator.generateInstance).not.to.have.been.called
 
         resolve(generator)
@@ -187,35 +226,11 @@ describe('DandiInjector', () => {
         const instance = new TestInjectable()
         generator.generateInstance.resolves(instance)
 
-        const result = await injector.inject(TestInjectable, TestInjectable)
+        register(TestInjectable)
+        const result = await injector.inject(TestInjectable)
 
         expect(result).to.be.instanceof(InjectionResult)
         expect(result.value).to.equal(instance)
-
-      })
-
-      it('does not automatically dispose the resolver scope used to create the instance', async () => {
-
-        const instance = new TestInjectable()
-        generator.generateInstance.resolves(instance)
-
-        const result = await injector.inject(TestInjectable, TestInjectable)
-        expect(result).to.exist
-        expect(resolveInternal).to.have.been.called
-        const resolverContext = resolveInternal.firstCall.returnValue
-
-        expect(Disposable.isDisposed(resolverContext)).to.be.false
-
-      })
-
-      it('immediately disposes the resolver scope if the generator returns undefined', async () => {
-
-        const result = await injector.inject(TestInjectable, TestInjectable)
-        expect(resolveInternal).to.have.been.called
-        const resolverContext = resolveInternal.firstCall.returnValue
-
-        expect(result).to.be.undefined // sanity check
-        expect(Disposable.isDisposed(resolverContext)).to.be.true
 
       })
 

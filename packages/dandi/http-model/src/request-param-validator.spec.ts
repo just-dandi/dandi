@@ -1,6 +1,6 @@
-import { ParamMetadata } from '@dandi/core'
+import { ParamMetadata } from '@dandi/core/internal/util'
 import { testHarnessSingle } from '@dandi/core/testing'
-import { HttpRequestPathParamMap } from '@dandi/http'
+import { HttpRequestPathParamMap, HttpRequestScope } from '@dandi/http'
 import { PathParam, RequestParamModelBuilderOptionsProvider } from '@dandi/http-model'
 import { MemberMetadata } from '@dandi/model'
 import { MetadataModelBuilder, PrimitiveTypeConverter, TypeConverter } from '@dandi/model-builder'
@@ -70,8 +70,9 @@ describe('requestParamValidatorFactory', () => {
         },
       },
     )
+    const requestInjector = harness.createChild(HttpRequestScope)
 
-    await harness.invoke(controller, 'testMethod')
+    await requestInjector.invoke(controller, 'testMethod')
 
     expect(convert).to.have.been.calledWith('bar', { type: String })
   })

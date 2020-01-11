@@ -1,131 +1,160 @@
+import { Injector } from '@dandi/core'
 import { DandiInjector } from '@dandi/core/internal'
-import { LoggerFixture } from '@dandi/core/testing'
+import { LoggerFixture, stub } from '@dandi/core/testing'
 import { ViewEngineResolver } from '@dandi/mvc-view'
 
 import { expect } from 'chai'
-import { createStubInstance } from 'sinon'
+import { createStubInstance, SinonStub, SinonStubbedInstance } from 'sinon'
+import { Constructor } from '@dandi/common'
 
-describe('ViewEngineResolver', function() {
-  beforeEach(function() {
-    this.exists = this.sandbox.stub(ViewEngineResolver as any, 'exists')
-    this.logger = new LoggerFixture()
-    this.configA = {
+describe('ViewEngineResolver', () => {
+
+  let exists: SinonStub
+  let logger: LoggerFixture
+  let configA: any
+  let configB: any
+  let configC: any
+  let configD: any
+  let configE: any
+  let configF: any
+  let configs: any[]
+  let injector: SinonStubbedInstance<Injector>
+  let viewResolver: ViewEngineResolver
+
+  beforeEach(() => {
+    exists = stub(ViewEngineResolver as any, 'exists')
+    logger = new LoggerFixture()
+    configA = {
       engine: class EngineA {},
       priority: 3,
       extension: 'a',
     }
-    this.configB = {
+    configB = {
       engine: class EngineB {},
       extension: 'b',
     }
-    this.configC = {
+    configC = {
       engine: class EngineC {},
       extension: 'c',
     }
-    this.configD = {
+    configD = {
       engine: class EngineD {},
       priority: 0,
       extension: 'd',
     }
-    this.configE = {
+    configE = {
       engine: class EngineE {},
       priority: 1,
       extension: 'e',
     }
-    this.configF = {
+    configF = {
       engine: class EngineF {},
       priority: 0,
       extension: 'e',
     }
-    this.configs = [this.configA, this.configB, this.configC, this.configD, this.configE, this.configF]
-    this.injector = createStubInstance(DandiInjector)
+    configs = [configA, configB, configC, configD, configE, configF]
+    injector = createStubInstance(DandiInjector)
 
-    this.viewResolver = new ViewEngineResolver(this.logger, this.configs, this.injector)
+    viewResolver = new ViewEngineResolver(logger, configs, injector as unknown as Injector)
+  })
+  afterEach(() => {
+    exists.restore()
+    exists = undefined
+    logger = undefined
+    configA = undefined
+    configB = undefined
+    configC = undefined
+    configD = undefined
+    configE = undefined
+    configF = undefined
+    configs = undefined
+    injector = undefined
+    viewResolver = undefined
   })
 
-  describe('#ctr', function() {
-    it('assigns an index to each of the specified configurations', function() {
-      this.configs.forEach((config) => expect(config.index).to.exist)
+  describe('#ctr', () => {
+    it('assigns an index to each of the specified configurations', () => {
+      configs.forEach((config) => expect(config.index).to.exist)
     })
 
-    it('sorts the configurations by ascending priority, then ascending index', function() {
-      expect(this.configs).to.deep.equal([
-        this.configD,
-        this.configF,
-        this.configE,
-        this.configA,
-        this.configB,
-        this.configC,
+    it('sorts the configurations by ascending priority, then ascending index', () => {
+      expect(configs).to.deep.equal([
+        configD,
+        configF,
+        configE,
+        configA,
+        configB,
+        configC,
       ])
     })
 
-    it('it logs a warning when encountering configurations with duplicate extensions, and marks the config as ignored', function() {
-      expect(this.logger.warn).to.have.been.calledWithExactly(
+    it('it logs a warning when encountering configurations with duplicate extensions, and marks the config as ignored', () => {
+      expect(logger.warn).to.have.been.calledWithExactly(
         `ignoring duplicate view engine configuration for extension 'e' (EngineE)`,
       )
-      expect(this.configE.ignored).to.be.true
+      expect(configE.ignored).to.be.true
     })
 
-    it('creates a map of extensions to their configured engine', function() {
-      this.configs.forEach((config) => {
+    it('creates a map of extensions to their configured engine', () => {
+      configs.forEach((config) => {
         if (config.ignored) {
-          expect(this.viewResolver.extensions.get(config.extension)).to.exist
-          expect(this.viewResolver.extensions.get(config.extension)).not.to.equal(config.engine)
+          expect((viewResolver as any).extensions.get(config.extension)).to.exist
+          expect((viewResolver as any).extensions.get(config.extension)).not.to.equal(config.engine)
         } else {
-          expect(this.viewResolver.extensions.get(config.extension)).to.equal(config.engine)
+          expect((viewResolver as any).extensions.get(config.extension)).to.equal(config.engine)
         }
       })
     })
   })
 
-  describe('#resolve', function() {
-    it('returns a resolved view for a known extension with an explicitly specified name', async function() {
+  describe('#resolve', () => {
+    it('returns a resolved view for a known extension with an explicitly specified name', async () => {
       const instance = {}
-      this.exists.returns(true)
-      this.injector.inject.returns({ singleValue: instance })
+      exists.returns(true)
+      injector.inject.returns({ singleValue: instance } as any)
 
-      expect(await this.viewResolver.resolve({ context: __dirname }, 'foo.a')).to.deep.equal({
+      expect(await viewResolver.resolve({ context: __dirname, name: 'whateva' }, 'foo.a')).to.deep.equal({
         engine: instance,
         templatePath: __dirname + '/foo.a',
       })
     })
 
-    it('returns a resolved view for a known extension with the name specified by view metadata', async function() {
+    it('returns a resolved view for a known extension with the name specified by view metadata', async () => {
       const instance = {}
-      this.exists.returns(true)
-      this.injector.inject.returns({ singleValue: instance })
+      exists.returns(true)
+      injector.inject.returns({ singleValue: instance } as any)
 
-      expect(await this.viewResolver.resolve({ context: __dirname, name: 'foo.a' })).to.deep.equal({
+      expect(await viewResolver.resolve({ context: __dirname, name: 'foo.a' })).to.deep.equal({
         engine: instance,
         templatePath: __dirname + '/foo.a',
       })
     })
 
-    it('returns a cached resolved view when called for the same path multiple times', async function() {
+    it('returns a cached resolved view when called for the same path multiple times', async () => {
       const instance = {}
-      this.exists.returns(true)
-      this.injector.inject.returns({ singleValue: instance })
+      exists.returns(true)
+      injector.inject.returns({ singleValue: instance } as any)
 
-      const resolved = await this.viewResolver.resolve({ context: __dirname }, 'foo.a')
-      expect(await this.viewResolver.resolve({ context: __dirname }, 'foo.a')).to.equal(resolved)
+      const resolved = await viewResolver.resolve({ context: __dirname, name: 'whateva' }, 'foo.a')
+      expect(await viewResolver.resolve({ context: __dirname, name: 'whateva' }, 'foo.a')).to.equal(resolved)
     })
 
-    it('locates a file by iterating the configurations and checking for files with the configured extension', async function() {
-      this.exists.callsFake((path) => path.endsWith('.e'))
-      this.injector.inject.callsFake((ctr) => ({ singleValue: new ctr() }))
+    it('locates a file by iterating the configurations and checking for files with the configured extension', async () => {
+      exists.callsFake((path) => path.endsWith('.e'))
+      injector.inject.callsFake((ctr: Constructor) => ({ singleValue: new ctr() } as any))
 
-      const resolved = await this.viewResolver.resolve({ context: __dirname }, 'foo')
-      expect(resolved.engine).to.be.instanceof(this.configF.engine)
+      const resolved = await viewResolver.resolve({ context: __dirname, name: 'whateva' }, 'foo')
+      expect(resolved.engine).to.be.instanceof(configF.engine)
     })
 
-    it('skips ignored configurations when searching for files', async function() {
+    it('skips ignored configurations when searching for files', async () => {
       // use a configuration that comes after the extension with an ignored configuration
-      this.exists.callsFake((path) => path.endsWith('.c'))
-      this.injector.inject.callsFake((ctr) => ({ singleValue: new ctr() }))
+      exists.callsFake((path) => path.endsWith('.c'))
+      injector.inject.callsFake((ctr: Constructor) => ({ singleValue: new ctr() } as any))
 
-      await this.viewResolver.resolve({ context: __dirname }, 'foo')
+      await viewResolver.resolve({ context: __dirname, name: 'whateva' }, 'foo')
       // should only get one call to exists with a path that ends with .c
-      expect(this.exists.getCalls().filter((call) => call.args[0].endsWith('e')).length).to.equal(1)
+      expect(exists.getCalls().filter((call) => call.args[0].endsWith('e')).length).to.equal(1)
     })
   })
 })

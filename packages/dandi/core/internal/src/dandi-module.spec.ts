@@ -43,7 +43,7 @@ describe('DandiModule', function() {
       expect(module[DandiModule.MODULE_NAME]).to.equal('TestModule')
     })
 
-    it('adds any provided entries to itself', function() {
+    it('adds any provided providers to itself', function() {
       class TestClass {}
       const testProvider = {
         provide: TestClass,
@@ -54,7 +54,7 @@ describe('DandiModule', function() {
       expect(module).to.include(testProvider)
     })
 
-    it('calls tag on the array of entries', function() {
+    it('calls tag on the array of providers', function() {
       class TestClass {}
       const testProvider = {
         provide: TestClass,
@@ -66,7 +66,7 @@ describe('DandiModule', function() {
   })
 
   describe('#tag', function() {
-    it('adds module info to class entries', function() {
+    it('adds module info to class providers', function() {
       class TestClass {}
 
       const module = new TestModule(TestClass)
@@ -83,7 +83,7 @@ describe('DandiModule', function() {
       expect(moduleInfo.module).to.equal(module)
     })
 
-    it('adds module info to provider entries', function() {
+    it('adds module info to provider providers', function() {
       const provider = {
         provide: SymbolToken.for('testProvider'),
         useValue: {},
@@ -103,7 +103,7 @@ describe('DandiModule', function() {
       expect(moduleInfo.module).to.equal(module)
     })
 
-    it('adds module info for tokens of provider entries', function() {
+    it('adds module info for tokens of provider providers', function() {
       const provider = {
         provide: SymbolToken.for('testProvider'),
         useValue: {},

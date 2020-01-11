@@ -1,4 +1,5 @@
 import { FactoryProvider, InjectionToken } from '@dandi/core'
+import { HttpRequestScope } from '@dandi/http'
 import { Route } from '@dandi/mvc'
 
 import { localOpinionatedToken } from './local.token'
@@ -11,6 +12,7 @@ export type ViewResultFactory = (name?: string, data?: any) => Promise<ViewResul
 
 export const ViewResultFactory: InjectionToken<ViewResultFactory> = localOpinionatedToken('ViewResultFactory', {
   multi: false,
+  restrictScope: HttpRequestScope,
 })
 
 function viewResultFactory(resolver: ViewEngineResolver, route: ViewRoute): ViewResultFactory {

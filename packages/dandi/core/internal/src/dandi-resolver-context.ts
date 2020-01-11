@@ -1,88 +1,44 @@
-import { CUSTOM_INSPECTOR, Disposable } from '@dandi/common'
-import { getInjectionScope, getTokenString, getInjectionScopeName } from '@dandi/core/internal/util'
 import { InjectionResult, InjectionScope, InjectionToken, Provider, ResolverContext } from '@dandi/core/types'
 
 import { DandiInjectorContext } from './dandi-injector-context'
-import { RepositoryEntry } from './repository'
 
 export class DandiResolverContext<TTarget = unknown> implements ResolverContext<TTarget> {
-
-  public get injectionScope(): InjectionScope {
-    return getInjectionScope(this.match as any) || this.injectorContext.scope
-  }
-
-  public get match(): RepositoryEntry<TTarget> {
-    if (!this._match) {
-      this._match = this.injectorContext.find(this.target)
-    }
-    return this._match
-  }
 
   public get result(): InjectionResult<TTarget> {
     return this._result
   }
 
-  private _match: RepositoryEntry<TTarget>
-  private _result: InjectionResult<TTarget>
+  public readonly injectionScope: InjectionScope
 
-  private readonly instances: any[] = []
+  private _result: InjectionResult<TTarget>
 
   constructor(
     public readonly target: InjectionToken<TTarget>,
-    private readonly injectorContext: DandiInjectorContext,
+    public readonly match: Provider<TTarget> | Set<Provider<TTarget>>,
+    public readonly matchContext: DandiInjectorContext,
+    public readonly injectorContext: DandiInjectorContext,
   ) {
-
-    if (!injectorContext) {
-      throw new Error('parentInjectorContext must be specified')
-    }
-
-  }
-
-  public addInstance(obj: TTarget): TTarget {
-    this.instances.push(obj)
-    return obj
+    this.injectionScope = injectorContext?.scope
   }
 
   public resolveValue(result: TTarget | TTarget[]): InjectionResult<TTarget> {
-    this._result = new InjectionResult<TTarget>(this, result)
+    this._result = new InjectionResult<TTarget>(result)
     return this._result
   }
 
-  public getSingleton(provider: Provider<TTarget>): TTarget {
-    return this.injectorContext.getSingleton(provider)
+  public getInstance(provider: Provider<TTarget>): TTarget {
+    return this.injectorContext.getInstance(provider)
   }
 
-  public addSingleton(provider: Provider<TTarget>, value: TTarget): TTarget {
-    return this.injectorContext.addSingleton(provider, value)
+  public addInstance(provider: Provider<TTarget>, value: TTarget): TTarget {
+    return this.injectorContext.addInstance(provider, value)
   }
 
-  public async dispose(reason: string): Promise<void> {
-    await Promise.all(this.instances.map((instance) => {
-      if (Disposable.isDisposable(instance) && !Disposable.isDisposed(instance)) {
-        return instance.dispose(`Disposing ResolverContext for ${this.getCustomInspectorString()}: ${reason}`)
-      }
-    }))
-    this.instances.length = 0
-    Disposable.remapDisposed(this, reason)
+  public getInstanceRequest<T>(provider: Provider<T>): Promise<T> {
+    return this.injectorContext.getInstanceRequest(provider)
   }
 
-  public [CUSTOM_INSPECTOR](): string {
-    const parts = [this.getCustomInspectorString()]
-    if (this.injectorContext) {
-      parts.push(this.injectorContext[CUSTOM_INSPECTOR]())
-    }
-    return parts.reverse().join(' -> ')
+  public setInstanceRequest<T>(provider: Provider<T>, value: Promise<T>): Promise<T> {
+    return this.injectorContext.setInstanceRequest(provider, value)
   }
-
-  protected getCustomInspectorString(): string {
-
-    const thisContext = getInjectionScope(this.match as any) || this.injectorContext.scope
-    if (!thisContext && !this.target) {
-      // this shouldn't really happen
-      return '???'
-    }
-
-    return getInjectionScopeName(thisContext) || getTokenString(this.target)
-  }
-
 }

@@ -1,6 +1,6 @@
-import { AppError, Uuid } from '@dandi/common'
+import { AppError, Disposable, Uuid } from '@dandi/common'
 import { Inject, Injectable, Logger, Injector } from '@dandi/core'
-import { HttpRequest, HttpResponse, HttpStatusCode } from '@dandi/http'
+import { createHttpRequestScope, HttpRequest, HttpResponse, HttpStatusCode } from '@dandi/http'
 import { HttpPipeline } from '@dandi/http-pipeline'
 
 import { PerfRecord } from './perf-record'
@@ -18,7 +18,7 @@ export class DefaultRouteExecutor implements RouteExecutor {
   ) {}
 
   public async execRoute(route: Route, req: HttpRequest, res: HttpResponse): Promise<void> {
-    return await this.injector.invoke(this as DefaultRouteExecutor, 'execRouteInternal',
+    const providers = [
       {
         provide: Route,
         useValue: route,
@@ -31,6 +31,10 @@ export class DefaultRouteExecutor implements RouteExecutor {
         provide: HttpResponse,
         useValue: res,
       },
+    ]
+    return Disposable.useAsync(
+      this.injector.createChild(createHttpRequestScope(req), providers),
+      async requestInjector => await requestInjector.invoke(this as DefaultRouteExecutor, 'execRouteInternal'),
     )
   }
 

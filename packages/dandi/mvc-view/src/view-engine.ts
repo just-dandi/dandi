@@ -10,7 +10,6 @@ export interface ViewEngine {
 
 export const ViewEngine: InjectionToken<ViewEngine[]> = localOpinionatedToken('ViewEngine', {
   multi: true,
-  singleton: true,
 })
 
 export type ConfiguredViewEngine = [Constructor<ViewEngine>, Provider<any>]

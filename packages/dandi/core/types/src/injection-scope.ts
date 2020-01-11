@@ -4,6 +4,7 @@ import { localToken } from '../../src/local-token'
 
 import { InjectionToken } from './injection-token'
 import { InstanceInvokableFn } from './injector'
+import { FactoryProvider } from './provider'
 
 /**
  * Stores a reference to the object (and for invocations, the method) that requested an injection dependency.
@@ -16,13 +17,18 @@ export interface InvokeInjectionScope<TInstance = any, TResult = any> {
 export interface InvokeParamInjectionScope<TInstance = any, TResult = any> extends InvokeInjectionScope<TInstance, TResult> {
   paramName: string
 }
+
+export interface FactoryParamInjectionScope {
+  target: FactoryProvider<any>
+  paramToken: InjectionToken<any>
+}
+
 export class DependencyInjectionScope {
 
   public readonly value: string
 
   constructor(target: string)
   constructor(target: Constructor, ctrTag?: false)
-  constructor(target: object, methodName: string)
   constructor(target: object, methodName: string, paramName: string)
   constructor(
     public readonly target: Constructor | object | string,
@@ -43,10 +49,10 @@ export class DependencyInjectionScope {
 
     let value = ''
     if (isConstructor(this.target)) {
-      value += this.target.name
-      if (this.methodName !== false) {
-        value += '.ctr'
+      if (!this.methodName) {
+        value += 'constructor '
       }
+      value += this.target.name
     } else {
       value += this.target.constructor.name
       if (this.methodName !== false) {
@@ -54,20 +60,33 @@ export class DependencyInjectionScope {
       }
     }
     if (this.paramName) {
-      value = `param ${this.paramName} for ${value}`
+      value = `param '${this.paramName}' for ${value}`
     }
     return value
   }
 
 }
 
-export type InjectionScope = Constructor | Function | InvokeInjectionScope | InvokeParamInjectionScope | string | DependencyInjectionScope
+export interface CustomInjectionScope {
+  description: string
+  type: string | symbol | Constructor
+  instanceId?: any
+}
+
+export type InjectionScope =
+  Constructor |
+  Function |
+  string |
+  CustomInjectionScope |
+  DependencyInjectionScope |
+  FactoryParamInjectionScope |
+  InvokeInjectionScope |
+  InvokeParamInjectionScope
 
 export const InjectionScope: InjectionToken<InjectionScope> = localToken.opinionated<InjectionScope>(
   'InjectionScope',
   {
     multi: false,
-    singleton: false,
     parentsOnly: true,
   },
 )

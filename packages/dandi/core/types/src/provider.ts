@@ -3,6 +3,7 @@ import { Constructor } from '@dandi/common'
 import { localToken } from '../../src/local-token'
 
 import { InjectionToken } from './injection-token'
+import { ScopeRestriction } from './scope-restriction'
 
 export interface InjectionOptions {
 
@@ -12,11 +13,6 @@ export interface InjectionOptions {
    * as a "multi" provider.
    */
   multi?: boolean
-
-  /**
-   * When set to `true`, the injector will generate a single instance that will be reused for all subsequent injections.
-   */
-  singleton?: boolean
 
   /**
    * When set to `true`, and registering an injectable as a provider for different injection token, the injectable is
@@ -29,6 +25,11 @@ export interface InjectionOptions {
    * only providers available from a parent.
    */
   parentsOnly?: boolean
+
+  /**
+   * Only allows the token to be injected as a child of the specified scope.
+   */
+  restrictScope?: ScopeRestriction
 }
 
 export interface ProviderOptions<T> extends InjectionOptions {
@@ -65,6 +66,6 @@ export interface ClassProvider<T> extends GeneratorProvider<T> {
   useClass: Constructor<T>
 }
 
-export type Provider<T> = ClassProvider<T> | FactoryProvider<T> | ValueProvider<T> | AsyncFactoryProvider<T>
-export type GeneratingProvider<T> = ClassProvider<T> | FactoryProvider<T> | AsyncFactoryProvider<T>
+export type Provider<T> = ClassProvider<T> | FactoryProvider<T> | ValueProvider<T>
+export type GeneratingProvider<T> = ClassProvider<T> | FactoryProvider<T>
 export type MultiProvider<T> = Provider<T> & { multi: true }

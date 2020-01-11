@@ -1,3 +1,4 @@
+import { Disposable } from '@dandi/common'
 import {
   AmbientInjectableScanner,
   AsyncFactoryProvider,
@@ -5,11 +6,12 @@ import {
   Injectable,
   InjectionScope,
   Injector,
-  Singleton,
+  RestrictScope,
+  ScopeBehavior,
   SymbolToken,
 } from '@dandi/core'
-import { RootInjectionScope } from '@dandi/core/internal'
-import { testHarnessSingle, testHarness } from '@dandi/core/testing'
+import { AppInjectionScope, RootInjectionScope } from '@dandi/core/internal'
+import { testHarness, testHarnessSingle } from '@dandi/core/testing'
 
 import { expect } from 'chai'
 import { stub } from 'sinon'
@@ -110,7 +112,7 @@ describe('DI Integration', function() {
   })
 
   it('provides the injection scope of the requesting entity when injecting', async function() {
-    @Injectable()
+    @Injectable(RestrictScope(ScopeBehavior.parent))
     class ContextTester {
       constructor(@Inject(InjectionScope) public scope: InjectionScope) {
       }
@@ -126,7 +128,8 @@ describe('DI Integration', function() {
 
     const result = await harness.inject(ContextHost)
 
-    expect(result.scope).to.equal(RootInjectionScope.target)
+    // the scope is RootInjectionScope, because TestHarness.register registers injectables with the root injector
+    expect(result.scope).to.equal(RootInjectionScope.constructor)
     expect(result.tester.scope).to.equal(ContextHost)
   })
 
@@ -137,7 +140,7 @@ describe('DI Integration', function() {
       context: any
     }
 
-    @Injectable()
+    @Injectable(RestrictScope(ScopeBehavior.parent))
     class ContextTester {
       constructor(@Inject(InjectionScope) public context: InjectionScope) {
       }
@@ -157,12 +160,12 @@ describe('DI Integration', function() {
 
     const result: TestResult = await harness.invoke(instance, 'test')
 
-    expect(result.context).to.equal(RootInjectionScope.target)
+    expect(result.context).to.equal(AppInjectionScope.constructor)
     expect(result.tester.context).to.deep.equal({
       target: instance,
       methodName: 'test',
       paramName: 'tester',
-      value: 'param tester for ContextHost.test',
+      value: `param 'tester' for ContextHost.test`,
     })
   })
 
@@ -175,7 +178,6 @@ describe('DI Integration', function() {
         id++
         return id
       }),
-      singleton: true,
     }
     harness.register(provider)
 
@@ -188,7 +190,7 @@ describe('DI Integration', function() {
   })
 
   it('does not create multiple instances of singletons when required by different dependents', async function() {
-    @Injectable(Singleton)
+    @Injectable()
     class Singlejon {
     }
 
@@ -213,7 +215,7 @@ describe('DI Integration', function() {
   })
 
   it('does not create multiple instances of singletons when explicitly resolving', async function() {
-    @Injectable(Singleton)
+    @Injectable()
     class Singlejon {
     }
 
@@ -241,7 +243,7 @@ describe('DI Integration', function() {
   })
 
   it('does not create multiple instances of singletons when invoking', async function() {
-    @Injectable(Singleton)
+    @Injectable()
     class Singlejon {
     }
 
@@ -298,7 +300,6 @@ describe('DI Integration', function() {
     const provider = {
       provide: TestToken,
       useClass: TestClass,
-      singleton: true,
     }
     harness.register(provider)
 
@@ -311,7 +312,7 @@ describe('DI Integration', function() {
   })
 
   it('can resolve singletons discovered on the global/ambient repository', async function() {
-    @Injectable(Singleton)
+    @Injectable()
     class TestClass {
     }
 
@@ -385,6 +386,71 @@ describe('DI Integration', function() {
 
     const result = await harness.invoke(tester, 'test')
     expect(result).to.equal('foo')
+
+  })
+
+  it('leaves instances created in a parent context due to an invocation in a state that they can still be used', async () => {
+    const Token = SymbolToken.for('test')
+    const provider = {
+      provide: Token,
+      useValue: 'foo',
+    }
+    @Injectable()
+    class TestClassA {
+
+      public foo = 'bar'
+
+      public test(@Inject(Token) token: string): string {
+        return token
+      }
+    }
+    @Injectable()
+    class TestClassB {
+
+      public foo = 'bar'
+
+      // the class-level injector must be branched off the injector where the class is registered
+      // it must still be usable (not disposed) after the initial call that instantiates it completes
+      constructor(@Inject(Injector) public injector: Injector) {}
+
+      // the method invocation-level injector is branched off whichever injector is used to perform the invocation
+      public async test(@Inject(TestClassA) testA: TestClassA, @Inject(Injector) injector: Injector): Promise<string> {
+        return await injector.invoke(testA, 'test', provider)
+      }
+    }
+    class Tester {
+      public async test(@Inject(TestClassB) testB: TestClassB, @Inject(Injector) injector: Injector): Promise<string> {
+        return await injector.invoke(testB, 'test')
+      }
+    }
+    const tester = new Tester()
+
+    harness.register(TestClassA, TestClassB)
+
+    await harness.invoke(tester, 'test')
+
+    const testA = await harness.inject(TestClassA)
+    const testB = await harness.inject(TestClassB)
+
+    expect(testA.foo).to.equal('bar')
+    expect(Disposable.isDisposed(testA)).to.be.false
+
+    expect(testB.foo).to.equal('bar')
+    expect(Disposable.isDisposed(testB)).to.be.false
+
+    expect((await testB.injector.inject(TestClassA)).singleValue).to.equal(testA)
+  })
+
+  it('uses the correct contexts and injectors to instantiate injectable instances when dealing with scoped restrictions', async () => {
+
+    class TestJobScope {}
+
+    @Injectable(RestrictScope(TestJobScope))
+    class TestJobProcessor {
+      constructor(@Inject(Injector) public readonly injector: Injector) {}
+    }
+
+    harness.register(TestJobProcessor)
 
   })
 })

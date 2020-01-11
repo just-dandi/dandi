@@ -12,5 +12,4 @@ export interface Logger {
 
 export const Logger: InjectionToken<Logger> = localToken.opinionated<Logger>('Logger', {
   multi: false,
-  singleton: false,
 })

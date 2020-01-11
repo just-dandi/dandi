@@ -18,13 +18,15 @@ import {
 } from '@dandi/core/types'
 
 import { localToken } from '../../src/local-token'
+import { NativeNow } from '../../src/native-now'
+import { NoopLogger } from '../../src/noop-logger'
 
 import { Bootstrapper } from './bootstrapper'
-import { DandiRootInjector } from './dandi-root-injector'
 import { DandiGenerator } from './dandi-generator'
-import { AppInjectionScope } from './root-injection-scope'
-import { QueueingLogger } from './queueing-logger'
+import { DandiRootInjector } from './dandi-root-injector'
 import { OnConfigInternal } from './on-config-internal'
+import { QueueingLogger } from './queueing-logger'
+import { AppInjectionScope } from './root-injection-scope'
 
 function defaultInjectorFactory(generator: InstanceGeneratorFactory): RootInjector {
   return new DandiRootInjector(generator)
@@ -86,20 +88,41 @@ export class DandiApplicationInit<TConfig extends DandiApplicationInternalConfig
     }
     this.logger.debug('PreInit')
 
-    // register the rootInjector
-    const source = {
-      constructor: this.constructor,
-      tag: '.preInit',
-    }
-
     const rootInjector = await getInstance(this.config.injector || defaultInjectorFactory, defaultGeneratorFactory)
     if (Disposable.isDisposable(rootInjector)) {
       Disposable.makeDisposable(this, (reason: string) => rootInjector.dispose(reason))
     }
 
+    const builtInProviders = [
+      Bootstrapper,
+      NativeNow,
+      NoopLogger,
+      {
+        provide: Logger,
+        useValue: this.logger,
+      },
+      {
+        provide: RootInjector,
+        useValue: rootInjector,
+      },
+      {
+        provide: DandiRootInjector,
+        useValue: rootInjector,
+      },
+    ]
+    const builtInSource = {
+      constructor: this.constructor,
+      tag: '.preInit (built-in)',
+    }
+    this.registerRootProviders(rootInjector, builtInSource, builtInProviders)
+
     // register explicitly set providers
     // this must happen before scanning so that scanners can be specified in the providers config
-    this.registerRootProviders(rootInjector, source, this.config.providers)
+    const configSource = {
+      constructor: this.constructor,
+      tag: '.preInit (configured)',
+    }
+    this.registerRootProviders(rootInjector, configSource, this.config.providers)
 
     // this must happen before instantiating the appInjector so that if an alternate InjectorContextConstructor is
     // configured, it can be picked up
@@ -107,10 +130,7 @@ export class DandiApplicationInit<TConfig extends DandiApplicationInternalConfig
 
     // re-register explicitly set providers in the application injector so that they override any implementations
     // discovered by scanning
-    this.appInjector = rootInjector.createChild(AppInjectionScope, this.config.providers.concat({
-      provide: RootInjector,
-      useValue: rootInjector,
-    }))
+    this.appInjector = rootInjector.createChild(AppInjectionScope, this.config.providers)
 
     this.initialized = true
 
@@ -175,7 +195,7 @@ export class DandiApplicationInit<TConfig extends DandiApplicationInternalConfig
 
   public async bootstrap(
   ): Promise<any> {
-    const bootstrapper = (await this.appInjector.inject(Bootstrapper, Bootstrapper)).singleValue
+    const bootstrapper = (await this.appInjector.inject(Bootstrapper)).singleValue
     return await bootstrapper.run(this.startTs)
   }
 

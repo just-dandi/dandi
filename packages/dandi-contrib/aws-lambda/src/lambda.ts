@@ -1,12 +1,11 @@
 import { Constructor } from '@dandi/common'
 import {
-  AmbientInjectableScanner,
   DandiApplication,
   Inject,
   Injectable,
+  InjectionResult,
   InjectionToken,
   Injector,
-  isInjector,
   Provider,
   Registerable,
 } from '@dandi/core'
@@ -32,45 +31,29 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
 
   public static handler<TEvent, TEventData, THandler extends LambdaHandler>(
     handlerServiceType: Constructor<THandler>,
-    injector: Injector,
-  ): HandlerFn<TEvent, any>
+    ...providers: Registerable[]
+  ): HandlerFn<TEvent> {
 
-  public static handler<TEvent, TEventData, THandler extends LambdaHandler>(
-    handlerServiceType: Constructor<THandler>,
-    ...modulesOrProviders: Registerable[]
-  ): HandlerFn<TEvent, any>
-
-  static handler<TEvent, TEventData, THandler extends LambdaHandler>(
-    handlerServiceType: Constructor<THandler>,
-    ...modulesOrProviders: any[]
-  ): HandlerFn<TEvent, any> {
-    let injectorReady: Injector | Promise<Injector> =
-      modulesOrProviders.length === 1 && isInjector(modulesOrProviders[0]) && modulesOrProviders[0]
-
-    const providers: Registerable[] = [{
+    providers.push({
       provide: LambdaHandler,
       useClass: handlerServiceType,
-    }]
+    })
 
-    if (!injectorReady) {
-      providers.push(...modulesOrProviders)
+    const app = new DandiApplication({
+      providers,
+    })
+    const injectorReady = app.start()
 
-      const app = new DandiApplication({
-        providers: [AmbientInjectableScanner],
-      })
-      injectorReady = app.start()
-    }
-
-
+    let lambdaReady: Promise<InjectionResult<Lambda<TEvent, TEventData, THandler>>>
     let lambda: Lambda<TEvent, TEventData, THandler>
 
     return async (event: TEvent, context: Context) => {
       const injector = await injectorReady
 
-      if (!lambda) {
-        // eslint-disable-next-line require-atomic-updates
-        lambda = (await injector.inject(Lambda, ...providers)).singleValue
+      if (!lambdaReady) {
+        lambdaReady = injector.inject(Lambda)
       }
+      lambda = (await lambdaReady).singleValue
 
       return await lambda.handleEvent(event, context)
     }

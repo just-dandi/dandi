@@ -1,6 +1,5 @@
 import { Optional, Inject } from '@dandi/core/decorators'
 import {
-  InjectorContext,
   InjectorContextConstructor,
   InstanceGeneratorFactory,
   Registerable,
@@ -11,26 +10,26 @@ import {
 import { DandiInjector } from './dandi-injector'
 import { DandiInjectorContext } from './dandi-injector-context'
 import { RootInjectionScope } from './root-injection-scope'
-import { RootInjectorContext } from './root-injector-context'
+import { DandiRootInjectorContext } from './dandi-root-injector-context'
 
-function rootInjectorParent(context: InjectorContext): DandiInjector {
-  return { context } as unknown as DandiInjector
-}
-
+/**
+ * @internal
+ */
 export class DandiRootInjector extends DandiInjector implements RootInjector {
 
-  public readonly context: RootInjectorContext = new RootInjectorContext()
+  public readonly context: DandiRootInjectorContext
 
   protected injectorContextConstructor: InjectorContextConstructor
 
   constructor(generatorFactory: InstanceGeneratorFactory) {
     super(
+      undefined,
       RootInjectionScope,
-      rootInjectorParent(new RootInjectorContext()),
       generatorFactory,
       DandiInjectorContext,
       [],
     )
+    this.context = new DandiRootInjectorContext()
   }
 
   public register(source: RegistrationSource, ...providers: Registerable[]): this {

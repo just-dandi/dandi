@@ -9,10 +9,12 @@ import {
   LogStream,
   Now,
   NowFn,
+  RestrictScope,
+  ScopeBehavior,
 } from '@dandi/core'
 import { createLoggerMethodChain } from '@dandi/core/internal/util'
 
-@Injectable(Logger)
+@Injectable(Logger, RestrictScope(ScopeBehavior.parent))
 export class ContextualLogger implements Logger {
 
   public get debug(): LoggerMethod {

@@ -27,7 +27,6 @@ export function requestBodyProvider(model: Constructor<any>): Provider<any> {
         throw new ModelBindingError(err)
       }
     },
-    singleton: true,
     deps: [HttpRequestBodySource, ModelBuilder, RequestParamModelBuilderOptions],
     providers: [RequestParamModelBuilderOptionsProvider],
   }

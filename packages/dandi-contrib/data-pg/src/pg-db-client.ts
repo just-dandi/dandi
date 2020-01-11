@@ -3,8 +3,8 @@ import { Inject, Injectable, Logger, Optional, Injector } from '@dandi/core'
 import { DbClient, DbTransactionClient, TransactionFn } from '@dandi/data'
 import { ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder'
 
-import { PgDbQueryableBase } from './pg-db-queryable'
 import { PgDbModelBuilderOptions } from './pg-db-model-builder-options'
+import { PgDbQueryableBase } from './pg-db-queryable'
 import { PgDbPoolClient } from './pg-db-pool-client'
 
 @Injectable(DbClient)
@@ -16,9 +16,7 @@ export class PgDbClient extends PgDbQueryableBase<PgDbPoolClient> implements DbC
     @Inject(ModelBuilder) modelValidator: ModelBuilder,
     @Inject(Injector) private injector: Injector,
     @Inject(Logger) private logger: Logger,
-    @Inject(PgDbModelBuilderOptions)
-    @Optional()
-    modelBuilderOptions?: ModelBuilderOptions,
+    @Inject(PgDbModelBuilderOptions) @Optional() modelBuilderOptions?: ModelBuilderOptions,
   ) {
     super(modelValidator, modelBuilderOptions)
   }
@@ -36,8 +34,8 @@ export class PgDbClient extends PgDbQueryableBase<PgDbPoolClient> implements DbC
   }
 
   public async transaction<T>(transactionFn: TransactionFn<T>): Promise<T> {
-    return await Disposable.useAsync(this.injector.inject(DbTransactionClient), async transactionResult => {
-      const transaction = transactionResult.singleValue
+    // TBD: is this better implemented using invoke?
+    return await Disposable.useAsync((await this.injector.inject(DbTransactionClient)).singleValue, async transaction => {
       this.activeTransactions.push(transaction)
 
       try {

@@ -1,12 +1,12 @@
 import { Constructor } from '@dandi/common'
-import { InjectionToken, Provider, Injector } from '@dandi/core'
+import { InjectionToken, Provider, Injector, ScopeBehavior } from '@dandi/core'
 import {
   mimeTypesAreCompatible,
   MimeTypeInfo,
   HttpHeaders,
   HttpRequest,
   HttpRequestAcceptTypes,
-  HttpStatusCode,
+  HttpStatusCode, HttpRequestScope,
 } from '@dandi/http'
 
 import { HttpPipelineResult } from '../http-pipeline-result'
@@ -20,21 +20,21 @@ export interface HttpPipelineRendererResult {
   renderedBody: string
   contentType: string
 }
-export const HttpPipelineRendererResult = localOpinionatedToken('HttpPipelineRendererResult', {
+export const HttpPipelineRendererResult = localOpinionatedToken<HttpPipelineRendererResult>('HttpPipelineRendererResult', {
   multi: false,
+  restrictScope: HttpRequestScope,
 })
 
 export interface HttpPipelineRenderer {
   readonly renderableTypes: MimeTypeInfo[]
   render(acceptTypes: MimeTypeInfo[], pipelineResult: HttpPipelineResult): HttpPipelineRendererResult | Promise<HttpPipelineRendererResult>
 }
-export const HttpPipelineRenderer: InjectionToken<HttpPipelineRenderer> = localOpinionatedToken('HttpPipelineRenderer', {
+export const HttpPipelineRenderer = localOpinionatedToken<HttpPipelineRenderer>('HttpPipelineRenderer', {
   multi: false,
-  singleton: false,
+  restrictScope: ScopeBehavior.parent(HttpRequestScope),
 })
-export const DefaultHttpPipelineRenderer: InjectionToken<Constructor<HttpPipelineRenderer>> = localOpinionatedToken('DefaultHttpPipelineRenderer', {
+export const DefaultHttpPipelineRenderer = localOpinionatedToken<Constructor<HttpPipelineRenderer>>('DefaultHttpPipelineRenderer', {
   multi: false,
-  singleton: false,
 })
 export type DefaultHttpPipelineRendererProviders = [Constructor<HttpPipelineRenderer>, Provider<Constructor<HttpPipelineRenderer>>]
 export function defaultHttpPipelineRenderer(rendererType: Constructor<HttpPipelineRenderer>): DefaultHttpPipelineRendererProviders {
@@ -50,7 +50,6 @@ export function defaultHttpPipelineRenderer(rendererType: Constructor<HttpPipeli
 type HttpPipelineRendererCache = Map<string, Constructor<HttpPipelineRenderer>>
 const HttpPipelineRendererCache: InjectionToken<HttpPipelineRendererCache> = localOpinionatedToken('HttpPipelineRendererCache', {
   multi: false,
-  singleton: true,
 })
 
 const HttpPipelineRendererCacheProvider: Provider<HttpPipelineRendererCache> = {
@@ -74,7 +73,7 @@ export function selectRenderer(acceptTypes: MimeTypeInfo[], renderers: RendererI
 
 const SelectedRenderer: InjectionToken<Constructor<HttpPipelineRenderer>> = localOpinionatedToken('SelectedRenderer', {
   multi: false,
-  singleton: false,
+  restrictScope: ScopeBehavior.parent(HttpRequestScope),
 })
 const SelectedRendererProvider: Provider<Constructor<HttpPipelineRenderer>> = {
   provide: SelectedRenderer,

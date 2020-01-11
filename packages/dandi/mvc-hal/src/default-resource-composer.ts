@@ -1,5 +1,12 @@
 import { InvalidAccessError } from '@dandi/common'
-import { Inject, Injectable, Injector, InjectorContext, ResolverContext } from '@dandi/core'
+import {
+  Inject,
+  Injectable,
+  Injector,
+  InjectorContext,
+  ResolverContext,
+  RestrictScope,
+} from '@dandi/core'
 import {
   ComposedResource,
   ITEMS_RELATION,
@@ -9,7 +16,7 @@ import {
   SELF_RELATION,
   getResourceMetadata,
 } from '@dandi/hal'
-import { HttpMethod, HttpRequest, HttpResponse } from '@dandi/http'
+import { HttpMethod, HttpRequest, HttpRequestScope, HttpResponse } from '@dandi/http'
 import { isHttpPipelineResult, HttpRequestInfo } from '@dandi/http-pipeline'
 import {
   ControllerMethodMetadata,
@@ -28,7 +35,7 @@ function embedResponseAccess(): HttpResponse {
   throw new InvalidAccessError(`Response object may not be used during embedding`)
 }
 
-@Injectable(ResourceComposer)
+@Injectable(ResourceComposer, RestrictScope(HttpRequestScope))
 export class DefaultResourceComposer implements ResourceComposer {
   constructor(
     @Inject(Injector) private injector: Injector,

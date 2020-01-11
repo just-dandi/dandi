@@ -25,7 +25,7 @@ export class DecoratorRouteGenerator implements RouteGenerator {
 
     const routes: Route[] = []
 
-    for (const controllerEntry of Repository.for(Controller).entries()) {
+    for (const controllerEntry of Repository.for(Controller).providers) {
       const controllerProvider = controllerEntry as ClassProvider<any>
       const controllerCtr = controllerProvider.useClass
       const meta = getControllerMetadata(controllerCtr)

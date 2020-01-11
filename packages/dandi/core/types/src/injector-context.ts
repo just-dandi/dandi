@@ -1,3 +1,5 @@
+import { ResolverContext } from '@dandi/core'
+
 import { localToken } from'../../src/local-token'
 
 import { InjectionScope } from './injection-scope'
@@ -9,14 +11,16 @@ export const InjectorContext = localToken.opinionated('InjectorContext', {
   multi: false,
 })
 
-export type InjectorContextFindResult<T> = Provider<T> | Set<Provider<T>>
-
 export interface InjectorContext {
   readonly parent: InjectorContext
   readonly scope: InjectionScope
 
-  addSingleton<T>(provider: Provider<T>, value: T): T
-  find<T>(token: InjectionToken<T>): InjectorContextFindResult<T>
-  getSingleton<T>(provider: Provider<T>): T
+  addInstance<T>(provider: Provider<T>, value: T): T
+  find<T>(token: InjectionToken<T>): ResolverContext<T>
+  getInstance<T>(provider: Provider<T>): T
   createChild(scope: InjectionScope, ...providers: Registerable[]): InjectorContext
+  findInstanceContext(matchContext: InjectorContext, scope?: InjectionScope): InjectorContext
+
+  getInstanceRequest<T>(provider: Provider<T>): Promise<T>
+  setInstanceRequest<T>(provider: Provider<T>, value: Promise<T>): Promise<T>
 }

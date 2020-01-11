@@ -8,7 +8,7 @@ describe('AuthorizationMetadata', () => {
       expect(mergeAuthorization()).to.be.undefined
     })
 
-    it('returns undefined if none of the entries have conditions', () => {
+    it('returns undefined if none of the providers have conditions', () => {
       expect(mergeAuthorization({ authorization: [] })).to.be.undefined
     })
 
@@ -29,7 +29,7 @@ describe('AuthorizationMetadata', () => {
       })
     })
 
-    it('only includes unique entries', () => {
+    it('only includes unique providers', () => {
       const entry1: AuthorizationMetadata = {
         authorization: [{ provide: AuthorizationCondition, useValue: { allowed: true } }],
       }

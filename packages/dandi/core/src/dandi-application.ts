@@ -3,7 +3,6 @@ import { DandiApplicationInit, QueueingLogger, DandiApplicationInternalConfig } 
 import { DandiApplicationConfig, Injector } from '@dandi/core/types'
 
 import { NativeNow } from './native-now'
-import { NoopLogger } from './noop-logger'
 
 export class DandiApplication<TConfig extends DandiApplicationConfig = DandiApplicationInternalConfig> implements Disposable {
 
@@ -17,7 +16,6 @@ export class DandiApplication<TConfig extends DandiApplicationConfig = DandiAppl
     if (!this.config.providers) {
       this.config.providers = []
     }
-    this.config.providers.unshift(NativeNow, NoopLogger)
 
     this.initHost = new DandiApplicationInit(new QueueingLogger(this.constructor, NativeNow.useValue), this.config)
   }

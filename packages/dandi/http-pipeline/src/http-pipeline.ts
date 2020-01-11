@@ -122,7 +122,8 @@ export class HttpPipeline {
     for (const preparer of config.before) {
       const token = HttpRequestPreparerResult(preparer)
       const provider = httpRequestPreparerResultProvider(preparer)
-      const preparerResult = (await injector.inject(token, provider, ...providers)).singleValue
+      const preparerInjector = injector.createChild(preparer, [provider].concat(providers))
+      const preparerResult = (await preparerInjector.inject(token)).singleValue
       providers.push(...preparerResult)
     }
     return providers

@@ -12,7 +12,6 @@ export interface DbTransactionClient extends DbQueryable, Disposable {
 export const DbTransactionClient: InjectionToken<DbTransactionClient> = localOpinionatedToken<DbTransactionClient>(
   'DbTransactionClient',
   {
-    singleton: false,
     multi: false,
   },
 )

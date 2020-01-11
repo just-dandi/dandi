@@ -1,4 +1,4 @@
-import { HttpHeaders, HttpStatusCode } from '@dandi/http'
+import { HttpHeaders, HttpRequestScope, HttpStatusCode } from '@dandi/http'
 
 import { localOpinionatedToken } from './local-token'
 
@@ -17,6 +17,7 @@ export function isHttpPipelineResult(obj: any): obj is HttpPipelineResult {
   return obj && (typeof obj.data !== 'undefined' || obj.void === true || typeof obj.error !== 'undefined')
 }
 
-export const HttpPipelineResult = localOpinionatedToken('HttpPipelineResult', {
+export const HttpPipelineResult = localOpinionatedToken<HttpPipelineResult>('HttpPipelineResult', {
   multi: false,
+  restrictScope: HttpRequestScope,
 })

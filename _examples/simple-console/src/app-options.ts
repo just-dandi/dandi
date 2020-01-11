@@ -10,7 +10,6 @@ export interface AppConfig {
 
 export const AppConfig: InjectionToken<AppConfig> = localOpinionatedToken('AppConfig', {
   multi: false,
-  singleton: true,
 })
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars

@@ -1,5 +1,6 @@
+import { Constructor } from '@dandi/common'
 import { testHarness, underTest } from '@dandi/core/testing'
-import { HttpRequest, HttpRequestAcceptTypesProvider, MimeTypes } from '@dandi/http'
+import { HttpRequest, HttpRequestAcceptTypesProvider, HttpRequestScope, MimeTypes } from '@dandi/http'
 import {
   defaultHttpPipelineRenderer,
   DefaultHttpPipelineRenderer,
@@ -8,10 +9,10 @@ import {
 } from '@dandi/http-pipeline'
 import { TestApplicationJsonRenderer, TestTextPlainRenderer } from '@dandi/http-pipeline/testing'
 
-import { stub } from 'sinon'
+import { SinonStubbedInstance, stub } from 'sinon'
 import { expect } from 'chai'
 
-describe('HttpPipelineRenderer', function() {
+describe('HttpPipelineRenderer', () => {
 
   // IMPORTANT! stubHarness cannot be used here, since RendererInfoProvider relies on not being able to resolve classes
   // to determine which renderers are actually registered
@@ -30,38 +31,43 @@ describe('HttpPipelineRenderer', function() {
     defaultHttpPipelineRenderer(TestTextPlainRenderer),
   )
 
-  beforeEach(async function() {
-    this.getRenderer = () => harness.inject(HttpPipelineRenderer, false)
-    this.defaultRenderer = await harness.inject(DefaultHttpPipelineRenderer)
-    this.req = await harness.inject(HttpRequest)
+  let getRenderer: () => Promise<HttpPipelineRenderer>
+  let defaultRenderer: Constructor<HttpPipelineRenderer>
+  let req: SinonStubbedInstance<HttpRequest>
+
+  beforeEach(async () => {
+    const requestInjector = harness.createChild(HttpRequestScope)
+    getRenderer = () => requestInjector.inject(HttpPipelineRenderer, false)
+    defaultRenderer = await requestInjector.inject(DefaultHttpPipelineRenderer)
+    req = await requestInjector.injectStub(HttpRequest)
   })
 
-  it('falls back to the default renderer if no matching renderers are available', async function() {
-    const result = await this.getRenderer()
+  it('falls back to the default renderer if no matching renderers are available', async () => {
+    const result = await getRenderer()
 
-    expect(result).to.be.instanceof(this.defaultRenderer)
+    expect(result).to.be.instanceof(defaultRenderer)
   })
 
-  it('returns a matching renderer', async function() {
+  it('returns a matching renderer', async () => {
 
     harness.register(TestApplicationJsonRenderer)
 
-    this.req.get.returns(MimeTypes.applicationJson)
+    req.get.returns(MimeTypes.applicationJson)
 
-    const result = await this.getRenderer()
+    const result = await getRenderer()
 
     expect(result).to.be.instanceof(TestApplicationJsonRenderer)
 
   })
 
-  it('returns the type of renderer for subsequent requests', async function() {
+  it('returns the type of renderer for subsequent requests', async () => {
 
     harness.register(TestApplicationJsonRenderer)
 
-    this.req.get.returns(MimeTypes.applicationJson)
+    req.get.returns(MimeTypes.applicationJson)
 
-    const result1 = await this.getRenderer()
-    const result2 = await this.getRenderer()
+    const result1 = await getRenderer()
+    const result2 = await getRenderer()
 
     expect(result1).to.be.instanceof(TestApplicationJsonRenderer)
     expect(result2).to.be.instanceof(TestApplicationJsonRenderer)

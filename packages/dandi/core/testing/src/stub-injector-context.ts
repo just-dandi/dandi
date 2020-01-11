@@ -3,7 +3,6 @@ import { InjectionScope, InjectionToken, InjectorContext, Registerable } from '@
 import {
   DandiInjectorContext,
   FindCacheEntry,
-  Repository,
   RepositoryEntry,
 } from '@dandi/core/internal'
 
@@ -35,7 +34,7 @@ export class StubInjectorContext extends DandiInjectorContext {
       }
       return {
         entry: provider,
-        repo: { allowSingletons: false } as any,
+        context: this,
       }
     }
 
@@ -43,11 +42,11 @@ export class StubInjectorContext extends DandiInjectorContext {
 
   }
 
-  protected findSingletonRepo(fromRepo: Repository): Repository {
-    const baseResult = super.findSingletonRepo(fromRepo)
-    if (baseResult) {
-      return baseResult
-    }
-  }
+  // protected findInstanceContext(matchContext: DandiInjectorContext, scope?: InjectionScope): DandiInjectorContext {
+  //   const baseResult = super.findInstanceContext(matchContext, scope)
+  //   if (baseResult) {
+  //     return baseResult
+  //   }
+  // }
 
 }

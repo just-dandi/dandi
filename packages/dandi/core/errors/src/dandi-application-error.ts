@@ -1,4 +1,7 @@
 import { AppError } from '@dandi/common'
+import { OpinionatedToken } from '@dandi/core/types'
+
+import { getInjectionScopeName } from '../../internal/util/src/injection-scope-util'
 
 export class DandiApplicationError extends AppError {
   constructor(message: string, innerError?: Error) {
@@ -13,7 +16,13 @@ export class MissingTokenError extends DandiApplicationError {
 }
 
 export class InvalidTokenError extends DandiApplicationError {
-  constructor(token: any) {
+  constructor(public readonly token: any) {
     super(`${token} is not a valid injection token`)
+  }
+}
+
+export class InvalidTokenScopeError extends DandiApplicationError {
+  constructor(public readonly token: OpinionatedToken<any>) {
+    super(`Cannot inject ${token} outside of scope restriction - must be child of ${getInjectionScopeName(token.options.restrictScope)}`)
   }
 }

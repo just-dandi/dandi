@@ -9,7 +9,6 @@ export function stubProvider<TService extends TToken, TToken = TService>(
   return {
     provide: token || service,
     useFactory: () => createStubInstance(service) as any,
-    singleton: true,
   }
 }
 
