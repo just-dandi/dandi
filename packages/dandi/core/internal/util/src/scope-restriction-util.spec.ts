@@ -7,7 +7,7 @@ import { expect } from 'chai'
 describe('isScopeBehavior', () => {
 
   it('returns true if the passed object is a valid ScopeBehavior instance', () => {
-    expect(isScopeBehavior(ScopeBehavior.parent)).to.be.true
+    expect(isScopeBehavior(ScopeBehavior.perInjector)).to.be.true
   })
 
   it('returns false if the object is not a function', () => {
@@ -129,13 +129,13 @@ describe('getRestrictedScope', () => {
 
   it('returns the scope of a BehaviorScopeRestriction', () => {
     class TestScope {}
-    const restriction = new BehaviorScopeRestriction(ScopeBehavior.parent, TestScope)
+    const restriction = new BehaviorScopeRestriction(ScopeBehavior.perInjector, TestScope)
 
     expect(getRestrictedScope(restriction)).to.equal(TestScope)
   })
 
   it('returns undefined when called with an unscoped ScopeBehavior', () => {
-    expect(getRestrictedScope(ScopeBehavior.parent)).to.equal(undefined)
+    expect(getRestrictedScope(ScopeBehavior.perInjector)).to.equal(undefined)
   })
 
   it('returns the restriction when called with a valid InjectionScope', () => {

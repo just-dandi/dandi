@@ -1,13 +1,15 @@
 import {
   Inject,
   Injectable,
-  InjectionResult, InjectionToken,
+  InjectionResult,
+  InjectionToken,
   Injector,
   InstanceGenerator,
   InvalidTokenError,
   Invoker,
   MissingProviderError,
-  MissingTokenError, OpinionatedToken,
+  MissingTokenError,
+  OpinionatedToken,
   Optional, Provider,
   Registerable,
   ResolverContext,
@@ -16,7 +18,7 @@ import {
 import { DandiGenerator, DandiInjector } from '@dandi/core/internal'
 
 import { expect } from 'chai'
-import { stub, spy, SinonStubbedInstance, SinonSpy } from 'sinon'
+import { stub, SinonStubbedInstance } from 'sinon'
 
 import { DandiRootInjector } from './dandi-root-injector'
 
@@ -85,16 +87,6 @@ describe('DandiInjector', () => {
         expect(injector.resolve(TestWithDependency, true)).to.be.undefined
       })
 
-      // it('returns the provider when it is specified in the auxiliary providers', () => {
-      //
-      //   expect(injector.resolve(TestWithDependency, true)).to.be.undefined // sanity check
-      //
-      //   expect(injector.resolve(TestWithDependency, TestWithDependency)).to.deep.equal({
-      //     provide: TestWithDependency,
-      //     useClass: TestWithDependency,
-      //   })
-      // })
-
       describe('scope restrictions', () => {
         class ScopeRestriction {}
 
@@ -154,20 +146,14 @@ describe('DandiInjector', () => {
         expect(injector.canResolve(TestWithDependency)).to.be.false
       })
 
-      // it('returns true when a provider is specified in the auxiliary providers', () => {
-      //   expect(injector.canResolve(TestWithDependency)).to.be.false // sanity check
-      //
-      //   expect(injector.canResolve(TestWithDependency, TestWithDependency)).to.be.true
-      // })
-
-      it('returns true when a provider can be found in a parent injector', () => {
+      it('returns true when a provider can be found in a perInjector injector', () => {
         expect(injector.canResolve(TestWithDependency)).to.be.false // sanity check
         register(TestWithDependency)
 
         expect(injector.canResolve(TestWithDependency)).to.be.true
       })
 
-      it('returns false when there is not provider for the specified token, including in a parent rootInjector scope', () => {
+      it('returns false when there is not provider for the specified token, including in a perInjector rootInjector scope', () => {
         expect(injector.canResolve(TestWithDependency)).to.be.false
       })
 
@@ -177,19 +163,8 @@ describe('DandiInjector', () => {
 
   describe('TokenInjector', () => {
 
-    let resolveInternal: SinonSpy
-
     beforeEach(() => {
       createInjector()
-      const ogCreateChild = injector.createChild
-      stub(injector, 'createChild').callsFake((...args: any[]) => {
-        const child = ogCreateChild.apply(injector, args)
-        resolveInternal = spy(child, 'resolveInternal')
-        return child
-      })
-    })
-    afterEach(() => {
-      resolveInternal = undefined
     })
 
     describe('inject', () => {

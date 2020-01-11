@@ -31,7 +31,7 @@ export interface HttpPipelineRenderer {
 }
 export const HttpPipelineRenderer = localOpinionatedToken<HttpPipelineRenderer>('HttpPipelineRenderer', {
   multi: false,
-  restrictScope: ScopeBehavior.parent(HttpRequestScope),
+  restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
 })
 export const DefaultHttpPipelineRenderer = localOpinionatedToken<Constructor<HttpPipelineRenderer>>('DefaultHttpPipelineRenderer', {
   multi: false,
@@ -73,7 +73,7 @@ export function selectRenderer(acceptTypes: MimeTypeInfo[], renderers: RendererI
 
 const SelectedRenderer: InjectionToken<Constructor<HttpPipelineRenderer>> = localOpinionatedToken('SelectedRenderer', {
   multi: false,
-  restrictScope: ScopeBehavior.parent(HttpRequestScope),
+  restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
 })
 const SelectedRendererProvider: Provider<Constructor<HttpPipelineRenderer>> = {
   provide: SelectedRenderer,

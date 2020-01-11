@@ -5,6 +5,8 @@ import {
   InjectionToken,
   OpinionatedToken,
   Provider,
+  Registerable,
+  RegistrationSource,
   SymbolToken,
 } from '@dandi/core'
 import { DandiInjectorContext, Repository } from '@dandi/core/internal'
@@ -14,9 +16,16 @@ import { stub } from 'sinon'
 
 const chaiInspect = Symbol.for('chai/inspect')
 
-describe('DandiInjectorContext', function() {
+// hacky, but makes it easier to expose non-public members, which is also hacky, sorry
+declare class ContextUnderTest extends DandiInjectorContext {
+  readonly repository: Repository
+  registerInternal(registerable: Registerable[], source?: RegistrationSource): this
+}
+
+describe('DandiInjectorContext', () => {
   class ParentContextScope {}
   class ChildContextScope {}
+
 
   function provider<T, TProvider extends Provider<T>>(obj: TProvider): TProvider {
     obj[chaiInspect] = () => `Provider[provide: ${obj.provide}]`
@@ -42,8 +51,8 @@ describe('DandiInjectorContext', function() {
   let parentsOnlyChildProvider: Provider<any>
   let childProvider1: Provider<any>
   let childProvider2: Provider<any>
-  let parentContext: DandiInjectorContext
-  let childContext: DandiInjectorContext
+  let parentContext: ContextUnderTest
+  let childContext: ContextUnderTest
 
   function scopedParentFactory(): any {
     return {}
@@ -100,12 +109,12 @@ describe('DandiInjectorContext', function() {
       scopedParentProvider1,
       scopedParentProvider2,
       parentsOnlyParentProvider,
-    ])
+    ]) as ContextUnderTest
     childContext = parentContext.createChild(ChildContextScope,
       childProvider1,
       childProvider2,
       parentsOnlyChildProvider,
-    )
+    ) as ContextUnderTest
   })
 
   afterEach(() => {
@@ -220,9 +229,9 @@ describe('DandiInjectorContext', function() {
         const childProvider2 = provider({
           provide: parentsOnlyMultiToken,
           useValue: {},
-        });
-        (parentContext as any).registerInternal([parentProvider1, parentProvider2]);
-        (childContext as any).registerInternal([childProvider1, childProvider2])
+        })
+        parentContext.registerInternal([parentProvider1, parentProvider2])
+        childContext.registerInternal([childProvider1, childProvider2])
 
         const result = childContext.find(parentsOnlyMultiToken)?.match as Set<Provider<any>>
         expect([...result]).to.deep.equal([parentProvider1, parentProvider2])
@@ -276,16 +285,17 @@ describe('DandiInjectorContext', function() {
   })
 
   describe('addInstance', () => {
+
     it('adds the value for a non-scoped-restricted token and provider to the instances map of the repository where the provider was found', () => {
       childContext.addInstance(parentProvider1, parentValue1)
 
       expect(
-        (childContext as any).repository.instances.get(parentProvider1),
+        childContext.repository.getInstance(parentProvider1.provide),
         'instance was found on the wrong repository',
       ).to.be.undefined
 
       expect(
-        (parentContext as any).repository.instances.get(parentProvider1),
+        parentContext.repository.getInstance(parentProvider1.provide),
         'instance was not found on the expected repository',
       ).to.equal(parentValue1)
     })
@@ -295,12 +305,12 @@ describe('DandiInjectorContext', function() {
       childContext.addInstance(scopedParentProvider1, value)
 
       expect(
-        (parentContext as any).repository.instances.get(scopedParentProvider1),
+        parentContext.repository.getInstance(scopedParentProvider1.provide),
         'instance was found on the wrong repository',
       ).to.be.undefined
 
       expect(
-        (childContext as any).repository.instances.get(scopedParentProvider1),
+        childContext.repository.getInstance(scopedParentProvider1.provide),
         'instance was not found on the expected repository',
       ).to.equal(value)
     })
@@ -310,12 +320,12 @@ describe('DandiInjectorContext', function() {
       childContext.addInstance(scopedParentProvider2, value)
 
       expect(
-        (parentContext as any).repository.instances.get(scopedParentProvider2),
+        parentContext.repository.getInstance(scopedParentProvider2.provide),
         'instance was found on the wrong repository',
       ).to.be.undefined
 
       expect(
-        (childContext as any).repository.instances.get(scopedParentProvider2),
+        childContext.repository.getInstance(scopedParentProvider2.provide),
         'instance was not found on the expected repository',
       ).to.equal(value)
     })

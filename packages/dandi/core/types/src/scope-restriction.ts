@@ -1,9 +1,10 @@
+import { AppInjectionScope, RootInjectionScope } from '../../internal/src/root-injection-scope'
 import { globalSymbol } from '../../src/global-symbol'
 
 import { InjectionScope } from './injection-scope'
 
 export interface ScopeBehaviorStatic {
-  parent: ScopeBehavior
+  perInjector: ScopeBehavior
 }
 
 export interface ScopeBehavior {
@@ -26,7 +27,38 @@ function scopeBehavior(desc: string): ScopeBehavior {
 }
 
 export const ScopeBehavior: ScopeBehaviorStatic = {
-  parent: scopeBehavior('parent'),
+
+  /**
+   * A behavior that forces injectable instances to be instantiated once for each injector that requests them, instead
+   * of just once at the registration site.
+   */
+  perInjector: scopeBehavior('perInjector'),
+}
+export interface ScopeRestrictionStatic {
+
+  /**
+   * A behavior that restricts an injectable to only being instantiated at the app injector
+   */
+  app: BehaviorScopeRestriction
+
+  /**
+   * A behavior that restricts an injectable to only being instantiated at the root injector
+   */
+  root: BehaviorScopeRestriction
 }
 
 export type ScopeRestriction = InjectionScope | ScopeBehavior | BehaviorScopeRestriction
+
+export const ScopeRestriction: ScopeRestrictionStatic = {
+
+  /**
+   * A behavior that restricts an injectable to only being instantiated at the app injector
+   */
+  app: scopeBehavior('app')(AppInjectionScope),
+
+  /**
+   * A behavior that restricts an injectable to only being instantiated at the root injector
+   */
+  root: scopeBehavior('root')(RootInjectionScope),
+
+}

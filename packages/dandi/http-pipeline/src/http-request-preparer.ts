@@ -88,9 +88,9 @@ function httpRequestPreparerDecorator(
   depResultTokens: InjectionToken<any>[],
   target: Constructor<HttpRequestPreparer>,
 ): void {
-  // note: must use ScopeBehavior.parent() to ensure that instances have access to the dynamically generated providers
+  // note: must use ScopeBehavior.perInjector() to ensure that instances have access to the dynamically generated providers
   // from httpRequestPreparerResultProvider
-  Injectable(target, NotMulti, RestrictScope(ScopeBehavior.parent(HttpRequestScope)))(target)
+  Injectable(target, NotMulti, RestrictScope(ScopeBehavior.perInjector(HttpRequestScope)))(target)
   const meta = getHttpRequestPreparerMetadata(target)
   deps.forEach(dep => meta.deps.add(dep))
   depResultTokens.forEach(token => meta.dependencyResultTokens.add(token))

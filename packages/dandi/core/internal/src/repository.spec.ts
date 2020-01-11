@@ -1,12 +1,13 @@
 import { Disposable, InvalidDisposeTargetError } from '@dandi/common'
 import {
   Injectable,
+  InjectionTokenTypeError,
   ModuleBuilder,
   OpinionatedProviderOptionsConflictError,
   OpinionatedToken,
   Provider,
-  ProviderTypeError,
-  Registerable, RegistrationSource,
+  Registerable,
+  RegistrationSource,
   SymbolToken,
 } from '@dandi/core'
 import {
@@ -235,14 +236,14 @@ describe('Repository', () => {
   describe('addInstance', () => {
     it('adds the value to the instances set', () => {
       Disposable.use(Repository.for(Math.random().toString()), (repo) => {
-        repo.addInstance(provider, value)
-        expect(repo.getInstance(provider)).to.equal(value)
+        repo.addInstance(provider.provide, value)
+        expect(repo.getInstance(provider.provide)).to.equal(value)
       })
     })
 
     it('throws an error if called without a valid provider', () => {
       Disposable.use(Repository.for(Math.random().toString()), (repo) => {
-        expect(() => repo.addInstance({} as any, value)).to.throw(ProviderTypeError)
+        expect(() => repo.addInstance({} as any, value)).to.throw(InjectionTokenTypeError)
       })
     })
   })
@@ -250,8 +251,8 @@ describe('Repository', () => {
   describe('getSingleton', () => {
     it('returns the value of a registered singleton', () => {
       Disposable.use(Repository.for(Math.random().toString()), (repo) => {
-        repo.addInstance(provider, value)
-        expect(repo.getInstance(provider)).to.equal(value)
+        repo.addInstance(provider.provide, value)
+        expect(repo.getInstance(provider.provide)).to.equal(value)
       })
     })
   })
@@ -264,7 +265,7 @@ describe('Repository', () => {
 
     it('clears local maps', async () => {
       repo.register(source, provider)
-      repo.addInstance(provider, {})
+      repo.addInstance(provider.provide, {})
       const clearProviders = spy((repo as any).registry, 'clear')
       const clearInstances = spy((repo as any).instances, 'clear')
 

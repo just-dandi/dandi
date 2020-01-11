@@ -14,18 +14,15 @@ import { spy, stub } from 'sinon'
 describe('DandiApplication', () => {
 
   let logger: Logger
+  let application: DandiApplication
 
   beforeEach(() => {
     logger = new NoopLogger()
   })
-  afterEach(() => {
+  afterEach(async () => {
     logger = undefined
-  })
-
-  describe('ctr', () => {
-    xit('merges options with defaults', () => {
-      // no config right now
-    })
+    // IMPORTANT! must dispose to ensure repositories get reset for each test
+    await application.dispose('test complete')
   })
 
   describe('preInit', () => {
@@ -41,7 +38,7 @@ describe('DandiApplication', () => {
         provide: token2,
         useValue: {},
       }
-      const application = new DandiApplication({
+      application = new DandiApplication({
         providers: [provider1, provider2],
       })
 
@@ -78,7 +75,7 @@ describe('DandiApplication', () => {
           multi: true,
         }
 
-        const application = new DandiApplication({
+        application = new DandiApplication({
           providers: [scannerProvider1, scannerProvider2],
         })
 
@@ -94,9 +91,9 @@ describe('DandiApplication', () => {
     })
   })
 
-  describe('start', () => {
+  describe('run', () => {
     it('calls the preInit function', async () => {
-      const application = new DandiApplication()
+      application = new DandiApplication()
       const init = spy((application as any).initHost, 'preInit')
 
       await application.run()
@@ -104,26 +101,41 @@ describe('DandiApplication', () => {
       expect(init).to.have.been.called
     })
 
-    it('throws a ContainerError when called more than once', async () => {
-      const container = new DandiApplication()
-      await container.run()
-      await expect(container.run()).to.be.rejectedWith(DandiApplicationError)
+    it('throws a DandiApplicationError when called more than once', async () => {
+      application = new DandiApplication()
+      await application.run()
+      await expect(application.run()).to.be.rejectedWith(DandiApplicationError)
     })
 
-    it('resolves and returns the service corresponding with the EntryPoint token, if specified', async () => {
-      const value = {
+    it('resolves and calls the "run" method of the service corresponding with the EntryPoint token, if specified', async () => {
+      const entryPoint = {
         run: stub(),
       }
       const provider = {
         provide: EntryPoint,
-        useFactory: stub().returns(value),
+        useValue: entryPoint,
       }
-      const container = new DandiApplication({ providers: [provider] })
+      application = new DandiApplication({ providers: [provider] })
 
-      await container.run()
+      await application.run()
 
-      expect(provider.useFactory).to.have.been.called
-      expect(value.run).to.have.been.called
+      expect(entryPoint.run).to.have.been.called
+    })
+
+    it('returns the value returned by the run method of the entry point', async () => {
+      const value = {}
+      const entryPoint = {
+        run: stub().resolves(value),
+      }
+      const provider = {
+        provide: EntryPoint,
+        useFactory: stub().returns(entryPoint),
+      }
+      application = new DandiApplication({ providers: [provider] })
+
+      const result = await application.run()
+
+      expect(result).to.equal(value)
     })
   })
 })
