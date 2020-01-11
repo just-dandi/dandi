@@ -1,11 +1,13 @@
 import { Url } from '@dandi/common'
-import { testHarness } from '@dandi/core/testing'
+import { testHarness, TestInjector } from '@dandi/core/testing'
 import {
+  createHttpRequestScope,
   HttpRequest,
   HttpRequestHeaders,
   HttpRequestPathParamMap,
   HttpRequestQueryParamMap,
   HttpRequestRawBodyProvider,
+  HttpRequestScope,
 } from '@dandi/http'
 import { MissingParamError, PathParam, QueryParam, RequestBody } from '@dandi/http-model'
 import { BodyParserInfo, HttpBodyParser, HttpRequestBodySourceProvider } from '@dandi/http-pipeline'
@@ -65,45 +67,56 @@ describe('Request Decorators', () => {
     },
   )
 
-  beforeEach(function() {
-    this.controller = new TestController()
+  let controller: TestController
+  let scope: HttpRequestScope
+  let requestInjector: TestInjector
+
+  beforeEach(() => {
+    controller = new TestController()
+    scope = createHttpRequestScope({} as any)
+    requestInjector = harness.createChild(scope)
+  })
+  afterEach(() => {
+    controller = undefined
+    scope = undefined
+    requestInjector = undefined
   })
 
-  describe('@RequestBody', function() {
+  describe('@RequestBody', () => {
 
-    it('constructs and validates the body', async function() {
-      const result: TestModel = await harness.invoke(this.controller, 'testBody')
+    it('constructs and validates the body', async () => {
+      const result: TestModel = await requestInjector.invoke(controller, 'testBody')
       expect(result).to.be.instanceof(TestModel)
       expect(result.url).to.be.instanceof(Url)
     })
 
   })
 
-  describe('@PathParam', function() {
+  describe('@PathParam', () => {
 
-    it('throws an error if a path param is missing', async function() {
-      await expect(harness.invoke(this.controller, 'testPathParam')).to.be.rejectedWith(MissingParamError)
+    it('throws an error if a path param is missing', async () => {
+      await expect(requestInjector.invoke(controller, 'testPathParam')).to.be.rejectedWith(MissingParamError)
     })
 
-    it('passes the path param value if present', async function() {
-      const paramMap = await harness.inject(HttpRequestPathParamMap)
+    it('passes the path param value if present', async () => {
+      const paramMap = await requestInjector.inject(HttpRequestPathParamMap)
       paramMap.id = 'foo'
 
-      expect(await harness.invoke(this.controller, 'testPathParam')).to.equal('foo')
+      expect(await requestInjector.invoke(controller, 'testPathParam')).to.equal('foo')
     })
   })
 
-  describe('@QueryParam', function() {
+  describe('@QueryParam', () => {
 
-    it('does not throw an error if a query param is optional', async function() {
-      expect(await harness.invoke(this.controller, 'testQueryParam')).to.equal(undefined)
+    it('does not throw an error if a query param is optional', async () => {
+      expect(await requestInjector.invoke(controller, 'testQueryParam')).to.equal(undefined)
     })
 
-    it('passes the query param value if present', async function() {
-      const queryMap = await harness.inject(HttpRequestQueryParamMap)
+    it('passes the query param value if present', async () => {
+      const queryMap = await requestInjector.inject(HttpRequestQueryParamMap)
       queryMap.search = 'foo'
 
-      expect(await harness.invoke(this.controller, 'testQueryParam')).to.equal('foo')
+      expect(await requestInjector.invoke(controller, 'testQueryParam')).to.equal('foo')
     })
 
   })

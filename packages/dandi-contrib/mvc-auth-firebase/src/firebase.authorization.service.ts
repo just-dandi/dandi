@@ -1,5 +1,5 @@
 import { Cache, CacheKeyGenerator } from '@dandi/cache'
-import { Inject, Injectable, Singleton } from '@dandi/core'
+import { Inject, Injectable } from '@dandi/core'
 import { AuthorizationService, AuthorizedUser } from '@dandi/mvc'
 import * as admin from 'firebase-admin'
 import { DateTime } from 'luxon'
@@ -12,7 +12,7 @@ import { FirebaseServiceAccount } from './firebase.service.account'
 
 const MILLIS_FACTOR = 1000
 
-@Injectable(AuthorizationService('Bearer'), Singleton)
+@Injectable(AuthorizationService('Bearer'))
 export class FirebaseAuthorizationService implements AuthorizationService {
   private readonly app: App
 

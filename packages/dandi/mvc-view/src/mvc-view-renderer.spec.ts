@@ -1,5 +1,5 @@
-import { testHarness } from '@dandi/core/testing'
-import { HttpRequest, MimeTypes, HttpRequestAcceptTypes, parseMimeTypes } from '@dandi/http'
+import { testHarness, TestInjector } from '@dandi/core/testing'
+import { HttpRequest, MimeTypes, HttpRequestAcceptTypes, parseMimeTypes, HttpRequestScope } from '@dandi/http'
 import {
   defaultHttpPipelineRenderer,
   HttpPipelineRendererProvider,
@@ -12,7 +12,7 @@ import { MvcViewRenderer, ViewResult, ViewResultFactory } from '@dandi/mvc-view'
 import { SinonStub, stub } from 'sinon'
 import { expect } from 'chai'
 
-describe('MvcViewRenderer', function() {
+describe('MvcViewRenderer', () => {
 
   const harness = testHarness(
     MvcViewRenderer,
@@ -40,19 +40,25 @@ describe('MvcViewRenderer', function() {
     },
   )
 
-  beforeEach(async function() {
-    this.viewResult = stub()
-    this.transformer = new MvcViewRenderer(this.viewResult)
-    this.renderer = await harness.inject(HttpPipelineRenderer)
+  let pipelineRenderer: HttpPipelineRenderer
+  let requestInjector: TestInjector
+
+  beforeEach(async () => {
+    requestInjector = harness.createChild(HttpRequestScope)
+    pipelineRenderer = await requestInjector.inject(HttpPipelineRenderer)
+  })
+  afterEach(() => {
+    pipelineRenderer = undefined
+    requestInjector = undefined
   })
 
-  it('is registered as a Renderer for text/html', function() {
+  it('is registered as a Renderer for text/html', () => {
 
-    expect(this.renderer).to.be.instanceof(MvcViewRenderer)
+    expect(pipelineRenderer).to.be.instanceof(MvcViewRenderer)
 
   })
 
-  it('passes through the rendered value of an existing ViewResult', async function() {
+  it('passes through the rendered value of an existing ViewResult', async () => {
 
     const viewResult = new ViewResult(
       {
@@ -63,7 +69,7 @@ describe('MvcViewRenderer', function() {
       undefined,
     )
 
-    expect(await this.renderer.render(parseMimeTypes(MimeTypes.textHtml), viewResult))
+    expect(await pipelineRenderer.render(parseMimeTypes(MimeTypes.textHtml), viewResult))
       .to.deep.equal({
         contentType: MimeTypes.textHtml,
         statusCode: undefined,
@@ -73,11 +79,11 @@ describe('MvcViewRenderer', function() {
 
   })
 
-  it('returns a ViewResult containing the output of calling the provided ViewResultFactory', async function() {
-    const viewResultFactory = await harness.inject(ViewResultFactory) as SinonStub
+  it('returns a ViewResult containing the output of calling the provided ViewResultFactory', async () => {
+    const viewResultFactory = await requestInjector.inject(ViewResultFactory) as SinonStub
     viewResultFactory.resolves({ value: 'foo!' })
 
-    expect(await this.renderer.render(parseMimeTypes(MimeTypes.textHtml), {}))
+    expect(await pipelineRenderer.render(parseMimeTypes(MimeTypes.textHtml), {}))
       .to.deep.equal({
         statusCode: undefined,
         contentType: MimeTypes.textHtml,

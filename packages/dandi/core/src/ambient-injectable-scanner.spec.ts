@@ -4,9 +4,8 @@ import {
   Injectable,
   NoopLogger,
   Injector,
-  Singleton,
 } from '@dandi/core'
-import { GLOBAL_CONTEXT, Repository } from '@dandi/core/internal'
+import { GLOBAL_SCOPE, Repository, RootInjectionScope } from '@dandi/core/internal'
 import { testHarness, testHarnessSingle } from '@dandi/core/testing'
 import { expect } from 'chai'
 import { SinonStub, stub } from 'sinon'
@@ -18,20 +17,25 @@ describe('AmbientInjectableScanner', () => {
   let globalRepo: Repository
 
   beforeEach(() => {
+    const globalScope = Math.random().toString()
+    const rootScope = Math.random().toString()
     stub(Repository, 'for')
       .callThrough()
-      .withArgs(GLOBAL_CONTEXT)
-      .callsFake(() => Repository.for(Math.random()))
-    globalRepo = Repository.for(GLOBAL_CONTEXT)
+      .withArgs(GLOBAL_SCOPE)
+      .callsFake(() => Repository.for(globalScope))
+      .withArgs(RootInjectionScope)
+      .callsFake(() => Repository.for(rootScope))
+    globalRepo = Repository.for(GLOBAL_SCOPE)
   })
   afterEach(() => {
     (Repository.for as SinonStub).restore()
+    Repository.for(RootInjectionScope).dispose('end of test')
   })
 
   describe('scan', () => {
     it('returns the providers from the global repository', async () => {
       const scanner = new AmbientInjectableScanner(new NoopLogger())
-      await expect(scanner.scan()).to.eventually.deep.equal([...globalRepo.entries()])
+      await expect(scanner.scan()).to.eventually.deep.equal([...globalRepo.providers])
     })
   })
 
@@ -45,7 +49,7 @@ describe('AmbientInjectableScanner', () => {
   })
 
   it('does not create multiple instances of singletons when required by different dependents', async () => {
-    @Injectable(Singleton)
+    @Injectable()
     class Singlejon {}
     @Injectable()
     class TestA {
@@ -65,9 +69,12 @@ describe('AmbientInjectableScanner', () => {
 
   })
 
-  it('does not create multiple instances of singletons when required by nested dependents', async () => {
-    @Injectable(Singleton)
-    class Singlejon {}
+  it('does not create multiple instances of injectables when required by nested dependents', async () => {
+    let instanceId = 0
+    @Injectable()
+    class Singlejon {
+      public readonly instanceId = instanceId++
+    }
     @Injectable()
     class TestA {
       constructor(@Inject(Singlejon) public jon: Singlejon) {}
@@ -86,7 +93,7 @@ describe('AmbientInjectableScanner', () => {
   })
 
   it('does not create multiple instances of singletons when explicitly resolving', async () => {
-    @Injectable(Singleton)
+    @Injectable()
     class Singlejon {}
     @Injectable()
     class Test {
@@ -110,7 +117,7 @@ describe('AmbientInjectableScanner', () => {
   })
 
   it('does not create multiple instances of singletons when invoking', async () => {
-    @Injectable(Singleton)
+    @Injectable()
     class Singlejon {}
     @Injectable()
     // eslint-disable-next-line @typescript-eslint/no-unused-vars

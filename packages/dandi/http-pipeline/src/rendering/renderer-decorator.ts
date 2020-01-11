@@ -7,11 +7,12 @@ import {
   RegistrationSource,
 } from '@dandi/core'
 import { Repository } from '@dandi/core/internal'
-import { MimeTypeInfo, parseMimeTypes } from '@dandi/http'
+import { HttpRequestScope, MimeTypeInfo, parseMimeTypes } from '@dandi/http'
+
+import { globalSymbol } from '../global.symbol'
+import { localOpinionatedToken } from '../local-token'
 
 import { HttpPipelineRenderer } from './http-pipeline-renderer'
-import { localOpinionatedToken } from '../local-token'
-import { globalSymbol } from '../global.symbol'
 
 const META_KEY = globalSymbol('meta:renderer')
 
@@ -29,13 +30,12 @@ export interface RendererInfo {
 }
 export const RendererInfo: InjectionToken<RendererInfo[]> = localOpinionatedToken('RendererInfo', {
   multi: false,
-  singleton: true,
 })
 
 export const RendererInfoProvider: Provider<RendererInfo[]> = {
   provide: RendererInfo,
   useFactory(injector: Injector) {
-    const rendererEntries = [...Repository.for(Renderer).entries() as IterableIterator<ClassProvider<HttpPipelineRenderer>>]
+    const rendererEntries = [...Repository.for(Renderer).providers as IterableIterator<ClassProvider<HttpPipelineRenderer>>]
       .filter(entry => injector.canResolve(entry.useClass))
     return rendererEntries.map((entry: ClassProvider<HttpPipelineRenderer>) => {
       return {
@@ -56,7 +56,7 @@ export function getRendererMetadata(target: Constructor<HttpPipelineRenderer>): 
 export function rendererDecorator<T extends HttpPipelineRenderer>(acceptTypes: string[], target: Constructor<T>): void {
   const meta = getRendererMetadata(target)
   meta.acceptTypes = parseMimeTypes(...acceptTypes)
-  Repository.for(Renderer).register(RENDERER_REGISTRATION_SOURCE, target)
+  Repository.for(Renderer).register(RENDERER_REGISTRATION_SOURCE, target, { restrictScope: HttpRequestScope })
 }
 
 export function Renderer(...acceptTypes: string[]): ClassDecorator {

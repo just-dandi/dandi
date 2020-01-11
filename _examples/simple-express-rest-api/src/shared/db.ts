@@ -1,4 +1,4 @@
-import { Injectable, Singleton } from '@dandi/core'
+import { Injectable } from '@dandi/core'
 
 const FAKE_LATENCY = 50
 
@@ -8,7 +8,7 @@ function delayedDo(fn: () => any): Promise<any> {
   })
 }
 
-@Injectable(Singleton)
+@Injectable()
 export class Db {
   private storage: Map<string, any> = new Map<string, any>()
 

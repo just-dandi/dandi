@@ -1,5 +1,5 @@
-import { InjectionTokenTypeError } from '@dandi/core'
-import { Injectable, Multi, Singleton } from '@dandi/core/decorators'
+import { InjectionTokenTypeError, NoSelf } from '@dandi/core'
+import { Injectable, Multi } from '@dandi/core/decorators'
 import { INJECTABLE_REGISTRATION_DATA, InjectableRegistrationData } from '@dandi/core/internal/util'
 
 import { expect } from 'chai'
@@ -41,14 +41,14 @@ describe('@Injectable', () => {
   it('sets any specified options', () => {
     class TestClass {}
 
-    Injectable(Singleton, Multi)(TestClass)
+    Injectable(Multi, NoSelf)(TestClass)
 
     const regData = findRegistrationData(TestClass)
 
     expect(regData).to.exist
     expect(regData.providerOptions).to.deep.equal({
       multi: true,
-      singleton: true,
+      noSelf: true,
     })
   })
 })

@@ -1,5 +1,5 @@
-import { Inject, Injectable, Logger } from '@dandi/core'
-import { HttpRequest, HttpResponse, HttpStatusCode, MimeTypes } from '@dandi/http'
+import { Inject, Injectable, Logger, ScopeRestriction, RestrictScope } from '@dandi/core'
+import { HttpRequest, HttpRequestScope, HttpResponse, HttpStatusCode, MimeTypes } from '@dandi/http'
 
 import { HttpPipelineRendererResult } from './rendering/http-pipeline-renderer'
 import { HttpPipelineTerminator } from './http-pipeline-terminator'
@@ -9,7 +9,7 @@ import { HttpPipelineTerminator } from './http-pipeline-terminator'
  *
  * This is the default {@link HttpPipelineTerminator} implementation included with {@link HttpPipelineModule}
  */
-@Injectable(HttpPipelineTerminator)
+@Injectable(HttpPipelineTerminator, RestrictScope(HttpRequestScope))
 export class HttpResponsePipelineTerminator implements HttpPipelineTerminator {
 
   constructor(

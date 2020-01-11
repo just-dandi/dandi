@@ -1,13 +1,13 @@
 import { AppError, Uuid } from '@dandi/common'
 import { DisposableUtil } from '@dandi/common/testing'
 import { Inject, SymbolToken } from '@dandi/core'
-import { stubHarness } from '@dandi/core/testing'
+import { stubHarness, stub } from '@dandi/core/testing'
 import { HttpMethod, HttpRequest, HttpResponse, HttpStatusCode } from '@dandi/http'
 import { HttpPipeline, HttpRequestInfo } from '@dandi/http-pipeline'
 import { DefaultRouteExecutor, Route, RouteInitializer } from '@dandi/mvc'
 
 import { expect } from 'chai'
-import { SinonStubbedInstance, stub } from 'sinon'
+import { SinonStubbedInstance } from 'sinon'
 
 describe('DefaultRouteExecutor', () => {
 
@@ -26,22 +26,11 @@ describe('DefaultRouteExecutor', () => {
   const harness = stubHarness(DefaultRouteExecutor,
     {
       provide: Route,
-      useFactory: () => ({
-        // eslint-disable-next-line brace-style
-        controllerCtr: class TestClass {
-          public method = stub()
-        },
-        controllerMethod: 'method',
-        httpMethod: HttpMethod.get,
-        siblingMethods: new Set([HttpMethod.get]),
-        path: '/',
-      }),
+      useFactory: () => route,
     },
     {
       provide: RouteInitializer,
-      useFactory: () => ({
-        initRouteRequest: stub(),
-      }),
+      useFactory: () => routeInit,
     },
     {
       provide: HttpPipeline,
@@ -49,21 +38,11 @@ describe('DefaultRouteExecutor', () => {
     },
     {
       provide: HttpRequest,
-      useFactory: () => ({
-        params: {},
-        query: {},
-      }),
+      useFactory: () => req,
     },
     {
       provide: HttpResponse,
-      useFactory: () => ({
-        contentType: stub().returnsThis(),
-        json: stub().returnsThis(),
-        send: stub().returnsThis(),
-        setHeader: stub().returnsThis(),
-        status: stub().returnsThis(),
-        end: stub().returnsThis(),
-      }),
+      useFactory: () => res,
     },
     {
       provide: HttpRequestInfo,
@@ -77,8 +56,8 @@ describe('DefaultRouteExecutor', () => {
   )
 
   let routeExec: DefaultRouteExecutor
-  let route: Route
   let routeInit: SinonStubbedInstance<RouteInitializer>
+  let route: Route
   let req: HttpRequest
   let res: HttpResponse
   let httpPipeline: FakeHttpPipeline
@@ -88,16 +67,37 @@ describe('DefaultRouteExecutor', () => {
 
   beforeEach(async () => {
     httpPipeline = new FakeHttpPipeline()
+    routeInit = {
+      initRouteRequest: stub(),
+    }
+    route = {
+      // eslint-disable-next-line brace-style
+      controllerCtr: class TestClass {
+        public method = stub()
+      },
+      controllerMethod: 'method',
+      httpMethod: HttpMethod.get,
+      siblingMethods: new Set([HttpMethod.get]),
+      path: '/',
+    }
+    req = {
+      params: {},
+      query: {},
+    } as any
+    res = {
+      contentType: stub().returnsThis(),
+      json: stub().returnsThis(),
+      send: stub().returnsThis(),
+      setHeader: stub().returnsThis(),
+      status: stub().returnsThis(),
+      end: stub().returnsThis(),
+    } as any
     routeExec = await harness.inject(DefaultRouteExecutor)
-    route = await harness.injectStub(Route)
-    routeInit = await harness.injectStub(RouteInitializer)
-    req = await harness.injectStub(HttpRequest)
-    res = await harness.injectStub(HttpResponse)
   })
   afterEach(() => {
     routeExec = undefined
-    route = undefined
     routeInit = undefined
+    route = undefined
     req = undefined
     res = undefined
     httpPipeline = undefined

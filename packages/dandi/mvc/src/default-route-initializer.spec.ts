@@ -1,13 +1,14 @@
 import { Uuid } from '@dandi/common'
-import { Injector, Provider } from '@dandi/core'
-import { stubValueProvider, testHarness } from '@dandi/core/testing'
+import { Injector, Provider, Registerable } from '@dandi/core'
+import { stubValueProvider, testHarness, TestInjector, TestInjectorBase } from '@dandi/core/testing'
 import {
+  createHttpRequestScope,
   ForbiddenError,
   HttpMethod,
   HttpRequest,
   HttpRequestBody,
   HttpRequestPathParamMap,
-  HttpRequestQueryParamMap,
+  HttpRequestQueryParamMap, HttpRequestScope,
   HttpResponse,
 } from '@dandi/http'
 import { RequestBody } from '@dandi/http-model'
@@ -23,6 +24,7 @@ import {
   Route,
   RouteInitializationError,
 } from '@dandi/mvc'
+
 import { expect } from 'chai'
 import { createStubInstance, SinonStubbedInstance, stub } from 'sinon'
 
@@ -36,7 +38,7 @@ describe('DefaultRouteInitializer', () => {
     stubValueProvider(Route, () => route),
     stubValueProvider(HttpRequest, () => req),
     stubValueProvider(HttpResponse, () => res),
-    stubValueProvider(HttpRequestInfo ,() => requestInfo),
+    stubValueProvider(HttpRequestInfo, () => requestInfo),
   )
 
   class TestModel {}
@@ -46,6 +48,12 @@ describe('DefaultRouteInitializer', () => {
     public method(@RequestBody(TestModel) body: TestModel): void {}
   }
 
+  class RouteInitScope {}
+
+  function createRouteInjector(providers: Registerable[]): TestInjector {
+    return new TestInjectorBase(requestInjector.createChild(RouteInitScope, providers))
+  }
+
   let injector: Injector
   let authProviderFactory: SinonStubbedInstance<AuthProviderFactory>
   let initializer: DefaultRouteInitializer
@@ -53,6 +61,8 @@ describe('DefaultRouteInitializer', () => {
   let req: HttpRequest
   let res: HttpResponse
   let requestInfo: HttpRequestInfo
+  let requestScope: HttpRequestScope
+  let requestInjector: Injector
 
   beforeEach(async () => {
     injector = await harness.inject(Injector)
@@ -81,63 +91,83 @@ describe('DefaultRouteInitializer', () => {
         mark: stub(),
       },
     }
+    requestScope = createHttpRequestScope(req)
+    requestInjector = injector.createChild(requestScope)
+  })
+  afterEach(() => {
+    injector = undefined
+    authProviderFactory = undefined
+    initializer = undefined
+    route = undefined
+    req = undefined
+    res = undefined
+    requestInfo = undefined
+    requestScope = undefined
+    requestInjector = undefined
   })
 
   describe('initRouteRequest', () => {
     it('does not register a request body provider if there is no body', async () => {
-      const providers = await initializer.initRouteRequest(injector, route, req, requestInfo, res)
+      const providers = await initializer.initRouteRequest(requestInjector, route, req, requestInfo, res)
+      const routeInjector = createRouteInjector(providers)
 
-      expect(harness.inject(HttpRequestBody, ...providers)).to.be.rejected
+      expect(routeInjector.inject(HttpRequestBody)).to.be.rejected
     })
 
     it('generates a provider for the request object', async () => {
-      const providers = await initializer.initRouteRequest(injector, route, req, requestInfo, res)
+      const providers = await initializer.initRouteRequest(requestInjector, route, req, requestInfo, res)
+      const routeInjector = createRouteInjector(providers)
 
-      expect(await harness.inject(HttpRequest, ...providers)).to.equal(req)
+      expect(await routeInjector.inject(HttpRequest)).to.equal(req)
     })
 
     it('generates a provider for the response object', async () => {
-      const providers = await initializer.initRouteRequest(injector, route, req, requestInfo, res)
+      const providers = await initializer.initRouteRequest(requestInjector, route, req, requestInfo, res)
+      const routeInjector = createRouteInjector(providers)
 
-      expect(await harness.inject(HttpResponse, ...providers)).to.equal(res)
+      expect(await routeInjector.inject(HttpResponse)).to.equal(res)
     })
 
     it('generates a provider for the path params object', async () => {
-      const providers = await initializer.initRouteRequest(injector, route, req, requestInfo, res)
+      const providers = await initializer.initRouteRequest(requestInjector, route, req, requestInfo, res)
+      const routeInjector = createRouteInjector(providers)
 
-      expect(await harness.inject(HttpRequestPathParamMap, ...providers)).to.equal(req.params)
+      expect(await routeInjector.inject(HttpRequestPathParamMap)).to.equal(req.params)
     })
 
     it('generates a provider for the query params object', async () => {
-      const providers = await initializer.initRouteRequest(injector, route, req, requestInfo, res)
+      const providers = await initializer.initRouteRequest(requestInjector, route, req, requestInfo, res)
+      const routeInjector = createRouteInjector(providers)
 
-      expect(await harness.inject(HttpRequestQueryParamMap, ...providers)).to.equal(req.query)
+      expect(await routeInjector.inject(HttpRequestQueryParamMap)).to.equal(req.query)
     })
 
     it('generates a provider for the route object', async () => {
-      const providers = await initializer.initRouteRequest(injector, route, req, requestInfo, res)
+      const providers = await initializer.initRouteRequest(requestInjector, route, req, requestInfo, res)
+      const routeInjector = createRouteInjector(providers)
 
-      expect(await harness.inject(Route, ...providers)).to.equal(route)
+      expect(await routeInjector.inject(Route)).to.equal(route)
     })
 
     it('generates a provider for the controllerCtr', async () => {
-      const providers = await initializer.initRouteRequest(injector, route, req, requestInfo, res)
+      const providers = await initializer.initRouteRequest(requestInjector, route, req, requestInfo, res)
+      const routeInjector = createRouteInjector(providers)
 
-      expect(await harness.inject(RequestController, ...providers)).to.be.instanceOf(TestController)
+      expect(await routeInjector.inject(RequestController)).to.be.instanceOf(TestController)
     })
 
     it('wraps caught errors in RouteInitializationError', async () => {
       const error = new Error('Your llama is lloose!')
       stub(initializer as any, 'generateRequestProviders').throws(error)
 
-      const result = await expect(initializer.initRouteRequest(injector, route, req, requestInfo, res)).to.be.rejectedWith(
+      const result = await expect(initializer.initRouteRequest(requestInjector, route, req, requestInfo, res)).to.be.rejectedWith(
         RouteInitializationError,
       )
       expect(result.innerError).to.equal(error)
     })
 
     it('adds request body providers if the method has a parameter that requests HttpRequestBody', async () => {
-      const providers = await initializer.initRouteRequest(injector, route, req, requestInfo, res)
+      const providers = await initializer.initRouteRequest(requestInjector, route, req, requestInfo, res)
       expect(providers.find(p => p.provide === HttpRequestBody)).to.exist
     })
 
@@ -146,7 +176,7 @@ describe('DefaultRouteInitializer', () => {
       const value = {}
       authProviderFactory.generateAuthProviders.resolves([{ provide: Foo, useValue: value }])
 
-      const providers = await initializer.initRouteRequest(injector, route, req, requestInfo, res)
+      const providers = await initializer.initRouteRequest(requestInjector, route, req, requestInfo, res)
 
       expect(providers.find(p => p.provide === Foo)).to.exist
     })
@@ -156,7 +186,7 @@ describe('DefaultRouteInitializer', () => {
         { provide: AuthorizationCondition, useValue: { allowed: true } },
       ])
 
-      await initializer.initRouteRequest(injector, route, req, requestInfo, res)
+      await initializer.initRouteRequest(requestInjector, route, req, requestInfo, res)
     })
 
     it('throws a Forbidden error if authorization conditions do not pass', async () => {
@@ -164,7 +194,7 @@ describe('DefaultRouteInitializer', () => {
         { provide: AuthorizationCondition, useValue: { allowed: false, reason: 'test' } },
       ])
 
-      const error = await expect(initializer.initRouteRequest(injector, route, req, requestInfo, res)).to.be.rejectedWith(
+      const error = await expect(initializer.initRouteRequest(requestInjector, route, req, requestInfo, res)).to.be.rejectedWith(
         RouteInitializationError,
       )
 
@@ -188,7 +218,7 @@ describe('DefaultRouteInitializer', () => {
         },
       ] as RequestProviderRegistrar[]
 
-      const providers = await initializer.initRouteRequest(injector, route, req, requestInfo, res)
+      const providers = await initializer.initRouteRequest(requestInjector, route, req, requestInfo, res)
       expect(providers.find(p => p.provide === Foo)).to.exist
     })
   })

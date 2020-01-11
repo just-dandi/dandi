@@ -3,7 +3,6 @@ import { localToken } from'../../src/local-token'
 import { InjectionResult } from './injection-result'
 import { InjectionScope } from './injection-scope'
 import { InjectionToken } from './injection-token'
-import { InjectorContextFindResult } from './injector-context'
 import { Provider } from './provider'
 
 export const ResolverContext = localToken.opinionated('ResolverContext', {
@@ -12,12 +11,14 @@ export const ResolverContext = localToken.opinionated('ResolverContext', {
 
 export interface ResolverContext<TTarget = unknown> {
   readonly injectionScope: InjectionScope
-  readonly match: InjectorContextFindResult<TTarget>
+  readonly match: Provider<TTarget> | Set<Provider<TTarget>>
   readonly result: InjectionResult<TTarget>
   readonly target: InjectionToken<TTarget>
 
-  addInstance(obj: TTarget): TTarget
-  addSingleton(provider: Provider<TTarget>, value: TTarget): TTarget
+  addInstance(provider: Provider<TTarget>, value: TTarget): TTarget
+  getInstance(provider: Provider<TTarget>): TTarget
   resolveValue(result: TTarget | TTarget[]): InjectionResult<TTarget>
-  getSingleton(provider: Provider<TTarget>): TTarget
+
+  getInstanceRequest(provider: Provider<TTarget>): Promise<TTarget>
+  setInstanceRequest(provider: Provider<TTarget>, value: Promise<TTarget>): Promise<TTarget>
 }

@@ -18,13 +18,11 @@ export interface HttpBodyParser {
 }
 export const HttpBodyParser: InjectionToken<HttpBodyParser> = localOpinionatedToken('HttpBodyParser', {
   multi: false,
-  singleton: false,
 })
 
 type HttpBodyParserCache = Map<string, Constructor<HttpBodyParser>>
 const HttpBodyParserCache: InjectionToken<HttpBodyParserCache> = localOpinionatedToken('HttpBodyParserCache', {
   multi: false,
-  singleton: true,
 })
 
 const HttpBodyParserCacheProvider: Provider<HttpBodyParserCache> = {
@@ -46,7 +44,6 @@ export function selectBodyParser(contentType: MimeTypeInfo, bodyParsers: BodyPar
 
 const SelectedBodyParser: InjectionToken<Constructor<HttpBodyParser>> = localOpinionatedToken('SelectedBodyParser', {
   multi: false,
-  singleton: false,
 })
 const SelectedBodyParserProvider: Provider<Constructor<HttpBodyParser>> = {
   provide: SelectedBodyParser,

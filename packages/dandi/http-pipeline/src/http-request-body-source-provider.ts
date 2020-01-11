@@ -1,4 +1,4 @@
-import { Injector, Provider } from '@dandi/core'
+import { InjectionScope, Injector, Provider } from '@dandi/core'
 import { HttpRequestHeaders, HttpRequestBodySource, HttpRequestRawBody } from '@dandi/http'
 
 import { BodyParserInfo } from './body-parsing/body-parser-decorator'
@@ -7,7 +7,6 @@ import { localOpinionatedToken } from './local-token'
 
 const BruteForceParsedBody = localOpinionatedToken<object>('BruteForceParsedBody', {
   multi: false,
-  singleton: false,
 })
 
 async function httpRequestBodySourceFactory(
@@ -41,7 +40,9 @@ function bruteForceBodyParse(
       ...parserConstructors,
     ],
   }
-  return injector.inject(BruteForceParsedBody, provider)
+  const bruteForceScope: InjectionScope = function BruteForceScope() {}
+  const bruteForceInjector = injector.createChild(bruteForceScope, [provider])
+  return bruteForceInjector.inject(BruteForceParsedBody)
 }
 
 async function bruteForceSelectBodyParser(

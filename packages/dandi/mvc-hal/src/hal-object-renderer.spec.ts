@@ -1,8 +1,8 @@
-import { testHarness } from '@dandi/core/testing'
-import { HttpRequest, HttpRequestAcceptTypesProvider, MimeTypes, parseMimeTypes } from '@dandi/http'
+import { testHarness, TestInjector } from '@dandi/core/testing'
+import { HttpRequest, HttpRequestAcceptTypesProvider, HttpRequestScope, MimeTypes, parseMimeTypes } from '@dandi/http'
 import {
   defaultHttpPipelineRenderer,
-  HttpPipelineRendererProvider,
+  HttpPipelineRendererProvider, HttpPipelineResult,
   PlainTextObjectRenderer,
 } from '@dandi/http-pipeline'
 import { TestApplicationJsonRenderer } from '@dandi/http-pipeline/testing'
@@ -12,7 +12,12 @@ import { HalMimeTypes, HalObjectRenderer } from '@dandi/mvc-hal'
 import { expect } from 'chai'
 import { stub } from 'sinon'
 
-describe('HalObjectRenderer', function() {
+describe('HalObjectRenderer', () => {
+
+  let renderer: HalObjectRenderer
+  let jsonRenderer: TestApplicationJsonRenderer
+  let result: HttpPipelineResult
+  let requestInjector: TestInjector
 
   const harness = testHarness(HalObjectRenderer,
     {
@@ -38,75 +43,83 @@ describe('HalObjectRenderer', function() {
         }
       },
     },
+    {
+      provide: HttpPipelineResult,
+      useFactory: () => result,
+    },
   )
 
-  beforeEach(async function() {
-    this.renderer = await harness.inject(HalObjectRenderer)
-    this.jsonRenderer = await harness.inject(TestApplicationJsonRenderer)
+  function setResult(data: any): void {
+    result = { data }
+  }
+
+  beforeEach(async () => {
+    requestInjector = harness.createChild(HttpRequestScope)
+    renderer = await requestInjector.inject(HalObjectRenderer)
+    jsonRenderer = await requestInjector.inject(TestApplicationJsonRenderer)
   })
 
+  describe('renderPipelineResult', () => {
 
-  describe('renderPipelineResult', function() {
-
-    beforeEach(async function() {
-      this.renderer = await harness.inject(HalObjectRenderer)
+    beforeEach(async () => {
+      renderer = await requestInjector.inject(HalObjectRenderer)
     })
 
-    it('finds a renderer matching the base type and uses it to render the output', async function() {
+    it('finds a renderer matching the base type and uses it to render the output', async () => {
 
-      stub(this.jsonRenderer, 'render').resolves({
+      stub(jsonRenderer, 'render').resolves({
         contentType: MimeTypes.applicationJson,
         renderedBody: '{"foo":"bar"}',
       })
 
-      const value = { foo: 'bar' }
+      setResult({ foo: 'bar' })
 
-      await this.renderer.renderPipelineResult(HalMimeTypes.halJson, value)
+      await renderer.renderPipelineResult(HalMimeTypes.halJson)
 
-      expect(this.jsonRenderer.render).to.have.been
+      expect(jsonRenderer.render).to.have.been
         .calledOnce
-        .calledWithExactly(parseMimeTypes(MimeTypes.applicationJson), value)
+        .calledWithExactly(parseMimeTypes(MimeTypes.applicationJson), result)
 
     })
 
-    it('returns the renderedBody of the subrenderer', async function() {
+    it('returns the renderedBody of the subrenderer', async () => {
 
       const expected = '{"foo":"bar"}'
-      stub(this.jsonRenderer, 'render').resolves({
+      stub(jsonRenderer, 'render').resolves({
         contentType: MimeTypes.applicationJson,
         renderedBody: expected,
       })
 
-      const value = { foo: 'bar' }
+      setResult({ foo: 'bar' })
 
-      const result = await this.renderer.renderPipelineResult(HalMimeTypes.halJson, value)
+      const result = await renderer.renderPipelineResult(HalMimeTypes.halJson)
 
       expect(result).to.deep.equal(expected)
     })
 
   })
 
-  describe('render', function() {
+  describe('render', () => {
 
-    beforeEach(async function() {
-      this.renderer = await harness.inject(HalObjectRenderer)
+    beforeEach(async () => {
+      renderer = await requestInjector.inject(HalObjectRenderer)
     })
 
-    it('returns the expected HAL mime type with the renderedBody of the subrenderer', async function() {
+    it('returns the expected HAL mime type with the renderedBody of the subrenderer', async () => {
 
       const expected = '{"foo":"bar"}'
-      stub(this.jsonRenderer, 'render').resolves({
+      stub(jsonRenderer, 'render').resolves({
         statusCode: undefined,
         contentType: MimeTypes.applicationJson,
         headers: undefined,
         renderedBody: expected,
       })
 
-      const value = { foo: 'bar' }
+      setResult({ foo: 'bar' })
 
-      const result = await this.renderer.render(parseMimeTypes(HalMimeTypes.halJson), value)
+      const renderResult = await renderer.render(parseMimeTypes(HalMimeTypes.halJson), result)
 
-      expect(result).to.deep.equal({
+      expect(renderResult).to.deep.equal({
         statusCode: undefined,
         contentType: HalMimeTypes.halJson,
         headers: undefined,

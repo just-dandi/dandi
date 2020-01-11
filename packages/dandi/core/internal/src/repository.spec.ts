@@ -6,30 +6,33 @@ import {
   OpinionatedToken,
   Provider,
   ProviderTypeError,
-  Registerable,
+  Registerable, RegistrationSource,
   SymbolToken,
 } from '@dandi/core'
 import {
-  ConflictingRegistrationOptionsError, GLOBAL_CONTEXT,
+  ConflictingRegistrationOptionsError,
+  GLOBAL_SCOPE,
   InvalidRegistrationTargetError,
-  InvalidRepositoryContextError,
+  InvalidRepositoryScopeError,
   Repository,
 } from '@dandi/core/internal'
 
 import { expect } from 'chai'
 import { spy } from 'sinon'
 
-describe('Repository', function() {
+describe('Repository', () => {
 
   class TestClass {}
 
+  let source: RegistrationSource
   let repo: Repository
   let token: SymbolToken<any>
   let value: any
   let provider: Provider<any>
 
-  beforeEach(function() {
-    repo = Repository.for(Math.random())
+  beforeEach(() => {
+    source = { constructor: function RepositorySpec() {} }
+    repo = Repository.for(Math.random().toString())
     token = new SymbolToken<any>('test')
     value = {}
     provider = {
@@ -39,14 +42,15 @@ describe('Repository', function() {
   })
 
   afterEach(() => {
+    source = undefined
     repo = undefined
     token = undefined
     value = undefined
     provider = undefined
   })
 
-  describe('register', function() {
-    it('sets ProviderOptions from an OpinionatedToken', function() {
+  describe('register', () => {
+    it('sets ProviderOptions from an OpinionatedToken', () => {
       const token = new OpinionatedToken('test-op', { multi: true })
       const provider = {
         provide: token,
@@ -56,7 +60,7 @@ describe('Repository', function() {
       expect((provider as any).multi).to.be.true
     })
 
-    it('throw an error if ProviderOptions from an OpinionatedToken conflict with the provider', function() {
+    it('throw an error if ProviderOptions from an OpinionatedToken conflict with the provider', () => {
       const token = new OpinionatedToken('test-op', { multi: true })
       const provider = {
         provide: token,
@@ -66,60 +70,56 @@ describe('Repository', function() {
       expect(() => repo.register(this, provider)).to.throw(OpinionatedProviderOptionsConflictError)
     })
 
-    it('registers a provider by its injection token', function() {
-      repo.register(this, provider)
+    it('registers a provider by its injection token', () => {
+      repo.register(source, provider)
 
-      expect((repo as any).providers).to.contain.keys(provider.provide)
-      expect((repo as any).providers.get(provider.provide)).to.equal(provider)
+      expect(repo.get(provider.provide)).to.equal(provider)
     })
 
-    it('registers a class using the class as the injection token if no token is specified in the options', function() {
-      repo.register(this, TestClass)
+    it('registers a class using the class as the injection token if no token is specified in the options', () => {
+      repo.register(source, TestClass)
 
-      expect((repo as any).providers).to.contain.keys(TestClass)
-      expect((repo as any).providers.get(TestClass)).to.deep.equal({
+      expect(repo.get(TestClass)).to.deep.equal({
         provide: TestClass,
         useClass: TestClass,
       })
     })
 
-    it('registers a class using the injection token specified in the options, if specified, as well as the class itself', function() {
+    it('registers a class using the injection token specified in the options, if specified, as well as the class itself', () => {
       repo.register(this, TestClass, { provide: token })
 
-      expect((repo as any).providers).to.contain.keys(token)
-      // expect((repo as any).providers).to.contain.keys(TestClass);
-      expect((repo as any).providers.get(token)).to.deep.equal({
+      expect(repo.get(token)).to.deep.equal({
         provide: token,
         useClass: TestClass,
       })
+      expect(repo.get(TestClass)).to.deep.equal({ provide: TestClass, useClass: TestClass })
     })
 
-    it('registers a class using the injection token specified in the options, if specified, as well as the class itself, unless the noSelf option is specified', function() {
+    it('registers a class using the injection token specified in the options, if specified, as well as the class itself, unless the noSelf option is specified', () => {
       repo.register(this, TestClass, { provide: token, noSelf: true })
 
-      expect((repo as any).providers).to.contain.keys(token)
-      expect((repo as any).providers).not.to.contain.keys(TestClass)
-      expect((repo as any).providers.get(token)).to.deep.equal({
+      expect(repo.get(TestClass)).to.be.undefined
+      expect(repo.get(token)).to.deep.equal({
         provide: token,
         useClass: TestClass,
         noSelf: true,
       })
     })
 
-    it('leaves the multi and singleton options undefined if they are not specified', function() {
+    it('leaves the multi option undefined if it is not specified', () => {
       repo.register(this, TestClass, { provide: token })
 
-      expect((repo as any).providers.get(token).multi).to.be.undefined
-      expect((repo as any).providers.get(token).singleton).to.be.undefined
+      const entry = repo.get(token) as Provider<any>
+      expect(entry.multi).to.be.undefined
     })
 
-    it('throws an error if the registration target is not a class or provider', function() {
+    it('throws an error if the registration target is not a class or provider', () => {
       expect(() => repo.register(this, null)).to.throw(InvalidRegistrationTargetError)
       expect(() => repo.register(this, undefined)).to.throw(InvalidRegistrationTargetError)
       expect(() => repo.register(this, {} as any)).to.throw(InvalidRegistrationTargetError)
     })
 
-    it('includes the path of registration sources when throwing an InvalidRegistrationTargetError', function() {
+    it('includes the path of registration sources when throwing an InvalidRegistrationTargetError', () => {
 
       const source = {
         constructor: function TheTest() {},
@@ -135,7 +135,7 @@ describe('Repository', function() {
 
     })
 
-    it('includes ModuleInfo in the path of registration sources if available', function() {
+    it('includes ModuleInfo in the path of registration sources if available', () => {
 
       @Injectable()
       class TestService {}
@@ -162,7 +162,7 @@ describe('Repository', function() {
 
     })
 
-    it('overwrites registrations when the multi option is not set', function() {
+    it('overwrites registrations when the multi option is not set', () => {
       repo.register(this, provider)
       const overwritingProvider = {
         provide: provider.provide,
@@ -170,11 +170,10 @@ describe('Repository', function() {
       }
       repo.register(this, overwritingProvider)
 
-      expect((repo as any).providers).to.contain.keys(provider.provide)
-      expect((repo as any).providers.get(provider.provide)).to.equal(overwritingProvider)
+      expect(repo.get(provider.provide)).to.equal(overwritingProvider)
     })
 
-    it('registers an array of providers when the multi option is set', function() {
+    it('registers an array of providers when the multi option is set', () => {
       provider.multi = true
       repo.register(this, provider)
       const additionalProvider = {
@@ -184,11 +183,10 @@ describe('Repository', function() {
       }
       repo.register(this, additionalProvider)
 
-      expect((repo as any).providers).to.contain.keys(provider.provide)
-      expect([...(repo as any).providers.get(provider.provide)]).to.deep.equal([provider, additionalProvider])
+      expect([...repo.get(provider.provide) as Set<Provider<any>>]).to.deep.equal([provider, additionalProvider])
     })
 
-    it('throws an error when registering a multi provider if a non-multi provider already exists', function() {
+    it('throws an error when registering a multi provider if a non-multi provider already exists', () => {
       repo.register(this, provider)
       const additionalProvider = {
         provide: provider.provide,
@@ -198,7 +196,7 @@ describe('Repository', function() {
       expect(() => repo.register(this, additionalProvider)).to.throw(ConflictingRegistrationOptionsError)
     })
 
-    it('throws an error when registering a non-multi provider if a multi provider already exists', function() {
+    it('throws an error when registering a non-multi provider if a multi provider already exists', () => {
       const additionalProvider = {
         provide: provider.provide,
         useValue: {},
@@ -209,20 +207,20 @@ describe('Repository', function() {
     })
   })
 
-  describe('get', function() {
-    it('returns the provider for the specified token', function() {
+  describe('get', () => {
+    it('returns the provider for the specified token', () => {
       repo.register(this, provider)
 
       expect(repo.get(provider.provide)).to.equal(provider)
     })
 
-    it('returns undefined if there is no registered provider for the token', function() {
+    it('returns undefined if there is no registered provider for the token', () => {
       expect(repo.get(provider.provide)).to.be.undefined
     })
   })
 
-  describe('entries', function() {
-    it('returns an iterator that iterates over all registered providers', function() {
+  describe('providers', () => {
+    it('returns an iterator that iterates over all registered providers', () => {
       repo.register(this, provider)
       const anotherProvider = {
         provide: new SymbolToken('another-test'),
@@ -230,52 +228,54 @@ describe('Repository', function() {
       }
       repo.register(this, anotherProvider)
 
-      expect([...repo.entries()]).to.include.members([provider, anotherProvider])
+      expect([...repo.providers]).to.include.members([provider, anotherProvider])
     })
   })
 
-  describe('addSingleton', function() {
-    it('adds the value to the singletons set', function() {
-      Disposable.use(Repository.for({}), (repo) => {
-        repo.addSingleton(provider, value)
-        expect((repo as any).singletons.get(provider)).to.equal(value)
+  describe('addInstance', () => {
+    it('adds the value to the instances set', () => {
+      Disposable.use(Repository.for(Math.random().toString()), (repo) => {
+        repo.addInstance(provider, value)
+        expect(repo.getInstance(provider)).to.equal(value)
       })
     })
 
-    it('throws an error if called without a valid provider', function() {
-      Disposable.use(Repository.for({}), (repo) => {
-        expect(() => repo.addSingleton({} as any, value)).to.throw(ProviderTypeError)
-      })
-    })
-  })
-
-  describe('getSingleton', function() {
-    it('returns the value of a registered singleton', function() {
-      Disposable.use(Repository.for({}), (repo) => {
-        repo.addSingleton(provider, value)
-        expect(repo.getSingleton(provider)).to.equal(value)
+    it('throws an error if called without a valid provider', () => {
+      Disposable.use(Repository.for(Math.random().toString()), (repo) => {
+        expect(() => repo.addInstance({} as any, value)).to.throw(ProviderTypeError)
       })
     })
   })
 
-  describe('dispose', function() {
-    it('throws an error if called on the global repository', function() {
-      const globalRepo = Repository.for(GLOBAL_CONTEXT)
-      expect(() => globalRepo.dispose('test')).to.throw(InvalidDisposeTargetError)
+  describe('getSingleton', () => {
+    it('returns the value of a registered singleton', () => {
+      Disposable.use(Repository.for(Math.random().toString()), (repo) => {
+        repo.addInstance(provider, value)
+        expect(repo.getInstance(provider)).to.equal(value)
+      })
+    })
+  })
+
+  describe('dispose', () => {
+    it('throws an error if called on the global repository', () => {
+      const globalRepo = Repository.for(GLOBAL_SCOPE)
+      expect(globalRepo.dispose('test')).to.be.rejectedWith(InvalidDisposeTargetError)
     })
 
-    it('clears local maps', function() {
-      const clearProviders = spy((repo as any).providers, 'clear')
-      const clearSingletons = spy((repo as any).singletons, 'clear')
+    it('clears local maps', async () => {
+      repo.register(source, provider)
+      repo.addInstance(provider, {})
+      const clearProviders = spy((repo as any).registry, 'clear')
+      const clearInstances = spy((repo as any).instances, 'clear')
 
-      repo.dispose('test')
+      await repo.dispose('test')
 
       expect(clearProviders).to.have.been.calledOnce
-      expect(clearSingletons).to.have.been.calledOnce
+      expect(clearInstances).to.have.been.calledOnce
     })
 
-    it('removes the repository from the REPOSITORIES map', function() {
-      repo.dispose('test')
+    it('removes the repository from the REPOSITORIES map', async () => {
+      await repo.dispose('test')
 
       // can't access REPOSITORIES, so just test to make sure the same repo isn't returned after it's
       // supposed to be removed
@@ -283,22 +283,22 @@ describe('Repository', function() {
     })
   })
 
-  describe('for', function() {
-    it('instantiates a repository with the specified context', function() {
+  describe('for', () => {
+    it('instantiates a repository with the specified context', () => {
       const localRepo = Repository.for('foo')
-      expect((localRepo as any).context).to.equal('foo')
+      expect((localRepo as any).scope).to.equal('foo')
       localRepo.dispose('done')
     })
 
-    it('returns an existing repository when the same context is used', function() {
+    it('returns an existing repository when the same context is used', () => {
       const localRepo = Repository.for('foo')
       expect(Repository.for('foo')).to.equal(localRepo)
 
       localRepo.dispose('done')
     })
 
-    it('throws an error if a context is not specified', function() {
-      expect(() => Repository.for(null)).to.throw(InvalidRepositoryContextError)
+    it('throws an error if a context is not specified', () => {
+      expect(() => Repository.for(null)).to.throw(InvalidRepositoryScopeError)
     })
   })
 })

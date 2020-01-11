@@ -5,6 +5,7 @@ import { isPromise } from './promise'
 
 export type DisposeFn = (reason: string) => void
 
+export const DISPOSING = globalSymbol('Disposable.DISPOSING')
 export const DISPOSED = globalSymbol('Disposable.DISPOSED')
 export const DISPOSED_REASON = globalSymbol('Disposable.DISPOSED_REASON')
 
@@ -60,14 +61,30 @@ export class Disposable {
     return obj && obj[DISPOSED] || false
   }
 
+  public static isDisposing(obj: any): boolean {
+    return obj && !!obj[DISPOSING]
+  }
+
+  public static canDispose(obj: any): obj is Disposable {
+    return !Disposable.isDisposed(obj) && Disposable.isDisposable(obj) && !Disposable.isDisposing(obj)
+  }
+
   public static getDisposedReason(obj: any): string {
     return obj[DISPOSED_REASON]
   }
 
   public static async dispose(obj: any, reason: string): Promise<void> {
-    if (Disposable.isDisposable(obj)) {
-      await obj.dispose(reason)
+    if (Disposable.canDispose(obj)) {
+      Disposable.markDisposing(obj, reason)
+      const disposeResult = obj.dispose(reason)
+      if (isPromise(disposeResult)) {
+        await disposeResult
+      }
     }
+  }
+
+  public static markDisposing(obj: any, reason: string): void {
+    obj[DISPOSING] = reason
   }
 
   /**
@@ -110,22 +127,20 @@ export class Disposable {
   /**
    * Invokes the specified function, then disposes the object.
    */
-  public static use<T extends Disposable, TResult = void>(obj: T, use: (obj: T) => TResult): TResult {
+  public static use<T = any, TResult = void>(obj: T, use: (obj: T) => TResult): TResult {
     let error: Error
     try {
       return use(obj)
     } catch (err) {
       error = err
     } finally {
-      if (Disposable.isDisposable(obj)) {
-        obj.dispose(`after Disposable.use() for ${obj.constructor.name}`)
-      }
+      Disposable.dispose(obj, `after Disposable.use() for ${obj.constructor.name}`)
     }
 
     throw error
   }
 
-  public static async useAsync<T extends Disposable, TResult = void>(
+  public static async useAsync<T = any, TResult = void>(
     obj: T | Promise<T>,
     use: (obj: T) => Promise<TResult>,
   ): Promise<TResult> {
@@ -133,9 +148,7 @@ export class Disposable {
     try {
       return await use(resolvedObj)
     } finally {
-      if (Disposable.isDisposable(resolvedObj)) {
-        await resolvedObj.dispose(`after Disposable.useAsync() for ${obj.constructor.name}`)
-      }
+      await Disposable.dispose(resolvedObj, `after Disposable.useAsync() for ${obj.constructor.name}`)
     }
   }
 

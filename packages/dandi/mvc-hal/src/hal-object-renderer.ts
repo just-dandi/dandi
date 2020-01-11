@@ -1,10 +1,10 @@
-import { Disposable } from '@dandi/common'
-import { Inject, Injector } from '@dandi/core'
-import { HttpRequest, HttpRequestAcceptTypes, parseMimeTypes } from '@dandi/http'
+import { Inject, Injectable, Injector, RestrictScope } from '@dandi/core'
+import { HttpRequest, HttpRequestAcceptTypes, HttpRequestScope, MimeTypeInfo, parseMimeTypes } from '@dandi/http'
 import { HttpPipelineResult, HttpPipelineRendererBase, Renderer, HttpPipelineRenderer } from '@dandi/http-pipeline'
 
 import { HalMimeTypes } from './hal-mime-types'
 
+@Injectable(RestrictScope(HttpRequestScope))
 @Renderer(HalMimeTypes.halJson, HalMimeTypes.halXml, HalMimeTypes.halYaml)
 export class HalObjectRenderer extends HttpPipelineRendererBase {
 
@@ -16,7 +16,7 @@ export class HalObjectRenderer extends HttpPipelineRendererBase {
     super()
   }
 
-  public async renderPipelineResult(contentType: string, pipelineResult: HttpPipelineResult): Promise<string> {
+  public async renderPipelineResult(contentType: string): Promise<string> {
     const halMimeType = parseMimeTypes(contentType)[0]
     const subRendererMimeType = parseMimeTypes(`${halMimeType.type}/${halMimeType.subtypeBase}`)
     const providers = [
@@ -31,13 +31,16 @@ export class HalObjectRenderer extends HttpPipelineRendererBase {
         useValue: subRendererMimeType,
       },
     ]
+    return await this.injector.invoke(this as HalObjectRenderer, 'renderHalResult', ...providers)
+  }
 
-    return Disposable.useAsync(this.injector.inject(HttpPipelineRenderer, ...providers), async resolveResult => {
-      const renderer = resolveResult.singleValue
-      const result = await renderer.render(subRendererMimeType, pipelineResult)
-      return result.renderedBody
-
-    })
+  public async renderHalResult(
+    @Inject(HttpPipelineRenderer) renderer: HttpPipelineRenderer,
+    @Inject(HttpRequestAcceptTypes) subRendererMimeType: MimeTypeInfo[],
+    @Inject(HttpPipelineResult) pipelineResult: HttpPipelineResult,
+  ): Promise<any> {
+    const result = await renderer.render(subRendererMimeType, pipelineResult)
+    return result.renderedBody
   }
 
 }

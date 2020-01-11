@@ -10,7 +10,6 @@ export function ssmClientFactory(): AwsSsmClient {
 export type AwsSsmClient = SSM
 
 export const AwsSsmClient: InjectionToken<AwsSsmClient> = localOpinionatedToken('AwsSsmClient', {
-  singleton: true,
   multi: false,
 })
 

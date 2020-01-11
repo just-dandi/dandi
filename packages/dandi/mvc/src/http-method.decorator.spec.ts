@@ -19,7 +19,7 @@ describe('HttpMethodDecorator', () => {
     expect(methodMeta.routePaths.get('')).to.include(HttpMethod.get)
   })
 
-  it('adds route entries for multiple decorations', () => {
+  it('adds route providers for multiple decorations', () => {
     @Controller('/')
     class TestController {
       @HttpGet()

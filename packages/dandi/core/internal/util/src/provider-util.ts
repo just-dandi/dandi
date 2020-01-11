@@ -4,6 +4,7 @@ import {
   ClassProvider,
   FactoryProvider,
   GeneratingProvider,
+  MultiProvider,
   Provider,
   ValueProvider,
 } from '@dandi/core/types'
@@ -71,4 +72,8 @@ export function isGeneratingProvider<T>(obj: any): obj is GeneratingProvider<T> 
 
 export function isValueProvider<T>(obj: any): obj is ValueProvider<T> {
   return checkIsValueProvider(obj)
+}
+
+export function isMultiProvider<T>(obj: any): obj is MultiProvider<T> {
+  return isProvider(obj) && obj.multi
 }

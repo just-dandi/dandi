@@ -5,7 +5,6 @@ import { RouteGenerator } from './route-generator'
 import { localOpinionatedToken } from './local.token'
 
 export const Routes: InjectionToken<Route[]> = localOpinionatedToken('Routes', {
-  singleton: true,
   multi: false,
 })
 

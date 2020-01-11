@@ -7,5 +7,4 @@ export const RequestAuthorizationService: InjectionToken<AuthorizationService> =
 AuthorizationService
 >('RequestAuthorizationService', {
   multi: false,
-  singleton: true,
 })

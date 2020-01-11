@@ -2,17 +2,24 @@ import {
   EntryPoint,
   DandiApplication,
   DandiApplicationError,
+  Logger,
   NoopLogger,
   Scanner,
   SymbolToken,
 } from '@dandi/core'
 
 import { expect } from 'chai'
-import { spy, stub, createStubInstance } from 'sinon'
+import { spy, stub } from 'sinon'
 
-describe('DandiApplication', function() {
-  beforeEach(function() {
-    this.logger = createStubInstance(NoopLogger)
+describe('DandiApplication', () => {
+
+  let logger: Logger
+
+  beforeEach(() => {
+    logger = new NoopLogger()
+  })
+  afterEach(() => {
+    logger = undefined
   })
 
   describe('ctr', () => {
@@ -21,9 +28,9 @@ describe('DandiApplication', function() {
     })
   })
 
-  describe('preInit', function() {
+  describe('preInit', () => {
 
-    it('registers any providers specified in the constructor configuration', async function() {
+    it('registers any providers specified in the constructor configuration', async () => {
       const token1 = new SymbolToken('test-1')
       const token2 = new SymbolToken('test-2')
       const provider1 = {
@@ -42,12 +49,12 @@ describe('DandiApplication', function() {
 
       const appInjector = (application as any).initHost.appInjector
 
-      expect(appInjector.context.repository.providers).to.contain.keys([token1, token2])
+      expect(appInjector.context.repository.registry).to.contain.keys([token1, token2])
     })
 
-    describe('init', function() {
+    describe('init', () => {
 
-      it('runs any scanners registered in the constructor configuration and adds the resulting providers to the root injector', async function() {
+      it('runs any scanners registered in the constructor configuration and adds the resulting providers to the root injector', async () => {
         const token1 = SymbolToken.for('Foo')
         const provider1 = {
           provide: token1,
@@ -76,7 +83,7 @@ describe('DandiApplication', function() {
         })
 
         await (application as any).initHost.preInit()
-        await (application as any).initHost.init((application as any).initHost.appInjector, this.logger, () => new Date().valueOf())
+        await (application as any).initHost.init((application as any).initHost.appInjector, logger, () => new Date().valueOf())
 
         expect(scanner1.scan).to.have.been.calledOnce
         expect(scanner2.scan).to.have.been.calledOnce

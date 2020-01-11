@@ -12,6 +12,5 @@ export interface LogStream {
 }
 
 export const LogStream: InjectionToken<LogStream> = localToken.opinionated<LogStream>('LogStream', {
-  singleton: true,
   multi: false,
 })

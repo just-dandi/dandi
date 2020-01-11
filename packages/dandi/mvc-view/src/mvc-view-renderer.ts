@@ -1,11 +1,11 @@
-import { Disposable } from '@dandi/common'
-import { Inject, Injector } from '@dandi/core'
-import { MimeTypes } from '@dandi/http'
+import { Inject, Injectable, Injector, RestrictScope } from '@dandi/core'
+import { HttpRequestScope, MimeTypes } from '@dandi/http'
 import { HttpPipelineResult, HttpPipelineRendererBase, Renderer } from '@dandi/http-pipeline'
 import { ViewResult } from '@dandi/mvc-view'
 
 import { ViewResultFactory } from './view-result-factory'
 
+@Injectable(RestrictScope(HttpRequestScope))
 @Renderer(MimeTypes.textHtml)
 export class MvcViewRenderer extends HttpPipelineRendererBase {
 
@@ -21,10 +21,10 @@ export class MvcViewRenderer extends HttpPipelineRendererBase {
     if (pipelineResult instanceof ViewResult) {
       return pipelineResult.value
     }
-    return Disposable.useAsync(this.injector.inject(ViewResultFactory), async factoryResult => {
-      const factory = factoryResult.singleValue
-      const viewResult = await factory(undefined, pipelineResult.data)
-      return viewResult.value
-    })
+
+    const factoryResult = await this.injector.inject(ViewResultFactory)
+    const factory = factoryResult.singleValue
+    const viewResult = await factory(undefined, pipelineResult.data)
+    return viewResult.value
   }
 }

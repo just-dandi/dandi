@@ -1,18 +1,18 @@
 import { EOL } from 'os'
 
-import { Inject, Injector } from '@dandi/core'
+import { Inject, InjectionScope, Injector } from '@dandi/core'
 import { HttpRequestHeaders, HttpRequestRawBody, MimeTypes, HttpRequestBodySource } from '@dandi/http'
+
+import { localOpinionatedToken } from '../local-token'
 
 import { BodyParser } from './body-parser-decorator'
 import { HttpBodyParserBase } from './http-body-parser-base'
-import { localOpinionatedToken } from '../local-token'
 
 const BOUNDARY = 'boundary='
 const CONTENT_TYPE_PREFIX = 'content-type:'
 
 const PartSource = localOpinionatedToken<string>('FormMultipartBodyParser:PartSource', {
   multi: false,
-  singleton: false,
 })
 
 interface PreppedPart {
@@ -44,8 +44,8 @@ export class FormMultipartBodyParser extends HttpBodyParserBase {
         provide: PartSource,
         useValue: part.trim(),
       })
-      // recursively use the parser system to parse the individual parts
-      return await this.injector.inject(HttpRequestBodySource,
+      const partScope: InjectionScope = function FormMultiPartBodyParsingScope(){}
+      const partInjector = this.injector.createChild(partScope, [
         {
           provide: HttpRequestRawBody,
           useValue: preppedPart.source,
@@ -56,7 +56,10 @@ export class FormMultipartBodyParser extends HttpBodyParserBase {
             'Content-Type': preppedPart.contentType,
           },
         },
-      )
+      ])
+
+      // recursively use the parser system to parse the individual parts
+      return await partInjector.inject(HttpRequestBodySource)
     }))
     if (result.length === 0) {
       return undefined

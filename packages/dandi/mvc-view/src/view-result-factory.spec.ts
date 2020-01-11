@@ -1,4 +1,5 @@
-import { testHarness } from '@dandi/core/testing'
+import { testHarness, TestInjector } from '@dandi/core/testing'
+import { createHttpRequestScope } from '@dandi/http'
 import { Route } from '@dandi/mvc'
 import { VIEW_RESULT_FACTORY, ViewEngineResolver, ViewResultFactory, ViewResultFactoryError } from '@dandi/mvc-view'
 import { expect } from 'chai'
@@ -11,12 +12,21 @@ describe('ViewResultFactory', function() {
     useValue: createStubInstance(ViewEngineResolver),
   })
 
+  let injector: TestInjector
+
+  beforeEach(() => {
+    injector = harness.createChild(createHttpRequestScope({} as any))
+  })
+  afterEach(() => {
+    injector = undefined
+  })
+
   it('is injectable', async function() {
     harness.register({
       provide: Route,
       useValue: {},
     })
-    const factory = await harness.inject(ViewResultFactory, false)
+    const factory = await injector.inject(ViewResultFactory, false)
     expect(factory).to.exist
     expect(factory).to.be.a('function')
   })
@@ -26,7 +36,7 @@ describe('ViewResultFactory', function() {
       provide: Route,
       useValue: {},
     })
-    const factory = await harness.inject(ViewResultFactory, false)
+    const factory = await injector.inject(ViewResultFactory, false)
     await expect(factory()).to.be.rejectedWith(ViewResultFactoryError)
   })
 
@@ -40,8 +50,8 @@ describe('ViewResultFactory', function() {
         view,
       } as any,
     })
-    const resolver = await harness.injectStub(ViewEngineResolver, false)
-    const factory = await harness.inject(ViewResultFactory, false)
+    const resolver = await injector.injectStub(ViewEngineResolver, false)
+    const factory = await injector.inject(ViewResultFactory, false)
     const engine = {
       render: stub(),
     }
@@ -68,8 +78,8 @@ describe('ViewResultFactory', function() {
         view,
       } as any,
     })
-    const resolver = await harness.injectStub(ViewEngineResolver, false)
-    const factory = await harness.inject(ViewResultFactory, false)
+    const resolver = await injector.injectStub(ViewEngineResolver, false)
+    const factory = await injector.inject(ViewResultFactory, false)
     const engine = {
       render: stub(),
     }

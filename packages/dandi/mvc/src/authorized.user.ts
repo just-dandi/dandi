@@ -1,5 +1,5 @@
 import { InjectionToken, Provider } from '@dandi/core'
-import { HttpRequest } from '@dandi/http'
+import { HttpRequest, HttpRequestScope } from '@dandi/http'
 import { HttpRequestInfo } from '@dandi/http-pipeline'
 
 import { AuthorizationService } from './authorization.service'
@@ -12,6 +12,7 @@ export interface AuthorizedUser {
 
 export const AuthorizedUser: InjectionToken<AuthorizedUser> = localOpinionatedToken<AuthorizedUser>('AuthorizedUser', {
   multi: false,
+  restrictScope: HttpRequestScope,
 })
 
 export async function authorizedUserFactory(
@@ -31,5 +32,4 @@ export const AuthorizedUserProvider: Provider<AuthorizedUser> = {
   useFactory: authorizedUserFactory,
   async: true,
   deps: [RequestAuthorizationService, HttpRequest, HttpRequestInfo],
-  singleton: true,
 }

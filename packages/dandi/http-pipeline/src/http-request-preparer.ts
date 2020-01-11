@@ -1,7 +1,16 @@
 import { Constructor, getMetadata } from '@dandi/common'
-import { Injectable, InjectionToken, Injector, NotMulti, Provider } from '@dandi/core'
+import {
+  Injectable,
+  InjectionScope,
+  InjectionToken,
+  Injector,
+  NotMulti,
+  Provider,
+  RestrictScope,
+  ScopeBehavior,
+} from '@dandi/core'
 import {  } from '@dandi/core'
-import { HttpRequest } from '@dandi/http'
+import { HttpRequest, HttpRequestScope } from '@dandi/http'
 
 import { globalSymbol } from './global.symbol'
 import { localOpinionatedToken } from './local-token'
@@ -31,9 +40,9 @@ export function getHttpRequestPreparerMetadata(target: Constructor<HttpRequestPr
 export function HttpRequestPreparerResult(preparer: Constructor<HttpRequestPreparer>): InjectionToken<HttpRequestPreparerResult> {
   let token: InjectionToken<HttpRequestPreparerResult> = PREPARER_RESULT_TOKENS.get(preparer)
   if (!token) {
-    token = localOpinionatedToken<any>(`HttpRequestPreparerResult#${preparer.name}`, {
+    token = localOpinionatedToken<any>(`HttpRequestPreparerResult:${preparer.name}`, {
       multi: false,
-      singleton: true,
+      restrictScope: HttpRequestScope,
     })
     PREPARER_RESULT_TOKENS.set(preparer, token)
   }
@@ -48,21 +57,29 @@ export function httpRequestPreparerResultProvider(preparer: Constructor<HttpRequ
   const providers = depConstructors
     .map(dep => httpRequestPreparerResultProvider(dep))
     .concat(depConstructors.map(httpRequestPreparerResultProvider))
+  const provide = HttpRequestPreparerResult(preparer)
+  async function httpRequestPreparerResultProviderFactory(
+    injector: Injector,
+    req: HttpRequest,
+    ...results: Provider<any>[][]): Promise<Provider<any>[]> {
+    const allDependentResults = results.reduce((result, preparerResults) => {
+      result.push(...preparerResults)
+      return result
+    }, [])
+    // TODO: this could get messy with multiple duplicate providers coming from multiple preparers... what to do then?
+    const preparerScope: InjectionScope = function PreparerScope() {}
+    const preparerInjector = injector.createChild(preparerScope, allDependentResults)
+    const preparerInstance = (await preparerInjector.inject(preparer)).singleValue
+    const preparerResults = await preparerInstance.prepare(req)
+    return allDependentResults.concat(preparerResults)
+  }
   return {
-    provide: HttpRequestPreparerResult(preparer),
-    useFactory: async (injector: Injector, req: HttpRequest, ...results: Provider<any>[][]): Promise<Provider<any>[]> => {
-      const allDependentResults = results.reduce((result, preparerResults) => {
-        result.push(...preparerResults)
-        return result
-      }, [])
-      // TODO: this could get messy with multiple duplicate providers coming from multiple preparers... what to do then?
-      const preparerInstance = (await injector.inject(preparer, false, ...allDependentResults)).singleValue
-      const preparerResults = await preparerInstance.prepare(req)
-      return allDependentResults.concat(preparerResults)
-    },
+    provide,
+    useFactory: httpRequestPreparerResultProviderFactory,
     async: true,
     deps,
     providers,
+    restrictScope: HttpRequestScope,
   }
 }
 
@@ -71,7 +88,9 @@ function httpRequestPreparerDecorator(
   depResultTokens: InjectionToken<any>[],
   target: Constructor<HttpRequestPreparer>,
 ): void {
-  Injectable(target, NotMulti)(target)
+  // note: must use ScopeBehavior.parent() to ensure that instances have access to the dynamically generated providers
+  // from httpRequestPreparerResultProvider
+  Injectable(target, NotMulti, RestrictScope(ScopeBehavior.parent(HttpRequestScope)))(target)
   const meta = getHttpRequestPreparerMetadata(target)
   deps.forEach(dep => meta.deps.add(dep))
   depResultTokens.forEach(token => meta.dependencyResultTokens.add(token))

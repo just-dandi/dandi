@@ -1,7 +1,9 @@
 import { Constructor, Disposable, InvalidDisposeTargetError } from '@dandi/common'
 import { ProviderTypeError } from '@dandi/core/errors'
-import { isProvider } from '@dandi/core/internal/util'
+import { isProvider, getInjectionScopeName } from '@dandi/core/internal/util'
 import {
+  DependencyInjectionScope,
+  InjectionScope,
   InjectionToken,
   OpinionatedProviderOptionsConflictError,
   OpinionatedToken,
@@ -10,11 +12,9 @@ import {
   RegistrationSource,
 } from '@dandi/core/types'
 
-import { globalSymbol } from '../../src/global-symbol'
+import { InvalidRepositoryScopeError, InvalidRegistrationTargetError, ConflictingRegistrationOptionsError } from './repository-errors'
 
-import { InvalidRepositoryContextError, InvalidRegistrationTargetError, ConflictingRegistrationOptionsError } from './repository-errors'
-
-const REPOSITORIES = new Map<any, Repository>()
+const REPOSITORIES = new Map<InjectionScope, Repository>()
 
 export interface RegisterOptions<T> extends ProviderOptions<T> {
   provide?: InjectionToken<T>
@@ -22,37 +22,38 @@ export interface RegisterOptions<T> extends ProviderOptions<T> {
 
 export type RepositoryEntry<T> = Provider<T> | Set<Provider<T>>
 
-export const GLOBAL_CONTEXT = globalSymbol('Repository:GLOBAL_CONTEXT')
+export const GLOBAL_SCOPE = new DependencyInjectionScope('Repository:GLOBAL_SCOPE')
 
 /**
- * Contains mappings of injection tokens to providers, and stores instances of singletons.
+ * Contains mappings of injection tokens to providers, and stores instances of injectables.
  */
-export class Repository<TContext = any> implements Disposable {
-  public static for(context: any): Repository {
-    if (!context) {
-      throw new InvalidRepositoryContextError(context)
+export class Repository implements Disposable {
+
+  public static for(scope: InjectionScope): Repository {
+    if (!scope) {
+      throw new InvalidRepositoryScopeError(scope)
     }
-    let repo = REPOSITORIES.get(context)
+    let repo = REPOSITORIES.get(scope)
     if (!repo) {
-      repo = new Repository(context, context !== (GLOBAL_CONTEXT as any))
-      REPOSITORIES.set(context, repo)
+      repo = new Repository(scope, scope !== (GLOBAL_SCOPE as any))
+      REPOSITORIES.set(scope, repo)
     }
     return repo
   }
 
-  public static exists(context: any): boolean {
-    return REPOSITORIES.has(context)
+  public static exists(scope: InjectionScope): boolean {
+    return REPOSITORIES.has(scope)
   }
 
-  public get allowSingletons(): boolean {
-    return this._allowSingletons
+  public get allowInstances(): boolean {
+    return this._allowInstances
   }
 
-  private readonly providers = new Map<InjectionToken<any>, RepositoryEntry<any>>()
+  private readonly registry = new Map<InjectionToken<any>, RepositoryEntry<any>>()
+  private readonly instances = new Map<Provider<any>, any>()
+  private readonly children = new Map<InjectionScope, Repository>()
 
-  private readonly singletons = new Map<Provider<any>, any>()
-
-  private constructor(private context: any, private readonly _allowSingletons: boolean) {}
+  private constructor(private scope: InjectionScope, private readonly _allowInstances: boolean) {}
 
   public register<T>(source: RegistrationSource, target: Constructor<T> | Provider<T>, options?: RegisterOptions<T>): this {
     if (isProvider(target)) {
@@ -82,42 +83,57 @@ export class Repository<TContext = any> implements Disposable {
     throw new InvalidRegistrationTargetError(source, target, options)
   }
 
-  public registerProviders(...providers: Provider<any>[]): this {
-    providers.forEach((provider) => this.registerProvider(provider))
-    return this
-  }
-
   public get<T>(token: InjectionToken<T>): RepositoryEntry<T> {
-    return this.providers.get(token)
+    return this.registry.get(token)
   }
 
-  public entries(): IterableIterator<RepositoryEntry<any>> {
-    return this.providers.values()
+  public get providers(): IterableIterator<RepositoryEntry<any>> {
+    return this.registry.values()
   }
 
-  public addSingleton<TSingleton>(provider: Provider<TSingleton>, value: TSingleton): TSingleton {
-    if (!this._allowSingletons) {
-      throw new Error('Singletons are not allowed to be registered on this Repository instance')
+  public addInstance<TInstance>(provider: Provider<TInstance>, value: TInstance): TInstance {
+    if (!this._allowInstances) {
+      // TODO: create error type
+      throw new Error('Instances are not allowed to be registered on this Repository instance')
     }
     if (!isProvider(provider)) {
       throw new ProviderTypeError(provider)
     }
-    this.singletons.set(provider, value)
+    this.instances.set(provider, value)
     return value
   }
 
-  public getSingleton<TSingleton>(provider: Provider<TSingleton>): TSingleton {
-    return this.singletons.get(provider)
+  public getInstance<TInstance>(provider: Provider<TInstance>): TInstance {
+    return this.instances.get(provider)
   }
 
-  public dispose(reason: string): void {
-    if (this.context === GLOBAL_CONTEXT) {
+  public getChild(scope: InjectionScope): Repository {
+    if (!scope || scope === GLOBAL_SCOPE) {
+      throw new InvalidRepositoryScopeError(scope)
+    }
+    let repo = this.children.get(scope)
+    if (!repo) {
+      repo = new Repository(scope, true)
+      this.children.set(scope, repo)
+    }
+    return repo
+  }
+
+  public async dispose(reason: string): Promise<void> {
+    if (this.scope === GLOBAL_SCOPE) {
       throw new InvalidDisposeTargetError('Cannot dispose global repository')
     }
-    this.providers.clear()
-    this.singletons.clear()
-    REPOSITORIES.delete(this.context)
-    Disposable.remapDisposed(this, reason)
+    Disposable.markDisposing(this, reason)
+    this.registry.clear()
+
+    if (this.instances.size) {
+      await Promise.all([...this.instances.values()].map((instance) => {
+        return Disposable.dispose(instance, `Disposing Repository for ${getInjectionScopeName(this.scope)}: ${reason}`)
+      }))
+      this.instances.clear()
+    }
+    REPOSITORIES.delete(this.scope)
+    Disposable.remapDisposed(this, reason, { retainProperties: ['scope'] })
   }
 
   private registerProvider<T>(provider: Provider<T>, target?: Constructor<T> | Provider<T>): void {
@@ -137,7 +153,7 @@ export class Repository<TContext = any> implements Disposable {
       })
     }
 
-    let entry: RepositoryEntry<T> = this.providers.get(provider.provide)
+    let entry: RepositoryEntry<T> = this.registry.get(provider.provide)
 
     if (entry) {
       const entryIsMulti = entry instanceof Set
@@ -162,11 +178,11 @@ export class Repository<TContext = any> implements Disposable {
     if (provider.multi) {
       if (!entry) {
         entry = new Set<Provider<T>>()
-        this.providers.set(provider.provide, entry)
+        this.registry.set(provider.provide, entry)
       }
       (entry as Set<Provider<T>>).add(provider)
     } else {
-      this.providers.set(provider.provide, provider)
+      this.registry.set(provider.provide, provider)
     }
   }
 }

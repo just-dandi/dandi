@@ -10,5 +10,4 @@ export interface HttpPipelineTerminator {
 
 export const HttpPipelineTerminator = localOpinionatedToken('HttpPipelineTerminator', {
   multi: false,
-  singleton: false,
 })

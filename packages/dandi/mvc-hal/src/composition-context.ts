@@ -1,22 +1,24 @@
 import { Disposable } from '@dandi/common'
+import { InjectionScope } from '@dandi/core'
 import { Repository } from '@dandi/core/internal'
 import { SELF_RELATION } from '@dandi/hal'
 
 export type ParentCompositionContext = { [TProp in keyof CompositionContext]?: CompositionContext[TProp] }
 
 export class CompositionContext implements Disposable {
-  public readonly repositories: Repository[]
-  public readonly relStack: string[]
   public readonly embeddedRels: string[]
-  public readonly repository: Repository
   public readonly path: string
+  public readonly repositories: Repository[]
+  public readonly repository: Repository
+  public readonly relStack: string[]
 
   public static for(rel: string, path: string, embeddedRels: string[]): CompositionContext {
     return new CompositionContext(rel, path, { embeddedRels })
   }
 
   constructor(rel: string, path: string, parent?: ParentCompositionContext) {
-    this.repository = Repository.for(this)
+    const scope: InjectionScope = function CompositionContextScope() {}
+    this.repository = Repository.for(scope)
     this.path = path
     if (parent) {
       this.repositories = (parent.repositories || []).slice(0)

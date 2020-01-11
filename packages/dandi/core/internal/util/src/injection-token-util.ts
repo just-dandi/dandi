@@ -2,7 +2,7 @@ import { isConstructor } from '@dandi/common'
 import { InjectionToken, MappedInjectionToken, SymbolTokenBase } from '@dandi/core/types'
 
 export function isMappedInjectionToken(obj: any): obj is MappedInjectionToken<any, any> {
-  return obj && isInjectionToken(obj.provide) && typeof obj.key !== undefined
+  return obj && isInjectionToken(obj.provide) && typeof obj.key !== 'undefined'
 }
 
 export function isInjectionToken<T>(obj: any): obj is InjectionToken<T> {
@@ -21,6 +21,6 @@ export function getTokenString(token: InjectionToken<any> | Function): string {
   }
   return ((isMappedInjectionToken(token) ? token.provide : token) || 'undefined')
     .toString()
-    .replace(/[\W-]+/g, '_')
-    .replace(/_$/, '')
+    // .replace(/[\W-]+/g, '_')
+    // .replace(/_$/, '')
 }

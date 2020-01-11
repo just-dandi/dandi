@@ -5,6 +5,5 @@ export interface StageVariables {
 }
 
 export const StageVariables = localOpinionatedToken<StageVariables>('StageVariables', {
-  singleton: false,
   multi: false,
 })

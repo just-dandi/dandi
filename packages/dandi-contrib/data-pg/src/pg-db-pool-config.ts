@@ -3,7 +3,6 @@ import { DbConnectionInfo, DbUserCredentials } from '@dandi/data'
 import { PoolConfig } from 'pg'
 
 export const PgDbConfig: InjectionToken<PoolConfig> = OpinionatedToken.local<PoolConfig>('pg', 'PoolConfig', {
-  singleton: true,
   multi: false,
 })
 

@@ -34,7 +34,7 @@ describe('ConsoleLogListener', function() {
       expect(console.debug).not.to.have.been.called
     })
 
-    it('calls the debug method for debug level entries', function() {
+    it('calls the debug method for debug level providers', function() {
       this.logger.log(entry(LogLevel.debug)('debug!'))
       expect(console.debug).to.have.been.calledOnce
     })
@@ -51,16 +51,16 @@ describe('ConsoleLogListener', function() {
 
     })
 
-    it('calls the info method for info level entries', function() {
+    it('calls the info method for info level providers', function() {
       this.logger.log(entry(LogLevel.info)('info!'))
       expect(console.info).to.have.been.calledOnce
     })
 
-    it('calls the warn method for warn level entries', function() {
+    it('calls the warn method for warn level providers', function() {
       this.logger.log(entry(LogLevel.warn)('warn!'))
     })
 
-    it('calls the error method for error level entries', function() {
+    it('calls the error method for error level providers', function() {
       this.logger.log(entry(LogLevel.error)('error!'))
       expect(console.error).to.have.been.calledOnce
     })

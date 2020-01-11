@@ -123,13 +123,14 @@ export class DefaultRouteInitializer implements RouteInitializer {
   }
 
   private async handleAuthorizationConditions(injector: Injector, providers: Provider<any>[]): Promise<void> {
-    const results = await injector.inject(AuthorizationCondition, true, ...providers)
-    if (!results) {
-      return
-    }
+    await injector.invoke(this as DefaultRouteInitializer, 'checkAuthorizationConditions', ...providers)
+  }
 
-    const denied = results.arrayValue.filter((result) => !result.allowed) as DeniedAuthorization[]
-    if (denied.length) {
+  public checkAuthorizationConditions(
+    @Inject(AuthorizationCondition) @Optional() conditions: AuthorizationCondition[],
+  ): void {
+    const denied = conditions?.filter((result) => !result.allowed) as DeniedAuthorization[]
+    if (denied?.length) {
       throw new ForbiddenError(denied.map((d) => d.reason).join('; '))
     }
   }

@@ -1,6 +1,6 @@
 import { Uuid } from '@dandi/common'
 import { Provider } from '@dandi/core'
-import { testHarnessSingle } from '@dandi/core/testing'
+import { testHarness } from '@dandi/core/testing'
 import {
   ComposedResource,
   HalModelBase,
@@ -10,7 +10,7 @@ import {
   ResourceId,
   SELF_RELATION,
 } from '@dandi/hal'
-import { HttpMethod, HttpRequest } from '@dandi/http'
+import { HttpMethod, HttpRequest, HttpRequestScope } from '@dandi/http'
 import { PathParam } from '@dandi/http-model'
 import { HttpRequestInfo } from '@dandi/http-pipeline'
 import { Property } from '@dandi/model'
@@ -37,6 +37,8 @@ import { createStubInstance, stub } from 'sinon'
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 describe('DefaultResourceComposer', function() {
+
+  const harness = testHarness(DefaultResourceComposer, DefaultRouteInitializer)
 
   describe('compose', function() {
 
@@ -76,8 +78,8 @@ describe('DefaultResourceComposer', function() {
         ],
       }
 
-      const harness = await testHarnessSingle(DefaultResourceComposer, TestController, DefaultRouteInitializer, routes)
-      const composer = await harness.inject(ResourceComposer)
+      const requestInjector = harness.createChild(HttpRequestScope, TestController, routes)
+      const composer = await requestInjector.inject(ResourceComposer)
       const result = await composer.compose(
         new TestModel(42),
         CompositionContext.for('self', '/test/42', []),
@@ -114,8 +116,8 @@ describe('DefaultResourceComposer', function() {
         ],
       }
 
-      const harness = await testHarnessSingle(DefaultResourceComposer, TestController, DefaultRouteInitializer, routes)
-      const composer = await harness.inject(ResourceComposer)
+      const requestInjector = harness.createChild(HttpRequestScope, TestController, routes)
+      const composer = await requestInjector.inject(ResourceComposer)
       const result = await composer.compose(
         new TestModel(),
         CompositionContext.for('self', '/test', []),
@@ -174,13 +176,8 @@ describe('DefaultResourceComposer', function() {
         ],
       }
 
-      const harness = await testHarnessSingle(
-        DefaultResourceComposer,
-        IndexController,
-        DefaultRouteInitializer,
-        routes,
-      )
-      const composer = await harness.inject(ResourceComposer)
+      const requestInjector = harness.createChild(HttpRequestScope, IndexController, routes)
+      const composer = await requestInjector.inject(ResourceComposer)
       const result = await composer.compose(
         new Index(),
         CompositionContext.for('self', '/index', []),
@@ -260,8 +257,8 @@ describe('DefaultResourceComposer', function() {
         ],
       }
 
-      const harness = await testHarnessSingle(DefaultResourceComposer, TestController, DefaultRouteInitializer, routes)
-      const composer = await harness.inject(ResourceComposer)
+      const requestInjector = harness.createChild(HttpRequestScope, TestController, routes)
+      const composer = await requestInjector.inject(ResourceComposer)
       const result = await composer.compose(
         new TestModel(42, 7),
         CompositionContext.for('self', '/test/42', []),
@@ -372,8 +369,8 @@ describe('DefaultResourceComposer', function() {
         ],
       }
 
-      const harness = await testHarnessSingle(DefaultResourceComposer, TestController, DefaultRouteInitializer, routes)
-      const composer = await harness.inject(ResourceComposer)
+      const requestInjector = harness.createChild(HttpRequestScope, TestController, routes)
+      const composer = await requestInjector.inject(ResourceComposer)
       const result = await composer.compose(
         new TestModelParent(42),
         CompositionContext.for('self', '/parent/42', []),
@@ -478,10 +475,8 @@ describe('DefaultResourceComposer', function() {
         },
       }
 
-      const harness = await testHarnessSingle(
-        DefaultResourceComposer,
+      const requestInjector = harness.createChild(HttpRequestScope,
         TestController,
-        DefaultRouteInitializer,
         routes,
         request,
         requestInfo,
@@ -493,7 +488,7 @@ describe('DefaultResourceComposer', function() {
           },
         },
       )
-      const composer = await harness.inject(ResourceComposer)
+      const composer = await requestInjector.inject(ResourceComposer)
       const result = await composer.compose(
         new TestModel(42, 7),
         CompositionContext.for('self', 'test/42', ['parent']),
@@ -621,10 +616,8 @@ describe('DefaultResourceComposer', function() {
         },
       }
 
-      const harness = await testHarnessSingle(
-        DefaultResourceComposer,
+      const requestInjector = harness.createChild(HttpRequestScope,
         TestController,
-        DefaultRouteInitializer,
         routes,
         request,
         requestInfo,
@@ -637,7 +630,7 @@ describe('DefaultResourceComposer', function() {
         },
       )
 
-      const composer = await harness.inject(ResourceComposer)
+      const composer = await requestInjector.inject(ResourceComposer)
       const result = await composer.compose(
         new TestModelParent(42),
         CompositionContext.for('self', '/test/42', ['children']),
@@ -791,12 +784,10 @@ describe('DefaultResourceComposer', function() {
         },
       }
 
-      const harness = await testHarnessSingle(
-        DefaultResourceComposer,
+      const requestInjector = harness.createChild(HttpRequestScope,
         LevelOneController,
         LevelTwoController,
         LevelThreeController,
-        DefaultRouteInitializer,
         routes,
         request,
         requestInfo,
@@ -809,7 +800,7 @@ describe('DefaultResourceComposer', function() {
         },
       )
 
-      const composer = await harness.inject(ResourceComposer)
+      const composer = await requestInjector.inject(ResourceComposer)
       const result = await composer.compose(
         new LevelThreeModel(21, 42),
         CompositionContext.for('self', '/level-three/21', ['parent.parent']),
@@ -991,10 +982,8 @@ describe('DefaultResourceComposer', function() {
         },
       }
 
-      const harness = await testHarnessSingle(
-        DefaultResourceComposer,
+      const requestInjector = harness.createChild(HttpRequestScope,
         TestController,
-        DefaultRouteInitializer,
         routes,
         request,
         requestInfo,
@@ -1006,7 +995,7 @@ describe('DefaultResourceComposer', function() {
           },
         },
       )
-      const composer = await harness.inject(ResourceComposer)
+      const composer = await requestInjector.inject(ResourceComposer)
       const result = await composer.compose(
         new TestModelParent(42),
         CompositionContext.for('self', '/parent/42/test-model', ['children.other']),
@@ -1202,10 +1191,8 @@ describe('DefaultResourceComposer', function() {
         },
       }
 
-      const harness = await testHarnessSingle(
-        DefaultResourceComposer,
+      const requestInjector = harness.createChild(HttpRequestScope,
         MeController,
-        DefaultRouteInitializer,
         routes,
         request,
         requestInfo,
@@ -1217,7 +1204,7 @@ describe('DefaultResourceComposer', function() {
           },
         },
       )
-      const composer = await harness.inject(ResourceComposer)
+      const composer = await requestInjector.inject(ResourceComposer)
       const result = await composer.compose(
         new Me(),
         CompositionContext.for('self', '/me', ['lists.items']),

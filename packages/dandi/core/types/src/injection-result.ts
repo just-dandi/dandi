@@ -1,21 +1,11 @@
-import { Disposable } from '@dandi/common'
+export class InjectionResult<T> {
 
-export class InjectionResult<T> implements Disposable {
-  public constructor(private readonly context: Disposable, private readonly _value: T | T[]) {}
+  public readonly singleValue: T
+  public readonly arrayValue: T[]
 
-  public get value(): T | T[] {
-    return this._value
+  public constructor(public readonly value: T | T[]) {
+    this.singleValue = value as T
+    this.arrayValue = value as T[]
   }
 
-  public get singleValue(): T {
-    return this.value as T
-  }
-
-  public get arrayValue(): T[] {
-    return this.value as T[]
-  }
-
-  public dispose(reason: string): void {
-    this.context.dispose(`Disposing ResolveResult: ${reason}`)
-  }
 }

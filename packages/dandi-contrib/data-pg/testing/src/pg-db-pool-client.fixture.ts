@@ -14,15 +14,13 @@ export class PgDbPoolClientFixture extends PgDbPoolClient {
     this.currentResult = err
   }
 
-  public static factory(singleton: boolean = true): TestProvider<PgDbPoolClient> {
+  public static factory(): TestProvider<PgDbPoolClient> {
     beforeEach(() => {
       this.result({ rows: [] })
     })
     return {
       provide: PgDbPoolClient,
       useFactory: () => new PgDbPoolClientFixture(),
-      singleton,
-      underTest: !singleton,
     }
   }
 

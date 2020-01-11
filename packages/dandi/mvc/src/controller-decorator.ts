@@ -10,7 +10,6 @@ export const CONTROLLER_REGISTRATION_SOURCE: RegistrationSource = {
 
 export interface Controller<T> {
   multi?: false | null | undefined;
-  singleton?: false | null | undefined;
   path?: string;
 }
 

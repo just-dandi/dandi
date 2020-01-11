@@ -1,11 +1,11 @@
 import { Disposable } from '@dandi/common'
-import { Inject, Injectable, Singleton } from '@dandi/core'
+import { Inject, Injectable } from '@dandi/core'
 import { Pool, PoolClient, PoolConfig, QueryResult } from 'pg'
 
 import { PgDbConfig } from './pg-db-pool-config'
 import { PgDbQueryableClient } from './pg-db-queryable'
 
-@Injectable(Singleton)
+@Injectable()
 export class PgDbPool implements Disposable, PgDbQueryableClient {
   private pool: Pool
 

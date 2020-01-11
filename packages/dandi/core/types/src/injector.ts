@@ -3,11 +3,10 @@ import { localToken } from '../../src/local-token'
 import { InjectionToken } from './injection-token'
 import { InjectionScope } from './injection-scope'
 import { InjectionResult } from './injection-result'
-import { Provider } from './provider'
-import { RegistrationSource } from './registration-source'
-import { Registerable } from './registerable'
 import { InjectorContext } from './injector-context'
-import { ResolverContext } from './resolver-context'
+import { Provider } from './provider'
+import { Registerable } from './registerable'
+import { RegistrationSource } from './registration-source'
 
 export type ResolvedProvider<T> = Provider<T> | Set<Provider<T>>
 
@@ -17,16 +16,10 @@ export interface Resolver {
    * Performs a shallow check (not checking dependencies or other parameters) to see if a matching provider
    * has been configured for the specified injection token.
    * @param token - the injection token
-   * @param providers - any additional {Provider} instances to use for resolving the token
    */
-  canResolve(token: InjectionToken<any>, ...providers: Registerable[]): boolean
+  canResolve(token: InjectionToken<any>): boolean
 
-  resolve<T>(token: InjectionToken<T>, ...providers: Registerable[]): ResolvedProvider<T>
-  resolve<T>(
-    token: InjectionToken<T>,
-    optional: boolean,
-    ...providers: Registerable[]
-  ): ResolvedProvider<T>
+  resolve<T>(token: InjectionToken<T>, optional?: boolean): ResolvedProvider<T>
 
 }
 
@@ -56,20 +49,12 @@ export interface Invoker {
 
 export interface TokenInjector {
 
+  readonly parent: Injector
   readonly context: InjectorContext
 
-  inject<T>(token: InjectionToken<T>, ...providers: Registerable[]): Promise<InjectionResult<T>>
-  inject<T>(token: InjectionToken<T>, optional: boolean, ...providers: Registerable[]): Promise<InjectionResult<T>>
-
-  injectParam<T>(
-    token: InjectionToken<T>,
-    optional: boolean,
-    providers: Registerable[],
-    injectionContext: InjectionScope,
-  ): Promise<T | T[]>
+  inject<T>(token: InjectionToken<T>, optional?: boolean): Promise<InjectionResult<T>>
 
   createChild(scope: InjectionScope, providers?: Registerable[]): Injector
-  createResolverContext<T>(token: InjectionToken<T>): ResolverContext<T>
 
 }
 
@@ -81,5 +66,4 @@ export interface RootInjector extends Injector {
 
 export const Injector = localToken.opinionated<Injector>('Injector', {
   multi: false,
-  singleton: true,
 })
