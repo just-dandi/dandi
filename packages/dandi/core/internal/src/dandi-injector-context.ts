@@ -36,7 +36,7 @@ export interface FindCacheEntry<T> {
 let instanceId = 0
 
 /**
- * A scope object containing references to the repository and parent contexts used to resolve an injection token to a
+ * A scope object containing references to the repository and perInjector contexts used to resolve an injection token to a
  * provider and access instances.
  */
 export class DandiInjectorContext implements InjectorContext, Disposable {
@@ -98,20 +98,20 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
 
   public addInstance<T>(provider: Provider<T>, value: T): T {
     return this.withInstanceContext(provider, instanceContext => {
-      instanceContext.repository.addInstance(provider, value)
+      instanceContext.repository.addInstance(provider.provide, value)
       return value
     })
   }
 
   public getInstance<T>(provider: Provider<T>): T {
     return this.withInstanceContext(provider, instanceContext => {
-      return instanceContext.repository.getInstance(provider)
+      return instanceContext.repository.getInstance(provider.provide)
     })
   }
 
   public getInstanceRequest<T>(provider: Provider<T>): Promise<T> {
     return this.withInstanceContext(provider, instanceContext => {
-      const existingInstance = instanceContext.repository.getInstance<T>(provider)
+      const existingInstance = instanceContext.repository.getInstance<T>(provider.provide)
       if (existingInstance) {
         return Promise.resolve(existingInstance)
       }
@@ -121,7 +121,7 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
 
   public async setInstanceRequest<T>(provider: Provider<T>, value: Promise<T>): Promise<T> {
     return await this.withInstanceContext(provider, async instanceContext => {
-      const existingInstance = instanceContext.repository.getInstance<T>(provider)
+      const existingInstance = instanceContext.repository.getInstance<T>(provider.provide)
       if (existingInstance) {
         return existingInstance
       }
@@ -133,7 +133,7 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
       let result
       try {
         result = await value
-        instanceContext.repository.addInstance(provider, result)
+        instanceContext.repository.addInstance(provider.provide, result)
         return result
       } finally {
         instanceContext.instanceRequests.delete(provider)
@@ -156,7 +156,7 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
     if (scopeRestriction) {
 
       const scopeBehavior = getScopeBehavior(scopeRestriction)
-      if (scopeBehavior === ScopeBehavior.parent) {
+      if (scopeBehavior === ScopeBehavior.perInjector) {
         return this
       }
 

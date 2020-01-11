@@ -4,6 +4,7 @@ import { localToken } from '../../src/local-token'
 
 import { InjectionToken } from './injection-token'
 import { LogEntry } from './log-entry'
+import { ScopeRestriction } from './scope-restriction'
 
 export interface LogStream {
   next(value: LogEntry): void
@@ -13,4 +14,5 @@ export interface LogStream {
 
 export const LogStream: InjectionToken<LogStream> = localToken.opinionated<LogStream>('LogStream', {
   multi: false,
+  restrictScope: ScopeRestriction.root,
 })

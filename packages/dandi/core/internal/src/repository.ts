@@ -1,10 +1,10 @@
 import { Constructor, Disposable, InvalidDisposeTargetError } from '@dandi/common'
-import { ProviderTypeError } from '@dandi/core/errors'
-import { isProvider, getInjectionScopeName } from '@dandi/core/internal/util'
+import { isProvider, getInjectionScopeName, isInjectionToken } from '@dandi/core/internal/util'
 import {
   DependencyInjectionScope,
   InjectionScope,
   InjectionToken,
+  InjectionTokenTypeError,
   OpinionatedProviderOptionsConflictError,
   OpinionatedToken,
   Provider,
@@ -50,7 +50,7 @@ export class Repository implements Disposable {
   }
 
   private readonly registry = new Map<InjectionToken<any>, RepositoryEntry<any>>()
-  private readonly instances = new Map<Provider<any>, any>()
+  private readonly instances = new Map<InjectionToken<any>, any>()
   private readonly children = new Map<InjectionScope, Repository>()
 
   private constructor(private scope: InjectionScope, private readonly _allowInstances: boolean) {}
@@ -91,20 +91,20 @@ export class Repository implements Disposable {
     return this.registry.values()
   }
 
-  public addInstance<TInstance>(provider: Provider<TInstance>, value: TInstance): TInstance {
+  public addInstance<TInstance>(token: InjectionToken<TInstance>, value: TInstance): TInstance {
     if (!this._allowInstances) {
       // TODO: create error type
       throw new Error('Instances are not allowed to be registered on this Repository instance')
     }
-    if (!isProvider(provider)) {
-      throw new ProviderTypeError(provider)
+    if (!isInjectionToken(token)) {
+      throw new InjectionTokenTypeError(token)
     }
-    this.instances.set(provider, value)
+    this.instances.set(token, value)
     return value
   }
 
-  public getInstance<TInstance>(provider: Provider<TInstance>): TInstance {
-    return this.instances.get(provider)
+  public getInstance<TInstance>(token: InjectionToken<TInstance>): TInstance {
+    return this.instances.get(token)
   }
 
   public getChild(scope: InjectionScope): Repository {

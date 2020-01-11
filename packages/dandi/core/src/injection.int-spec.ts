@@ -112,7 +112,7 @@ describe('DI Integration', function() {
   })
 
   it('provides the injection scope of the requesting entity when injecting', async function() {
-    @Injectable(RestrictScope(ScopeBehavior.parent))
+    @Injectable(RestrictScope(ScopeBehavior.perInjector))
     class ContextTester {
       constructor(@Inject(InjectionScope) public scope: InjectionScope) {
       }
@@ -140,7 +140,7 @@ describe('DI Integration', function() {
       context: any
     }
 
-    @Injectable(RestrictScope(ScopeBehavior.parent))
+    @Injectable(RestrictScope(ScopeBehavior.perInjector))
     class ContextTester {
       constructor(@Inject(InjectionScope) public context: InjectionScope) {
       }
@@ -389,7 +389,7 @@ describe('DI Integration', function() {
 
   })
 
-  it('leaves instances created in a parent context due to an invocation in a state that they can still be used', async () => {
+  it('leaves instances created in a perInjector context due to an invocation in a state that they can still be used', async () => {
     const Token = SymbolToken.for('test')
     const provider = {
       provide: Token,

@@ -14,7 +14,7 @@ import {
 } from '@dandi/core'
 import { createLoggerMethodChain } from '@dandi/core/internal/util'
 
-@Injectable(Logger, RestrictScope(ScopeBehavior.parent))
+@Injectable(Logger, RestrictScope(ScopeBehavior.perInjector))
 export class ContextualLogger implements Logger {
 
   public get debug(): LoggerMethod {
