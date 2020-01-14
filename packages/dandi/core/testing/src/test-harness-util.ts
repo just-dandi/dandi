@@ -4,6 +4,8 @@ import { Provider } from '@dandi/core'
 import { TestHarness } from './test-harness'
 import { RootTestInjector } from './test-injector'
 
+const instances: TestHarness[] = []
+
 export function testHarness(...providers: any[]): RootTestInjector {
   return new TestHarness(providers)
 }
@@ -19,12 +21,14 @@ export function stubHarness(...providers: any[]): RootTestInjector {
 
 export async function testHarnessSingle(...providers: any[]): Promise<RootTestInjector> {
   const harness = new TestHarness(providers, false)
+  instances.push(harness)
   await harness.ready
   return harness
 }
 
 export async function stubHarnessSingle(...providers: any[]): Promise<RootTestInjector> {
   const harness = new TestHarness(providers, false, true)
+  instances.push(harness)
   await harness.ready
   return harness
 }
@@ -43,3 +47,8 @@ export function underTest<T>(provider: Constructor<T> | Provider<T>): TestProvid
     underTest: true,
   }, provider)
 }
+
+afterEach(async () => {
+  await instances.map(harness => harness.dispose())
+  instances.splice(0, instances.length)
+})

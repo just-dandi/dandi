@@ -3,7 +3,7 @@ import { testHarness, TestInjector } from '@dandi/core/testing'
 import {
   createHttpRequestScope,
   HttpRequest,
-  HttpRequestHeaders,
+  HttpRequestHeadersAccessor,
   HttpRequestPathParamMap,
   HttpRequestQueryParamMap,
   HttpRequestRawBodyProvider,
@@ -52,7 +52,7 @@ describe('Request Decorators', () => {
       provide: HttpBodyParser,
       useClass: PassThroughBodyParser,
     },
-    HttpRequestHeaders,
+    HttpRequestHeadersAccessor,
     {
       provide: HttpRequestPathParamMap,
       useFactory: () => ({}),

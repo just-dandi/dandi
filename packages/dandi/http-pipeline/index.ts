@@ -1,9 +1,12 @@
 export * from './src/body-parsing/body-parser-decorator'
 export * from './src/body-parsing/form-multipart-body-parser'
+export * from './src/body-parsing/form-multipart-errors'
 export * from './src/body-parsing/form-urlencoded-body-parser'
 export * from './src/body-parsing/http-body-parser'
 export * from './src/body-parsing/http-body-parser-base'
 export * from './src/body-parsing/native-json-body-parser'
+export * from './src/body-parsing/no-configured-parser-error'
+export * from './src/body-parsing/plain-text-body-parser'
 
 export * from './src/rendering/http-pipeline-renderer'
 export * from './src/rendering/http-pipeline-renderer-base'

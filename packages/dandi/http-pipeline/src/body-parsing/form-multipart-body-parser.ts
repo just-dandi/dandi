@@ -1,26 +1,28 @@
-import { EOL } from 'os'
-
-import { Inject, InjectionScope, Injector } from '@dandi/core'
-import { HttpRequestHeaders, HttpRequestRawBody, MimeTypes, HttpRequestBodySource } from '@dandi/http'
-
-import { localOpinionatedToken } from '../local-token'
+import { Inject, Injectable, InjectionScope, Injector, Provider, RestrictScope, ScopeBehavior } from '@dandi/core'
+import {
+  HttpHeader,
+  HttpHeaders,
+  HttpRequestBodySource,
+  HttpRequestHeaders,
+  HttpRequestHeadersHashAccessor,
+  HttpRequestRawBody,
+  HttpRequestScope,
+  MimeTypes,
+  parseHeaders,
+} from '@dandi/http'
 
 import { BodyParser } from './body-parser-decorator'
+import { FormMultipartMissingBoundaryError } from './form-multipart-errors'
 import { HttpBodyParserBase } from './http-body-parser-base'
 
-const BOUNDARY = 'boundary='
-const CONTENT_TYPE_PREFIX = 'content-type:'
-
-const PartSource = localOpinionatedToken<string>('FormMultipartBodyParser:PartSource', {
-  multi: false,
-})
-
 interface PreppedPart {
-  contentType: string
-  source: string
+  contentSource: string
+  headers: HttpHeaders,
 }
 
 @BodyParser(MimeTypes.multipartFormData)
+// must use ScopeBehavior.perInjector so that the correct Injector instance can be injected
+@Injectable(RestrictScope(ScopeBehavior.perInjector(HttpRequestScope)))
 export class FormMultipartBodyParser extends HttpBodyParserBase {
 
   constructor(@Inject(Injector) private injector: Injector) {
@@ -28,61 +30,62 @@ export class FormMultipartBodyParser extends HttpBodyParserBase {
   }
 
   protected async parseBodyFromString(body: string, headers: HttpRequestHeaders): Promise<object> {
-    const contentType = headers['Content-Type']
-    const boundaryStart = contentType.indexOf(BOUNDARY)
-    if (boundaryStart < 0) {
-      throw new Error('no boundary')
+    const contentType = headers.get(HttpHeader.contentType)
+    if (!contentType.boundary) {
+      throw new FormMultipartMissingBoundaryError()
     }
 
-    const boundary = contentType.substring(boundaryStart + BOUNDARY.length)
-    const parts = body.split(`--${boundary}`)
+    const parts = body.split(`--${contentType.boundary}`)
 
     // last part is the "epilogue" and can be ignored https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html
     parts.pop()
-    const result = await Promise.all(parts.map(async part => {
-      const preppedPart: PreppedPart = await this.injector.invoke(this as FormMultipartBodyParser, 'prepPart', {
-        provide: PartSource,
-        useValue: part.trim(),
-      })
-      const partScope: InjectionScope = function FormMultiPartBodyParsingScope(){}
+    const results = await Promise.all(parts.map(async part => {
+      const preppedPart: PreppedPart = this.prepPart(part.trim())
+      if (!preppedPart) {
+        return undefined
+      }
+      const partScope: InjectionScope = class FormMultiPartBodyParsingScope {}
       const partInjector = this.injector.createChild(partScope, [
         {
           provide: HttpRequestRawBody,
-          useValue: preppedPart.source,
+          useValue: preppedPart.contentSource,
         },
         {
           provide: HttpRequestHeaders,
-          useValue: {
-            'Content-Type': preppedPart.contentType,
-          },
-        },
+          useValue: new HttpRequestHeadersHashAccessor(preppedPart.headers),
+        } as Provider<HttpRequestHeaders>,
       ])
 
       // recursively use the parser system to parse the individual parts
-      return await partInjector.inject(HttpRequestBodySource)
+      return (await partInjector.inject(HttpRequestBodySource)).singleValue
     }))
-    if (result.length === 0) {
-      return undefined
-    }
-    if (result.length === 1) {
-      return [result]
-    }
-    return result
+
+    // FIXME: this won't support multiple parts of the same name, like arrays of files
+    return results
+      .filter(result => !!result)
+      .reduce((result, part) => {
+        return Object.assign(result, part as any)
+      }, {})
   }
 
-  public prepPart(@Inject(PartSource) source: string): PreppedPart {
-    const firstLineBreak = source.indexOf(EOL)
-    const firstLine = source
-      .substring(0, firstLineBreak)
-      .toLocaleLowerCase()
-      .trim()
-    const hasContentType = firstLine.startsWith(CONTENT_TYPE_PREFIX)
-    const contentType = hasContentType ? firstLine.substring(CONTENT_TYPE_PREFIX.length) : MimeTypes.textPlain
-    const partContent = hasContentType ? source.substring(firstLineBreak + 1) : source
+  private prepPart(source: string): PreppedPart {
+    const sourceParts = source.split(/\r?\n\r?\n/)
+    if (sourceParts.length === 1) {
+      sourceParts.unshift('')
+    }
+    const [headersPart, contentSource] = sourceParts
+    if (!contentSource) {
+      return undefined
+    }
+    const headerLines = headersPart.split(/\r?\n/)
+    const headers = parseHeaders(headerLines)
+    if (!headers[HttpHeader.contentType]) {
+      headers[HttpHeader.contentType] = { contentType: MimeTypes.textPlain }
+    }
 
     return {
-      contentType,
-      source: partContent,
+      contentSource,
+      headers,
     }
   }
 

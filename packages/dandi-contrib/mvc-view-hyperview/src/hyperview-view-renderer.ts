@@ -1,5 +1,5 @@
-import { Inject } from '@dandi/core'
-import { MimeTypeInfo, MimeTypes, parseMimeTypes } from '@dandi/http'
+import { Inject, Injectable, RestrictScope } from '@dandi/core'
+import { HttpRequestScope, MimeTypeInfo, MimeTypes, parseMimeTypes } from '@dandi/http'
 import { HttpPipelineRenderer, HttpPipelineRendererResult, HttpPipelineResult, Renderer } from '@dandi/http-pipeline'
 import { MvcViewRenderer } from '@dandi/mvc-view'
 
@@ -8,6 +8,7 @@ import { HyperviewMimeTypes } from './hyperview-mime-types'
 const TEXT_HTML_TYPE_INFO = parseMimeTypes(MimeTypes.textHtml)
 const HYPERVIEW_TYPE_INFO = parseMimeTypes(HyperviewMimeTypes.hyperviewMarkup, MimeTypes.applicationXml)
 
+@Injectable(RestrictScope(HttpRequestScope))
 @Renderer(HyperviewMimeTypes.hyperviewMarkup, MimeTypes.applicationXml)
 export class HyperviewViewRenderer implements HttpPipelineRenderer {
 

@@ -1,8 +1,11 @@
 import { Constructor } from '@dandi/common'
-import { InjectionToken, Provider, Injector } from '@dandi/core'
+import { InjectionToken, Provider, Injector, ScopeBehavior } from '@dandi/core'
 import {
-  HttpRequestHeaders,
+  HttpContentType,
+  HttpHeader,
   HttpRequest,
+  HttpRequestHeaders,
+  HttpRequestScope,
   mimeTypesAreCompatible,
   MimeTypeInfo,
   parseMimeTypes,
@@ -10,7 +13,7 @@ import {
 
 import { localOpinionatedToken } from '../local-token'
 
-import { BodyParserInfo, BodyParserInfoProvider, BodyParserMetadata } from './body-parser-decorator'
+import { BodyParserInfo, BodyParserMetadata } from './body-parser-decorator'
 
 export interface HttpBodyParser {
   readonly parseableTypes: MimeTypeInfo[]
@@ -18,6 +21,7 @@ export interface HttpBodyParser {
 }
 export const HttpBodyParser: InjectionToken<HttpBodyParser> = localOpinionatedToken('HttpBodyParser', {
   multi: false,
+  restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
 })
 
 type HttpBodyParserCache = Map<string, Constructor<HttpBodyParser>>
@@ -25,16 +29,17 @@ const HttpBodyParserCache: InjectionToken<HttpBodyParserCache> = localOpinionate
   multi: false,
 })
 
-const HttpBodyParserCacheProvider: Provider<HttpBodyParserCache> = {
+export const HttpBodyParserCacheProvider: Provider<HttpBodyParserCache> = {
   provide: HttpBodyParserCache,
   useFactory: () => new Map<string, Constructor<HttpBodyParser>>(),
 }
 
-export function isSupportingBodyParser(bodyParser: BodyParserMetadata, contentType: MimeTypeInfo): boolean {
-  return !!bodyParser.contentTypes.find(mimeTypesAreCompatible.bind(null, contentType))
+export function isSupportingBodyParser(bodyParser: BodyParserMetadata, contentType: HttpContentType): boolean {
+  const [contentTypeMimeInfo] = parseMimeTypes(contentType.contentType)
+  return !!bodyParser.contentTypes.find(mimeTypesAreCompatible.bind(undefined, contentTypeMimeInfo))
 }
 
-export function selectBodyParser(contentType: MimeTypeInfo, bodyParsers: BodyParserInfo[]): Constructor<HttpBodyParser> {
+export function selectBodyParser(contentType: HttpContentType, bodyParsers: BodyParserInfo[]): Constructor<HttpBodyParser> {
   for (const bodyParser of bodyParsers) {
     if (isSupportingBodyParser(bodyParser.metadata, contentType)) {
       return bodyParser.constructor
@@ -44,18 +49,19 @@ export function selectBodyParser(contentType: MimeTypeInfo, bodyParsers: BodyPar
 
 const SelectedBodyParser: InjectionToken<Constructor<HttpBodyParser>> = localOpinionatedToken('SelectedBodyParser', {
   multi: false,
+  restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
 })
 const SelectedBodyParserProvider: Provider<Constructor<HttpBodyParser>> = {
   provide: SelectedBodyParser,
   useFactory(
     req: HttpRequest,
+    headers: HttpRequestHeaders,
     bodyParsers: BodyParserInfo[],
     cache: HttpBodyParserCache,
   ) {
 
-    const [rawContentType] = req.get('Content-Type').split(';')
-    const [contentType] = parseMimeTypes(rawContentType)
-    const cacheKey = `${req.path}_${contentType}`
+    const contentType = headers.get(HttpHeader.contentType)
+    const cacheKey = `${req.path};${contentType.contentType}`
 
     let bodyParser = cache.get(cacheKey)
     if (bodyParser) {
@@ -71,12 +77,9 @@ const SelectedBodyParserProvider: Provider<Constructor<HttpBodyParser>> = {
   },
   deps: [
     HttpRequest,
+    HttpRequestHeaders,
     BodyParserInfo,
     HttpBodyParserCache,
-  ],
-  providers: [
-    BodyParserInfoProvider,
-    HttpBodyParserCacheProvider,
   ],
 }
 
