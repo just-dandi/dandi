@@ -10,7 +10,7 @@ export interface HttpRequest {
   path: string
   query: any
   method: HttpMethod
-  get(key: string): string
+  get(key: string): any
 }
 
 export const HttpRequest: InjectionToken<HttpRequest> = localOpinionatedToken<HttpRequest>('HttpRequest', {

@@ -19,6 +19,11 @@
 const { readdirSync, statSync } = require('fs')
 const { dirname,  } = require('path')
 
+const [,, scopesArg, ...scopes] = process.argv
+if (scopesArg !== '--scope') {
+  scopes.length = 0
+}
+
 const manifest = require('./.tsconfig.builder.json').include.filter(file => file.endsWith('index.ts'))
 function findPaths(dir) {
   const subDirs = readdirSync(dir)
@@ -32,11 +37,18 @@ function findPaths(dir) {
       return result
     }, [])
 }
-const paths = manifest.reduce((result, file) => {
-  const dir = dirname(file)
-  result.push(dir, ...findPaths(dir))
-  return result
-}, [])
+const paths = manifest
+  .filter(path => {
+    if (!scopes.length) {
+      return true
+    }
+    return scopes.some(scope => path.startsWith(`packages/${scope}/`))
+  })
+  .reduce((result, file) => {
+    const dir = dirname(file)
+    result.push(dir, ...findPaths(dir))
+    return result
+  }, [])
 const barrels = paths.map(path => `${path}/index.ts`)
 const unitSpec = paths.map(path => `${path}/src/**/*.spec.ts`)
 const intSpec = paths.map(path => `${path}/src/**/*.int-spec.ts`)

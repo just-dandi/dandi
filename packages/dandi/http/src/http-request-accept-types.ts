@@ -1,4 +1,4 @@
-import { InjectionToken, Provider } from '@dandi/core'
+import { InjectionToken, Provider, ScopeBehavior } from '@dandi/core'
 
 import { localOpinionatedToken } from './local-token'
 import { HttpRequest } from './http-request'
@@ -9,7 +9,7 @@ import { MimeTypeInfo } from './mime-type-info'
 export type HttpRequestAcceptTypes = MimeTypeInfo[]
 export const HttpRequestAcceptTypes: InjectionToken<MimeTypeInfo[]> = localOpinionatedToken('HttpRequestAcceptTypes', {
   multi: false,
-  restrictScope: HttpRequestScope,
+  restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
 })
 
 export const HttpRequestAcceptTypesProvider: Provider<HttpRequestAcceptTypes> = {

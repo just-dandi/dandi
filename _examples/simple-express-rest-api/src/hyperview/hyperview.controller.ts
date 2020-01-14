@@ -9,6 +9,10 @@ class FormModel {
   @Property(String)
   public name: string
 
+  @Required()
+  @Property(String)
+  public thing: string
+
 }
 
 @Controller('/')

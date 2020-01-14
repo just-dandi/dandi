@@ -16,13 +16,27 @@ export class BehaviorScopeRestriction {
   constructor(public readonly behavior: ScopeBehavior, public readonly scope: InjectionScope) {}
 }
 
+const behaviors = new Map<symbol, ScopeBehavior>()
+
 function scopeBehavior(desc: string): ScopeBehavior {
   const behaviorSymbol = globalSymbol(`ScopeBehavior.${desc}`)
+  const existingBehavior = behaviors.get(behaviorSymbol)
+  if (existingBehavior) {
+    return existingBehavior
+  }
+  const restrictions = new Map<InjectionScope, BehaviorScopeRestriction>()
   const behavior = Object.assign(function scopeRestriction(scope: InjectionScope) {
-    return new BehaviorScopeRestriction(behavior, scope)
+    const existingRestriction = restrictions.get(scope)
+    if (existingRestriction) {
+      return existingRestriction
+    }
+    const restriction = new BehaviorScopeRestriction(behavior, scope)
+    restrictions.set(scope, restriction)
+    return restriction
   }, {
     value: behaviorSymbol,
   })
+  behaviors.set(behaviorSymbol, behavior)
   return behavior
 }
 

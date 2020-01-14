@@ -35,14 +35,14 @@ export function parseMimeTypes(...acceptHeaders: string[]): MimeTypeInfo[] {
 
       const fullType = `${type}/${subtype}`
 
-      const info = {
+      const info = new MimeTypeInfo({
         type,
         subtype,
         subtypeBase,
         fullType,
         weight,
         source,
-      }
+      })
       info[ORIGINAL_INDEX] = originalIndex
       return info
     })

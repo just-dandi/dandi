@@ -3,6 +3,7 @@ import { ModuleBuilder, Registerable } from '@dandi/core'
 
 import { FormMultipartBodyParser } from './body-parsing/form-multipart-body-parser'
 import { FormUrlencodedBodyParser } from './body-parsing/form-urlencoded-body-parser'
+import { HttpBodyParserProvider, HttpBodyParserCacheProvider } from './body-parsing/http-body-parser'
 import { NativeJsonBodyParser } from './body-parsing/native-json-body-parser'
 import { PlainTextBodyParser } from './body-parsing/plain-text-body-parser'
 
@@ -21,6 +22,7 @@ import { PKG } from './local-token'
 
 import { NativeJsonObjectRenderer } from './rendering/native-json-object-renderer'
 import { PlainTextObjectRenderer } from './rendering/plain-text-object-renderer'
+import { BodyParserInfoProvider } from './body-parsing/body-parser-decorator'
 
 export class HttpPipelineModuleBuilder extends ModuleBuilder<HttpPipelineModuleBuilder> {
   constructor(...entries: Registerable[]) {
@@ -44,12 +46,16 @@ export const HttpPipelineModule = new HttpPipelineModuleBuilder(
   DefaultHttpPipelineErrorHandler,
   FormMultipartBodyParser,
   FormUrlencodedBodyParser,
+  HttpBodyParserProvider,
   HttpPipeline,
+  HttpPipelineRendererProvider,
+  HttpRequestBodySourceProvider,
+  HttpResponsePipelineTerminator,
   NativeJsonBodyParser,
   NativeJsonObjectRenderer,
   PlainTextObjectRenderer,
   PlainTextBodyParser,
-  HttpPipelineRendererProvider,
-  HttpRequestBodySourceProvider,
-  HttpResponsePipelineTerminator,
+
+  BodyParserInfoProvider,
+  HttpBodyParserCacheProvider,
 ).defaultRenderer(NativeJsonObjectRenderer)
