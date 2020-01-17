@@ -4,26 +4,45 @@ Dandi's dependency injection is heavily influenced by [Angular](https://angular.
 DI system.
 
 ## Concepts
+- **Injection Token** - A value that represents an injectable dependency. An Injection token can be a class
+  constructor, or a `Symbol` value. Injection tokens represent a contract or logical concept within the framework or
+  an application, without caring about its implementation.
 
-- **Resolver** - responsible for resolving and instantiating dependencies
-- **DandiApplication** - in Dandi, the main `Resolver` implementation, which
-  also includes logic for discovering injectable services, as well as
-  storing references of singleton dependencies
-- **Provider** - An object which describes how a request for a dependency
-  is resolved by providing the value directly, or describing how to create
-  the value (class constructor, factory function, etc)
-- **Injection Token** - A value that represents an injectable dependency.
-  Can be a class constructor, or a `Symbol` value representing an
-  interface or any other concept.
+- **Provider** - An object which describes the implementation of the contract of concept represented by an Injection
+  Token. The implementation can be an constant value, or can be generated using a class constructor or factory function.
+
+- **Injector** - The service responsible for creating instances of injectables.
+
+## Patterns
+
+### Declaration Merging for Injection Tokens
+Dandi frequently uses `InjectionToken` objects to represent contracts or services defined only using an interface.
+Rather than give the interface and token separate names (and by convention, different casing), Dandi uses identical
+names, including casing, for interfaces and their corresponding injection tokens. This is possible due to TypeScript's
+[declaration merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html) feature, and provides a
+more consistent feel when injecting services that use this pattern:
+
+```
+// injection token
+export const SomeService = SymbolToken.for('SomeService')
+
+// interface
+export interface SomeService {
+  doTheWork(): void
+}
+
+// usage
+class MyClass {
+  constructor(@Inject(SomeService) private someService: SomeService) { }
+}
+```
 
 ## Describing Injectable Services
 
 ### @Injectable() Decorator
 
-The simplest method of describing an injectable service is to add the
-`@Injectable()` decorator to it. This tells the resolver that when it
-encounters a dependency of the decorated class, it will instantiate a
-new instance of that class:
+The simplest method of describing an injectable service is to add the `@Injectable()` decorator to it. This tells the
+injector that when it encounters a dependency of the decorated class, it will instantiate a new instance of that class:
 
 ```typescript
 import { Injectable } from '@dandi/core'
@@ -36,27 +55,24 @@ The `@Injectable()` decorator can also be used to register a service for
 a different injection token, such as a token representing an interface:
 
 ```typescript
-import { InjectionToken, Provider, SymbolToken } from '@dandi/core'
+// my-interface.ts
+import { InjectionToken, SymbolToken } from '@dandi/core'
 
 export interface MyInterface {}
 
 export const MyInterface: InjectionToken<MyInterface> = SymbolToken.for<MyInterface>('MyInterface')
 
+// my-service.ts
+import { Injectable } from '@dandi/core'
+import { MyInterface } from './my-interface'
+
 @Injectable(MyInterface)
 export class MyService implements MyInterface {}
 ```
 
-_Note:_ The above pattern takes advantage of TypeScript's [declaration
-merging](https://www.typescriptlang.org/docs/handbook/declaration-merging.html)
-feature. Since interfaces are only types (and are not available
-at runtime), there needs to be a concrete value to represent them.
-Dandi uses a `const` of the same name to represent an interface's
-injection token, allowing for consistency when looking at code using
-the `@Injectable()` and `@Inject()` decorators.
-
 ### Providers
 
-Providers allow you to configure the resolver to map any kind of token
+Providers allow you to configure the injector to map any kind of token
 to any value or implementation. They are most commonly used to register
 implementations of interfaces.
 
@@ -167,23 +183,21 @@ class MyService {
 
 ### Optional Dependencies
 
-Dependencies can be marked as option using the `@Optional()` decorator.
-Optional dependencies that cannot be resolved will be passed as `undefined`.
+Normally, if the injector cannot find a provider for a dependency, it will throw an error. However, dependencies can be
+marked as optional using the `@Optional()` decorator. Optional dependencies that cannot be resolved will be passed as
+`undefined`.
 
 ```typescript
 class MyService {
   constructor(
-    @Inject(MyDependency)
-    @Optional()
-    private myDep: MyDependency,
+    @Inject(MyDependency) @Optional() private myDep: MyDependency,
   ) {}
 }
 ```
 
 ## Service Discovery
 
-Classes and providers that are used by an application must be passed to
-the container at startup:
+Classes and providers that are used by an application must be configured with the `DandiApplication` instance:
 
 ```typescript
 import { DandiApplication } from '@dandi/core'
@@ -196,18 +210,76 @@ const app = new DandiApplication({
 })
 ```
 
-Values passed to the `providers` property can be class constructors,
-`Provider` instances, or arrays of either.
+Values passed to the `providers` property can be class constructors, `Provider` instances, `Module` instances, or 
+arrays of any combination thereof. Additionally, arrays of injectables can be nested as desired - the DI system will
+unpack any level of nesting.
 
-Additionally, Dandi includes a `Scanner` interface which allows implementations
-of automatic service discovery.
+### Modules
+In Dandi, a `Module` is a grouping dependencies, allowing many dependencies to be registered in an application with a
+single line of code. Additionally, modules may expose helper methods for configuring the services or settings included
+with the module.
 
-**AmbientInjectableScanner** will automatically register any services
-marked with `@Injectable()` that located in any module loaded by NodeJS.
+```typescript
+import { DandiApplication } from '@dandi/core'
+import { ConsoleLogListener, LoggingModule } from '@dandi/core/logging'
+import { PrettyColorsLogging } from '@dandi/logging'
 
-**FileSystemScanner** can be used in conjunction with
-`AmbientInjectableScanner` to automatically load modules from paths
-defined in its configuration.
+const app = new DandiApplication({
+  providers: [
+    LoggingModule.use(ConsoleLogListener, PrettyColorsLogging),
+  ]
+})
+```
+
+## Injectable Instances and the Injector Hierarchy
+
+### Injector Hierarchy
+The Dandi DI system starts with a "root" injector, where all the providers defined in the application's configuration
+are registered. When executing a dependency injection request (`inject` or `invoke`), a child injector is created to
+service the specific request. This injector is given an `InjectionScope`, which identifies the purpose for which the
+injector was created. Each injector has access to the providers registered to it as well as all of its parents.
+
+Creating a child injector can also be done manually using `Injector.createChild(scope, ...providers)`. Creating a child
+injector also provides an opportunity to add additional providers for the new injector.
+
+### Injectable Instances
+Each provider can create at most one instance per injector. When an instance is created, a reference to that instance
+is stored with the injector matching its scope restriction as described below, or the injector where the provider is
+registered. Subsequent requests for the same injection token within the same scope will result in the same instance
+being injected. 
+
+### Scope Restrictions
+A scope restriction can be defined on either a provider or an injection token. If both a provider and an injection token
+define a restriction, the restriction from the injection token is used. A scope restriction may be any value included
+in the `InjectionScope` type - a class constructor, a function, a `DependencyInjectionScope` instance, or an object
+implementing `CustomInjectionScope`.
+
+- Injection tokens can define a scope restriction if they are instances of `OpinionatedInjectionToken`, and set the
+  `restrictScope` option 
+- Provider objects specify a scope restriction by including a `restrictScope` key
+- Classes can specify a scope restriction by passing the `RestrictScope` modifier with the `@Injectable` decorator:
+ `@Injectable(RestrictScope(MyCustomScope))`
+
+#### Default Scoping
+When neither a provider nor its injection token specifies a scope restriction, the provider will be used to generate a
+single instance, which will be scoped to the injector where the provider was registered. For example, if a provider
+is specified in an application's configuration, it will only ever be used to create one instance, and that instance will
+be reused throughout the entire application, no matter which level of the injector hierarchy injects it. 
+
+#### Restricted Scope
+When a scope restriction is defined, the injectable will be restricted to being injected only as a child of a scope
+matching the defined restriction. Restricting scope is useful any time an application is processing multiple streams of
+data that must remain separate - for example, handling HTTP requests. When creating instances of scope restricted
+injectables, the instance is created and stored in the first injector that both has access to a provider providing
+the requested injection token, and has, or is a child of a matching injection scope.
+
+#### Scope Behaviors
+A `ScopeBehavior` allows additional options for controlling how and where injectable instances are created.
+
+##### perInjector
+`ScopeBehavior.perInjector` forces a new instance of an injectable to be created for each injector that uses it. It can
+also be invoked with an `InjectionScope`, which will add a scope restriction on top of the `perInjector` behavior:
+`ScopeBehavior.perInjector(MyCustomScope)`
 
 ## Application Lifecycle
 * `app.start()` or `app.run()`
@@ -234,9 +306,9 @@ const app = new DandiApplication({
 app.run()
 ```
 
-* **`app.start()`** returns a `Promise` that resolves to the `Injector` instance create by the application.
+* **`app.start()`** returns a `Promise` that resolves to the `Injector` instance created by the application.
   The injector can then be used to invoke or inject objects configured in the application.
-  
+
 * **`app.run()`** returns a `Promise` that resolves to the value returned by the configured `EntryPoint`
   implementation.
 
