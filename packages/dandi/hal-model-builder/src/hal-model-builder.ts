@@ -3,7 +3,6 @@ import { Inject, Injectable } from '@dandi/core'
 import { getResourceMetadata, HalObject, isHalObject, ResourceMetadata } from '@dandi/hal'
 import { MetadataModelBuilder, ModelBuilder, ModelBuilderOptions, PrimitiveTypeConverter } from '@dandi/model-builder'
 
-
 @Injectable(ModelBuilder)
 export class HalModelBuilder extends MetadataModelBuilder {
 

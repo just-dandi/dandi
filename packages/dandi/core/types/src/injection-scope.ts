@@ -7,6 +7,7 @@ import { InstanceInvokableFn } from './injector'
 import { FactoryProvider } from './provider'
 
 /**
+ * @internal
  * Stores a reference to the object (and for invocations, the method) that requested an injection dependency.
  */
 export interface InvokeInjectionScope<TInstance = any, TResult = any> {
@@ -14,10 +15,16 @@ export interface InvokeInjectionScope<TInstance = any, TResult = any> {
   methodName: InstanceInvokableFn<TInstance, TResult>,
 }
 
+/**
+ * @internal
+ */
 export interface InvokeParamInjectionScope<TInstance = any, TResult = any> extends InvokeInjectionScope<TInstance, TResult> {
   paramName: string
 }
 
+/**
+ * @internal
+ */
 export interface FactoryParamInjectionScope {
   target: FactoryProvider<any>
   paramToken: InjectionToken<any>

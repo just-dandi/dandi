@@ -1,6 +1,6 @@
 import { HyperviewViewRenderer } from '@dandi-contrib/mvc-view-hyperview'
 import { CascadingCache, MemoryCache, ServiceContextCacheKeyGenerator } from '@dandi/cache'
-import { AmbientInjectableScanner, DandiApplication } from '@dandi/core'
+import { DandiApplication } from '@dandi/core'
 import { ConsoleLogListener, LoggingModule } from '@dandi/core/logging'
 import { HttpPipelineModule } from '@dandi/http-pipeline'
 import { ModelBuilderModule } from '@dandi/model-builder'
@@ -23,7 +23,6 @@ const DEFAULT_SERVER_PORT = 8085
 export const server = new DandiApplication({
   providers: [
     // DI
-    AmbientInjectableScanner,
     LoggingModule.use(ConsoleLogListener),
 
     // MVC
