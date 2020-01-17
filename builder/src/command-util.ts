@@ -1,7 +1,7 @@
 import { dirname, resolve } from 'path'
 
 import { Constructor } from '@dandi/common'
-import { AmbientInjectableScanner, DandiApplication, LogLevel } from '@dandi/core'
+import { DandiApplication, LogLevel } from '@dandi/core'
 import { ConsoleLogListener, LoggingModule } from '@dandi/core/logging'
 import { PrettyColorsLogging } from '@dandi/logging'
 
@@ -13,6 +13,7 @@ import { BuilderProjectOptions } from './builder-project-options'
 import { ActionHost, CommandAction, CommandInfo } from './command-action'
 import { CommandRunner } from './command-runner'
 import { Publisher } from './publisher'
+import { Util } from './util'
 
 export type CommanderArgs = (string | Command)[]
 
@@ -44,12 +45,13 @@ export class CommandUtil {
 
       const container = new DandiApplication({
         providers: [
-          AmbientInjectableScanner,
+          BuilderProject,
           CommandRunner,
           LoggingModule.use(
             ConsoleLogListener,
             PrettyColorsLogging.set({ filter: cmd.parent.verbose ? LogLevel.debug : LogLevel.info }),
           ),
+          Util,
           {
             provide: ActionHost,
             useClass: hostType,
