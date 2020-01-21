@@ -1,5 +1,12 @@
 import { testHarness, TestInjector } from '@dandi/core/testing'
-import { HttpRequest, MimeTypes, HttpRequestAcceptTypes, parseMimeTypes, HttpRequestScope } from '@dandi/http'
+import {
+  HttpRequest,
+  HttpModule,
+  HttpRequestAcceptTypes,
+  HttpRequestScope,
+  MimeType,
+  parseMimeTypes,
+} from '@dandi/http'
 import {
   defaultHttpPipelineRenderer,
   HttpPipelineRendererProvider,
@@ -15,6 +22,7 @@ import { expect } from 'chai'
 describe('MvcViewRenderer', () => {
 
   const harness = testHarness(
+    HttpModule,
     MvcViewRenderer,
     HttpPipelineRendererProvider,
     defaultHttpPipelineRenderer(TestApplicationJsonRenderer),
@@ -27,12 +35,12 @@ describe('MvcViewRenderer', () => {
     {
       provide: HttpRequest,
       useValue: {
-        get: stub().returns(MimeTypes.textHtml),
+        get: stub().returns(MimeType.textHtml),
       },
     },
     {
       provide: HttpRequestAcceptTypes,
-      useValue: parseMimeTypes(MimeTypes.textHtml),
+      useValue: parseMimeTypes(MimeType.textHtml),
     },
     {
       provide: ViewResultFactory,
@@ -69,9 +77,9 @@ describe('MvcViewRenderer', () => {
       undefined,
     )
 
-    expect(await pipelineRenderer.render(parseMimeTypes(MimeTypes.textHtml), viewResult))
+    expect(await pipelineRenderer.render(parseMimeTypes(MimeType.textHtml), viewResult))
       .to.deep.equal({
-        contentType: MimeTypes.textHtml,
+        contentType: MimeType.textHtml,
         statusCode: undefined,
         headers: undefined,
         renderedBody: 'foo!',
@@ -83,10 +91,10 @@ describe('MvcViewRenderer', () => {
     const viewResultFactory = await requestInjector.inject(ViewResultFactory) as SinonStub
     viewResultFactory.resolves({ value: 'foo!' })
 
-    expect(await pipelineRenderer.render(parseMimeTypes(MimeTypes.textHtml), {}))
+    expect(await pipelineRenderer.render(parseMimeTypes(MimeType.textHtml), {}))
       .to.deep.equal({
         statusCode: undefined,
-        contentType: MimeTypes.textHtml,
+        contentType: MimeType.textHtml,
         headers: undefined,
         renderedBody: 'foo!',
       })
