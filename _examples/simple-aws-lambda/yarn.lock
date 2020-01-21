@@ -2,22 +2,16 @@
 # yarn lockfile v1
 
 
-"@dandi-contrib/aws-lambda@latest":
+"@dandi-contrib/aws-lambda@file:../../out/dandi-contrib/aws-lambda":
   version "1.0.0-alpha.50"
-  resolved "https://registry.npmjs.org/@dandi-contrib/aws-lambda/-/aws-lambda-1.0.0-alpha.50.tgz#e65190a77d86a79bd3cfedab468978333110ab7d"
-  integrity sha512-a4cslcJXzkg0j4cl77yvU0ke94M1bNX3gr/267p3Mqs89aNznPtCSOhKEqYE/Vme3LqHenoPwabh/+XUMyhhLw==
   dependencies:
     aws-lambda "^0.1.2"
 
-"@dandi/common@latest":
+"@dandi/common@file:../../out/dandi/common":
   version "1.0.0-alpha.50"
-  resolved "https://registry.npmjs.org/@dandi/common/-/common-1.0.0-alpha.50.tgz#67ff0b94c9f1e382c37811c07c9245906085f68f"
-  integrity sha512-Pe9lob5wTv6rYUP19NxtHUpY4PkGED5EzNAVz+h1I71V+Eo3RzbNUVUinDuLr7kuX16aAT/2DC8HsrHOBAg29g==
 
-"@dandi/core@latest":
+"@dandi/core@file:../../out/dandi/core":
   version "1.0.0-alpha.50"
-  resolved "https://registry.npmjs.org/@dandi/core/-/core-1.0.0-alpha.50.tgz#f8591464c846d0363399da19a6a06f2d728e7b77"
-  integrity sha512-pHil4Njezw8LgV1nGuuRDUGGHCClEpYut6IivsfyjRTiYieKxGPnMoylBHvftqxvr8mEtbAKn7i1546sCV1ing==
 
 "@dandi/http-model@file:../../out/dandi/http-model":
   version "1.0.0-alpha.50"
@@ -28,15 +22,11 @@
 "@dandi/http@file:../../out/dandi/http":
   version "1.0.0-alpha.50"
 
-"@dandi/model-builder@latest":
+"@dandi/model-builder@file:../../out/dandi/model-builder":
   version "1.0.0-alpha.50"
-  resolved "https://registry.npmjs.org/@dandi/model-builder/-/model-builder-1.0.0-alpha.50.tgz#1e7229d01ce4c58953060e1dc3d13ebda9a91262"
-  integrity sha512-hvOnopD91ve1UrVNo6aV+ftk6LXu1VRDJt4poXL3DmFoTshIedreL0nPr6kL5jOj9MbjjQnqv/pLoRNUAAeEIQ==
 
-"@dandi/model@latest":
+"@dandi/model@file:../../out/dandi/model":
   version "1.0.0-alpha.50"
-  resolved "https://registry.npmjs.org/@dandi/model/-/model-1.0.0-alpha.50.tgz#2b4cc8bd485c9b13bf4c1ed64f5b5bc3acc548ba"
-  integrity sha512-zfeRww9S3qxO9qplMfB1NMQA5zwrSuIBIaFdVEmcv5BnxxNFOOZkAvYeYtTVMD3cUfMUD1qtOSFZY+jKDtqcnw==
 
 "@hapi/accept@3.x.x":
   version "3.2.3"

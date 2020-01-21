@@ -1,14 +1,14 @@
-import { MimeTypes } from '@dandi/http'
+import { MimeType } from '@dandi/http'
 
 import { HttpPipelineResult } from '../http-pipeline-result'
 
 import { HttpPipelineRendererBase } from './http-pipeline-renderer-base'
 import { Renderer } from './renderer-decorator'
 
-@Renderer(MimeTypes.applicationJson)
+@Renderer(MimeType.applicationJson)
 export class NativeJsonObjectRenderer extends HttpPipelineRendererBase {
 
-  protected readonly defaultContentType: string = MimeTypes.applicationJson
+  protected readonly defaultContentType: string = MimeType.applicationJson
 
   constructor() {
     super()

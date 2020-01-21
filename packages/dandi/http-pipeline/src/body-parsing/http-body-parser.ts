@@ -1,10 +1,10 @@
 import { Constructor } from '@dandi/common'
-import { InjectionToken, Provider, Injector, ScopeBehavior } from '@dandi/core'
+import { InjectionToken, Provider, Injector, ScopeBehavior, MissingProviderError, InjectorContext } from '@dandi/core'
 import {
   HttpContentType,
   HttpHeader,
   HttpRequest,
-  HttpRequestHeaders,
+  HttpRequestHeadersAccessor,
   HttpRequestScope,
   mimeTypesAreCompatible,
   MimeTypeInfo,
@@ -17,7 +17,7 @@ import { BodyParserInfo, BodyParserMetadata } from './body-parser-decorator'
 
 export interface HttpBodyParser {
   readonly parseableTypes: MimeTypeInfo[]
-  parseBody(body: string | Buffer, headers: HttpRequestHeaders): string | object | Promise<object>
+  parseBody(body: string | Buffer, headers: HttpRequestHeadersAccessor): string | object | Promise<object>
 }
 export const HttpBodyParser: InjectionToken<HttpBodyParser> = localOpinionatedToken('HttpBodyParser', {
   multi: false,
@@ -55,12 +55,16 @@ const SelectedBodyParserProvider: Provider<Constructor<HttpBodyParser>> = {
   provide: SelectedBodyParser,
   useFactory(
     req: HttpRequest,
-    headers: HttpRequestHeaders,
+    headers: HttpRequestHeadersAccessor,
     bodyParsers: BodyParserInfo[],
     cache: HttpBodyParserCache,
+    context: InjectorContext,
   ) {
 
     const contentType = headers.get(HttpHeader.contentType)
+    if (!contentType) {
+      throw new MissingProviderError(SelectedBodyParser, context)
+    }
     const cacheKey = `${req.path};${contentType.contentType}`
 
     let bodyParser = cache.get(cacheKey)
@@ -77,9 +81,10 @@ const SelectedBodyParserProvider: Provider<Constructor<HttpBodyParser>> = {
   },
   deps: [
     HttpRequest,
-    HttpRequestHeaders,
+    HttpRequestHeadersAccessor,
     BodyParserInfo,
     HttpBodyParserCache,
+    InjectorContext,
   ],
 }
 

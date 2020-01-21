@@ -1,5 +1,5 @@
 import { stubHarness } from '@dandi/core/testing'
-import { MimeTypes } from '@dandi/http'
+import { MimeType } from '@dandi/http'
 import { PlainTextObjectRenderer } from '@dandi/http-pipeline'
 
 import { expect } from 'chai'
@@ -15,13 +15,13 @@ describe('PlainTextObjectRenderer', function() {
   describe('renderPipelineResult', function() {
 
     it('returns an empty string for undefined values', async function() {
-      const result = await this.renderer.renderPipelineResult(MimeTypes.textPlain, { data: undefined })
+      const result = await this.renderer.renderPipelineResult(MimeType.textPlain, { data: undefined })
 
       expect(result).to.equal('')
     })
 
     it('returns an empty string for null values', async function() {
-      const result = await this.renderer.renderPipelineResult(MimeTypes.textPlain, { data: null })
+      const result = await this.renderer.renderPipelineResult(MimeType.textPlain, { data: null })
 
       expect(result).to.equal('')
     })
@@ -34,7 +34,7 @@ describe('PlainTextObjectRenderer', function() {
           },
         },
       }
-      const result = await this.renderer.renderPipelineResult(MimeTypes.textPlain, pipelineResult)
+      const result = await this.renderer.renderPipelineResult(MimeType.textPlain, pipelineResult)
 
       expect(result).to.equal('hi')
     })

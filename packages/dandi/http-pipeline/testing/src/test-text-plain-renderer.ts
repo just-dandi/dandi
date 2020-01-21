@@ -1,12 +1,12 @@
-import { MimeTypes } from '@dandi/http'
+import { MimeType } from '@dandi/http'
 import { HttpPipelineRendererBase, Renderer } from '@dandi/http-pipeline'
 
 import { stub } from 'sinon'
 
-@Renderer(MimeTypes.textPlain)
+@Renderer(MimeType.textPlain)
 export class TestTextPlainRenderer extends HttpPipelineRendererBase {
 
-  protected readonly defaultContentType: string = MimeTypes.textPlain
+  protected readonly defaultContentType: string = MimeType.textPlain
 
   constructor() {
     super()

@@ -3,11 +3,11 @@ import {
   HttpHeader,
   HttpHeaders,
   HttpRequestBodySource,
-  HttpRequestHeaders,
+  HttpRequestHeadersAccessor,
   HttpRequestHeadersHashAccessor,
   HttpRequestRawBody,
   HttpRequestScope,
-  MimeTypes,
+  MimeType,
   parseHeaders,
 } from '@dandi/http'
 
@@ -20,7 +20,7 @@ interface PreppedPart {
   headers: HttpHeaders,
 }
 
-@BodyParser(MimeTypes.multipartFormData)
+@BodyParser(MimeType.multipartFormData)
 // must use ScopeBehavior.perInjector so that the correct Injector instance can be injected
 @Injectable(RestrictScope(ScopeBehavior.perInjector(HttpRequestScope)))
 export class FormMultipartBodyParser extends HttpBodyParserBase {
@@ -29,7 +29,7 @@ export class FormMultipartBodyParser extends HttpBodyParserBase {
     super()
   }
 
-  protected async parseBodyFromString(body: string, headers: HttpRequestHeaders): Promise<object> {
+  protected async parseBodyFromString(body: string, headers: HttpRequestHeadersAccessor): Promise<object> {
     const contentType = headers.get(HttpHeader.contentType)
     if (!contentType.boundary) {
       throw new FormMultipartMissingBoundaryError()
@@ -51,9 +51,9 @@ export class FormMultipartBodyParser extends HttpBodyParserBase {
           useValue: preppedPart.contentSource,
         },
         {
-          provide: HttpRequestHeaders,
-          useValue: new HttpRequestHeadersHashAccessor(preppedPart.headers),
-        } as Provider<HttpRequestHeaders>,
+          provide: HttpRequestHeadersAccessor,
+          useValue: HttpRequestHeadersHashAccessor.fromParsed(preppedPart.headers),
+        } as Provider<HttpRequestHeadersAccessor>,
       ])
 
       // recursively use the parser system to parse the individual parts
@@ -80,7 +80,7 @@ export class FormMultipartBodyParser extends HttpBodyParserBase {
     const headerLines = headersPart.split(/\r?\n/)
     const headers = parseHeaders(headerLines)
     if (!headers[HttpHeader.contentType]) {
-      headers[HttpHeader.contentType] = { contentType: MimeTypes.textPlain }
+      headers[HttpHeader.contentType] = { contentType: MimeType.textPlain }
     }
 
     return {

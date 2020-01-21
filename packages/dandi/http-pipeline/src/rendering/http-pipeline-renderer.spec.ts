@@ -1,6 +1,6 @@
 import { Constructor } from '@dandi/common'
 import { testHarness, underTest } from '@dandi/core/testing'
-import { HttpRequest, HttpRequestAcceptTypesProvider, HttpRequestScope, MimeTypes } from '@dandi/http'
+import { HttpModule, HttpRequest, HttpRequestScope, MimeType } from '@dandi/http'
 import {
   defaultHttpPipelineRenderer,
   DefaultHttpPipelineRenderer,
@@ -17,8 +17,8 @@ describe('HttpPipelineRenderer', () => {
   // IMPORTANT! stubHarness cannot be used here, since RendererInfoProvider relies on not being able to resolve classes
   // to determine which renderers are actually registered
   const harness = testHarness(
+    HttpModule,
     underTest(HttpPipelineRendererProvider),
-    HttpRequestAcceptTypesProvider,
     {
       provide: HttpRequest,
       useFactory() {
@@ -52,7 +52,7 @@ describe('HttpPipelineRenderer', () => {
 
     harness.register(TestApplicationJsonRenderer)
 
-    req.get.returns(MimeTypes.applicationJson)
+    req.get.returns(MimeType.applicationJson)
 
     const result = await getRenderer()
 
@@ -64,7 +64,7 @@ describe('HttpPipelineRenderer', () => {
 
     harness.register(TestApplicationJsonRenderer)
 
-    req.get.returns(MimeTypes.applicationJson)
+    req.get.returns(MimeType.applicationJson)
 
     const result1 = await getRenderer()
     const result2 = await getRenderer()

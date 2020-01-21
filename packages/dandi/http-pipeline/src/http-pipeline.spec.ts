@@ -1,13 +1,14 @@
-import { Uuid } from '@dandi/common'
+import { AppError, Uuid } from '@dandi/common'
 import { Inject, SymbolToken } from '@dandi/core'
 import { stubHarness, stubProvider, TestInjector, underTest } from '@dandi/core/testing'
 import {
   HttpMethod,
   HttpRequest,
   HttpRequestAcceptTypesProvider,
-  HttpRequestPathParamMap, HttpRequestScope,
+  HttpRequestPathParamMap,
+  HttpRequestScope,
   HttpStatusCode,
-  MimeTypes,
+  MimeType,
   parseMimeTypes,
 } from '@dandi/http'
 import { MissingParamError, PathParam } from '@dandi/http-model'
@@ -46,7 +47,7 @@ describe('HttpPipeline', () => {
         query: {},
         get: stub().callsFake((key: string) => {
           if (key === 'Accept') {
-            return MimeTypes.applicationJson
+            return MimeType.applicationJson
           }
         }),
       }),
@@ -158,7 +159,7 @@ describe('HttpPipeline', () => {
         expect(spy).to.have.been.called
         expect(renderer.render).to.have.been
           .calledOnce
-          .calledWith(parseMimeTypes(MimeTypes.applicationJson), { data: { foo: 'yeah!' } })
+          .calledWith(parseMimeTypes(MimeType.applicationJson), { data: { foo: 'yeah!' } })
       })
 
       it('sets the contentType using the renderer result', async () => {
@@ -172,14 +173,14 @@ describe('HttpPipeline', () => {
 
         registerHandler(new TestController(), 'method')
         renderer.render.returns({
-          contentType: MimeTypes.applicationJson,
+          contentType: MimeType.applicationJson,
           renderedBody: undefined,
         })
 
         await invokePipeline()
 
         expect(terminator.terminateResponse).to.have.been.calledWith({
-          contentType: MimeTypes.applicationJson,
+          contentType: MimeType.applicationJson,
           renderedBody: undefined,
         })
       })
@@ -196,7 +197,7 @@ describe('HttpPipeline', () => {
 
         registerHandler(new TestController(), 'method')
         renderer.render.returns({
-          contentType: MimeTypes.applicationJson,
+          contentType: MimeType.applicationJson,
           renderedBody: 'foo yeah!',
         })
 
@@ -204,7 +205,7 @@ describe('HttpPipeline', () => {
 
         expect(terminator.terminateResponse).to.have.been.calledWith({
           renderedBody: 'foo yeah!',
-          contentType: MimeTypes.applicationJson,
+          contentType: MimeType.applicationJson,
         })
       })
 
@@ -221,7 +222,7 @@ describe('HttpPipeline', () => {
         await invokePipeline()
 
         expect(errorHandler.handleError).to.have.been.called
-        expect(errorHandler.handleError.firstCall.lastArg.errors[0]).to.be.instanceOf(MissingParamError)
+        expect(AppError.getInnerError(MissingParamError, errorHandler.handleError.firstCall.lastArg.errors[0])).to.exist
       })
 
       it('returns a text/plain render result if the renderer throws an error', async () => {
@@ -236,12 +237,13 @@ describe('HttpPipeline', () => {
         renderer.render.rejects(new Error('Your llama is lloose!'))
 
         const result = await invokePipeline()
+        const thrownError = await (renderer.render.firstCall.returnValue as Promise<any>).catch(err => err)
 
         expect(result).to.deep.equal({
           statusCode: HttpStatusCode.internalServerError,
-          contentType: MimeTypes.textPlain,
+          contentType: MimeType.textPlain,
           headers: undefined,
-          renderedBody: 'Your llama is lloose!',
+          renderedBody: thrownError.stack,
         })
 
       })

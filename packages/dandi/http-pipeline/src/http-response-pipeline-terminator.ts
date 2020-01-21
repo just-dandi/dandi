@@ -1,8 +1,8 @@
-import { Inject, Injectable, Logger, ScopeRestriction, RestrictScope } from '@dandi/core'
-import { HttpRequest, HttpRequestScope, HttpResponse, HttpStatusCode, MimeTypes } from '@dandi/http'
+import { Inject, Injectable, Logger, RestrictScope } from '@dandi/core'
+import { HttpHeader, HttpRequest, HttpRequestScope, HttpResponse, HttpStatusCode, MimeType } from '@dandi/http'
+import { HttpPipelineTerminator } from './http-pipeline-terminator'
 
 import { HttpPipelineRendererResult } from './rendering/http-pipeline-renderer'
-import { HttpPipelineTerminator } from './http-pipeline-terminator'
 
 /**
  * An implementation of {@link HttpPipelineTerminator} that terminates a request using the {@link HttpResponse} object.
@@ -10,29 +10,32 @@ import { HttpPipelineTerminator } from './http-pipeline-terminator'
  * This is the default {@link HttpPipelineTerminator} implementation included with {@link HttpPipelineModule}
  */
 @Injectable(HttpPipelineTerminator, RestrictScope(HttpRequestScope))
-export class HttpResponsePipelineTerminator implements HttpPipelineTerminator {
+export class HttpResponsePipelineTerminator<TResponse = void> implements HttpPipelineTerminator {
 
   constructor(
-    @Inject(HttpRequest) private request: HttpRequest,
-    @Inject(HttpResponse) private response: HttpResponse,
-    @Inject(Logger) private logger: Logger,
+    @Inject(HttpRequest) protected request: HttpRequest,
+    @Inject(HttpResponse) protected response: HttpResponse,
+    @Inject(Logger) protected logger: Logger,
   ) {}
 
-  public async terminateResponse(renderResult: HttpPipelineRendererResult): Promise<void> {
+  public async terminateResponse(renderResult: HttpPipelineRendererResult): Promise<TResponse> {
     if (renderResult.statusCode) {
       this.response.status(renderResult.statusCode)
     }
     if (renderResult.headers) {
       Object
         .keys(renderResult.headers)
-        .forEach(headerName => this.response.setHeader(headerName, renderResult.headers[headerName]))
+        .forEach(headerName => this.response.header(headerName, renderResult.headers[headerName]))
     }
     this.response
-      .contentType(renderResult.contentType || MimeTypes.textPlain)
+      .header(HttpHeader.contentType, renderResult.contentType || MimeType.textPlain)
+      .status(renderResult.statusCode || HttpStatusCode.ok)
       .send(renderResult.renderedBody || '')
       .end()
 
     this.logger.debug(this.request.method, this.request.path, renderResult.statusCode || HttpStatusCode.ok)
+
+    return
   }
 
 }

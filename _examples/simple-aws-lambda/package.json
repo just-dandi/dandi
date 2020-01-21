@@ -8,14 +8,14 @@
     "test": "mocha ./src/**/*.spec.ts"
   },
   "dependencies": {
-    "@dandi/core": "latest",
-    "@dandi/common": "latest",
-    "@dandi/model": "latest",
-    "@dandi/model-builder": "latest",
+    "@dandi/core": "file:../../out/dandi/core",
+    "@dandi/common": "file:../../out/dandi/common",
+    "@dandi/model": "file:../../out/dandi/model",
+    "@dandi/model-builder": "file:../../out/dandi/model-builder",
     "@dandi/http": "file:../../out/dandi/http",
     "@dandi/http-model": "file:../../out/dandi/http-model",
     "@dandi/http-pipeline": "file:../../out/dandi/http-pipeline",
-    "@dandi-contrib/aws-lambda": "latest"
+    "@dandi-contrib/aws-lambda": "file:../../out/dandi-contrib/aws-lambda"
   },
   "devDependencies": {
     "@types/aws-lambda": "^8.10.35",

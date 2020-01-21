@@ -1,5 +1,5 @@
 import { testHarness } from '@dandi/core/testing'
-import { HttpRequestHeaders, HttpRequestHeadersHashAccessor } from '@dandi/http'
+import { HttpRequestHeadersAccessor, HttpRequestHeadersHashAccessor } from '@dandi/http'
 import { FormUrlencodedBodyParser } from '@dandi/http-pipeline'
 
 import { expect } from 'chai'
@@ -9,7 +9,7 @@ describe('FormUrlEncodedBodyParser', () => {
   const harness = testHarness(FormUrlencodedBodyParser)
 
   let parser: FormUrlencodedBodyParser
-  let headers: HttpRequestHeaders
+  let headers: HttpRequestHeadersAccessor
 
   beforeEach(async () => {
     parser = await harness.inject(FormUrlencodedBodyParser)

@@ -1,7 +1,7 @@
-import { HttpStatusCode, MimeTypes, RequestError } from '@dandi/http'
+import { HttpStatusCode, MimeType, RequestError } from '@dandi/http'
 
 export class NoConfiguredParserError extends RequestError {
-  constructor(contentType: MimeTypes, innerError?: Error) {
+  constructor(contentType: MimeType, innerError?: Error) {
     super(
       HttpStatusCode.notImplemented,
       undefined,

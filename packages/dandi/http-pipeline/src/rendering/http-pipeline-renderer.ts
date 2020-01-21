@@ -3,10 +3,13 @@ import { InjectionToken, Provider, Injector, ScopeBehavior } from '@dandi/core'
 import {
   mimeTypesAreCompatible,
   MimeTypeInfo,
+  HttpHeader,
   HttpHeaders,
   HttpRequest,
   HttpRequestAcceptTypes,
-  HttpStatusCode, HttpRequestScope,
+  HttpRequestHeadersAccessor,
+  HttpRequestScope,
+  HttpStatusCode,
 } from '@dandi/http'
 
 import { HttpPipelineResult } from '../http-pipeline-result'
@@ -79,13 +82,14 @@ const SelectedRendererProvider: Provider<Constructor<HttpPipelineRenderer>> = {
   provide: SelectedRenderer,
   useFactory(
     req: HttpRequest,
+    headers: HttpRequestHeadersAccessor,
     acceptTypes: HttpRequestAcceptTypes,
     renderers: RendererInfo[],
     defaultRenderer: Constructor<HttpPipelineRenderer>,
     cache: HttpPipelineRendererCache,
   ) {
 
-    const accept = req.get('Accept')
+    const accept = headers.get(HttpHeader.accept)
     const cacheKey = `${req.path}_${accept}`
 
     let renderer = cache.get(cacheKey)
@@ -104,6 +108,7 @@ const SelectedRendererProvider: Provider<Constructor<HttpPipelineRenderer>> = {
   },
   deps: [
     HttpRequest,
+    HttpRequestHeadersAccessor,
     HttpRequestAcceptTypes,
     RendererInfo,
     DefaultHttpPipelineRenderer,

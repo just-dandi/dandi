@@ -8,7 +8,7 @@ import {
   Optional,
   Provider,
 } from '@dandi/core'
-import { HttpRequest, HttpRequestAcceptTypes, HttpStatusCode, MimeTypes } from '@dandi/http'
+import { HttpRequest, HttpRequestAcceptTypes, HttpStatusCode, MimeType } from '@dandi/http'
 
 import { HttpPipelineConfig } from './http-pipeline-config'
 import { HttpPipelineErrorResult } from './http-pipeline-error-result'
@@ -214,9 +214,9 @@ export class HttpPipeline {
       this.logger.error(err)
       return {
         statusCode: pipelineResult.statusCode || HttpStatusCode.internalServerError,
-        contentType: MimeTypes.textPlain,
+        contentType: MimeType.textPlain,
         headers: pipelineResult.headers,
-        renderedBody: err.message,
+        renderedBody: err.stack,
       }
     }
   }
