@@ -1,8 +1,16 @@
 import { testHarness, TestInjector } from '@dandi/core/testing'
-import { HttpRequest, HttpRequestAcceptTypesProvider, HttpRequestScope, MimeTypes, parseMimeTypes } from '@dandi/http'
+import {
+  HttpModule,
+  HttpRequest,
+  HttpRequestAcceptTypesProvider,
+  HttpRequestScope,
+  MimeType,
+  parseMimeTypes,
+} from '@dandi/http'
 import {
   defaultHttpPipelineRenderer,
-  HttpPipelineRendererProvider, HttpPipelineResult,
+  HttpPipelineRendererProvider,
+  HttpPipelineResult,
   PlainTextObjectRenderer,
 } from '@dandi/http-pipeline'
 import { TestApplicationJsonRenderer } from '@dandi/http-pipeline/testing'
@@ -20,6 +28,7 @@ describe('HalObjectRenderer', () => {
   let requestInjector: TestInjector
 
   const harness = testHarness(HalObjectRenderer,
+    HttpModule,
     {
       provide: TestApplicationJsonRenderer,
       useFactory: () => new TestApplicationJsonRenderer(),
@@ -68,7 +77,7 @@ describe('HalObjectRenderer', () => {
     it('finds a renderer matching the base type and uses it to render the output', async () => {
 
       stub(jsonRenderer, 'render').resolves({
-        contentType: MimeTypes.applicationJson,
+        contentType: MimeType.applicationJson,
         renderedBody: '{"foo":"bar"}',
       })
 
@@ -78,7 +87,7 @@ describe('HalObjectRenderer', () => {
 
       expect(jsonRenderer.render).to.have.been
         .calledOnce
-        .calledWithExactly(parseMimeTypes(MimeTypes.applicationJson), result)
+        .calledWithExactly(parseMimeTypes(MimeType.applicationJson), result)
 
     })
 
@@ -86,7 +95,7 @@ describe('HalObjectRenderer', () => {
 
       const expected = '{"foo":"bar"}'
       stub(jsonRenderer, 'render').resolves({
-        contentType: MimeTypes.applicationJson,
+        contentType: MimeType.applicationJson,
         renderedBody: expected,
       })
 
@@ -110,7 +119,7 @@ describe('HalObjectRenderer', () => {
       const expected = '{"foo":"bar"}'
       stub(jsonRenderer, 'render').resolves({
         statusCode: undefined,
-        contentType: MimeTypes.applicationJson,
+        contentType: MimeType.applicationJson,
         headers: undefined,
         renderedBody: expected,
       })
