@@ -1,8 +1,9 @@
 import { ModuleBuilder, Registerable } from '@dandi/core'
 
-import { HttpRequestHeadersAccessor } from './http-request-headers'
-import { HttpRequestRawBodyProvider } from './http-request-raw-body'
 import { HttpRequestAcceptTypesProvider } from './http-request-accept-types'
+import { DandiHttpRequestHeadersAccessor } from './http-request-headers-accessor'
+import { HttpRequestHeadersCache } from './http-request-headers-cache'
+import { HttpRequestRawBodyProvider } from './http-request-raw-body'
 import { PKG } from './local-token'
 
 export class HttpModuleBuilder extends ModuleBuilder<HttpModuleBuilder> {
@@ -12,7 +13,8 @@ export class HttpModuleBuilder extends ModuleBuilder<HttpModuleBuilder> {
 }
 
 export const HttpModule = new HttpModuleBuilder(
-  HttpRequestHeadersAccessor,
-  HttpRequestRawBodyProvider,
+  DandiHttpRequestHeadersAccessor,
   HttpRequestAcceptTypesProvider,
+  HttpRequestHeadersCache,
+  HttpRequestRawBodyProvider,
 )
