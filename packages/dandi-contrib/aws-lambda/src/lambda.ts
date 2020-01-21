@@ -1,4 +1,4 @@
-import { Constructor } from '@dandi/common'
+import { Constructor, Disposable } from '@dandi/common'
 import {
   DandiApplication,
   Inject,
@@ -9,6 +9,7 @@ import {
   Provider,
   Registerable,
 } from '@dandi/core'
+import { createHttpRequestScope } from '@dandi/http'
 import {
   DefaultHttpRequestInfo,
   HttpPipeline,
@@ -24,7 +25,9 @@ import { localOpinionatedToken } from './local.token'
 
 const LambdaHandler: InjectionToken<LambdaHandler> = localOpinionatedToken('LambdaHandler', { multi: false })
 
-export type HandlerFn<TEvent = any, TResult = any> = (event: TEvent, context: Context) => void | Promise<TResult>
+export interface LambdaHandlerFn<TEvent = any, TResult = any> extends Disposable {
+  (event: TEvent, context: Context): void | Promise<TResult>
+}
 
 @Injectable()
 export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
@@ -32,7 +35,7 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
   public static handler<TEvent, TEventData, THandler extends LambdaHandler>(
     handlerServiceType: Constructor<THandler>,
     ...providers: Registerable[]
-  ): HandlerFn<TEvent> {
+  ): LambdaHandlerFn<TEvent> {
 
     providers.push({
       provide: LambdaHandler,
@@ -40,6 +43,7 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
     })
 
     const app = new DandiApplication({
+      handlerServiceType,
       providers,
     })
     const injectorReady = app.start()
@@ -47,7 +51,7 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
     let lambdaReady: Promise<InjectionResult<Lambda<TEvent, TEventData, THandler>>>
     let lambda: Lambda<TEvent, TEventData, THandler>
 
-    return async (event: TEvent, context: Context) => {
+    const handlerFn = async (event: TEvent, context: Context): Promise<any> => {
       const injector = await injectorReady
 
       if (!lambdaReady) {
@@ -57,6 +61,8 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
 
       return await lambda.handleEvent(event, context)
     }
+
+    return Disposable.makeDisposable(handlerFn, (reason) => app.dispose(reason))
   }
 
   constructor(
@@ -68,7 +74,9 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
 
   public async handleEvent(event: TEvent, context: Context): Promise<any> {
     const providers = this.createProviders(event, context)
-    return await this.injector.invoke(this.httpPipeline, 'handleRequest', ...providers)
+    return Disposable.useAsync(this.injector.createChild(createHttpRequestScope(event as any), providers), async (injector) => {
+      return await injector.invoke(this.httpPipeline, 'handleRequest', ...providers)
+    })
   }
 
   private createProviders(event: TEvent, context: Context): Provider<any>[] {

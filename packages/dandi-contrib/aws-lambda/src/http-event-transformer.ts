@@ -1,5 +1,13 @@
 import { Injectable, Provider } from '@dandi/core'
-import { HttpMethod, HttpRequest, HttpRequestPathParamMap, HttpRequestQueryParamMap, ParamMap } from '@dandi/http'
+import {
+  HttpMethod,
+  HttpRequest,
+  HttpRequestHeadersAccessor,
+  HttpRequestHeadersHashAccessor,
+  HttpRequestPathParamMap,
+  HttpRequestQueryParamMap,
+  ParamMap,
+} from '@dandi/http'
 import { APIGatewayProxyEvent } from 'aws-lambda'
 
 import { AwsHttpRequest } from './aws-http-request'
@@ -16,6 +24,10 @@ export class HttpEventTransformer implements LambdaEventTransformer<APIGatewayPr
       {
         provide: HttpRequest,
         useValue: this.getHttpRequest(event),
+      },
+      {
+        provide: HttpRequestHeadersAccessor,
+        useValue: HttpRequestHeadersHashAccessor.fromRaw(event.headers),
       },
       {
         provide: HttpRequestPathParamMap,
@@ -40,11 +52,11 @@ export class HttpEventTransformer implements LambdaEventTransformer<APIGatewayPr
   private getHttpRequest(event: APIGatewayProxyEvent): HttpRequest {
     let body: any
     if (event.body) {
-      let bodyStr = event.body
       if (event.isBase64Encoded) {
-        bodyStr = Buffer.from(bodyStr, 'base64').toString('utf-8')
+        body = Buffer.from(event.body, 'base64').toString('utf-8')
+      } else {
+        body = event.body
       }
-      body = JSON.parse(bodyStr)
     }
 
     return new AwsHttpRequest({

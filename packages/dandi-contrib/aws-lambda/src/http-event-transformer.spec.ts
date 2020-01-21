@@ -21,7 +21,7 @@ describe('HttpEventTransformer', () => {
   let context: Context
 
   beforeEach(() => {
-    body = { foo: 'bar ' }
+    body = { foo: 'bar' }
     event = {
       body: JSON.stringify(body),
       headers: 'headers',
@@ -62,7 +62,7 @@ describe('HttpEventTransformer', () => {
       expect(httpProvider).to.exist
     })
 
-    it('creates an HttpRequest object using the event values and deserialized body', () => {
+    it('creates an HttpRequest object using the event values', () => {
       const eventWithoutBody = Object.assign({}, event)
       delete eventWithoutBody.body
 
@@ -71,10 +71,10 @@ describe('HttpEventTransformer', () => {
       const request = (httpProvider as any).useValue
 
       expect(request.path).to.include(event.path)
-      expect(request.body).to.deep.equal(body)
+      expect(request.body).to.equal(JSON.stringify(body))
     })
 
-    it('creates an HttpRequest object using the event values and deserialized base64 encoded body', () => {
+    it('creates an HttpRequest object using the event values and the body decoded from base64', () => {
       event.body = Buffer.from(event.body, 'utf8').toString('base64')
       event.isBase64Encoded = true
 
@@ -86,7 +86,7 @@ describe('HttpEventTransformer', () => {
       const httpProvider = result.find(provider => provider.provide === HttpRequest)
       const request = (httpProvider as any).useValue
 
-      expect(request.body).to.deep.equal(body)
+      expect(request.body).to.equal(JSON.stringify(body))
     })
 
     it('creates a HttpHandlerRequest object using the event values and no body when none exists', () => {

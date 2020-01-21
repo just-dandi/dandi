@@ -7,7 +7,7 @@
 //
 // import { MockContext } from '../test'
 //
-// import { HandlerFn, Lambda } from './lambda'
+// import { LambdaHandlerFn, Lambda } from './lambda'
 // import { LambdaEventTransformer } from './lambda-event-transformer'
 // import { LambdaHandler } from './lambda-handler'
 //
@@ -42,7 +42,7 @@
 //   let event: TestEvent
 //   let scope: Context
 //   let response: TestResponse
-//   let handlerFn: HandlerFn<TestEvent, any>
+//   let handlerFn: LambdaHandlerFn<TestEvent, any>
 //
 //   let transformer: SinonStubbedInstance<LambdaEventTransformer<TestEvent>>
 //
