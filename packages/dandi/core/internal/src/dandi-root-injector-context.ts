@@ -9,7 +9,7 @@ import { RootInjectionScope } from './root-injection-scope'
 export class DandiRootInjectorContext extends DandiInjectorContext {
 
   constructor() {
-    super(undefined, RootInjectionScope)
+    super(undefined, new RootInjectionScope())
   }
 
   public register(source: RegistrationSource, ...providers: Registerable[]): this {

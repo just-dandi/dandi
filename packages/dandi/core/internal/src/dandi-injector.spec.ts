@@ -88,6 +88,13 @@ describe('DandiInjector', () => {
         expect(injector.resolve(TestWithDependency, true)).to.be.undefined
       })
 
+      it('cannot resolve providers registered in separate injector instances', async () => {
+        register(TestInjectable)
+        const otherInjector = new DandiRootInjector(() => generator as unknown as DandiGenerator)
+
+        await expect(otherInjector.inject(TestInjectable)).to.be.rejectedWith(MissingProviderError)
+      })
+
       describe('scope restrictions', () => {
         class ScopeRestriction {}
 
@@ -186,7 +193,7 @@ describe('DandiInjector', () => {
         })
         const injector = new DandiRootInjector(generatorFactory)
 
-        register(TestInjectable)
+        injector.register(DandiRootInjector, TestInjectable)
         const resultPromise = injector.inject(TestInjectable)
         expect(generator.generateInstance).not.to.have.been.called
 

@@ -83,27 +83,36 @@ export function isCustomInjectionScope(obj: any): obj is CustomInjectionScope {
   )
 }
 
-export function scopesAreCompatible(a: InjectionScope, b: InjectionScope): boolean {
-  if (a === b) {
+export function scopesAreCompatible(test: InjectionScope, restriction: InjectionScope): boolean {
+  if (test === restriction) {
     return true
   }
 
-  const aType = typeof a
-  const bType = typeof b
+  const aType = typeof test
+  const bType = typeof restriction
+
+  if (test instanceof DependencyInjectionScope && isConstructor(restriction)) {
+    return test.target === restriction
+  }
+
   if (aType !== bType) {
     return false
   }
 
-  if (isFactoryParamInjectionScope(a) && isFactoryParamInjectionScope(b)) {
-    return a.target === b.target && a.paramToken === b.paramToken
+  if (isConstructor(test) && isConstructor(restriction)) {
+    return test === restriction
   }
 
-  if (isCustomInjectionScope(a) && isCustomInjectionScope(b)) {
-    return a.type === b.type
+  if (isFactoryParamInjectionScope(test) && isFactoryParamInjectionScope(restriction)) {
+    return test.target === restriction.target && test.paramToken === restriction.paramToken
   }
 
-  const aScope = a as DependencyInjectionScope
-  const bScope = b as DependencyInjectionScope
+  if (isCustomInjectionScope(test) && isCustomInjectionScope(restriction)) {
+    return test.type === restriction.type
+  }
+
+  const aScope = test as DependencyInjectionScope
+  const bScope = restriction as DependencyInjectionScope
 
   return aScope.target === bScope.target &&
     aScope.methodName === bScope.methodName &&

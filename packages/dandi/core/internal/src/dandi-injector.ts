@@ -1,5 +1,11 @@
 import { Disposable } from '@dandi/common'
-import { MissingTokenError, InvalidTokenError, MissingProviderError, InvalidTokenScopeError } from '@dandi/core/errors'
+import {
+  DandiInjectionError,
+  MissingTokenError,
+  InvalidTokenError,
+  InvalidTokenScopeError,
+  MissingProviderError,
+} from '@dandi/core/errors'
 import {
   getInjectableMetadata,
   getInjectionScopeName,
@@ -80,18 +86,25 @@ export class DandiInjector implements Injector, Disposable {
   }
 
   public async inject<T>(token: InjectionToken<T>, optional?: boolean): Promise<InjectionResult<T>> {
-    const injectArgs: Args<T> = this.parseAndValidateArgs({ token, optional })
-    const resolverContext: ResolverContext<T> = this.resolveInternal(injectArgs)
+    try {
+      const injectArgs: Args<T> = this.parseAndValidateArgs({ token, optional })
+      const resolverContext: ResolverContext<T> = this.resolveInternal(injectArgs)
 
-    if (!resolverContext) {
-      return undefined
-    }
+      if (!resolverContext) {
+        return undefined
+      }
 
-    const result = await this.generateInstance(resolverContext)
-    if (result === undefined || result === null) {
-      return undefined
+      const result = await this.generateInstance(resolverContext)
+      if (result === undefined || result === null) {
+        return undefined
+      }
+      return resolverContext.resolveValue(result)
+    } catch (err) {
+      if (err instanceof DandiInjectionError) {
+        throw err
+      }
+      throw new DandiInjectionError(token, this.context, `${err.message} while injecting`, err)
     }
-    return resolverContext.resolveValue(result)
   }
 
   public async invoke<TInstance extends object, TResult>(

@@ -129,7 +129,7 @@ describe('DI Integration', function() {
     const result = await harness.inject(ContextHost)
 
     // the scope is RootInjectionScope, because TestHarness.register registers injectables with the root injector
-    expect(result.scope).to.equal(RootInjectionScope.constructor)
+    expect(result.scope).to.equal(RootInjectionScope)
     expect(result.tester.scope).to.equal(ContextHost)
   })
 
@@ -160,7 +160,7 @@ describe('DI Integration', function() {
 
     const result: TestResult = await harness.invoke(instance, 'test')
 
-    expect(result.context).to.equal(AppInjectionScope.constructor)
+    expect(result.context).to.equal(RootInjectionScope)
     expect(result.tester.context).to.deep.equal({
       target: instance,
       methodName: 'test',
