@@ -24,7 +24,7 @@ export class DandiRootInjector extends DandiInjector implements RootInjector {
   constructor(generatorFactory: InstanceGeneratorFactory) {
     super(
       undefined,
-      RootInjectionScope,
+      new RootInjectionScope(),
       generatorFactory,
       DandiInjectorContext,
       [],

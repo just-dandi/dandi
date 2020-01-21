@@ -161,7 +161,7 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
       }
 
       const restrictedToScope = getRestrictedScope(scopeRestriction)
-      if (scopesAreCompatible(restrictedToScope, this.scope)) {
+      if (scopesAreCompatible(this.scope, restrictedToScope)) {
         return this
       }
 
@@ -174,10 +174,10 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
 
   public [CUSTOM_INSPECTOR](): string {
     const parts = [getInjectionScopeName(this.scope)]
-    if (this.parent && this.parent.scope !== AppInjectionScope && this.parent.scope !== RootInjectionScope) {
+    if (this.parent && !(this.parent.scope instanceof AppInjectionScope) && !(this.parent.scope instanceof RootInjectionScope)) {
       parts.push(this.parent[CUSTOM_INSPECTOR]())
     }
-    return parts.join('\n\tresolving ')
+    return parts.join('\nresolving ')
   }
 
   public async dispose(reason: string): Promise<void> {
