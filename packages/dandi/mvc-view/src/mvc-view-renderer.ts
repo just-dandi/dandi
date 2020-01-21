@@ -1,15 +1,15 @@
 import { Inject, Injectable, Injector, RestrictScope } from '@dandi/core'
-import { HttpRequestScope, MimeTypes } from '@dandi/http'
+import { HttpRequestScope, MimeType } from '@dandi/http'
 import { HttpPipelineResult, HttpPipelineRendererBase, Renderer } from '@dandi/http-pipeline'
 import { ViewResult } from '@dandi/mvc-view'
 
 import { ViewResultFactory } from './view-result-factory'
 
 @Injectable(RestrictScope(HttpRequestScope))
-@Renderer(MimeTypes.textHtml)
+@Renderer(MimeType.textHtml)
 export class MvcViewRenderer extends HttpPipelineRendererBase {
 
-  protected readonly defaultContentType: string = MimeTypes.textHtml
+  protected readonly defaultContentType: string = MimeType.textHtml
 
   constructor(
     @Inject(Injector) private injector: Injector,
