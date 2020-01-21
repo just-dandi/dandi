@@ -93,7 +93,8 @@ export class Disposable {
    * before the new function.
    */
   public static makeDisposable<T>(obj: T, dispose: DisposeFn): T & Disposable {
-    if (!obj || typeof obj !== 'object') {
+    const objType = typeof obj
+    if (!obj || (objType !== 'object' && objType !== 'function')) {
       throw new DisposableTypeError(`Cannot make ${obj} disposable`)
     }
 
