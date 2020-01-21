@@ -1,3 +1,3 @@
 export interface LambdaHandler {
-  handleEvent<TResult>(...args: any[]): any | Promise<any>
+  handleEvent<TResult, TReturn>(...args: any[]): any | Promise<any>
 }
