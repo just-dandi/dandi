@@ -232,14 +232,10 @@ export class DefaultResourceComposer implements ResourceComposer {
     }
     const res: HttpResponse = {
       cookie: embedResponseAccess,
-      contentType: embedResponseAccess,
       end: embedResponseAccess,
       header: embedResponseAccess,
-      json: embedResponseAccess,
       redirect: embedResponseAccess,
       send: embedResponseAccess,
-      set: embedResponseAccess,
-      setHeader: embedResponseAccess,
       status: embedResponseAccess,
     }
 
