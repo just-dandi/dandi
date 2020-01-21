@@ -72,12 +72,14 @@ export class DefaultRouteExecutor implements RouteExecutor {
         AppError.stack(err),
       )
 
-      res.status(err.statusCode || HttpStatusCode.internalServerError).json({
-        error: {
-          type: err.constructor.name,
-          message: err.message,
-        },
-      })
+      res
+        .status(err.statusCode || HttpStatusCode.internalServerError)
+        .send(JSON.stringify({
+          error: {
+            type: err.constructor.name,
+            message: err.message,
+          },
+        }))
     } finally {
       this.logger.debug(
         `end execRoute ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,

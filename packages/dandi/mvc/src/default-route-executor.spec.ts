@@ -60,7 +60,7 @@ describe('DefaultRouteExecutor', () => {
   let routeInit: SinonStubbedInstance<RouteInitializer>
   let route: Route
   let req: HttpRequest
-  let res: HttpResponse
+  let res: SinonStubbedInstance<HttpResponse>
   let httpPipeline: FakeHttpPipeline
 
   // because execRoute uses invoke to call routeInit, routeInit gets disposed before we can check the spies
@@ -93,8 +93,6 @@ describe('DefaultRouteExecutor', () => {
       query: {},
     } as any
     res = {
-      contentType: stub().returnsThis(),
-      json: stub().returnsThis(),
       send: stub().returnsThis(),
       setHeader: stub().returnsThis(),
       status: stub().returnsThis(),
@@ -141,9 +139,12 @@ describe('DefaultRouteExecutor', () => {
 
       await routeExec.execRoute(route, req, res)
 
-      expect(res.json).to.have.been.calledWith({
-        error: { message: 'oh no', type: 'SomeKindOfError' },
-      })
+      expect(res.send).to.have.been.calledOnceWithExactly(JSON.stringify({
+        error: {
+          type: 'SomeKindOfError',
+          message: 'oh no',
+        },
+      }))
     })
 
     it('uses the status code from thrown errors if present', async () => {
@@ -160,9 +161,12 @@ describe('DefaultRouteExecutor', () => {
       await routeExec.execRoute(route, req, res)
 
       expect(res.status).to.have.been.calledWith(HttpStatusCode.teapot)
-      expect(res.json).to.have.been.calledWith({
-        error: { message: 'oh no, not again!', type: 'SomeKindOfError' },
-      })
+      expect(res.send).to.have.been.calledOnceWithExactly(JSON.stringify({
+        error: {
+          type: 'SomeKindOfError',
+          message: 'oh no, not again!',
+        },
+      }))
     })
 
     it('defaults to the status code 500 if the error does not specify one', async () => {
