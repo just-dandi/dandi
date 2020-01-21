@@ -1,9 +1,10 @@
-import { Url } from '@dandi/common'
+import { AppError, Url } from '@dandi/common'
 import { testHarness, TestInjector } from '@dandi/core/testing'
 import {
   createHttpRequestScope,
+  DandiHttpRequestHeadersAccessor,
+  HttpModule,
   HttpRequest,
-  HttpRequestHeadersAccessor,
   HttpRequestPathParamMap,
   HttpRequestQueryParamMap,
   HttpRequestRawBodyProvider,
@@ -52,7 +53,7 @@ describe('Request Decorators', () => {
       provide: HttpBodyParser,
       useClass: PassThroughBodyParser,
     },
-    HttpRequestHeadersAccessor,
+    DandiHttpRequestHeadersAccessor,
     {
       provide: HttpRequestPathParamMap,
       useFactory: () => ({}),
@@ -84,6 +85,10 @@ describe('Request Decorators', () => {
 
   describe('@RequestBody', () => {
 
+    beforeEach(() => {
+      harness.register(HttpModule)
+    })
+
     it('constructs and validates the body', async () => {
       const result: TestModel = await requestInjector.invoke(controller, 'testBody')
       expect(result).to.be.instanceof(TestModel)
@@ -95,7 +100,8 @@ describe('Request Decorators', () => {
   describe('@PathParam', () => {
 
     it('throws an error if a path param is missing', async () => {
-      await expect(requestInjector.invoke(controller, 'testPathParam')).to.be.rejectedWith(MissingParamError)
+      const err = await expect(requestInjector.invoke(controller, 'testPathParam')).to.be.rejected
+      expect(AppError.getInnerError(MissingParamError, err)).to.exist
     })
 
     it('passes the path param value if present', async () => {
