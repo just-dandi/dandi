@@ -5,8 +5,8 @@ import {
   parseMimeTypes,
   parseRawHeader,
   splitRawHeader,
-  standardParseHeader,
-  standardParseHeaderValue,
+  parseDirectiveHeader,
+  parseDirectiveHeaderValue,
 } from '@dandi/http'
 
 import { expect } from 'chai'
@@ -38,11 +38,11 @@ describe('HTTP Header Utilities', () => {
 
   describe('standardParseHeaderValue', () => {
     it('returns an object containing just the value if no directives are specified', () => {
-      expect(standardParseHeaderValue('text/plain')).to.deep.equal({ value: 'text/plain' })
+      expect(parseDirectiveHeaderValue('text/plain')).to.deep.equal({ value: 'text/plain' })
     })
 
     it('returns an object containing the value and a map of any directives', () => {
-      expect(standardParseHeaderValue('text/plain; charset=utf-8')).to.deep.equal({
+      expect(parseDirectiveHeaderValue('text/plain; charset=utf-8')).to.deep.equal({
         value: 'text/plain',
         directives: {
           charset: 'utf-8',
@@ -51,7 +51,7 @@ describe('HTTP Header Utilities', () => {
     })
 
     it('removes double quotes from directive values', () => {
-      expect(standardParseHeaderValue('text/plain; charset="utf-8"')).to.deep.equal({
+      expect(parseDirectiveHeaderValue('text/plain; charset="utf-8"')).to.deep.equal({
         value: 'text/plain',
         directives: {
           charset: 'utf-8',
@@ -60,7 +60,7 @@ describe('HTTP Header Utilities', () => {
     })
 
     it('parses multiple directives', () => {
-      expect(standardParseHeaderValue('text/plain; charset=utf-8; boundary=fooooo')).to.deep.equal({
+      expect(parseDirectiveHeaderValue('text/plain; charset=utf-8; boundary=fooooo')).to.deep.equal({
         value: 'text/plain',
         directives: {
           charset: 'utf-8',
@@ -72,13 +72,13 @@ describe('HTTP Header Utilities', () => {
 
   describe('standardParseHeader', () => {
     it('sets a key with the HttpHeader key corresponding to the name of the header, which contains the value of the header', () => {
-      expect(standardParseHeader(HttpHeader.contentType, 'text/plain')).to.deep.equal({
+      expect(parseDirectiveHeader(HttpHeader.contentType, 'text/plain')).to.deep.equal({
         contentType: 'text/plain',
       })
     })
 
     it('sets the keys of any directives as siblings of the value key', () => {
-      expect(standardParseHeader(HttpHeader.contentType, 'text/plain; charset=utf-8')).to.deep.equal({
+      expect(parseDirectiveHeader(HttpHeader.contentType, 'text/plain; charset=utf-8')).to.deep.equal({
         contentType: 'text/plain',
         charset: 'utf-8',
       })
