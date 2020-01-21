@@ -1,5 +1,5 @@
 import { stubHarness } from '@dandi/core/testing'
-import { MimeTypes } from '@dandi/http'
+import { MimeType } from '@dandi/http'
 import { NativeJsonObjectRenderer } from '@dandi/http-pipeline'
 
 import { expect } from 'chai'
@@ -20,21 +20,21 @@ describe('NativeJsonObjectRenderer', function() {
           foo: 'bar',
         },
       }
-      const result = await this.renderer.renderPipelineResult(MimeTypes.textPlain, pipelineResult)
+      const result = await this.renderer.renderPipelineResult(MimeType.textPlain, pipelineResult)
 
       expect(result).to.equal('{"foo":"bar"}')
     })
 
     it('returns a JSON representation of a string', async function() {
       const pipelineResult = { data: 'foo' }
-      const result = await this.renderer.renderPipelineResult(MimeTypes.textPlain, pipelineResult)
+      const result = await this.renderer.renderPipelineResult(MimeType.textPlain, pipelineResult)
 
       expect(result).to.equal('"foo"')
     })
 
     it('returns a JSON representation of a number', async function() {
       const pipelineResult = { data: 42 }
-      const result = await this.renderer.renderPipelineResult(MimeTypes.textPlain, pipelineResult)
+      const result = await this.renderer.renderPipelineResult(MimeType.textPlain, pipelineResult)
 
       expect(result).to.equal('42')
     })

@@ -1,8 +1,8 @@
 import { stub } from '@dandi/core/testing'
 import {
   ContentDisposition,
-  HttpHeader, HttpHeadersStrict,
-  MimeTypes,
+  HttpHeader, HttpHeaders,
+  MimeType,
 } from '@dandi/http'
 import { HttpBodyParserBase } from '@dandi/http-pipeline'
 
@@ -32,7 +32,7 @@ describe('HttpBodyParserBase', () => {
     }
   }
 
-  type HttpRequestHeadersGetFn<THeaderName extends HttpHeader> = (headerName: THeaderName) => HttpHeadersStrict[THeaderName]
+  type HttpRequestHeadersGetFn<THeaderName extends HttpHeader> = (headerName: THeaderName) => HttpHeaders[THeaderName]
 
   let parser: TestHttpBodyParser
   let headers: {
@@ -106,7 +106,7 @@ describe('HttpBodyParserBase', () => {
         const body = new Buffer(content, 'utf16le')
         headers.get
           .withArgs(HttpHeader.contentType)
-          .returns({ contentType: MimeTypes.textPlain, charset: 'utf16le' })
+          .returns({ contentType: MimeType.textPlain, charset: 'utf16le' })
 
         const result = await parser.parseBody(body, headers)
 

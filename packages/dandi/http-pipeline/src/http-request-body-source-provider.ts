@@ -1,5 +1,5 @@
 import { Provider } from '@dandi/core'
-import { HttpRequestHeaders, HttpRequestBodySource, HttpRequestRawBody, HttpHeader } from '@dandi/http'
+import { HttpRequestHeadersAccessor, HttpRequestBodySource, HttpRequestRawBody, HttpHeader } from '@dandi/http'
 
 import { HttpBodyParser } from './body-parsing/http-body-parser'
 import { NoConfiguredParserError } from './body-parsing/no-configured-parser-error'
@@ -7,7 +7,7 @@ import { NoConfiguredParserError } from './body-parsing/no-configured-parser-err
 async function httpRequestBodySourceFactory(
   parser: HttpBodyParser,
   body: string | Buffer,
-  headers: HttpRequestHeaders,
+  headers: HttpRequestHeadersAccessor,
 ): Promise<string | object> {
   if (!parser) {
     throw new NoConfiguredParserError(headers.get(HttpHeader.contentType)?.contentType)
@@ -21,7 +21,7 @@ export const HttpRequestBodySourceProvider: Provider<string | object> = {
   deps: [
     HttpBodyParser,
     HttpRequestRawBody,
-    HttpRequestHeaders,
+    HttpRequestHeadersAccessor,
   ],
   async: true,
 }

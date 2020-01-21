@@ -70,7 +70,12 @@ export class CommandUtil {
           },
         ],
       })
-      await container.start(start)
+      try {
+        await container.start(start)
+      } catch (err) {
+        console.error(err)
+        process.exit(-1)
+      }
     }
   }
 

@@ -1,4 +1,4 @@
-import { MimeTypes } from '@dandi/http'
+import { MimeType } from '@dandi/http'
 
 import { BodyParser } from './body-parser-decorator'
 import { HttpBodyParserBase } from './http-body-parser-base'
@@ -12,7 +12,7 @@ export interface FormUrlencodedBodyResult {
  * keys to array values, but does not support any other complex object formatting, such as dot notation (foo.bar=value)
  * or indexed keys (foo[0]=bar or foo[]=bar). The resulting object will be a {@link FormUrlencodedBodyResult}.
  */
-@BodyParser(MimeTypes.applicationFormUrlencoded)
+@BodyParser(MimeType.applicationFormUrlencoded)
 export class FormUrlencodedBodyParser extends HttpBodyParserBase {
 
   constructor() {

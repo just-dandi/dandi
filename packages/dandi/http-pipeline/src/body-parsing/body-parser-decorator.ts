@@ -1,7 +1,7 @@
 import { Constructor, getMetadata } from '@dandi/common'
 import { ClassProvider, InjectionToken, Injector, Provider, RegistrationSource } from '@dandi/core'
 import { Repository } from '@dandi/core/internal'
-import { MimeTypeInfo, MimeTypes, parseMimeTypes } from '@dandi/http'
+import { MimeTypeInfo, MimeType, parseMimeTypes } from '@dandi/http'
 
 import { localOpinionatedToken } from '../local-token'
 import { globalSymbol } from '../global.symbol'
@@ -53,6 +53,6 @@ export function bodyParserDecorator<T extends HttpBodyParser>(acceptTypes: strin
   Repository.for(BodyParser).register(BODY_PARSER_REGISTRATION_SOURCE, target)
 }
 
-export function BodyParser(...contentTypes: MimeTypes[]): ClassDecorator {
+export function BodyParser(...contentTypes: MimeType[]): ClassDecorator {
   return bodyParserDecorator.bind(null, contentTypes)
 }

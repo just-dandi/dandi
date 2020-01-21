@@ -5,9 +5,10 @@ import {
   HttpHeader,
   HttpHeaders,
   HttpRequest,
-  HttpRequestHeaders,
+  HttpRequestHeader,
+  HttpRequestHeadersAccessor,
   HttpRequestHeadersHashAccessor,
-  MimeTypes,
+  MimeType,
 } from '@dandi/http'
 import {
   BodyParserInfoProvider,
@@ -68,7 +69,7 @@ describe('FormMultipartBodyParser', () => {
   )
 
   let headersSource: HttpHeaders
-  let headers: HttpRequestHeaders
+  let headers: HttpRequestHeadersAccessor
   let req: HttpRequest
   let requestInjector: TestInjector
   let body: string
@@ -76,11 +77,11 @@ describe('FormMultipartBodyParser', () => {
 
   beforeEach(async () => {
     headersSource = {
-      [HttpHeader.contentType]: { contentType: MimeTypes.multipartFormData, boundary: BOUNDARY },
+      [HttpHeader.contentType]: { contentType: MimeType.multipartFormData, boundary: BOUNDARY },
     }
-    headers = new HttpRequestHeadersHashAccessor(headersSource)
+    headers = HttpRequestHeadersHashAccessor.fromParsed(headersSource)
     req = {
-      get: (name: HttpHeader) => headers.get(name),
+      get: (name: HttpRequestHeader) => headers.get(name),
     } as HttpRequest
     requestInjector = harness.createChild(createHttpRequestScope(req))
     parser = await requestInjector.inject(FormMultipartBodyParser)
@@ -131,7 +132,7 @@ describe('FormMultipartBodyParser', () => {
       const jsonPart = {
         name: 'bleep',
         content: JSON.stringify({ bloop: 'blarp' }),
-        headers: { [HttpHeader.contentType]: MimeTypes.applicationJson },
+        headers: { [HttpHeader.contentType]: MimeType.applicationJson },
       }
       body = makeBody(
         { name: 'foo', content: 'bar' },
@@ -146,7 +147,7 @@ describe('FormMultipartBodyParser', () => {
     it('throws a FormMultipartMissingBoundaryError if the content-type header is missing the "boundary" directive', async () => {
       stub(headers, 'get')
         .withArgs(HttpHeader.contentType)
-        .returns({ contentType: MimeTypes.multipartFormData })
+        .returns({ contentType: MimeType.multipartFormData })
       body = makeBody({ name: 'foo', content: 'bar' })
 
       await expect(parser.parseBody(body, headers)).to.be.rejectedWith(FormMultipartMissingBoundaryError)

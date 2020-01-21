@@ -1,5 +1,5 @@
 import { Logger, NoopLogger } from '@dandi/core'
-import { HttpMethod, HttpRequest, HttpResponse, HttpStatusCode, MimeTypes } from '@dandi/http'
+import { HttpHeader, HttpMethod, HttpRequest, HttpResponse, HttpStatusCode, MimeType } from '@dandi/http'
 import { HttpPipelineRendererResult, HttpResponsePipelineTerminator } from '@dandi/http-pipeline'
 import { httpResponseFixture } from '@dandi/http/testing'
 
@@ -22,7 +22,7 @@ describe('HttpResponsePipelineTerminator', () => {
     logger = new NoopLogger()
     classUnderTest = new HttpResponsePipelineTerminator(request, response, logger)
     renderResult = {
-      contentType: MimeTypes.textPlain,
+      contentType: MimeType.textPlain,
       headers: {},
       renderedBody: 'foo',
     }
@@ -36,10 +36,10 @@ describe('HttpResponsePipelineTerminator', () => {
   })
 
   describe('terminateResponse', () => {
-    it('does not set a status code if none is specified', async () => {
+    it('sets a default code of 200 OK if no status code is specified', async () => {
       await classUnderTest.terminateResponse(renderResult)
 
-      expect(response.status).not.to.have.been.called
+      expect(response.status).to.have.been.calledWith(HttpStatusCode.ok)
     })
 
     it('sets a status code if one is specified', async () => {
@@ -49,10 +49,10 @@ describe('HttpResponsePipelineTerminator', () => {
       expect(response.status).to.have.been.calledWithExactly(HttpStatusCode.ok)
     })
 
-    it('does not set headers if none are specified', async () => {
+    it('does not set additional headers if none are specified', async () => {
       await classUnderTest.terminateResponse(renderResult)
 
-      expect(response.setHeader).not.to.have.been.called
+      expect(response.header).to.have.been.calledOnceWithExactly(HttpHeader.contentType, MimeType.textPlain)
     })
 
     it('sets headers if any are specified', async () => {
@@ -62,10 +62,11 @@ describe('HttpResponsePipelineTerminator', () => {
       }
       await classUnderTest.terminateResponse(renderResult)
 
-      expect(response.setHeader).to.have.been
-        .calledTwice
+      expect(response.header).to.have.been
+        .calledThrice
         .calledWithExactly('WWW-Authenticate', 'Bearer')
         .calledWithExactly('X-Served-By', 'Joe Llama')
+        .calledWithExactly(HttpHeader.contentType, MimeType.textPlain)
     })
   })
 
