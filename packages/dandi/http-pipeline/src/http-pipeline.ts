@@ -10,12 +10,13 @@ import {
 } from '@dandi/core'
 import { HttpRequest, HttpRequestAcceptTypes, HttpStatusCode, MimeType } from '@dandi/http'
 
+import { CorsAllowRequest } from './cors/cors-allow-request'
 import { HttpPipelineConfig } from './http-pipeline-config'
 import { HttpPipelineErrorResult } from './http-pipeline-error-result'
 import { HttpPipelineErrorResultHandler } from './http-pipeline-error-result-handler'
 import { HttpPipelineHandlerResult } from './http-pipeline-handler-result'
 import { HttpPipelineRenderer, HttpPipelineRendererResult } from './rendering/http-pipeline-renderer'
-import { HttpPipelineResult, isHttpPipelineResult } from './http-pipeline-result'
+import { HttpPipelineResult, HttpPipelineVoidResult, isHttpPipelineResult } from './http-pipeline-result'
 import { HttpPipelineResultTransformer } from './http-pipeline-result-transformer'
 import { HttpPipelineTerminator } from './http-pipeline-terminator'
 import { HttpRequestHandler, HttpRequestHandlerMethod } from './http-request-handler'
@@ -46,9 +47,19 @@ export class HttpPipeline {
 
     const preparedProviders = await this.invokeStep(injector, this.prepare, requestInfo)
 
-    preparedProviders.push(
-      await this.safeInvokeStepAsProvider(injector, this.invokeHandler, requestInfo, preparedProviders, errorHandlers, HttpPipelineHandlerResult),
-    )
+    const allowRequest = await this.invokeStep(injector, this.checkCors, requestInfo, preparedProviders)
+
+    if (allowRequest === true) {
+      preparedProviders.push(
+        await this.safeInvokeStepAsProvider(injector, this.invokeHandler, requestInfo, preparedProviders, errorHandlers, HttpPipelineHandlerResult),
+      )
+    } else {
+      preparedProviders.push({
+        provide: HttpPipelineResult,
+        useValue: allowRequest,
+      })
+    }
+
     preparedProviders.push(
       await this.safeInvokeStepAsProvider(injector, this.transformResult, requestInfo, preparedProviders, errorHandlers, HttpPipelineResult),
     )
@@ -127,6 +138,17 @@ export class HttpPipeline {
       providers.push(...preparerResult)
     }
     return providers
+  }
+
+  private checkCors(
+    @Inject(CorsAllowRequest) allowRequest: boolean,
+  ): true | HttpPipelineVoidResult {
+    if (allowRequest) {
+      return true
+    }
+    return {
+      void: true,
+    }
   }
 
   private async invokeHandler(

@@ -8,8 +8,8 @@ import { localOpinionatedToken } from './local-token'
 //        does that belong here or only in MVC? provide an abstraction to allow filtering?
 //        use controller decorators for path-specific before/after?
 export interface HttpPipelineConfig {
-  before: Constructor<HttpPipelinePreparer>[]
-  after: Constructor<HttpPipelineResultTransformer>[]
+  before?: Constructor<HttpPipelinePreparer>[]
+  after?: Constructor<HttpPipelineResultTransformer>[]
 }
 
 export const HttpPipelineConfig = localOpinionatedToken<HttpPipelineConfig>('HttpPipelineConfig', {
