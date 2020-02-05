@@ -6,11 +6,12 @@ import {
   Injectable,
   InjectionScope,
   Injector,
+  OpinionatedToken,
   RestrictScope,
   ScopeBehavior,
   SymbolToken,
 } from '@dandi/core'
-import { AppInjectionScope, RootInjectionScope } from '@dandi/core/internal'
+import { RootInjectionScope } from '@dandi/core/internal'
 import { testHarness, testHarnessSingle } from '@dandi/core/testing'
 
 import { expect } from 'chai'
@@ -451,6 +452,64 @@ describe('DI Integration', function() {
     }
 
     harness.register(TestJobProcessor)
+
+  })
+
+  it('uses the correct provider when tokens are overridden using value providers', async () => {
+
+    const token = SymbolToken.for('test-override')
+
+    harness.register({
+      provide: token,
+      useValue: 1,
+    })
+
+    const child = harness.createChild('test', {
+      provide: token,
+      useValue: 2,
+    })
+
+    expect(await harness.inject(token)).to.equal(1)
+    expect(await child.inject(token)).to.equal(2)
+
+  })
+
+  it('uses the correct provider when tokens are overridden using factory providers', async () => {
+
+    const token = SymbolToken.for('test-override')
+
+    harness.register({
+      provide: token,
+      useFactory: () => 1,
+    })
+
+    const child = harness.createChild('test', {
+      provide: token,
+      useFactory: () => 2,
+    })
+
+    expect(await harness.inject(token)).to.equal(1)
+    expect(await child.inject(token)).to.equal(2)
+
+  })
+
+  it('uses the correct provider when scope restricted tokens are overridden using factory providers', async () => {
+
+    const token = new OpinionatedToken('test-override', {
+      restrictScope: 'test',
+    })
+
+    harness.register({
+      provide: token,
+      useFactory: () => 1,
+    })
+
+    const child = harness.createChild('test', {
+      provide: token,
+      useFactory: () => 2,
+    })
+
+    expect(await child.inject(token)).to.equal(2)
 
   })
 })
