@@ -13,6 +13,14 @@ const directiveHeaders: HttpHeader[] = [
   HttpHeader.contentType,
 ]
 
+function commaSeparatedToken<T extends string>(rawValue: string): T[] {
+  return rawValue.split(/\s*,\s*/) as T[]
+}
+
+function commaSeparatedTokenToLower<T extends string>(rawValue: string): T[] {
+  return commaSeparatedToken<T>(rawValue).map(token => token.toLocaleLowerCase()) as T[]
+}
+
 const headerParsers: HeaderParsers = {
 
   /*
@@ -38,6 +46,7 @@ const headerParsers: HeaderParsers = {
    */
 
   [HttpHeader.accept]: (rawValue: string) => parseMimeTypes(rawValue),
+  [HttpHeader.accessControlRequestHeaders]: commaSeparatedTokenToLower,
   [HttpHeader.dnt]: (rawValue: string) => Number(rawValue) === 1,
 }
 
