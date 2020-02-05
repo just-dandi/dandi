@@ -1,6 +1,7 @@
 import { MimeType } from '@dandi/http'
 
-import { HttpPipelineResult } from '../http-pipeline-result'
+import { HttpPipelineDataResult, isHttpPipelineDataResult } from '../http-pipeline-result'
+
 import { HttpPipelineRendererBase } from './http-pipeline-renderer-base'
 import { Renderer } from './renderer-decorator'
 
@@ -13,8 +14,11 @@ export class PlainTextObjectRenderer extends HttpPipelineRendererBase {
     super()
   }
 
-  protected renderPipelineResult(contentType: string, pipelineResult: HttpPipelineResult): string | Promise<string> {
-    return (pipelineResult.data === undefined || pipelineResult.data === null) ? '' : pipelineResult.data.toString()
+  protected renderPipelineResult(contentType: string, pipelineResult: HttpPipelineDataResult): string | Promise<string> {
+    if (isHttpPipelineDataResult(pipelineResult)) {
+      return pipelineResult.data.toString()
+    }
+    return ''
   }
 
 }

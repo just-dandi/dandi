@@ -1,6 +1,6 @@
-import { HttpPipelineResult, isHttpPipelineResult } from './http-pipeline-result'
+import { HttpPipelineDataResult, isHttpPipelineResult } from './http-pipeline-result'
 
-export interface HttpPipelineErrorResult extends HttpPipelineResult {
+export interface HttpPipelineErrorResult extends HttpPipelineDataResult {
   readonly errors: Error[]
 }
 
