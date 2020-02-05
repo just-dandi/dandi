@@ -1,5 +1,5 @@
 import { Inject } from '@dandi/core'
-import { HttpRequestQueryParamMap, ParamMap } from '@dandi/http'
+import { HttpRequest, HttpRequestQueryParamMap, ParamMap } from '@dandi/http'
 import { QueryParam } from '@dandi/http-model'
 import { Controller, HttpGet } from '@dandi/mvc'
 import { View, ViewResult, ViewResultFactory } from '@dandi/mvc-view'
@@ -42,5 +42,27 @@ export class ViewController {
   @View()
   public dynamic(@QueryParam(String) mode: string): Promise<ViewResult> {
     return this.view(mode === 'b' ? 'dynamic-b' : 'dynamic-a', { data: { mode } })
+  }
+
+  /** helper route for testing CORS
+   *
+   */
+  @HttpGet('cors')
+  @View('cors.pug')
+  public cors(
+    @QueryParam(String) restApiHost: string,
+    @QueryParam(String) awsHost: string,
+    @Inject(HttpRequest) req: HttpRequest,
+  ): { restApiHost: string, restApiPort: number, awsHost: string, search: string, appendSearch: string } {
+    const [, restApiPort] = req.get('host').split(':')
+    const search = [...Object.entries(req.query)].reduce((result, [key, value]) => {
+      if (result) {
+        result += '&'
+      }
+      result += `${key}=${value.toString()}`
+      return result
+    }, '')
+    const appendSearch = search ? '&' : ''
+    return { restApiHost, restApiPort, awsHost, search, appendSearch }
   }
 }
