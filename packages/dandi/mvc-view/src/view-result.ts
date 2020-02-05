@@ -1,9 +1,9 @@
-import { HttpPipelineResult } from '@dandi/http-pipeline'
+import { HttpPipelineDataResult } from '@dandi/http-pipeline'
 
 import { ViewEngine } from './view-engine'
 import { ViewMetadata } from './view-metadata'
 
-export class ViewResult implements HttpPipelineResult {
+export class ViewResult implements HttpPipelineDataResult {
 
   private _value: string | Promise<string>
   public get value(): string | Promise<string> {
