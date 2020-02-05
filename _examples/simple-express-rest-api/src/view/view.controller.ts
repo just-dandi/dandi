@@ -1,8 +1,9 @@
 import { Inject } from '@dandi/core'
-import { HttpRequest, HttpRequestQueryParamMap, ParamMap } from '@dandi/http'
+import { HttpRequest, HttpRequestQueryParamMap, ParamMap, HttpHeader } from '@dandi/http'
 import { QueryParam } from '@dandi/http-model'
 import { Controller, HttpGet } from '@dandi/mvc'
 import { View, ViewResult, ViewResultFactory } from '@dandi/mvc-view'
+import { RequestHeader } from '@dandi/http-model/src/request-header.decorator'
 
 @Controller('view')
 export class ViewController {
@@ -52,9 +53,10 @@ export class ViewController {
   public cors(
     @QueryParam(String) restApiHost: string,
     @QueryParam(String) awsHost: string,
+    @RequestHeader(HttpHeader.host) host: string,
     @Inject(HttpRequest) req: HttpRequest,
-  ): { restApiHost: string, restApiPort: number, awsHost: string, search: string, appendSearch: string } {
-    const [, restApiPort] = req.get('host').split(':')
+  ): { restApiHost: string, restApiPort: string, awsHost: string, search: string, appendSearch: string } {
+    const [, restApiPort] = host.split(':')
     const search = [...Object.entries(req.query)].reduce((result, [key, value]) => {
       if (result) {
         result += '&'
