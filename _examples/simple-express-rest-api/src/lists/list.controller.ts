@@ -1,7 +1,7 @@
 import { Uuid } from '@dandi/common'
 import { Inject } from '@dandi/core'
 import { PathParam, RequestBody } from '@dandi/http-model'
-import { Controller, HttpGet, HttpPost } from '@dandi/mvc'
+import { Controller, Cors, HttpGet, HttpPost, HttpPut } from '@dandi/mvc'
 import { AccessorResourceId, ResourceAccessor, ResourceListAccessor } from '@dandi/mvc-hal'
 
 import { Task, TaskRequest } from '../tasks/task'
@@ -11,6 +11,7 @@ import { ListManager } from './list.manager'
 import { ListResource } from './list.resource'
 
 @Controller('/list')
+@Cors()
 export class ListController {
   constructor(@Inject(ListManager) private listManager: ListManager) {}
 
@@ -22,6 +23,14 @@ export class ListController {
 
   @HttpPost()
   public async addList(@RequestBody(ListRequest) listRequest): Promise<ListResource> {
+    return new ListResource(await this.listManager.addList(listRequest))
+  }
+
+  @HttpPut()
+  @Cors({
+    allowOrigin: ['this-should-never-get accessed-via-cors'],
+  })
+  public async putList(@RequestBody(ListRequest) listRequest): Promise<ListResource> {
     return new ListResource(await this.listManager.addList(listRequest))
   }
 

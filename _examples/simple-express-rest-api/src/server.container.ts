@@ -1,6 +1,6 @@
 import { HyperviewViewRenderer } from '@dandi-contrib/mvc-view-hyperview'
 import { CascadingCache, MemoryCache, ServiceContextCacheKeyGenerator } from '@dandi/cache'
-import { DandiApplication } from '@dandi/core'
+import { AmbientInjectableScanner, DandiApplication } from '@dandi/core'
 import { ConsoleLogListener, LoggingModule } from '@dandi/core/logging'
 import { HttpPipelineModule } from '@dandi/http-pipeline'
 import { ModelBuilderModule } from '@dandi/model-builder'
@@ -22,11 +22,19 @@ const DEFAULT_SERVER_PORT = 8085
 
 export const server = new DandiApplication({
   providers: [
+    AmbientInjectableScanner,
+
     // DI
     LoggingModule.use(ConsoleLogListener),
 
     // MVC
-    HttpPipelineModule,
+    HttpPipelineModule
+      .cors({
+        allowOrigin: [
+          /localhost:\d{2,5}/,
+          /127\.0\.0\1:\d{2,5}/,
+        ],
+      }),
     MvcExpressModule.config({ port: parseInt(process.env.PORT, 10) || DEFAULT_SERVER_PORT }),
     MvcViewModule
       .engine('pug', PugViewEngine.config({ cache: false }))

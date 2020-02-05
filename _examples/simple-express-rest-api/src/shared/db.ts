@@ -1,6 +1,8 @@
 import { Injectable } from '@dandi/core'
 
-const FAKE_LATENCY = 50
+// don't add latency when doing profiling
+// eslint-disable-next-line no-magic-numbers
+const FAKE_LATENCY = process.execArgv.includes('--prof') ? 0 : 50
 
 function delayedDo(fn: () => any): Promise<any> {
   return new Promise<any>((resolve) => {
