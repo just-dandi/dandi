@@ -5,7 +5,7 @@ import {
   Authorized,
   Controller,
   Cors,
-  DecoratorRouteGenerator,
+  DandiRouteGenerator,
   HttpDelete,
   HttpGet,
   HttpPost,
@@ -47,10 +47,10 @@ describe('DecoratorRouteGenerator', function() {
     public testMethod(): void {}
   }
 
-  const harness = stubHarness(DecoratorRouteGenerator)
+  const harness = stubHarness(DandiRouteGenerator)
 
   beforeEach(async function() {
-    this.generator = await harness.inject(DecoratorRouteGenerator)
+    this.generator = await harness.inject(DandiRouteGenerator)
     this.repository = Repository.for(Controller)
 
     this.findRoute = (path, httpMethod): Route => {

@@ -1,5 +1,6 @@
 import { ClassProvider, Inject, Injectable, Logger, Optional } from '@dandi/core'
 import { Repository } from '@dandi/core/internal'
+import { HttpMethod } from '@dandi/http'
 
 import { mergeAuthorization } from './authorization-metadata'
 import { Controller } from './controller-decorator'
@@ -8,9 +9,10 @@ import { getCorsConfig } from './cors.decorator'
 import { Route } from './route'
 import { RouteGenerator } from './route-generator'
 import { RouteTransformer } from './route-transformer'
+import { RouteGeneratorError } from './route-generator.error'
 
 @Injectable(RouteGenerator)
-export class DecoratorRouteGenerator implements RouteGenerator {
+export class DandiRouteGenerator implements RouteGenerator {
   constructor(
     @Inject(Logger) private logger: Logger,
     @Inject(RouteTransformer) @Optional() private readonly routeTransformers?: RouteTransformer[],
@@ -24,6 +26,7 @@ export class DecoratorRouteGenerator implements RouteGenerator {
     this.logger.debug('generating routes...')
 
     const routes: Route[] = []
+    const routesByPath = new Map<string, Map<HttpMethod, Route>>()
 
     for (const controllerEntry of Repository.for(Controller).providers) {
       const controllerProvider = controllerEntry as ClassProvider<any>
@@ -41,6 +44,11 @@ export class DecoratorRouteGenerator implements RouteGenerator {
 
         for (const [methodPath, httpMethods] of controllerMethodMetadata.routePaths.entries()) {
           const path = this.normalizePath(meta.path, methodPath)
+          let pathRoutes = routesByPath.get(path)
+          if (!pathRoutes) {
+            pathRoutes = new Map<HttpMethod, Route>()
+            routesByPath.set(path, pathRoutes)
+          }
 
           httpMethods.forEach((httpMethod) => {
             this.logger.debug(
@@ -49,11 +57,21 @@ export class DecoratorRouteGenerator implements RouteGenerator {
               path,
             )
 
+            if (pathRoutes.has(httpMethod)) {
+              const existing = pathRoutes.get(httpMethod)
+              const locA = `${existing.controllerCtr.name}.${existing.controllerMethod.toString()}`
+              const locB = `${controllerCtr.name}.${controllerMethod.toString()}`
+              throw new RouteGeneratorError(
+                `The path ${path} has conflicting routes configured in ${locA} and ${locB}`,
+              )
+            }
+
             const route = (this.routeTransformers || []).reduce(
               (route, tranformer) => tranformer.transform(route, meta, controllerMethodMetadata),
               {
                 httpMethod,
                 siblingMethods: httpMethods,
+                siblingRoutes: routesByPath.get(path),
                 path,
                 cors,
                 controllerCtr,
@@ -62,6 +80,7 @@ export class DecoratorRouteGenerator implements RouteGenerator {
               },
             )
 
+            pathRoutes.set(httpMethod, route)
             routes.push(route)
           })
         }
@@ -76,7 +95,7 @@ export class DecoratorRouteGenerator implements RouteGenerator {
     if (!a.startsWith('/')) {
       result = `/${a}`
     }
-    if (!a.endsWith('/')) {
+    if (!a.endsWith('/') && b) {
       result += '/'
     }
     result += b.startsWith('/') ? b.substring(1) : b
