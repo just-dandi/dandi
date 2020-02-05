@@ -4,7 +4,7 @@ import { Inject, Provider, SymbolToken } from '@dandi/core'
 import { stubHarness, stub } from '@dandi/core/testing'
 import { HttpMethod, HttpRequest, HttpResponse, HttpStatusCode } from '@dandi/http'
 import { HttpPipeline, HttpRequestInfo } from '@dandi/http-pipeline'
-import { AuthorizationCondition, DefaultRouteExecutor, Route, RouteInitializer } from '@dandi/mvc'
+import { AuthorizationCondition, DandiRouteExecutor, Route, RouteInitializer } from '@dandi/mvc'
 
 import { expect } from 'chai'
 import { SinonStubbedInstance } from 'sinon'
@@ -23,7 +23,7 @@ describe('DefaultRouteExecutor', () => {
     }
   }
 
-  const harness = stubHarness(DefaultRouteExecutor,
+  const harness = stubHarness(DandiRouteExecutor,
     {
       provide: Route,
       useFactory: () => route,
@@ -56,7 +56,7 @@ describe('DefaultRouteExecutor', () => {
   )
 
   let providers: Provider<any>[]
-  let routeExec: DefaultRouteExecutor
+  let routeExec: DandiRouteExecutor
   let routeInit: SinonStubbedInstance<RouteInitializer>
   let route: Route
   let req: HttpRequest
@@ -98,7 +98,7 @@ describe('DefaultRouteExecutor', () => {
       status: stub().returnsThis(),
       end: stub().returnsThis(),
     } as any
-    routeExec = await harness.inject(DefaultRouteExecutor)
+    routeExec = await harness.inject(DandiRouteExecutor)
   })
   afterEach(() => {
     providers = undefined

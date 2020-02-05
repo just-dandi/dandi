@@ -1,4 +1,4 @@
-import { CorsConfig } from './cors-config'
+import { CorsConfig } from '@dandi/http-pipeline'
 
 export interface MvcMetadata {
   path?: string;

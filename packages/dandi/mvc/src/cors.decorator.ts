@@ -1,5 +1,6 @@
+import { CorsConfig } from '@dandi/http-pipeline'
+
 import { getControllerMetadata } from './controller-metadata'
-import { CorsConfig } from './cors-config'
 import { methodDecorator } from './http-method-decorator'
 
 export type CorsDecorator = (config: CorsConfig | true) => ClassDecorator | MethodDecorator
