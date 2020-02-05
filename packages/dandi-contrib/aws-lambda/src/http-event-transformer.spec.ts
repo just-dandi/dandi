@@ -24,7 +24,7 @@ describe('HttpEventTransformer', () => {
     body = { foo: 'bar' }
     event = {
       body: JSON.stringify(body),
-      headers: 'headers',
+      headers: {},
       httpMethod: 'get',
       path: 'path',
       pathParameters: {},
