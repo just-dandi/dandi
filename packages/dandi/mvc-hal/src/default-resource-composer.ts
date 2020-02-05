@@ -17,7 +17,7 @@ import {
   getResourceMetadata,
 } from '@dandi/hal'
 import { HttpMethod, HttpRequest, HttpRequestScope, HttpResponse } from '@dandi/http'
-import { isHttpPipelineResult, HttpRequestInfo } from '@dandi/http-pipeline'
+import { HttpRequestInfo, isHttpPipelineDataResult } from '@dandi/http-pipeline'
 import {
   ControllerMethodMetadata,
   RequestController,
@@ -257,7 +257,7 @@ export class DefaultResourceComposer implements ResourceComposer {
     @Inject(CompositionContext) compositionContext: CompositionContext,
   ): Promise<ComposedResource<any> | ComposedResource<any>[]> {
     const result = await injector.invoke(controller, route.controllerMethod as string)
-    const resultResource: any = isHttpPipelineResult(result) ? result.data : result
+    const resultResource: any = isHttpPipelineDataResult(result) ? result.data : result
     if (Array.isArray(resultResource)) {
       return Promise.all(
         resultResource.map((resource) =>
