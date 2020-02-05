@@ -1,5 +1,5 @@
 import { Provider } from '@dandi/core'
-import { AuthorizationCondition, IsAuthorized, getControllerMetadata } from '@dandi/mvc'
+import { AuthorizationCondition, IsAuthorized, getControllerMetadata, Controller, HttpGet } from '@dandi/mvc'
 
 import { expect } from 'chai'
 
@@ -18,13 +18,16 @@ const TestConditionB: Provider<AuthorizationCondition> = {
   },
 }
 
-@Authorized(TestConditionA)
-class TestController {
-  @Authorized(TestConditionB)
-  public testMethod(): void {}
-}
-
 describe('AuthorizedDecorator', () => {
+
+  @Authorized(TestConditionA)
+  @Controller('/authorized-test')
+  class TestController {
+    @Authorized(TestConditionB)
+    @HttpGet()
+    public testMethod(): void {}
+  }
+
   describe('controllers', () => {
     it('it stores the specified conditions in the controller metadata', () => {
       expect(getControllerMetadata(TestController).authorization).to.include(TestConditionA)

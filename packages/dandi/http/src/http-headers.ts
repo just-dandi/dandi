@@ -8,6 +8,7 @@ export interface HttpHeadersRaw {
 }
 
 export type HttpHeaderWildcard = '*'
+export const HttpHeaderWildcard: HttpHeaderWildcard = '*'
 
 export enum ContentDisposition {
   attachment = 'attachment',
@@ -56,12 +57,15 @@ export interface HttpHeaders {
   [HttpHeader.acceptLanguage]?: string
   [HttpHeader.acceptRanges]?: HttpAcceptRanges
   [HttpHeader.accessControlAllowCredentials]?: true
+  // [HttpHeader.accessControlAllowHeaders]?: string | string[]
   [HttpHeader.accessControlAllowHeaders]?: string
-  [HttpHeader.accessControlAllowMethods]?: HttpMethod[]
+  // TODO: add stringification for strongly typed response headers
+  // [HttpHeader.accessControlAllowMethods]?: HttpMethod[]
+  [HttpHeader.accessControlAllowMethods]?: string
   [HttpHeader.accessControlAllowOrigin]?: HttpHeaderWildcard | string
-  [HttpHeader.accessControlExposeHeaders]?: string
-  [HttpHeader.accessControlMaxAge]?: string
-  [HttpHeader.accessControlRequestHeaders]?: string
+  [HttpHeader.accessControlExposeHeaders]?: string | string[]
+  [HttpHeader.accessControlMaxAge]?: number
+  [HttpHeader.accessControlRequestHeaders]?: HttpHeader[],
   [HttpHeader.accessControlRequestMethod]?: Omit<HttpMethod, HttpMethod.options>
   [HttpHeader.age]?: number
   [HttpHeader.allow]?: string[]
@@ -77,7 +81,7 @@ export interface HttpHeaders {
   [HttpHeader.contentRange]?: string
   [HttpHeader.contentSecurityPolicy]?: string
   [HttpHeader.contentSecurityPolicyReportOnly]?: string
-  [HttpHeader.contentType]?: HttpContentType
+  [HttpHeader.contentType]?: HttpContentType | MimeType
   [HttpHeader.cookie]?: string
   [HttpHeader.crossOriginEmbedderPolicy]?: string
   [HttpHeader.crossOriginOpenerPolicy]?: string
@@ -162,7 +166,9 @@ export type HttpRequestHeaders = Pick<HttpHeaders,
   HttpHeader.upgradeInsecureRequests |
   HttpHeader.userAgent |
   HttpHeader.warning
->
+> & {
+  [HttpHeader.contentType]?: HttpContentType
+}
 export type HttpRequestHeader = keyof HttpRequestHeaders
 
 export type HttpResponseHeaders = Pick<HttpHeaders,
@@ -214,6 +220,8 @@ export type HttpResponseHeaders = Pick<HttpHeaders,
   HttpHeader.xPermittedCrossDomainPolicies |
   HttpHeader.xPoweredBy |
   HttpHeader.xXssProtection
->
+> & {
+  [HttpHeader.contentType]?: MimeType
+}
 
 export type HttpResponseHeader = keyof HttpResponseHeaders

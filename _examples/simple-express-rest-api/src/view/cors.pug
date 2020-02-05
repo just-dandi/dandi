@@ -1,0 +1,65 @@
+doctype html
+html
+  head
+    title Dandi CORS Testing
+    script.
+      window.harness = (function testCorsRequests() {
+        function makeRequest(uri, method, body) {
+          var r = new XMLHttpRequest()
+          r.open(method, uri)
+          r.addEventListener('load', function onLoad() {
+            console.log('onLoad', r.responseText)
+          })
+          r.addEventListener('error', function onError(e) {
+            console.error('onError', e)
+          })
+          if (body) {
+            r.setRequestHeader('Content-Type', 'application/json')
+            r.send(JSON.stringify(body))
+          } else {
+            r.send()
+          }
+        }
+
+        var makeRestCorsRequest = makeRequest.bind(undefined, '//#{restApiHost}/list')
+        function makeAwsCorsRequest(path, method, body) {
+          makeRequest('//#{awsHost}/' + path, method, body)
+        }
+
+        return {
+          rest: {
+            get: makeRestCorsRequest.bind(undefined, 'GET'),
+            post: makeRestCorsRequest.bind(undefined, 'POST', { title: 'test' }),
+            put: makeRestCorsRequest.bind(undefined, 'PUT', { title: 'test' })
+          },
+          aws: {
+            get: makeAwsCorsRequest.bind(undefined, 'hello-world', 'GET'),
+            post: makeAwsCorsRequest.bind(undefined, 'receive-data', 'POST', { requestId: Math.random().toString(), message: 'Hi!' }),
+          }
+        }
+      })()
+
+  body
+
+    h1 Dandi CORS Testing
+    p Use this page to test CORS requests.
+    ul
+      li Specify the target REST API host using the #[code restApiHost] query param.
+      li Specify the target AWS Lambda host using the #[code awsHost] query param.
+
+    if restApiHost
+      h2 Dandi REST
+      button(onclick='harness.rest.get()') GET
+      button(onclick='harness.rest.post()') POST
+      button(onclick='harness.rest.put()') PUT (should fail)
+    else
+      h2 Missing #[code restApiHost] query param
+      p Try #[a(href="?" + search + appendSearch + "restApiHost=127.0.0.1" + (restApiPort ? ":" + restApiPort : "")) this]
+
+    if awsHost
+      h2 Dandi AWS Lambda
+      button(onclick='harness.aws.get()') GET
+      button(onclick='harness.aws.post()') POST
+    else
+      h2 Missing #[code awsHost] query param
+      p Try #[a(href="?" + search + appendSearch + "awsHost=localhost:3000") this]

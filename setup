@@ -1,0 +1,30 @@
+#!/bin/bash
+
+TEXT_RESET="tput sgr0"
+TEXT_BOLD="tput bold"
+COLOR_MAGENTA="tput setaf 5"
+
+log() {
+  log_msg=$1
+  printf "%b\n" "$($TEXT_BOLD)$($COLOR_MAGENTA)[@dandi setup]$($TEXT_RESET) ${log_msg}"
+}
+
+exit_on_error() {
+  err_msg=$1
+  log "Error: ${err_msg}"
+  exit 1
+}
+
+safe_run() {
+  cmd=$1
+  log_msg=$2
+  log "${log_msg}"
+  eval "$cmd" 2>&1 || exit_on_error "${err_msg}"
+  log "Done.\n"
+}
+
+safe_run yarn "Installing project dependencies..."
+safe_run "cd builder && yarn" "Installing builder dependencies..."
+safe_run "yarn link && cd .. && yarn link @dandi/builder" "Linking builder..."
+safe_run "yarn install-packages" "Installing @dandi package dependencies..."
+log Success!

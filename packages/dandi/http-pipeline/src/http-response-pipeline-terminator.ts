@@ -1,7 +1,15 @@
 import { Inject, Injectable, Logger, RestrictScope } from '@dandi/core'
-import { HttpHeader, HttpRequest, HttpRequestScope, HttpResponse, HttpStatusCode, MimeType } from '@dandi/http'
-import { HttpPipelineTerminator } from './http-pipeline-terminator'
+import {
+  HttpHeader,
+  HttpMethod,
+  HttpRequest,
+  HttpRequestScope,
+  HttpResponse,
+  HttpStatusCode,
+  MimeType,
+} from '@dandi/http'
 
+import { HttpPipelineTerminator } from './http-pipeline-terminator'
 import { HttpPipelineRendererResult } from './rendering/http-pipeline-renderer'
 
 /**
@@ -29,13 +37,17 @@ export class HttpResponsePipelineTerminator<TResponse = void> implements HttpPip
     }
     this.response
       .header(HttpHeader.contentType, renderResult.contentType || MimeType.textPlain)
-      .status(renderResult.statusCode || HttpStatusCode.ok)
+      .status(renderResult.statusCode || this.defaultStatusCode())
       .send(renderResult.renderedBody || '')
       .end()
 
     this.logger.debug(this.request.method, this.request.path, renderResult.statusCode || HttpStatusCode.ok)
 
     return
+  }
+
+  private defaultStatusCode(): HttpStatusCode {
+    return this.request.method === HttpMethod.post ? HttpStatusCode.created : HttpStatusCode.ok
   }
 
 }

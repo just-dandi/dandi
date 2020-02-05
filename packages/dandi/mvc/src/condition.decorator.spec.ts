@@ -1,7 +1,6 @@
 import { Uuid } from '@dandi/common'
 import { FactoryProvider } from '@dandi/core'
 import { testHarnessSingle } from '@dandi/core/testing'
-import { Injector } from '@dandi/core/types/src/injector'
 import { HttpRequestPathParamMap } from '@dandi/http'
 import { PathParam, requestParamToken } from '@dandi/http-model'
 import { ModelBuilderModule } from '@dandi/model-builder'
@@ -12,8 +11,8 @@ import {
   Authorized,
   CollectionResource,
   Controller,
-  DecoratorRouteGenerator,
-  DefaultRouteInitializer,
+  DandiRouteGenerator,
+  DandiRouteInitializer,
   getControllerMetadata,
   HttpGet,
   RouteGenerator,
@@ -30,7 +29,7 @@ xdescribe('ConditionDecorator', function() {
     useValue: ['foo', 'bar', 'hey'],
   }
 
-  @Controller('/')
+  @Controller('/condition-decorator-test')
   class TestController {
     @Authorized()
     @HttpGet('test')
@@ -76,20 +75,20 @@ xdescribe('ConditionDecorator', function() {
       authService,
       TestController,
       AuthorizationAuthProviderFactory,
-      DecoratorRouteGenerator,
-      DefaultRouteInitializer,
+      DandiRouteGenerator,
+      DandiRouteInitializer,
       ModelBuilderModule,
     )
 
     const generator = await harness.inject(RouteGenerator)
-    const injector = await harness.inject(Injector)
+    // const injector = await harness.inject(Injector)
     const routes = generator.generateRoutes()
 
     const initializer = await harness.inject(RouteInitializer)
 
-    const providers = await initializer.initRouteRequest(injector, routes[0], req, info, res)
+    const providers = await initializer.initRouteRequest(routes[0], req, info, res)
 
-    const conditions = await harness.injectMulti(AuthorizationCondition, false, ...providers)
+    const conditions = await harness.injectMulti(AuthorizationCondition, false)
     expect(conditions).to.exist
     expect(conditions).to.deep.equal([
       { allowed: true }, // first for IsAuthorized, included by default

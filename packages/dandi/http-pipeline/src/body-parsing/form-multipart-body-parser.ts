@@ -1,8 +1,8 @@
 import { Inject, Injectable, InjectionScope, Injector, Provider, RestrictScope, ScopeBehavior } from '@dandi/core'
 import {
   HttpHeader,
-  HttpHeaders,
   HttpRequestBodySource,
+  HttpRequestHeaders,
   HttpRequestHeadersAccessor,
   HttpRequestHeadersHashAccessor,
   HttpRequestRawBody,
@@ -17,7 +17,7 @@ import { HttpBodyParserBase } from './http-body-parser-base'
 
 interface PreppedPart {
   contentSource: string
-  headers: HttpHeaders,
+  headers: HttpRequestHeaders,
 }
 
 @BodyParser(MimeType.multipartFormData)

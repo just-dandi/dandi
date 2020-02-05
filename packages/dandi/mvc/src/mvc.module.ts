@@ -2,8 +2,9 @@ import { ModuleBuilder, Registerable } from '@dandi/core'
 import { HttpModule } from '@dandi/http'
 import { HttpPipelineModule } from '@dandi/http-pipeline'
 
-import { DefaultRouteExecutor } from './default-route-executor'
-import { DefaultRouteInitializer } from './default-route-initializer'
+import { DandiRouteGenerator } from './dandi-route-generator'
+import { DandiRouteExecutor } from './dandi-route-executor'
+import { DandiRouteInitializer } from './dandi-route-initializer'
 import { PKG } from './local.token'
 import { ROUTES_PROVIDER } from './routes'
 
@@ -17,6 +18,7 @@ export const MvcModule = new MvcModuleBuilder(
   HttpModule,
   HttpPipelineModule,
   ROUTES_PROVIDER,
-  DefaultRouteExecutor,
-  DefaultRouteInitializer,
+  DandiRouteGenerator,
+  DandiRouteExecutor,
+  DandiRouteInitializer,
 )

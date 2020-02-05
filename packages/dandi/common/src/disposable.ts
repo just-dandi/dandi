@@ -181,6 +181,8 @@ export class Disposable {
         })
       }
     }
-    return Object.freeze(target)
+    return target
+    // TODO - Object.freeze seems to have a bit of overhead, is it really necessary?
+    // return Object.freeze(target)
   }
 }

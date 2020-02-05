@@ -4,7 +4,7 @@
   "version": "1.0.0-alpha.50",
   "description": "",
   "scripts": {
-    "setup": "yarn && pushd builder && yarn && yarn link && popd && yarn link @dandi/builder && yarn install-packages",
+    "setup": "./setup",
     "install-packages": "builder yarn install",
     "publish-packages": "builder publish",
     "update-package-configs": "builder update-configs",

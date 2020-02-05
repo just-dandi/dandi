@@ -9,7 +9,9 @@ import { ReceiveDataHandler } from './src/receive-data.handler'
 
 const HANDLER_DEPS: any[] = [
   HttpModule,
-  HttpPipelineModule,
+  HttpPipelineModule.cors({
+    allowOrigin: 'localhost:8085',
+  }),
   ModelBuilderModule,
   AwsLambdaHttpModule,
 ]

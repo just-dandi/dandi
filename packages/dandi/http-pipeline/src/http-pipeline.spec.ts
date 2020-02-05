@@ -13,20 +13,23 @@ import {
 } from '@dandi/http'
 import { MissingParamError, PathParam } from '@dandi/http-model'
 import {
+  CorsAllowRequest,
   DefaultHttpPipelineErrorHandler,
   HttpPipeline,
   HttpPipelineConfig,
+  HttpPipelineDataResult,
   HttpPipelineErrorResultHandler,
+  HttpPipelinePreparer,
+  HttpPipelinePreparerResult,
+  HttpPipelineRenderer,
+  HttpPipelineResult,
   HttpPipelineResultTransformer,
   HttpPipelineTerminator,
   HttpRequestHandler,
   HttpRequestInfo,
-  HttpPipelinePreparer,
-  HttpPipelinePreparerResult,
-  HttpPipelineRenderer,
   HttpRequestHandlerMethod,
   HttpResponsePipelineTerminator,
-  NativeJsonObjectRenderer, HttpPipelineResult,
+  NativeJsonObjectRenderer,
 } from '@dandi/http-pipeline'
 import { ModelBuilderModule } from '@dandi/model-builder'
 
@@ -38,6 +41,10 @@ describe('HttpPipeline', () => {
   const harness = stubHarness(HttpPipeline,
     ModelBuilderModule,
     HttpRequestAcceptTypesProvider,
+    {
+      provide: CorsAllowRequest,
+      useValue: true,
+    },
     {
       provide: HttpRequest,
       useFactory: () => ({
@@ -337,7 +344,7 @@ describe('HttpPipeline', () => {
         passThroughTransformer = { transform: stub<[HttpPipelineResult], Promise<HttpPipelineResult>>().resolvesArg(0) }
         throwingTransformer = { transform: stub().rejects(new Error('Your llama is lloose!')) }
         identifyingTransformer = {
-          transform: stub<[HttpPipelineResult], Promise<HttpPipelineResult>>().callsFake(async (result) => {
+          transform: stub<[HttpPipelineDataResult], Promise<HttpPipelineResult>>().callsFake(async (result) => {
             result.data.testId = Math.random()
             return result
           }),

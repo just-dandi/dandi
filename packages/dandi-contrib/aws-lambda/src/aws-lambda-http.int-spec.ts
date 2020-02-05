@@ -98,7 +98,7 @@ describe('AWS Lambda Http Events', () => {
         headers: {
           [HttpHeader.contentType]: MimeType.applicationJson,
         },
-        statusCode: HttpStatusCode.ok,
+        statusCode: HttpStatusCode.created,
       })
     })
   })

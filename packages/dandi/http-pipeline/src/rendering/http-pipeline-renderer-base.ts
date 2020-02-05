@@ -25,7 +25,7 @@ export abstract class HttpPipelineRendererBase implements HttpPipelineRenderer {
     }
   }
 
-  protected abstract renderPipelineResult(contentType: string, value: any): string | Promise<string>
+  protected abstract renderPipelineResult(contentType: string, value: HttpPipelineResult): string | Promise<string>
 
   protected determineContentType(acceptTypes: MimeTypeInfo[]): string {
     const renderedType = acceptTypes.find(acceptType => !!this.renderableTypes.find(renderableType => mimeTypesAreCompatible(acceptType, renderableType)))

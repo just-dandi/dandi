@@ -1,16 +1,15 @@
-import { Controller, HttpGet, getCorsConfig } from '@dandi/mvc'
-import { expect } from 'chai'
+import { HttpHeader } from '@dandi/http'
+import { Controller, HttpGet, getCorsConfig, Cors, getControllerMetadata } from '@dandi/mvc'
 
-import { getControllerMetadata } from './controller-metadata'
-import { Cors } from './cors.decorator'
+import { expect } from 'chai'
 
 describe('@Cors', () => {
   describe('as a class decorator', () => {
     it('sets a cors config on the decorated class', () => {
-      @Controller('/')
+      @Controller('/cors-decorator-test')
       @Cors()
       class TestController {
-        @HttpGet()
+        @HttpGet('/class-decorator')
         public testMethod(): void {}
       }
 
@@ -21,9 +20,9 @@ describe('@Cors', () => {
 
   describe('as a method decorator', () => {
     it('sets a cors config on the decorated method', () => {
-      @Controller('/')
+      @Controller('/cors-decorator-test')
       class TestController {
-        @HttpGet()
+        @HttpGet('/method-decorator')
         @Cors()
         public testMethod(): void {}
       }
@@ -57,9 +56,13 @@ describe('getCorsConfig', () => {
   })
 
   it('merges the configs if both controller and method cors are truthy', () => {
-    expect(getCorsConfig({ allowedHeaders: ['bar'] }, { exposedHeaders: ['foo'] })).to.deep.equal({
-      allowedHeaders: ['bar'],
-      exposedHeaders: ['foo'],
+    const config = getCorsConfig(
+      { allowHeaders: [HttpHeader.contentType] },
+      { exposeHeaders: [HttpHeader.cacheControl] },
+    )
+    expect(config).to.deep.equal({
+      allowHeaders: [HttpHeader.contentType],
+      exposeHeaders: [HttpHeader.cacheControl],
     })
   })
 })
