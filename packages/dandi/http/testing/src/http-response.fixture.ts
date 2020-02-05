@@ -5,14 +5,10 @@ import { SinonStubbedInstance } from 'sinon'
 
 const PROPS: (keyof HttpResponse)[] = [
   'cookie',
-  'contentType',
   'end',
   'header',
-  'json',
   'redirect',
   'send',
-  'set',
-  'setHeader',
   'status',
 ]
 

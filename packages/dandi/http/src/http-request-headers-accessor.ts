@@ -1,7 +1,7 @@
 import { Injectable, Inject, ScopeBehavior } from '@dandi/core'
 
 import { HttpHeader } from './http-header'
-import { HttpHeaders, HttpHeadersRaw, HttpRequestHeader, HttpRequestHeaders } from './http-headers'
+import { HttpHeadersRaw, HttpRequestHeader, HttpRequestHeaders } from './http-headers'
 import { HttpRequest } from './http-request'
 import { parseHeader } from './http-request-header-util'
 import { HttpRequestHeadersCache } from './http-request-headers-cache'
@@ -9,7 +9,7 @@ import { HttpRequestScope } from './http-request-scope'
 import { localOpinionatedToken } from './local-token'
 
 export interface HttpRequestHeadersAccessor {
-  get<THeaderName extends HttpRequestHeader>(headerName: THeaderName): HttpHeaders[THeaderName]
+  get<THeaderName extends HttpRequestHeader>(headerName: THeaderName): HttpRequestHeaders[THeaderName]
 }
 
 export const HttpRequestHeadersAccessor = localOpinionatedToken('HttpRequestHeadersAccessor', {
@@ -21,7 +21,7 @@ export abstract class HttpRequestHeadersAccessorBase implements HttpRequestHeade
 
   protected constructor(protected readonly headers: Map<HttpRequestHeader, any>) {}
 
-  public get<THeaderName extends HttpRequestHeader>(headerName: THeaderName): HttpHeaders[THeaderName] {
+  public get<THeaderName extends HttpRequestHeader>(headerName: THeaderName): HttpRequestHeaders[THeaderName] {
     if (!this.headers.has(headerName)) {
       const rawHeaderValue = this.getRawHeaderValue(headerName)
       if (!rawHeaderValue) {
