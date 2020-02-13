@@ -10,6 +10,7 @@ import { localOpinionatedToken } from './local-token'
 export interface HttpPipelineConfig {
   before?: Constructor<HttpPipelinePreparer>[]
   after?: Constructor<HttpPipelineResultTransformer>[]
+  debugMode?: boolean
 }
 
 export const HttpPipelineConfig = localOpinionatedToken<HttpPipelineConfig>('HttpPipelineConfig', {

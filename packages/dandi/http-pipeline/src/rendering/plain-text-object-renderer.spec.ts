@@ -1,32 +1,43 @@
-import { stubHarness } from '@dandi/core/testing'
-import { MimeType } from '@dandi/http'
-import { PlainTextObjectRenderer } from '@dandi/http-pipeline'
+import { testHarness } from '@dandi/core/testing'
+import { MimeType, parseMimeTypes } from '@dandi/http'
+import { HttpPipelineConfig, PlainTextObjectRenderer } from '@dandi/http-pipeline'
 
 import { expect } from 'chai'
 
-describe('PlainTextObjectRenderer', function() {
+describe('PlainTextObjectRenderer', () => {
 
-  const harness = stubHarness(PlainTextObjectRenderer)
+  const harness = testHarness(PlainTextObjectRenderer,
+    {
+      provide: HttpPipelineConfig,
+      useValue: {},
+    },
+  )
+  const acceptTypes = parseMimeTypes(MimeType.textPlain)
 
-  beforeEach(async function() {
-    this.renderer = await harness.inject(PlainTextObjectRenderer)
+  let renderer: PlainTextObjectRenderer
+
+  beforeEach(async () => {
+    renderer = await harness.inject(PlainTextObjectRenderer)
+  })
+  afterEach(() => {
+    renderer = undefined
   })
 
-  describe('renderPipelineResult', function() {
+  describe('renderPipelineResult', () => {
 
-    it('returns an empty string for undefined values', async function() {
-      const result = await this.renderer.renderPipelineResult(MimeType.textPlain, { data: undefined })
+    it('returns an empty string for undefined values', async () => {
+      const result = await renderer.render(acceptTypes, { data: undefined })
 
-      expect(result).to.equal('')
+      expect(result.renderedBody).to.equal('')
     })
 
-    it('returns an empty string for null values', async function() {
-      const result = await this.renderer.renderPipelineResult(MimeType.textPlain, { data: null })
+    it('returns an empty string for null values', async () => {
+      const result = await renderer.render(acceptTypes, { data: null })
 
-      expect(result).to.equal('')
+      expect(result.renderedBody).to.equal('')
     })
 
-    it('calls toString() on non-null/undefined values', async function() {
+    it('calls toString() on non-null/undefined values', async () => {
       const pipelineResult = {
         data: {
           toString() {
@@ -34,9 +45,9 @@ describe('PlainTextObjectRenderer', function() {
           },
         },
       }
-      const result = await this.renderer.renderPipelineResult(MimeType.textPlain, pipelineResult)
+      const result = await renderer.render(acceptTypes, pipelineResult)
 
-      expect(result).to.equal('hi')
+      expect(result.renderedBody).to.equal('hi')
     })
 
   })
