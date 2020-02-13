@@ -19,8 +19,9 @@ export function corsRequestAllowed(corsHeaders: Partial<CorsResponseHeaders>, he
 }
 
 export function isCorsRequest(req: HttpRequest): boolean {
-    if (!req.get(HttpHeader.origin)) {
-      return false
-    }
-    return req.get(HttpHeader.origin) !== req.get(HttpHeader.host)
+  if (!req.get(HttpHeader.origin)) {
+    return false
+  }
+  const [, origin] = req.get(HttpHeader.origin).match(/^https?:\/\/(.+)/)
+  return origin !== req.get(HttpHeader.host)
 }

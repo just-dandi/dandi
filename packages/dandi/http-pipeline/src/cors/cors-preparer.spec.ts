@@ -41,7 +41,7 @@ describe('CorsPreparer', () => {
 
     it('returns a CorsAllowRequest factory provider that determines whether the request will be allowed by CORS rules if ' +
       'the request is a CORS request', async () => {
-      req.get.withArgs(HttpHeader.origin).returns('some-origin.com')
+      req.get.withArgs(HttpHeader.origin).returns('http://some-origin.com')
       req.get.withArgs(HttpHeader.host).returns('another-origin.com')
 
       const providers = await preparer.prepare(req)
@@ -52,7 +52,7 @@ describe('CorsPreparer', () => {
     })
 
     it('returns a CorsAllowRequest value provider that allows the request if the request is not a CORS request', async () => {
-      req.get.withArgs(HttpHeader.origin).returns('some-origin.com')
+      req.get.withArgs(HttpHeader.origin).returns('http://some-origin.com')
       req.get.withArgs(HttpHeader.host).returns('some-origin.com')
 
       const providers = await preparer.prepare(req)

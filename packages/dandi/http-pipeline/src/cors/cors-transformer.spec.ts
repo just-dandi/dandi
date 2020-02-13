@@ -54,7 +54,7 @@ describe('CorsTransformer', () => {
     describe('when the request is a CORS request', () => {
 
       beforeEach(() => {
-        req.get.withArgs(HttpHeader.origin).returns('some-origin.com')
+        req.get.withArgs(HttpHeader.origin).returns('http://some-origin.com')
         req.get.withArgs(HttpHeader.host).returns('another-origin.com')
       })
 
@@ -74,7 +74,7 @@ describe('CorsTransformer', () => {
     describe('when the request is not a CORS request', () => {
 
       beforeEach(() => {
-        req.get.withArgs(HttpHeader.origin).returns('some-origin.com')
+        req.get.withArgs(HttpHeader.origin).returns('http://some-origin.com')
         req.get.withArgs(HttpHeader.host).returns('some-origin.com')
       })
 

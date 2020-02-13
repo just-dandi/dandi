@@ -106,7 +106,7 @@ describe('isCorsRequest', () => {
   it('returns false if the origin matches the host', () => {
     req.get
       .withArgs(HttpHeader.origin)
-      .returns('foo.com')
+      .returns('http://foo.com')
       .withArgs(HttpHeader.host)
       .returns('foo.com')
 
@@ -116,7 +116,7 @@ describe('isCorsRequest', () => {
   it('returns false if the origin does not match the host', () => {
     req.get
       .withArgs(HttpHeader.origin)
-      .returns('foo.com')
+      .returns('http://foo.com')
       .withArgs(HttpHeader.host)
       .returns('bar.com')
 
