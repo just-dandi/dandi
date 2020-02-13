@@ -3,7 +3,7 @@ import { APIGatewayProxyEvent } from '@dandi-contrib/aws-lambda/node_modules/@ty
 import { Injectable } from '@dandi/core'
 import { HttpHeader, HttpMethod, HttpModule, HttpStatusCode, MimeType } from '@dandi/http'
 import { QueryParam, RequestBody } from '@dandi/http-model'
-import { HttpPipelineModule } from '@dandi/http-pipeline'
+import { HttpPipelineModule, NativeJsonObjectRenderer } from '@dandi/http-pipeline'
 import { Property, Required } from '@dandi/model'
 import { ModelBuilderModule } from '@dandi/model-builder'
 
@@ -51,7 +51,7 @@ describe('AWS Lambda Http Events', () => {
 
   describe('GET requests', () => {
     beforeEach(() => {
-      handler = Lambda.handler(TestGetHandler, HttpModule, HttpPipelineModule, ModelBuilderModule, AwsLambdaHttpModule)
+      handler = Lambda.handler(TestGetHandler, HttpModule, HttpPipelineModule.defaultRenderer(NativeJsonObjectRenderer), ModelBuilderModule, AwsLambdaHttpModule)
     })
 
     it('can handle a simple GET request', async () => {
@@ -76,7 +76,7 @@ describe('AWS Lambda Http Events', () => {
   describe('POST requests', () => {
 
     beforeEach(() => {
-      handler = Lambda.handler(TestPostHandler, HttpModule, HttpPipelineModule, ModelBuilderModule, AwsLambdaHttpModule)
+      handler = Lambda.handler(TestPostHandler, HttpModule, HttpPipelineModule.defaultRenderer(NativeJsonObjectRenderer), ModelBuilderModule, AwsLambdaHttpModule)
     })
 
     it('can handle a simple POST request', async () => {
