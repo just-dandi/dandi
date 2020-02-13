@@ -59,3 +59,7 @@ export function mimeTypesAreCompatible(allowed: MimeTypeInfo, target: MimeTypeIn
   const matchesSubtype = allowed.subtype === '*' || allowed.subtype === target.subtype
   return matchesType && matchesSubtype
 }
+
+export function mimeTypesAreIdentical(a: MimeTypeInfo, b: MimeTypeInfo): boolean {
+  return a.fullType === b.fullType
+}
