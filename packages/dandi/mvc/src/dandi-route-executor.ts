@@ -1,6 +1,14 @@
 import { AppError, Disposable, Uuid } from '@dandi/common'
 import { Inject, Injectable, Logger, Injector, Optional } from '@dandi/core'
-import { createHttpRequestScope, ForbiddenError, HttpRequest, HttpResponse, HttpStatusCode } from '@dandi/http'
+import {
+  createHttpRequestScope,
+  ForbiddenError,
+  HttpHeader,
+  HttpRequest,
+  HttpResponse,
+  HttpStatusCode,
+  MimeType,
+} from '@dandi/http'
 import { HttpPipeline } from '@dandi/http-pipeline'
 
 import { AuthorizationCondition, DeniedAuthorization } from './authorization.condition'
@@ -74,6 +82,7 @@ export class DandiRouteExecutor implements RouteExecutor {
 
       res
         .status(err.statusCode || HttpStatusCode.internalServerError)
+        .header(HttpHeader.contentType, MimeType.applicationJson)
         .send(JSON.stringify({
           error: {
             type: err.constructor.name,
