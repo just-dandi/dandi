@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="content-language" content="en" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Error <%= statusCode %>: <%= message %></title>
+
+  <style>
+    body {
+      color: #333;
+      font-family: "Lucinda Grande", "Lucinda Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+      margin: 0 0 20px;
+    }
+    hr {
+      border: solid 1px #333;
+    }
+    h1 {
+      color: #a22;
+      padding: 0 10px;
+    }
+    section {
+      padding: 0 10px;
+    }
+    section + hr {
+      margin-top: 30px;
+    }
+    article {
+      background: #eaeaea;
+      border: solid 1px #e6e6e6;
+      border-radius: 3px;
+      padding: 10px;
+    }
+    pre > code {
+      white-space: pre-wrap;
+      word-wrap: break-word;
+    }
+  </style>
+</head>
+<body>
+  <h1>Error <%= statusCode %></h1>
+
+  <% errors.forEach(function(error) { %>
+    <hr />
+    <section>
+      <h2><%= error.message %></h2>
+
+      <% if (error.innerMessage || error.stack) { %>
+        <article>
+          <% if (error.innerMessage) { %>
+            <p><%= error.innerMessage %></p>
+          <% } %>
+
+          <pre>
+            <code><%= error.stack %></code>
+          </pre>
+
+        </article>
+      <% } %>
+
+    </section>
+
+  <% }) %>
+</body>
+</html>
+
+

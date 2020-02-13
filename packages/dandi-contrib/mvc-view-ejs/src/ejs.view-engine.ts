@@ -1,15 +1,20 @@
 import { Inject, Injectable, Optional } from '@dandi/core'
-import { ConfiguredViewEngine, ViewEngine, ViewMetadata } from '@dandi/mvc-view'
+import { ConfiguredViewEngine, ViewEngine, ViewEngineErrorConfig, ViewMetadata } from '@dandi/mvc-view'
 import * as ejs from 'ejs'
 
 import { EjsOptions } from './ejs-options'
+import { EJS_DEFAULT_ERROR_CONFIG } from './ejs-default-error-config'
 import { EJS_DEFAULT_OPTIONS } from './ejs-default-options'
 
 @Injectable(ViewEngine)
 export class EjsViewEngine implements ViewEngine {
-  public static config(options: EjsOptions): ConfiguredViewEngine {
+  public static config(options?: EjsOptions): ConfiguredViewEngine {
     return [
       EjsViewEngine,
+      {
+        provide: ViewEngineErrorConfig,
+        useValue: EJS_DEFAULT_ERROR_CONFIG,
+      },
       {
         provide: EjsOptions,
         useValue: Object.assign({}, EJS_DEFAULT_OPTIONS, options),
