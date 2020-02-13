@@ -5,6 +5,7 @@ import { getResourceMetadata } from './resource.metadata'
 
 export const SELF_RELATION = 'self'
 export const ITEMS_RELATION = '_items'
+export const INDEX_RELATION = 'index'
 
 export function relationDecorator(
   resource: Constructor<any>,
