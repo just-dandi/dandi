@@ -1,0 +1,54 @@
+doctype
+html
+  head
+    meta(charset="utf-8")
+    meta(http-equiv="content-language" content="en")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
+
+    title Error #{statusCode}: #{message}
+
+    style.
+      body {
+        color: #333;
+        font-family: "Lucinda Grande", "Lucinda Sans Unicode", Helvetica, Arial, Verdana, sans-serif;
+        margin: 0 0 20px;
+      }
+      hr {
+        border: solid 1px #333;
+      }
+      h1 {
+        color: #a22;
+        padding: 0 10px;
+      }
+      section {
+        padding: 0 10px;
+      }
+      section + hr {
+        margin-top: 30px;
+      }
+      article {
+        background: #eaeaea;
+        border: solid 1px #e6e6e6;
+        border-radius: 3px;
+        padding: 10px;
+      }
+      pre > code {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+      }
+body
+    h1 Error #{statusCode}
+
+    each error in errors
+      hr
+      section
+        h2 #{error.message}
+
+        if error.innerMessage || error.stack
+          article
+            if error.innerMessage
+              p #{error.innerMessage}
+
+            pre
+              code #{error.stack}
+
