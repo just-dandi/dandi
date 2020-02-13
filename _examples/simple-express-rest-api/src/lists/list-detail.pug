@@ -1,0 +1,14 @@
+h1 List: #{entity.title}
+
+div < #[a(href=links.index.href) Lists]
+
+list-form
+  #items-container(ic-get-from=links.tasks.href, ic-trigger-on='scrolled-into-view')
+    .loading Loading...
+
+  form(ic-post-to=links.tasks.href, ic-target='#tasks', ic-swap-style='append', ic-success-action="trigger:'behavior.icd', 'updateForm'")
+    label
+      | Title
+      input(name='title')
+    input(type='hidden', name='listId', value=entity.listId.toString())
+    button(type='submit') Add Task

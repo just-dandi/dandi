@@ -26,4 +26,12 @@ export class Db {
   public get(key: string): Promise<any> {
     return delayedDo(() => this.storage.get(key))
   }
+
+  public delete(key: string): Promise<any> {
+    return delayedDo(() => {
+      const value = this.storage.get(key)
+      this.storage.delete(key)
+      return value
+    })
+  }
 }

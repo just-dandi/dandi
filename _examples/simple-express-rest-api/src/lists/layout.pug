@@ -1,0 +1,94 @@
+html
+
+  head
+    meta(name="intercoolerjs:use-actual-http-method" content="true")
+    script.
+      function transformTask(settings) {
+        settings.data = settings.data.replace(/completed=(on|off)/, function (m, state) {
+          return 'completed=' + (state === 'on' ? 'true' : 'false')
+        })
+      }
+
+    style.
+
+      .loading,
+      .empty-state {
+        color: #666;
+        font-style: italic;
+      }
+
+      .loading {
+        margin: 1em 0;
+      }
+
+      .empty-state {
+        margin-left: -40px;
+      }
+
+      .empty-state__not-empty {
+        display: none;
+      }
+
+      .task .task__complete {
+        color: #666;
+        font-style: italic;
+        text-decoration: line-through;
+      }
+
+      ul>li>form {
+        margin-bottom: 0
+      }
+  body
+
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.js')
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/intercooler-js/1.2.3/intercooler.js')
+    script.
+      $(function () {
+
+        const behaviors = {
+          updateForm: function updateForm(e, sourceAction) {
+            console.log('behavior.updateForm', e, sourceAction)
+            const source = $(e.target)
+            const target = source.parents('list-form')
+            const form = target.find('form:has([type=submit])')
+            const inputs = form.find('input:not([type=hidden])')
+                    .val('')
+            $(inputs[ 0 ])
+                    .focus()
+
+            const listSelector = form.attr('ic-target')
+            if (listSelector) {
+              const list = target.find(listSelector)
+              const emptyState = list.find('li.empty-state')
+              if (!emptyState.length) {
+                return
+              }
+              const items = list.find('li:not(.empty-state)')
+              let itemCount = items.length
+              if (sourceAction === 'remove') {
+                itemCount--
+              }
+              console.log('item count', itemCount, items)
+              if (itemCount) {
+                emptyState.addClass('empty-state__not-empty')
+              } else {
+                emptyState.removeClass('empty-state__not-empty')
+              }
+            }
+          }
+        }
+
+        $('body')
+          .on('behavior.icd', onBehavior)
+
+        function onBehavior(e, behaviorName, sourceAction) {
+          console.log('onBehavior', e, sourceAction)
+          const behavior = behaviors[behaviorName]
+          behavior(e, sourceAction)
+          return true
+        }
+
+      })
+
+    block content
+

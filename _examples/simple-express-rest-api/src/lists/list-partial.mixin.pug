@@ -1,0 +1,4 @@
+mixin listPartial(list)
+  li.list
+    a(href=list.links.self.href) #{list.entity.title}
+    button(type='button', ic-delete-from=list.links.self.href, ic-target=':parent .list', ic-success-action="delay: 0; trigger:'behavior.icd', ['updateForm', 'remove']; remove") X

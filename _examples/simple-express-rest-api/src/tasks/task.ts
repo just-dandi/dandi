@@ -1,5 +1,5 @@
 import { Uuid } from '@dandi/common'
-import { Relation, ResourceId } from '@dandi/hal'
+import { ResourceId } from '@dandi/hal'
 import { ModelBase, Property, Required } from '@dandi/model'
 
 import { List } from '../lists/list'
@@ -41,14 +41,4 @@ export class Task extends TaskRequest {
 
   @Property(Number)
   public order: number
-}
-
-export class TaskResource extends Task {
-  constructor(source?: any) {
-    super(source)
-  }
-
-  @Property(List)
-  @Relation(List)
-  public list: List
 }

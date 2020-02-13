@@ -66,6 +66,35 @@ export class ListManager {
     return result
   }
 
+  public async deleteList(listId: Uuid): Promise<List> {
+    const list = await this.getList(listId)
+    if (!list) {
+      return undefined
+    }
+
+    const taskIds = await this.getTaskIds(listId)
+    if (taskIds) {
+      await Promise.all([...taskIds].map(taskId => this.deleteTask(taskId)))
+      await this.db.delete(`${LIST_DB_PREFIX}:${listId}:${TASK_DB_PREFIX}`)
+    }
+
+    await this.db.delete(`${LIST_DB_PREFIX}:${list.listId}`)
+    const index: Set<Uuid> = await this.db.get(LIST_DB_PREFIX)
+    index.delete(listId)
+    return list
+  }
+
+  public async deleteTask(taskId: Uuid): Promise<Task> {
+    const task = await this.taskManager.getTask(taskId)
+    if (!task) {
+      return undefined
+    }
+    const taskList = await this.getTaskIds(task.listId)
+    taskList.delete(taskId)
+    await this.taskManager.deleteTask(task)
+    return task
+  }
+
   private async getTaskIds(listId: Uuid): Promise<Set<Uuid>> {
     return await this.db.get(`${LIST_DB_PREFIX}:${listId}:${TASK_DB_PREFIX}`)
   }

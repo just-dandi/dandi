@@ -25,4 +25,11 @@ export class TaskManager {
     index.add(task.taskId)
     return result
   }
+
+  public async deleteTask(task: Task): Promise<Task> {
+    await this.db.delete(`${TASK_DB_PREFIX}:${task.taskId}`)
+    const index: Set<Uuid> = await this.db.get(TASK_DB_PREFIX)
+    index.delete(task.taskId)
+    return task
+  }
 }

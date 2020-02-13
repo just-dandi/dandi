@@ -1,0 +1,6 @@
+include task-partial.mixin.pug
+
+ul#tasks
+  li.empty-state(class=(embedded._items.length ? 'empty-state__not-empty' : '')) No tasks added yet
+  each task in embedded._items
+    +taskPartial(task)

@@ -19,7 +19,7 @@ class FormModel {
 export class HyperviewController {
 
   @HttpGet('index.xml')
-  @View('index.pug', { xml: true })
+  @View('list-index.pug', { xml: true })
   public index(): void {}
 
   @HttpPost('detail.xml')

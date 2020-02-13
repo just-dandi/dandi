@@ -1,0 +1,13 @@
+include list-partial.mixin.pug
+
+list-form
+  ul#lists
+    li.empty-state(class=(embedded._items.length ? 'empty-state__not-empty' : '')) No lists added yet
+    each list in embedded._items
+      +listPartial(list)
+
+  form(ic-post-to=links.self.href, ic-target='#lists', ic-swap-style='append', ic-success-action="trigger:'behavior.icd', 'updateForm'")
+    label
+      | Title
+      input(name='title')
+    button(type='submit') Add List

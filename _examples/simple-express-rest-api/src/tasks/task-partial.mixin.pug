@@ -1,0 +1,9 @@
+mixin taskPartial(task)
+  li.task
+    form(ic-on-beforeSend='transformTask(settings)')
+      input(type='hidden', name='listId', value=task.entity.listId.toString())
+      input(type='hidden', name='title', value=task.entity.title)
+      input(type='hidden', name='taskId', value=task.entity.taskId.toString())
+      input.task__toggle(type='checkbox', name='completed', checked=task.entity.completed, ic-patch-to=task.links.self.href, ic-target=':parent .task', ic-replace-target='true')
+      a.task__link(href=task.links.self.href, class='task__' + (task.entity.completed ? 'complete' : 'incomplete')) #{task.entity.title}
+      button(type='button', ic-delete-from=task.links.self.href, ic-target=':parent .task', ic-success-action="delay: 0; trigger:'behavior.icd', ['updateForm', 'remove']; remove") X
