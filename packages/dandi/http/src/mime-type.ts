@@ -8,5 +8,6 @@ export enum MimeType {
   applicationJson = 'application/json',
   applicationXml = 'application/xml',
   textHtml = 'text/html',
+  textHtmlPartial = 'text/html-partial',
   textPlain = 'text/plain',
 }
