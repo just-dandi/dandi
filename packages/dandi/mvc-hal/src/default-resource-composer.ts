@@ -9,12 +9,13 @@ import {
 } from '@dandi/core'
 import {
   ComposedResource,
+  getResourceMetadata,
+  INDEX_RELATION,
   ITEMS_RELATION,
   ResourceAccessorMetadata,
   ResourceMetadata,
   ResourceRelationMetadata,
   SELF_RELATION,
-  getResourceMetadata,
 } from '@dandi/hal'
 import { HttpMethod, HttpRequest, HttpRequestScope, HttpResponse } from '@dandi/http'
 import { HttpRequestInfo, isHttpPipelineDataResult } from '@dandi/http-pipeline'
@@ -104,6 +105,13 @@ export class DefaultResourceComposer implements ResourceComposer {
     result.addSelfLink({
       href: this.getUrl(SELF_RELATION, meta, resource),
     })
+    if (meta.listAccessor) {
+      const listRelMeta: ResourceRelationMetadata = {
+        resource: meta.listAccessor.resource,
+        list: true,
+      }
+      result.addLink(INDEX_RELATION, { href: this.getUrl('list', listRelMeta, resource) })
+    }
 
     return result
   }
