@@ -1,8 +1,8 @@
 import { access, constants } from 'fs'
 import { basename, dirname, extname, resolve } from 'path'
 
-import { Constructor } from '@dandi/common'
-import { Inject, Injectable, Logger, Injector } from '@dandi/core'
+import { AppError, Constructor } from '@dandi/common'
+import { Inject, Injectable, Logger, Injector, Optional } from '@dandi/core'
 
 import { MissingTemplateError } from './missing-template.error'
 import { ViewEngine } from './view-engine'
@@ -37,9 +37,12 @@ export class ViewEngineResolver {
 
   constructor(
     @Inject(Logger) private logger: Logger,
-    @Inject(ViewEngineConfig) private configs: ViewEngineIndexedConfig[],
+    @Inject(ViewEngineConfig) @Optional() private configs: ViewEngineIndexedConfig[],
     @Inject(Injector) private injector: Injector,
   ) {
+    if (!configs) {
+      return
+    }
     this.configs.forEach((config, index) => (config.index = index))
 
     // order the configs by preference:
@@ -72,7 +75,7 @@ export class ViewEngineResolver {
   }
 
   public async resolve(view: ViewMetadata, name?: string): Promise<ResolvedView> {
-    const knownPath = resolve(view.context, name || view.name)
+    const knownPath = resolve(view?.context || '', name || view?.name)
     let resolvedView = this.resolvedViews.get(knownPath)
     if (resolvedView) {
       return resolvedView
@@ -92,6 +95,10 @@ export class ViewEngineResolver {
         templatePath: knownPath,
         engine: await this.getEngineInstance(existingExtConfig),
       }
+    }
+
+    if (!this.configs) {
+      throw new AppError('No view engines have been configured')
     }
 
     for (const config of this.configs) {
