@@ -1,9 +1,9 @@
 import { Inject } from '@dandi/core'
-import { HttpRequest, HttpRequestQueryParamMap, ParamMap, HttpHeader } from '@dandi/http'
-import { QueryParam } from '@dandi/http-model'
+import { HttpHeader, HttpRequest, HttpRequestQueryParamMap, HttpStatusCode, ParamMap } from '@dandi/http'
+import { QueryParam, RequestHeader } from '@dandi/http-model'
 import { Controller, HttpGet } from '@dandi/mvc'
 import { View, ViewResult, ViewResultFactory } from '@dandi/mvc-view'
-import { RequestHeader } from '@dandi/http-model/src/request-header.decorator'
+import { AppError } from '@dandi/common'
 
 @Controller('view')
 export class ViewController {
@@ -11,7 +11,7 @@ export class ViewController {
 
   /** static template naming with automatic engine resolution -
    * when the template name will always be the same, only the @View decorator with a name is required,
-   * the resolver will find a file with a configured extension (see server.container.ts)
+   * the resolver will find a file with a configured extension (see server.application.ts)
    */
   @HttpGet('auto')
   @View('example-auto')
@@ -66,5 +66,14 @@ export class ViewController {
     }, '')
     const appendSearch = search ? '&' : ''
     return { restApiHost, restApiPort, awsHost, search, appendSearch }
+  }
+
+  @HttpGet('error')
+  @View('error.pug')
+  public error(@QueryParam(Number) statusCode: HttpStatusCode = HttpStatusCode.internalServerError): never {
+    throw Object.assign(new AppError('oh no!', new Error('here is what really happened')), {
+      statusCode,
+      innerMessage: 'Ya done goofed!',
+    })
   }
 }
