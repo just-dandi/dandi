@@ -9,7 +9,7 @@ import { AuthorizationCondition, DandiRouteExecutor, Route, RouteInitializer } f
 import { expect } from 'chai'
 import { SinonStubbedInstance } from 'sinon'
 
-describe('DefaultRouteExecutor', () => {
+describe('DandiRouteExecutor', () => {
 
   const fooToken = SymbolToken.for('Foo')
 
@@ -86,6 +86,7 @@ describe('DefaultRouteExecutor', () => {
       controllerMethod: 'method',
       httpMethod: HttpMethod.get,
       siblingMethods: new Set([HttpMethod.get]),
+      siblingRoutes: new Map<HttpMethod, Route>(),
       path: '/',
     }
     req = {
@@ -94,7 +95,7 @@ describe('DefaultRouteExecutor', () => {
     } as any
     res = {
       send: stub().returnsThis(),
-      setHeader: stub().returnsThis(),
+      header: stub().returnsThis(),
       status: stub().returnsThis(),
       end: stub().returnsThis(),
     } as any
