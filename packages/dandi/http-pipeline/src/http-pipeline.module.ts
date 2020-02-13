@@ -37,6 +37,7 @@ export const DEFAULT_CONFIG: HttpPipelineConfig = {
   before: [
     CorsPreparer,
   ],
+  debugMode: process.env.NODE_ENV !== 'production',
 }
 
 export class HttpPipelineModuleBuilder extends ModuleBuilder<HttpPipelineModuleBuilder> {
@@ -136,4 +137,4 @@ export const HttpPipelineModule = new HttpPipelineModuleBuilder(
     provide: HttpPipelineConfig,
     useValue: DEFAULT_CONFIG,
   },
-).defaultRenderer(NativeJsonObjectRenderer)
+).defaultRenderer(PlainTextObjectRenderer)

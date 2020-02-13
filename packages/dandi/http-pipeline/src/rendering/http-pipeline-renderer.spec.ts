@@ -6,6 +6,7 @@ import {
   DefaultHttpPipelineRenderer,
   HttpPipelineRenderer,
   HttpPipelineRendererProvider,
+  HttpPipelineResult,
 } from '@dandi/http-pipeline'
 import { TestApplicationJsonRenderer, TestTextPlainRenderer } from '@dandi/http-pipeline/testing'
 
@@ -29,8 +30,13 @@ describe('HttpPipelineRenderer', () => {
       },
     },
     defaultHttpPipelineRenderer(TestTextPlainRenderer),
+    {
+      provide: HttpPipelineResult,
+      useFactory: () => pipelineResult,
+    },
   )
 
+  let pipelineResult: HttpPipelineResult
   let getRenderer: () => Promise<HttpPipelineRenderer>
   let defaultRenderer: Constructor<HttpPipelineRenderer>
   let req: SinonStubbedInstance<HttpRequest>
@@ -40,6 +46,7 @@ describe('HttpPipelineRenderer', () => {
     getRenderer = () => requestInjector.inject(HttpPipelineRenderer, false)
     defaultRenderer = await requestInjector.inject(DefaultHttpPipelineRenderer)
     req = await requestInjector.injectStub(HttpRequest)
+    pipelineResult = {}
   })
 
   it('falls back to the default renderer if no matching renderers are available', async () => {

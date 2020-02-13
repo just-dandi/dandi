@@ -10,12 +10,14 @@ import {
   HttpRequestHeadersAccessor,
   HttpRequestScope,
   HttpStatusCode,
+  mimeTypesAreIdentical,
 } from '@dandi/http'
 
 import { HttpPipelineResult } from '../http-pipeline-result'
 import { localOpinionatedToken } from '../local-token'
 
 import { RendererInfo, RendererInfoProvider, RendererMetadata } from './renderer-decorator'
+import { HttpPipelineRendererFactoryError } from './http-pipeline-renderer-factory-error'
 
 export interface HttpPipelineRendererResult {
   headers?: HttpHeaders
@@ -50,36 +52,54 @@ export function defaultHttpPipelineRenderer(rendererType: Constructor<HttpPipeli
   ]
 }
 
-type HttpPipelineRendererCache = Map<string, Constructor<HttpPipelineRenderer>>
+type HttpPipelineRendererCache = Map<string, Constructor<HttpPipelineRenderer>[]>
 const HttpPipelineRendererCache: InjectionToken<HttpPipelineRendererCache> = localOpinionatedToken('HttpPipelineRendererCache', {
   multi: false,
 })
 
 const HttpPipelineRendererCacheProvider: Provider<HttpPipelineRendererCache> = {
   provide: HttpPipelineRendererCache,
-  useFactory: () => new Map<string, Constructor<HttpPipelineRenderer>>(),
+  useFactory: () => new Map<string, Constructor<HttpPipelineRenderer>[]>(),
 }
 
 export function isSupportingRenderer(renderer: RendererMetadata, acceptType: MimeTypeInfo): boolean {
   return !!renderer.acceptTypes.find(mimeTypesAreCompatible.bind(null, acceptType))
 }
 
-export function selectRenderer(acceptTypes: MimeTypeInfo[], renderers: RendererInfo[]): Constructor<HttpPipelineRenderer> {
+export function selectRenderers(acceptTypes: MimeTypeInfo[], renderers: RendererInfo[]): Constructor<HttpPipelineRenderer>[] {
+  const results = new Set<Constructor<HttpPipelineRenderer>>()
   for (const acceptType of acceptTypes) {
-    for (const renderer of renderers) {
-      if (isSupportingRenderer(renderer.metadata, acceptType)) {
-        return renderer.constructor
-      }
+    const isIdenticalMimeType = mimeTypesAreIdentical.bind(undefined, acceptType)
+    const supported = renderers
+      .filter(renderer => !results.has(renderer.constructor) && isSupportingRenderer(renderer.metadata, acceptType))
+      .sort((a, b): number => {
+        // prefer renderers that support a type directly, over those that only work via wildcard accept
+        const aHasDirect = a.metadata.acceptTypes.some(isIdenticalMimeType)
+        const bHasDirect = b.metadata.acceptTypes.some(isIdenticalMimeType)
+        if (aHasDirect && bHasDirect) {
+          return 0
+        }
+        if (aHasDirect) {
+          return -1
+        }
+        if (bHasDirect) {
+          return 1
+        }
+        return 0
+      })
+    for (const renderer of supported) {
+      results.add(renderer.constructor)
     }
   }
+  return [...results]
 }
 
-const SelectedRenderer: InjectionToken<Constructor<HttpPipelineRenderer>> = localOpinionatedToken('SelectedRenderer', {
+const CompatibleRenderers: InjectionToken<Constructor<HttpPipelineRenderer>[]> = localOpinionatedToken('SelectedRenderer', {
   multi: false,
   restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
 })
-const SelectedRendererProvider: Provider<Constructor<HttpPipelineRenderer>> = {
-  provide: SelectedRenderer,
+const CompatibleRenderersProvider: Provider<Constructor<HttpPipelineRenderer>[]> = {
+  provide: CompatibleRenderers,
   useFactory(
     req: HttpRequest,
     headers: HttpRequestHeadersAccessor,
@@ -92,19 +112,19 @@ const SelectedRendererProvider: Provider<Constructor<HttpPipelineRenderer>> = {
     const accept = headers.get(HttpHeader.accept)
     const cacheKey = `${req.path}_${accept}`
 
-    let renderer = cache.get(cacheKey)
-    if (renderer) {
-      return renderer
+    let compatibleRenderers = cache.get(cacheKey)
+    if (compatibleRenderers) {
+      return compatibleRenderers
     }
 
-    renderer = selectRenderer(acceptTypes, renderers)
-    if (renderer) {
-      cache.set(cacheKey, renderer)
-      return renderer
+    compatibleRenderers = selectRenderers(acceptTypes, renderers)
+    if (compatibleRenderers?.length) {
+      cache.set(cacheKey, compatibleRenderers)
+      return compatibleRenderers
     }
 
-    cache.set(cacheKey, defaultRenderer)
-    return defaultRenderer
+    cache.set(cacheKey, [defaultRenderer])
+    return [defaultRenderer]
   },
   deps: [
     HttpRequest,
@@ -124,17 +144,28 @@ export const HttpPipelineRendererProvider: Provider<HttpPipelineRenderer> = {
   provide: HttpPipelineRenderer,
   async useFactory(
     injector: Injector,
-    SelectedRenderer: Constructor<HttpPipelineRenderer>,
+    compatibleRenderers: Constructor<HttpPipelineRenderer>[],
   ): Promise<HttpPipelineRenderer> {
-    const resolveResult = await injector.inject(SelectedRenderer)
-    return resolveResult.singleValue
+    const errors: Error[] = []
+    for (const SelectedRenderer of compatibleRenderers) {
+      try {
+        const resolveResult = await injector.inject(SelectedRenderer)
+        return resolveResult.singleValue
+      } catch (err) {
+        errors.push(err)
+      }
+    }
+    if (errors.length) {
+      throw new HttpPipelineRendererFactoryError('Compatible renderers are configured, but none of them could render without error', errors)
+    }
+    throw new HttpPipelineRendererFactoryError('No compatible renderers are configured')
   },
   async: true,
   deps: [
     Injector,
-    SelectedRenderer,
+    CompatibleRenderers,
   ],
   providers: [
-    SelectedRendererProvider,
+    CompatibleRenderersProvider,
   ],
 }

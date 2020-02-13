@@ -16,7 +16,7 @@ export interface HttpPipelineVoidResult extends Omit<HttpPipelineDataResult, 'da
 export type HttpPipelineResult = HttpPipelineDataResult | HttpPipelineVoidResult
 
 export function isHttpPipelineResult(obj: any): obj is HttpPipelineResult {
-  return obj && (typeof obj.data !== 'undefined' || obj.void === true || typeof obj.error !== 'undefined')
+  return obj && (typeof obj.data !== 'undefined' || obj.void === true || typeof obj.errors !== 'undefined')
 }
 
 export function isHttpPipelineDataResult(obj: any): obj is HttpPipelineDataResult {

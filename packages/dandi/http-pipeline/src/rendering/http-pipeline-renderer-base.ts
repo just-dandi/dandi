@@ -1,5 +1,5 @@
 import { Constructor } from '@dandi/common'
-import { mimeTypesAreCompatible, MimeTypeInfo } from '@dandi/http'
+import { mimeTypesAreCompatible, MimeTypeInfo, MimeType } from '@dandi/http'
 
 import { HttpPipelineResult } from '../http-pipeline-result'
 
@@ -29,7 +29,7 @@ export abstract class HttpPipelineRendererBase implements HttpPipelineRenderer {
 
   protected determineContentType(acceptTypes: MimeTypeInfo[]): string {
     const renderedType = acceptTypes.find(acceptType => !!this.renderableTypes.find(renderableType => mimeTypesAreCompatible(acceptType, renderableType)))
-    if (!renderedType) {
+    if (!renderedType || renderedType.fullType === MimeType.any) {
       return this.defaultContentType
     }
     return renderedType.fullType
