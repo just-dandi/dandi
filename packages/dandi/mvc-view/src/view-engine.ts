@@ -1,15 +1,16 @@
 import { Constructor } from '@dandi/common'
 import { InjectionToken, Provider } from '@dandi/core'
 
-import { localOpinionatedToken } from './local.token'
+import { localToken } from './local-token'
 import { ViewMetadata } from './view-metadata'
+import { ViewEngineErrorConfig } from './view-engine-config'
 
 export interface ViewEngine {
-  render(view: ViewMetadata, templatePath: string, data?: any): string | Promise<string>;
+  render(view: ViewMetadata, templatePath: string, data?: any): string | Promise<string>
 }
 
-export const ViewEngine: InjectionToken<ViewEngine[]> = localOpinionatedToken('ViewEngine', {
+export const ViewEngine: InjectionToken<ViewEngine[]> = localToken.opinionated<ViewEngine[]>('ViewEngine', {
   multi: true,
 })
 
-export type ConfiguredViewEngine = [Constructor<ViewEngine>, Provider<any>]
+export type ConfiguredViewEngine = [Constructor<ViewEngine>, Provider<ViewEngineErrorConfig>, ...Provider<any>[]]

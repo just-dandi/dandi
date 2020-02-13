@@ -1,22 +1,24 @@
 import { testHarness, TestInjector } from '@dandi/core/testing'
 import {
-  HttpRequest,
+  createHttpRequestScope,
+  HttpHeader,
   HttpModule,
+  HttpRequest,
   HttpRequestAcceptTypes,
-  HttpRequestScope,
   MimeType,
   parseMimeTypes,
 } from '@dandi/http'
 import {
-  defaultHttpPipelineRenderer,
-  HttpPipelineRendererProvider,
+  defaultHttpPipelineRenderer, HttpPipelineConfig,
   HttpPipelineRenderer,
+  HttpPipelineRendererProvider,
+  HttpPipelineResult,
 } from '@dandi/http-pipeline'
 import { TestApplicationJsonRenderer } from '@dandi/http-pipeline/testing'
 import { Route } from '@dandi/mvc'
-import { MvcViewRenderer, ViewResult, ViewResultFactory } from '@dandi/mvc-view'
+import { makeViewResult, MvcViewRenderer, ViewEngineConfig, ViewResultFactory } from '@dandi/mvc-view'
 
-import { SinonStub, stub } from 'sinon'
+import { SinonStub, SinonStubbedInstance, stub } from 'sinon'
 import { expect } from 'chai'
 
 describe('MvcViewRenderer', () => {
@@ -34,9 +36,7 @@ describe('MvcViewRenderer', () => {
     },
     {
       provide: HttpRequest,
-      useValue: {
-        get: stub().returns(MimeType.textHtml),
-      },
+      useFactory: () => req,
     },
     {
       provide: HttpRequestAcceptTypes,
@@ -46,13 +46,31 @@ describe('MvcViewRenderer', () => {
       provide: ViewResultFactory,
       useFactory: () => stub(),
     },
+    {
+      provide: HttpPipelineResult,
+      useFactory: () => ({}),
+    },
+    {
+      provide: ViewEngineConfig,
+      useValue: {},
+    },
+    {
+      provide: HttpPipelineConfig,
+      useValue: {},
+    },
   )
 
+  let req: SinonStubbedInstance<HttpRequest>
   let pipelineRenderer: HttpPipelineRenderer
   let requestInjector: TestInjector
 
   beforeEach(async () => {
-    requestInjector = harness.createChild(HttpRequestScope)
+    req = {
+      get: stub<[HttpHeader], string>()
+        .withArgs(HttpHeader.accept)
+        .returns(MimeType.textHtml),
+    } as SinonStubbedInstance<HttpRequest>
+    requestInjector = harness.createChild(createHttpRequestScope(req))
     pipelineRenderer = await requestInjector.inject(HttpPipelineRenderer)
   })
   afterEach(() => {
@@ -68,13 +86,13 @@ describe('MvcViewRenderer', () => {
 
   it('passes through the rendered value of an existing ViewResult', async () => {
 
-    const viewResult = new ViewResult(
+    const viewResult = makeViewResult(
       {
         render: stub().returns('foo!'),
       },
       undefined,
       undefined,
-      undefined,
+      {},
     )
 
     expect(await pipelineRenderer.render(parseMimeTypes(MimeType.textHtml), viewResult))
@@ -89,7 +107,7 @@ describe('MvcViewRenderer', () => {
 
   it('returns a ViewResult containing the output of calling the provided ViewResultFactory', async () => {
     const viewResultFactory = await requestInjector.inject(ViewResultFactory) as SinonStub
-    viewResultFactory.resolves({ value: 'foo!' })
+    viewResultFactory.resolves({ render: () => 'foo!' })
 
     expect(await pipelineRenderer.render(parseMimeTypes(MimeType.textHtml), {}))
       .to.deep.equal({
