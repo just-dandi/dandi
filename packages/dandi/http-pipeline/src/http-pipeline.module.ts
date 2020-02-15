@@ -1,14 +1,14 @@
 import { Constructor } from '@dandi/common'
-import { ModuleBuilder, Registerable } from '@dandi/core'
+import { LogLevel, ModuleBuilder, Registerable } from '@dandi/core'
 
 import { BodyParserInfoProvider } from './body-parsing/body-parser-decorator'
 import { FormMultipartBodyParser } from './body-parsing/form-multipart-body-parser'
 import { FormUrlencodedBodyParser } from './body-parsing/form-urlencoded-body-parser'
-import { HttpBodyParserProvider, HttpBodyParserCacheProvider } from './body-parsing/http-body-parser'
+import { HttpBodyParserCacheProvider, HttpBodyParserProvider } from './body-parsing/http-body-parser'
 import { NativeJsonBodyParser } from './body-parsing/native-json-body-parser'
 import { PlainTextBodyParser } from './body-parsing/plain-text-body-parser'
 
-import { CorsAllowHeaders, CorsAllowCredentials, CorsOrigin, CorsMaxAge, CorsExposeHeaders } from './cors/cors'
+import { CorsAllowCredentials, CorsAllowHeaders, CorsExposeHeaders, CorsMaxAge, CorsOrigin } from './cors/cors'
 import { CorsConfig } from './cors/cors-config'
 import { CorsHeaderValues } from './cors/cors-headers'
 import { CorsHandler } from './cors/cors-handler'
@@ -33,11 +33,14 @@ import { PKG } from './local-token'
 import { NativeJsonObjectRenderer } from './rendering/native-json-object-renderer'
 import { PlainTextObjectRenderer } from './rendering/plain-text-object-renderer'
 
+const IS_PRODUCTION_ENV = process.env.NODE_ENV === 'production'
+
 export const DEFAULT_CONFIG: HttpPipelineConfig = {
   before: [
     CorsPreparer,
   ],
-  debugMode: process.env.NODE_ENV !== 'production',
+  debugMode: IS_PRODUCTION_ENV,
+  logHandledErrors: IS_PRODUCTION_ENV ? LogLevel.debug : LogLevel.error,
 }
 
 export class HttpPipelineModuleBuilder extends ModuleBuilder<HttpPipelineModuleBuilder> {
