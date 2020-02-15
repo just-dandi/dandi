@@ -1,37 +1,21 @@
-import { createLoggerMethodChain } from '@dandi/core/internal/util'
 import {
-  Logger,
-  LoggerMethod,
-  LogLevel,
-  LogEntry,
   InjectionScope,
-  NowFn,
-  LogStream,
+  LogEntry,
+  LogLevel,
   LogCallOptions,
+  LogStream,
+  NowFn,
 } from '@dandi/core/types'
 
+import { LoggerBase } from './logger-base'
 
-export class QueueingLogger implements Logger {
-
-  public get debug(): LoggerMethod {
-    return createLoggerMethodChain(this.log.bind(this, LogLevel.debug))
-  }
-
-  public get info(): LoggerMethod {
-    return createLoggerMethodChain(this.log.bind(this, LogLevel.info))
-  }
-
-  public get warn(): LoggerMethod {
-    return createLoggerMethodChain(this.log.bind(this, LogLevel.warn))
-  }
-
-  public get error(): LoggerMethod {
-    return createLoggerMethodChain(this.log.bind(this, LogLevel.error))
-  }
+export class QueueingLogger extends LoggerBase {
 
   private readonly entries: LogEntry[] = []
 
-  constructor(private context: InjectionScope, private now: NowFn) {}
+  constructor(private context: InjectionScope, private now: NowFn) {
+    super()
+  }
 
   public flush(stream: LogStream): void {
     while(this.entries.length) {
@@ -39,7 +23,7 @@ export class QueueingLogger implements Logger {
     }
   }
 
-  private log(level: LogLevel, options: LogCallOptions, ...args: any[]): void {
+  protected log(level: LogLevel, options: LogCallOptions, ...args: any[]): void {
     this.entries.push({
       level,
       args,

@@ -9,6 +9,7 @@ export enum LogLevelValue {
   warn = 1 << LOG_LEVEL_WARN,
   info = 1 << LOG_LEVEL_INFO,
   debug = 1 << LOG_LEVEL_DEBUG,
+  trace = 1 << LOG_LEVEL_DEBUG,
 }
 
 export enum LogLevelFilter {
@@ -16,4 +17,5 @@ export enum LogLevelFilter {
   warn = ~(~1 << LOG_LEVEL_WARN),
   info = ~(~1 << LOG_LEVEL_INFO),
   debug = ~(~1 << LOG_LEVEL_DEBUG),
+  trace = ~(~1 << LOG_LEVEL_DEBUG),
 }

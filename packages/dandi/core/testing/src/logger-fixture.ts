@@ -40,4 +40,9 @@ export class LoggerFixture implements Logger {
     return this.errorStub
   }
 
+  private readonly traceStub: LoggerMethod = createLoggerMethodChain(stub())
+  public get trace(): LoggerMethod {
+    return this.traceStub
+  }
+
 }
