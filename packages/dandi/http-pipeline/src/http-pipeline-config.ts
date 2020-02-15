@@ -1,4 +1,5 @@
 import { Constructor } from '@dandi/common'
+import { LogLevel } from '@dandi/core'
 
 import { HttpPipelineResultTransformer } from './http-pipeline-result-transformer'
 import { HttpPipelinePreparer } from './http-pipeline-preparer'
@@ -11,6 +12,7 @@ export interface HttpPipelineConfig {
   before?: Constructor<HttpPipelinePreparer>[]
   after?: Constructor<HttpPipelineResultTransformer>[]
   debugMode?: boolean
+  logHandledErrors?: boolean | LogLevel
 }
 
 export const HttpPipelineConfig = localOpinionatedToken<HttpPipelineConfig>('HttpPipelineConfig', {

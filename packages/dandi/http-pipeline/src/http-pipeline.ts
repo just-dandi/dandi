@@ -5,6 +5,7 @@ import {
   Injector,
   InstanceInvokableFn,
   Logger,
+  LogLevel,
   Optional,
   Provider,
 } from '@dandi/core'
@@ -27,6 +28,7 @@ import { HttpPipelinePreparerResult, httpPipelinePreparerResultProvider } from '
 export class HttpPipeline {
   constructor(
     @Inject(Logger) private logger: Logger,
+    @Inject(HttpPipelineConfig) private config: HttpPipelineConfig,
   ) {}
 
   public async handleRequest(
@@ -51,7 +53,7 @@ export class HttpPipeline {
 
     if (allowRequest === true) {
       preparedProviders.push(
-        await this.safeInvokeStepAsProvider(injector, this.invokeHandler, requestInfo, preparedProviders, errorHandlers, HttpPipelineHandlerResult),
+        await this.safeInvokeStepAsProvider(injector, req, this.invokeHandler, requestInfo, preparedProviders, errorHandlers, HttpPipelineHandlerResult),
       )
     } else {
       preparedProviders.push({
@@ -61,10 +63,10 @@ export class HttpPipeline {
     }
 
     preparedProviders.push(
-      await this.safeInvokeStepAsProvider(injector, this.transformResult, requestInfo, preparedProviders, errorHandlers, HttpPipelineResult),
+      await this.safeInvokeStepAsProvider(injector, req, this.transformResult, requestInfo, preparedProviders, errorHandlers, HttpPipelineResult),
     )
     preparedProviders.push(
-      await this.safeInvokeStepAsProvider(injector, this.renderResult, requestInfo, preparedProviders, errorHandlers, HttpPipelineRendererResult),
+      await this.safeInvokeStepAsProvider(injector, req, this.renderResult, requestInfo, preparedProviders, errorHandlers, HttpPipelineRendererResult),
     )
 
     const terminatorResult = await this.invokeStep(injector, this.terminateResponse, requestInfo, preparedProviders)
@@ -95,6 +97,7 @@ export class HttpPipeline {
 
   private async safeInvokeStep<TResult>(
     injector: Injector,
+    req: HttpRequest,
     step: (...args: any[]) => TResult,
     requestInfo: HttpRequestInfo,
     providers: Provider<any>[],
@@ -103,19 +106,20 @@ export class HttpPipeline {
     try {
       return await this.invokeStep(injector, step, requestInfo, providers)
     } catch (err) {
-      return this.handleError({ errors: [err] }, errorHandlers, requestInfo)
+      return this.handleError(req, { errors: [err] }, errorHandlers, requestInfo)
     }
   }
 
   private async safeInvokeStepAsProvider<TResult>(
     injector: Injector,
+    req: HttpRequest,
     step: (...args: any[]) => TResult,
     requestInfo: HttpRequestInfo,
     providers: Provider<any>[] = [],
     errorHandlers: HttpPipelineErrorResultHandler[],
     provide: InjectionToken<any>,
   ): Promise<Provider<any>> {
-    const result = await this.safeInvokeStep(injector, step, requestInfo, providers, errorHandlers)
+    const result = await this.safeInvokeStep(injector, req, step, requestInfo, providers, errorHandlers)
     return {
       provide,
       useValue: result,
@@ -124,13 +128,12 @@ export class HttpPipeline {
 
   public async prepare(
     @Inject(Injector) injector: Injector,
-    @Inject(HttpPipelineConfig) @Optional() config: HttpPipelineConfig,
   ): Promise<Provider<any>[]> {
-    if (!config?.before) {
+    if (!this.config.before) {
       return []
     }
     const providers: Provider<any>[] = []
-    for (const preparer of config.before) {
+    for (const preparer of this.config.before) {
       const token = HttpPipelinePreparerResult(preparer)
       const provider = httpPipelinePreparerResultProvider(preparer)
       const preparerInjector = injector.createChild(preparer, [provider].concat(providers))
@@ -181,12 +184,19 @@ export class HttpPipeline {
   }
 
   private async handleError(
+    req: HttpRequest,
     result: HttpPipelineErrorResult,
     errorHandlers: HttpPipelineErrorResultHandler[],
     requestInfo: HttpRequestInfo,
   ): Promise<HttpPipelineErrorResult> {
     requestInfo.performance.mark('HttpPipeline.invokeHandler', 'beforeHandleErrors')
 
+    const [err] = result.errors
+
+    if (this.config.logHandledErrors) {
+      const logLevel = this.config.logHandledErrors === true ? LogLevel.error : this.config.logHandledErrors
+      this.logger[logLevel](`Error handling request ${req.method} ${req.path} requestId ${requestInfo.requestId}`, err.stack)
+    }
     const pipelineResult = await this.executeErrorHandlers(result, errorHandlers)
 
     requestInfo.performance.mark('HttpPipeline.invokeHandler', 'afterHandleErrors')
