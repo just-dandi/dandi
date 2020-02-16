@@ -4,7 +4,7 @@ import { AuthorizedUser } from './authorized.user'
 import { localOpinionatedToken } from './local.token'
 
 export interface AuthorizationService {
-  getAuthorizedUser(authorization: string): Promise<AuthorizedUser>;
+  getAuthorizedUser(authorization: string): Promise<AuthorizedUser>
 }
 
 const tokens = new Map<string, MappedInjectionToken<string, AuthorizationService>>()

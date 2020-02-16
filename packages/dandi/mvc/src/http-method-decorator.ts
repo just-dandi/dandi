@@ -5,9 +5,9 @@ import { CorsConfig } from '@dandi/http-pipeline'
 import { RouteMapEntry, getControllerMetadata } from './controller-metadata'
 
 export interface HttpMethodOptions {
-  method?: HttpMethod;
-  path?: string;
-  cors?: CorsConfig | true;
+  method?: HttpMethod
+  path?: string
+  cors?: CorsConfig | true
 }
 
 export type HttpMethodDecorator = (path?: string) => MethodDecorator

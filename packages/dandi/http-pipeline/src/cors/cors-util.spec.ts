@@ -1,4 +1,4 @@
-import { corsRequestAllowed, CorsResponseHeaders, isCorsRequest } from '@dandi/http-pipeline'
+import { createStubInstance, stub } from '@dandi/core/testing'
 import {
   HttpHeader,
   HttpMethod,
@@ -6,7 +6,7 @@ import {
   HttpRequestHeadersAccessor,
   HttpRequestHeadersHashAccessor,
 } from '@dandi/http'
-import { createStubInstance, stub } from '@dandi/core/testing'
+import { corsRequestAllowed, CorsResponseHeaders, isCorsRequest } from '@dandi/http-pipeline'
 
 import { expect } from 'chai'
 import { SinonStubbedInstance } from 'sinon'

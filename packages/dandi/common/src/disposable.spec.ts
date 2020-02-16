@@ -52,8 +52,8 @@ describe('Disposable', () => {
 
     describe('wrapping existing dispose functions', () => {
       let stubs: {
-        existingDispose: SinonStub;
-        newDispose: SinonStub;
+        existingDispose: SinonStub
+        newDispose: SinonStub
       }
       let obj: Disposable
 

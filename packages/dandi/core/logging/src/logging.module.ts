@@ -1,9 +1,9 @@
 import { ModuleBuilder, Registerable } from '@dandi/core'
 
-import { localToken } from './local-token'
-import { LoggerConfig } from './logger-config'
-import { LogStreamSubject } from './log-stream-subject'
 import { ContextualLogger } from './contextual-logger'
+import { localToken } from './local-token'
+import { LogStreamSubject } from './log-stream-subject'
+import { LoggerConfig } from './logger-config'
 
 export class LoggingModuleBuilder extends ModuleBuilder<LoggingModuleBuilder> {
   constructor(...entries: Registerable[]) {

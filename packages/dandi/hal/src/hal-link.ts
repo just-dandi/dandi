@@ -1,8 +1,8 @@
 import { SELF_RELATION } from './relation.decorator'
 
 export interface HalLink {
-  href: string;
-  name?: string;
+  href: string
+  name?: string
 }
 
 export interface HalLinks {

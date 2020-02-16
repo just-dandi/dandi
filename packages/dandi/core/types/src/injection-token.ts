@@ -3,8 +3,8 @@ import { AppError, Constructor } from '@dandi/common'
 import { SymbolTokenBase } from './symbol-token'
 
 export interface MappedInjectionToken<TKey, TService> {
-  provide: InjectionToken<TService>;
-  key: TKey;
+  provide: InjectionToken<TService>
+  key: TKey
 }
 
 export type MappedInjectionTokenFactory<T> = (<TKey, TService>(key: TKey) => MappedInjectionToken<TKey, TService>)

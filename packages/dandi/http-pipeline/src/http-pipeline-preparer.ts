@@ -24,7 +24,7 @@ export interface HttpPipelinePreparer {
 export type HttpPipelinePreparerResult = Provider<any>[]
 
 export interface HttpPipelinePreparerMetadata {
-  deps: Set<Constructor<HttpPipelinePreparer>>,
+  deps: Set<Constructor<HttpPipelinePreparer>>
   dependencyResultTokens: Set<InjectionToken<HttpPipelinePreparerResult>>
 }
 
@@ -66,6 +66,7 @@ export function httpPipelinePreparerResultProvider(preparer: Constructor<HttpPip
       return result
     }, [])
     // TODO: this could get messy with multiple duplicate providers coming from multiple preparers... what to do then?
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     const preparerScope: InjectionScope = function PreparerScope() {}
     const preparerInjector = injector.createChild(preparerScope, allDependentResults)
     const preparerInstance = (await preparerInjector.inject(preparer)).singleValue

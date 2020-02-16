@@ -1,3 +1,4 @@
+import { testHarness, TestInjector } from '@dandi/core/testing'
 import {
   createHttpRequestScope,
   HttpHeader,
@@ -6,7 +7,6 @@ import {
   HttpRequestHeadersAccessor,
   HttpRequestHeadersHashAccessor,
 } from '@dandi/http'
-import { testHarness, TestInjector } from '@dandi/core/testing'
 import {
   CorsAllowOrigin,
   CorsOriginWhitelist,

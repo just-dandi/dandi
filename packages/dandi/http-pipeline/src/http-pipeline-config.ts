@@ -1,8 +1,8 @@
 import { Constructor } from '@dandi/common'
 import { LogLevel } from '@dandi/core'
 
-import { HttpPipelineResultTransformer } from './http-pipeline-result-transformer'
 import { HttpPipelinePreparer } from './http-pipeline-preparer'
+import { HttpPipelineResultTransformer } from './http-pipeline-result-transformer'
 import { localOpinionatedToken } from './local-token'
 
 // FIXME: define conditions for inclusion

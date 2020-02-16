@@ -1,6 +1,6 @@
 import { EntryPoint, Inject, Injectable, Logger } from '@dandi/core'
 
-import { Action, ActionHost, Actions, CommandAction, CommandInfo } from './command-action'
+import { ActionHost, Actions, CommandAction, CommandInfo } from './command-action'
 
 function isActionName<T>(ctr: Function, obj: any): obj is Actions<T> {
   return typeof obj === 'string' && typeof ctr.prototype[obj] === 'function'
@@ -36,7 +36,7 @@ export class CommandRunner<THost extends any> implements EntryPoint {
 
   private async runAction(): Promise<void> {
     if (isActionName<THost>(this.host.constructor, this.actionName)) {
-      return await (<Action>this.host[this.actionName])(this.info.args)
+      return await this.host[this.actionName](this.info.args)
     }
     throw new Error('Invalid argument for actionName')
   }

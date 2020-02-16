@@ -1,5 +1,5 @@
-import { HttpPipelineRendererResult } from './rendering/http-pipeline-renderer'
 import { localOpinionatedToken } from './local-token'
+import { HttpPipelineRendererResult } from './rendering/http-pipeline-renderer'
 
 /**
  * A service that handles writing the final response headers, body, statusCode, etc, and terminates the response.

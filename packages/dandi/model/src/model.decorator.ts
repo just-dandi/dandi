@@ -1,8 +1,8 @@
 import { Constructor, Url } from '@dandi/common'
 import { DateTime } from 'luxon'
 
-import { EMAIL_PATTERN, URL_PATTERN } from './pattern'
 import { MemberMetadata, MemberSourceAccessor, getMemberMetadata } from './member.metadata'
+import { EMAIL_PATTERN, URL_PATTERN } from './pattern'
 
 const EMAIL_MIN_LENGTH = 6
 const EMAIL_MAX_LENGTH = 254

@@ -15,7 +15,7 @@ import { VIEW_RESULT_FACTORY } from './view-result-factory'
 import { ViewRouteTransformer } from './view.route-transformer'
 
 export interface MvcViewModule extends Array<any> {
-  engine(extension: string, engine: Constructor<ViewEngine>): this;
+  engine(extension: string, engine: Constructor<ViewEngine>): this
 }
 
 export class MvcViewModuleBuilder extends ModuleBuilder<MvcViewModuleBuilder> {

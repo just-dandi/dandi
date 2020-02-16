@@ -1,8 +1,8 @@
 import { InjectionScope, LogCallOptions, LogEntry, LogLevel } from '@dandi/core'
 import { ConsoleLogListener } from '@dandi/core/logging'
+import { expect } from 'chai'
 import { DateTime } from 'luxon'
 
-import { expect } from 'chai'
 
 describe('ConsoleLogListener', function() {
 

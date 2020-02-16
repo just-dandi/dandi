@@ -3,21 +3,21 @@ import { HttpMethod } from '@dandi/http'
 import { CorsConfig } from '@dandi/http-pipeline'
 
 import { AuthorizationMetadata } from './authorization-metadata'
-import { ControllerMethod, RoutePath } from './http-method-decorator'
 import { globalSymbol } from './global.symbol'
+import { ControllerMethod, RoutePath } from './http-method-decorator'
 import { MvcMetadata } from './mvc-metadata'
 
 export class RouteMap extends Map<ControllerMethod, ControllerMethodMetadata> {}
 export interface ControllerMethodMetadata extends AuthorizationMetadata {
-  routePaths?: RouteMapEntry;
-  cors?: CorsConfig | true;
+  routePaths?: RouteMapEntry
+  cors?: CorsConfig | true
 }
 export class RouteMapEntry extends Map<RoutePath, Set<HttpMethod>> {}
 
 const META_KEY = globalSymbol('meta:controller')
 
 export interface ControllerMetadata extends MvcMetadata, AuthorizationMetadata {
-  routeMap?: RouteMap;
+  routeMap?: RouteMap
 }
 
 export function getControllerMetadata(target: Constructor<any>): ControllerMetadata {

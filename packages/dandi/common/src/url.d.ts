@@ -18,15 +18,15 @@ export class Url {
 }
 
 export interface URLSearchParams {
-  append(name: string, value: string): void;
+  append(name: string, value: string): void
 
-  delete(name: string): void;
+  delete(name: string): void
 
-  get(name: string): string | null;
+  get(name: string): string | null
 
-  getAll(name: string): string[];
+  getAll(name: string): string[]
 
-  has(name: string): boolean;
+  has(name: string): boolean
 
-  set(name: string, value: string): void;
+  set(name: string, value: string): void
 }

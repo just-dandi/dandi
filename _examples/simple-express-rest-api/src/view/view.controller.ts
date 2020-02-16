@@ -1,9 +1,9 @@
+import { AppError } from '@dandi/common'
 import { Inject } from '@dandi/core'
 import { HttpHeader, HttpRequest, HttpRequestQueryParamMap, HttpStatusCode, ParamMap } from '@dandi/http'
 import { QueryParam, RequestHeader } from '@dandi/http-model'
 import { Controller, HttpGet } from '@dandi/mvc'
 import { View, ViewResult, ViewResultFactory } from '@dandi/mvc-view'
-import { AppError } from '@dandi/common'
 
 @Controller('view')
 export class ViewController {
@@ -52,10 +52,10 @@ export class ViewController {
   @View('cors.pug')
   public cors(
     @QueryParam(String) restApiHost: string,
-    @QueryParam(String) awsHost: string,
-    @RequestHeader(HttpHeader.host) host: string,
-    @Inject(HttpRequest) req: HttpRequest,
-  ): { restApiHost: string, restApiPort: string, awsHost: string, search: string, appendSearch: string } {
+      @QueryParam(String) awsHost: string,
+      @RequestHeader(HttpHeader.host) host: string,
+      @Inject(HttpRequest) req: HttpRequest,
+  ): { restApiHost: string; restApiPort: string; awsHost: string; search: string; appendSearch: string } {
     const [, restApiPort] = host.split(':')
     const search = [...Object.entries(req.query)].reduce((result, [key, value]) => {
       if (result) {

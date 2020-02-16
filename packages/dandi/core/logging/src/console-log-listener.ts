@@ -15,14 +15,14 @@ import {
   ConsoleLogListenerOptions,
   LogEntryTagInfo, TagFormatOptions,
 } from './console-log-listener-config'
-import { LogLevelFilter, LogLevelValue } from './log-level-filter'
-import { LogListener } from './log-listener'
 import {
   DEFAULT_CONTEXT_TAG,
   DEFAULT_LEVEL_TAG,
   DEFAULT_LOGGING_CONFIG,
   DEFAULT_TIMESTAMP_FORMATTER,
 } from './console-log-listener-config-default'
+import { LogLevelFilter, LogLevelValue } from './log-level-filter'
+import { LogListener } from './log-listener'
 
 const LUXON_TIMESTAMP_FORMATTER = (entry: ConsoleLogListenerEntryInfo, format: string): string => entry.ts ? DateTime.fromMillis(entry.ts).toFormat(format) : undefined
 const LOCALE_TIMESTAMP_FORMATTER = (entry: ConsoleLogListenerEntryInfo, options: DateTimeFormatOptions): string => entry.ts ? DateTime.fromMillis(entry.ts).toLocaleString(options) : undefined

@@ -1,8 +1,8 @@
 import { AppError, Constructor } from '@dandi/common'
 
 export interface OneOfConversionAttempt {
-  type: Constructor<any>;
-  error: Error;
+  type: Constructor
+  error: Error
 }
 
 export class OneOfConversionError extends AppError {

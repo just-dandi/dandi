@@ -1,7 +1,7 @@
+import { AwsLambdaHttpModule, Lambda } from '@dandi-contrib/aws-lambda'
 import { HttpModule } from '@dandi/http'
 import { HttpPipelineModule } from '@dandi/http-pipeline'
 import { ModelBuilderModule } from '@dandi/model-builder'
-import { AwsLambdaHttpModule, Lambda } from '@dandi-contrib/aws-lambda'
 
 import { DataProcessorService } from './src/data-processor.service'
 import { HelloWorldHandler } from './src/hello-world.handler'

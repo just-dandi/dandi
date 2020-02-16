@@ -20,7 +20,9 @@ export class HyperviewController {
 
   @HttpGet('index.xml')
   @View('index.pug', { xml: true })
-  public index(): void {}
+  public index(): void {
+    return
+  }
 
   @HttpPost('detail.xml')
   @View('detail.pug', { xml: true })

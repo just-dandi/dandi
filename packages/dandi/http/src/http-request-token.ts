@@ -1,8 +1,8 @@
 import { InjectionToken } from '@dandi/core'
 
+import { HttpRequestScope } from './http-request-scope'
 import { localOpinionatedToken } from './local-token'
 import { ParamMap } from './param-map'
-import { HttpRequestScope } from './http-request-scope'
 
 const options = { restrictScope: HttpRequestScope }
 

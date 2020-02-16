@@ -1,9 +1,9 @@
 import { stub, testHarness, TestInjector } from '@dandi/core/testing'
-import { CorsHeaderValues, CorsTransformer, HttpPipelineResult } from '@dandi/http-pipeline'
-import { SinonStubbedInstance } from 'sinon'
 import { createHttpRequestScope, HttpHeader, HttpMethod, HttpRequest, MimeType } from '@dandi/http'
-
+import { CorsHeaderValues, CorsTransformer, HttpPipelineResult } from '@dandi/http-pipeline'
 import { expect } from 'chai'
+import { SinonStubbedInstance } from 'sinon'
+
 
 describe('CorsTransformer', () => {
 

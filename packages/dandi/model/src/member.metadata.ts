@@ -5,31 +5,31 @@ export type SourceAccessorFn = <TSource, TMember>(source: TSource) => TMember
 export type MemberSourceAccessor = string | SourceAccessorFn
 
 export interface MemberMetadata {
-  type?: Constructor<any>;
-  keyType?: Constructor<any>;
-  valueType?: Constructor<any>;
-  required?: boolean;
-  minLength?: number;
-  maxLength?: number;
-  minValue?: number;
-  maxValue?: number;
-  pattern?: RegExp;
-  format?: string;
-  oneOf?: Array<Constructor<any>>;
-  json?: boolean;
-  sourceAccessor?: MemberSourceAccessor;
+  type?: Constructor
+  keyType?: Constructor
+  valueType?: Constructor
+  required?: boolean
+  minLength?: number
+  maxLength?: number
+  minValue?: number
+  maxValue?: number
+  pattern?: RegExp
+  format?: string
+  oneOf?: Constructor[]
+  json?: boolean
+  sourceAccessor?: MemberSourceAccessor
 }
 
 export interface ModelMetadata {
-  [propertyName: string]: MemberMetadata;
+  [propertyName: string]: MemberMetadata
 }
 
-const protoKeys = new Map<Function, Map<Symbol, any>>()
+const protoKeys = new Map<Function, Map<symbol, any>>()
 
 export function getModelMetadata(target: Function): ModelMetadata {
   let protoKey = protoKeys.get(target)
   if (!protoKey) {
-    protoKey = new Map<Symbol, any>()
+    protoKey = new Map<symbol, any>()
     protoKeys.set(target, protoKey)
   }
   const classKey = Symbol.for(target.name)

@@ -17,7 +17,7 @@ import { HttpBodyParserBase } from './http-body-parser-base'
 
 interface PreppedPart {
   contentSource: string
-  headers: HttpRequestHeaders,
+  headers: HttpRequestHeaders
 }
 
 @BodyParser(MimeType.multipartFormData)

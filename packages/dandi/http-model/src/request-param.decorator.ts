@@ -11,9 +11,9 @@ import { requestParamValidatorFactory } from './request-param-validator'
 
 export interface RequestParamDecorator<T> extends ParameterDecorator, ConditionDecorators {
   (target: Object, propertyKey: string | symbol, parameterIndex: number): {
-    meta: ParamMetadata<T>;
-    memberMetadata: MemberMetadata;
-  };
+    meta: ParamMetadata<T>
+    memberMetadata: MemberMetadata
+  }
 }
 
 export function requestParamToken<T>(
@@ -83,6 +83,7 @@ export function makeRequestParamDecorator<T>(
   // FIXME: figure out how to do this without introducing authorization logic to @dandi/http*?
   //        OR: figure out how to abstract authorization away from @dandi/mvc
   // apply.within = conditionWithinByKeyDecorator.bind(null, apply)
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   apply.within = () => () => {}
   return apply
 }

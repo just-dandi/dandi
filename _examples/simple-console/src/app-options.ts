@@ -2,9 +2,11 @@ import { InjectionToken, Provider } from '@dandi/core'
 
 import { localOpinionatedToken } from './local-token'
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface AppOptions {
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface AppConfig {
 }
 

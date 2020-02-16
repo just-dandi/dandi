@@ -2,8 +2,8 @@ import { MethodTarget } from '@dandi/common'
 import { Provider } from '@dandi/core'
 import { RequestParamDecorator } from '@dandi/http-model'
 
-import { initAuthorizationMetadata } from './authorized.decorator'
 import { AuthorizationCondition } from './authorization.condition'
+import { initAuthorizationMetadata } from './authorized.decorator'
 import { ConditionFactory, ConditionHelper } from './condition.decorator'
 
 export type SelectorFn<T, TKey> = (obj: T) => TKey

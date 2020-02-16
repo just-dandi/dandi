@@ -1,8 +1,8 @@
 import { localToken } from '../../src/local-token'
 
-import { InjectionToken } from './injection-token'
-import { InjectionScope } from './injection-scope'
 import { InjectionResult } from './injection-result'
+import { InjectionScope } from './injection-scope'
+import { InjectionToken } from './injection-token'
 import { InjectorContext } from './injector-context'
 import { Provider } from './provider'
 import { Registerable } from './registerable'

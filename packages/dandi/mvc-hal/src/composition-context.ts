@@ -17,6 +17,7 @@ export class CompositionContext implements Disposable {
   }
 
   constructor(rel: string, path: string, parent?: ParentCompositionContext) {
+    // eslint-disable-next-line @typescript-eslint/no-empty-function
     const scope: InjectionScope = function CompositionContextScope() {}
     this.repository = Repository.for(scope)
     this.path = path

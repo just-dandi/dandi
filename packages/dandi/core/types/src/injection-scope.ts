@@ -11,8 +11,8 @@ import { FactoryProvider } from './provider'
  * Stores a reference to the object (and for invocations, the method) that requested an injection dependency.
  */
 export interface InvokeInjectionScope<TInstance = any, TResult = any> {
-  instance: TInstance,
-  methodName: InstanceInvokableFn<TInstance, TResult>,
+  instance: TInstance
+  methodName: InstanceInvokableFn<TInstance, TResult>
 }
 
 /**

@@ -7,29 +7,29 @@ export function resourceMetaKey(target: Constructor<any>): symbol {
 }
 
 export interface ResourceAccessorMetadata {
-  resource?: Constructor<any>;
-  controller: Constructor<any>;
-  method: string;
-  paramMap: { [paramIndex: number]: Constructor<any> };
+  resource?: Constructor
+  controller: Constructor
+  method: string
+  paramMap: { [paramIndex: number]: Constructor }
 }
 
 export interface ResourceMetadata {
-  resource: Constructor<any>;
-  idProperty?: string;
-  getAccessor?: ResourceAccessorMetadata;
-  listAccessor?: ResourceAccessorMetadata;
-  relations: { [rel: string]: ResourceRelationMetadata };
-  parent?: ResourceMetadata;
+  resource: Constructor
+  idProperty?: string
+  getAccessor?: ResourceAccessorMetadata
+  listAccessor?: ResourceAccessorMetadata
+  relations: { [rel: string]: ResourceRelationMetadata }
+  parent?: ResourceMetadata
 }
 
 export interface ResourceRelationMetadata {
-  resource: Constructor<any>;
-  list?: boolean;
-  idProperty?: string;
+  resource: Constructor
+  list?: boolean
+  idProperty?: string
 }
 
 export class CompositeResourceMetadata implements ResourceMetadata {
-  public resource: Constructor<any>
+  public resource: Constructor
   public idProperty: string
   public getAccessor: ResourceAccessorMetadata
   public listAccessor: ResourceAccessorMetadata

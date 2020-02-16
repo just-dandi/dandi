@@ -6,7 +6,7 @@ import { SymbolToken } from './symbol-token'
 export interface LocalTokenFactory {
   symbol<T>(target: string): InjectionToken<T>
   opinionated<T>(target: string, options?: InjectionOptions): InjectionToken<T>
-  PKG: string,
+  PKG: string
 }
 
 export function localTokenFactory(pkg: string): LocalTokenFactory {

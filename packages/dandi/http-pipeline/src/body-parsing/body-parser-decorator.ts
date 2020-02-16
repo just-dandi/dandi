@@ -3,8 +3,8 @@ import { ClassProvider, InjectionToken, Injector, Provider, RegistrationSource }
 import { Repository } from '@dandi/core/internal'
 import { MimeTypeInfo, MimeType, parseMimeTypes } from '@dandi/http'
 
-import { localOpinionatedToken } from '../local-token'
 import { globalSymbol } from '../global.symbol'
+import { localOpinionatedToken } from '../local-token'
 
 import { HttpBodyParser } from './http-body-parser'
 

@@ -8,8 +8,8 @@ import {
   PrimitiveTypeConverter,
 } from '@dandi/model-builder'
 
-import { camel } from 'change-case'
 import { expect } from 'chai'
+import { camel } from 'change-case'
 import { SinonSpy, SinonStubbedInstance, createStubInstance, spy, stub } from 'sinon'
 
 describe('MetadataModelBuilder', () => {
@@ -230,7 +230,8 @@ describe('MetadataModelBuilder', () => {
         @Property(String)
         public heyMan: string
       }
-      // eslint-disable-next-line camelcase
+
+      // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
       const source = { foo_bar: 'yeah', hey_man: 'okay' }
       const options = { keyTransform: camel }
 
@@ -255,7 +256,8 @@ describe('MetadataModelBuilder', () => {
         @Property(String)
         public heyMan: string
       }
-      // eslint-disable-next-line camelcase
+
+      // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
       const source = { blob: { foo_bar: 'yeah' }, hey_man: 'okay' }
       const options = { keyTransform: camel }
 
@@ -265,7 +267,7 @@ describe('MetadataModelBuilder', () => {
         .to.have.been.calledThrice.calledWithExactly(
           { type: Blob, json: true },
           'blob',
-          // eslint-disable-next-line camelcase
+          // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
           { foo_bar: 'yeah' },
           options,
         )
@@ -283,7 +285,8 @@ describe('MetadataModelBuilder', () => {
         @Property(String)
         public heyMan: string
       }
-      // eslint-disable-next-line camelcase
+
+      // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
       const source = { map: { foo_bar: 'yeah' }, hey_man: 'okay' }
       const options = { keyTransform: camel }
 
@@ -291,7 +294,7 @@ describe('MetadataModelBuilder', () => {
 
       expect((builder as any).constructMemberInternal)
         .to.have.callCount(4)
-        // eslint-disable-next-line camelcase
+        // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
         .calledWithExactly({ type: Map, keyType: String, valueType: String }, 'map', { foo_bar: 'yeah' }, options)
         .calledWithExactly({ type: String }, "map.(key for 'foo_bar')", 'foo_bar', {})
         .calledWithExactly({ type: String }, 'map.foo_bar', 'yeah', options)
@@ -441,7 +444,7 @@ describe('MetadataModelBuilder', () => {
           [key1]: '1',
           [key2]: '2',
         }
-        const result: Map<Uuid, Number> = builder.constructMember(meta, 'obj', input)
+        const result: Map<Uuid, number> = builder.constructMember(meta, 'obj', input)
         expect(result).to.be.instanceOf(Map)
         expect(result.size).to.equal(2)
       })

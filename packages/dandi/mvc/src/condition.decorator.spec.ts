@@ -86,6 +86,7 @@ xdescribe('ConditionDecorator', function() {
 
     const initializer = await harness.inject(RouteInitializer)
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const providers = await initializer.initRouteRequest(routes[0], req, info, res)
 
     const conditions = await harness.injectMulti(AuthorizationCondition, false)

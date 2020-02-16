@@ -18,8 +18,8 @@ import { TestApplicationJsonRenderer } from '@dandi/http-pipeline/testing'
 import { Route } from '@dandi/mvc'
 import { makeViewResult, MvcViewRenderer, ViewEngineConfig, ViewResultFactory } from '@dandi/mvc-view'
 
-import { SinonStub, SinonStubbedInstance, stub } from 'sinon'
 import { expect } from 'chai'
+import { SinonStub, SinonStubbedInstance, stub } from 'sinon'
 
 describe('MvcViewRenderer', () => {
 

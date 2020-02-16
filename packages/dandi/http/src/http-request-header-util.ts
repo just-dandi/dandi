@@ -97,10 +97,10 @@ export function parseDirectiveHeaderValue(rawValue: string): ParsedHeaderAndDire
     return { value }
   }
   const directives = rawDirectives.reduce((result, rawDirective) => {
-      const [name, quotedValue] = rawDirective.split('=')
-      result[name] = quotedValue.startsWith('"') ? quotedValue.substring(1, quotedValue.length - 1) : quotedValue
-      return result
-    }, {})
+    const [name, quotedValue] = rawDirective.split('=')
+    result[name] = quotedValue.startsWith('"') ? quotedValue.substring(1, quotedValue.length - 1) : quotedValue
+    return result
+  }, {})
 
   return { value, directives }
 }

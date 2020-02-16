@@ -1,8 +1,8 @@
+import { PgDbClient, PgDbTransactionClient, PgDbPoolClient } from '@dandi-contrib/data-pg'
+import { PgDbPoolClientFixture } from '@dandi-contrib/data-pg/testing'
 import { AppError } from '@dandi/common'
 import { stubHarness } from '@dandi/core/testing'
 import { ModelBuilderFixture } from '@dandi/model-builder/testing'
-import { PgDbClient, PgDbTransactionClient, PgDbPoolClient } from '@dandi-contrib/data-pg'
-import { PgDbPoolClientFixture } from '@dandi-contrib/data-pg/testing'
 
 import { expect } from 'chai'
 import { SinonStub, stub } from 'sinon'
@@ -10,7 +10,7 @@ import { SinonStub, stub } from 'sinon'
 describe('PgDbClient', function() {
 
   const harness = stubHarness(PgDbClient,
-    PgDbPoolClientFixture.factory(false),
+    PgDbPoolClientFixture.factory(),
     ModelBuilderFixture.factory,
     PgDbTransactionClient,
   )

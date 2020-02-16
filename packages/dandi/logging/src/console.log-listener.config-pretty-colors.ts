@@ -6,9 +6,9 @@ import {
   PrettyLogging,
 } from '@dandi/core/logging'
 
+import * as colors from './colors'
 import { ColorsNotLoadedError } from './colors-not-loaded-error'
 
-import * as colors from './colors'
 
 export function initColors(): void {
   if (!colors['debug']) {

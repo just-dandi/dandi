@@ -7,7 +7,7 @@ import { localOpinionatedToken } from './local.token'
 import { RequestAuthorizationService } from './request-authorization.service'
 
 export interface AuthorizedUser {
-  uid: string;
+  uid: string
 }
 
 export const AuthorizedUser: InjectionToken<AuthorizedUser> = localOpinionatedToken<AuthorizedUser>('AuthorizedUser', {

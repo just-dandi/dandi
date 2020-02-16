@@ -11,8 +11,8 @@ export type AuthorizedConditionFactory = <T>(
 ) => Provider<AuthorizationCondition>
 
 export interface AuthorizationMetadata {
-  controllerMetadata: ControllerMetadata;
-  methodMetadata?: ControllerMethodMetadata;
+  controllerMetadata: ControllerMetadata
+  methodMetadata?: ControllerMethodMetadata
 }
 
 export function initAuthorizationMetadata(target: MethodTarget<any>, propertyKey: string | symbol): AuthorizationMetadata {
@@ -56,14 +56,8 @@ export function authorizedDecorator<T>(
 }
 
 export interface AuthorizedDecorator {
-  (...conditions: Provider<AuthorizationCondition>[]);
+  (...conditions: Provider<AuthorizationCondition>[])
 }
-
-const Authorized: AuthorizedDecorator = function(...conditions: Provider<AuthorizationCondition>[]) {
-  return authorizedDecorator.bind(null, [IsAuthorized, ...conditions])
-} as any
-
-export { Authorized }
 
 export function isAuthorizedFactory(authUser): AuthorizationCondition {
   if (authUser) {
@@ -82,3 +76,9 @@ export const IsAuthorized: Provider<AuthorizationCondition> = {
   useFactory: isAuthorizedFactory,
   deps: [AuthorizedUser],
 }
+
+const Authorized: AuthorizedDecorator = function(...conditions: Provider<AuthorizationCondition>[]) {
+  return authorizedDecorator.bind(null, [IsAuthorized, ...conditions])
+} as any
+
+export { Authorized }

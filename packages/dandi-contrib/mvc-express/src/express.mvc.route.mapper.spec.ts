@@ -1,7 +1,7 @@
+import { ExpressInstance, ExpressMvcRouteMapper } from '@dandi-contrib/mvc-express'
 import { stubHarness } from '@dandi/core/testing'
 import { HttpMethod, HttpRequest, HttpResponse } from '@dandi/http'
 import { Route, RouteExecutor } from '@dandi/mvc'
-import { ExpressInstance, ExpressMvcRouteMapper } from '@dandi-contrib/mvc-express'
 
 import { expect } from 'chai'
 import { stub } from 'sinon'
