@@ -12,7 +12,7 @@ import {
 } from './view-engine-config'
 import { ViewEngineResolver } from './view-engine-resolver'
 import { VIEW_RESULT_FACTORY } from './view-result-factory'
-import { ViewRouteTransformer } from './view.route-transformer'
+import { ViewRouteTransformer } from './view-route-transformer'
 
 export interface MvcViewModule extends Array<any> {
   engine(extension: string, engine: Constructor<ViewEngine>): this
