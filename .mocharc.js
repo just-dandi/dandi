@@ -17,7 +17,7 @@
 //   - 'packages/*/*/{,(!node_modules)/*/}*/src/**/*.int-spec.ts'
 
 const { readdirSync, statSync } = require('fs')
-const { dirname,  } = require('path')
+const { dirname, resolve } = require('path')
 
 const [,, scopesArg, ...scopes] = process.argv
 if (scopesArg !== '--scope') {
@@ -28,7 +28,7 @@ const manifest = require('./.tsconfig.builder.json').include.filter(file => file
 function findPaths(dir) {
   const subDirs = readdirSync(dir)
   return subDirs
-    .filter(subDir => subDir !== 'src' && subDir !== 'node_modules')
+    .filter(subDir => subDir !== 'src' && subDir !== 'node_modules' && subDir !== '.yarn-cache')
     .map(subDir => `${dir}/${subDir}`)
     .filter(subDir => statSync(subDir).isDirectory())
     .reduce((result, subDir) => {
@@ -46,7 +46,7 @@ const paths = manifest
   })
   .reduce((result, file) => {
     const dir = dirname(file)
-    result.push(dir, ...findPaths(dir))
+    result.push(dir, ...findPaths(resolve(__dirname, dir)))
     return result
   }, [])
 const barrels = paths.map(path => `${path}/index.ts`)
@@ -71,12 +71,12 @@ module.exports = {
   extension: 'ts',
   require: [
     'tsconfig-paths/register',
-    './test/ts-node.js',
+    resolve(__dirname, './test/ts-node.js'),
     'ts-custom-error-shim',
-    './test/mocha.config',
+    resolve(__dirname, './test/mocha.config'),
   ],
   file: [
-    'test/sandbox.ts',
+    resolve(__dirname, 'test/sandbox.ts'),
     ...manifest,
   ],
   spec,
