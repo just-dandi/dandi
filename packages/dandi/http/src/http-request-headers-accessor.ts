@@ -12,7 +12,7 @@ export interface HttpRequestHeadersAccessor {
   get<THeaderName extends HttpRequestHeader>(headerName: THeaderName): HttpRequestHeaders[THeaderName]
 }
 
-export const HttpRequestHeadersAccessor = localOpinionatedToken('HttpRequestHeadersAccessor', {
+export const HttpRequestHeadersAccessor = localOpinionatedToken<HttpRequestHeadersAccessor>('HttpRequestHeadersAccessor', {
   multi: false,
   restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
 })
