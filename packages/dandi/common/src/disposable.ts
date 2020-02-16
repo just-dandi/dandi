@@ -148,9 +148,6 @@ export class Disposable {
     const resolvedObj = isPromise(obj) ? await obj : obj
     try {
       return await use(resolvedObj)
-    } catch (err) {
-      console.error(err)
-      throw err
     } finally {
       await Disposable.dispose(resolvedObj, `after Disposable.useAsync() for ${obj.constructor.name}`)
     }
