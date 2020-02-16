@@ -69,6 +69,16 @@ console.warn = (msg, ...args) => {
 
 module.exports = {
   extension: 'ts',
+  ignore: [
+    '.out',
+    '.build',
+    'dist',
+  ],
+  watchIgnore: [
+    '.out',
+    '.build',
+    'dist',
+  ],
   require: [
     'tsconfig-paths/register',
     resolve(__dirname, './test/ts-node.js'),
