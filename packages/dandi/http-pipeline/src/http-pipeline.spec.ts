@@ -83,6 +83,10 @@ describe('HttpPipeline', () => {
       provide: HttpPipelineTerminator,
       useFactory: () => terminator,
     },
+    {
+      provide: HttpPipelineConfig,
+      useFactory: () => config,
+    },
     stubProvider(DefaultHttpPipelineErrorHandler, HttpPipelineErrorResultHandler),
   )
 
@@ -99,10 +103,11 @@ describe('HttpPipeline', () => {
     )
   }
 
-  function invokePipeline(): Promise<any> {
-    return requestInjector.invoke(pipeline, 'handleRequest')
+  async function invokePipeline(): Promise<any> {
+    return await requestInjector.invoke(pipeline, 'handleRequest')
   }
 
+  let config: HttpPipelineConfig
   let pipeline: HttpPipeline
   let terminator: SinonStubbedInstance<HttpPipelineTerminator>
   let requestInjector: TestInjector
@@ -110,6 +115,7 @@ describe('HttpPipeline', () => {
   let renderer: SinonStubbedInstance<HttpPipelineRenderer>
 
   beforeEach(async () => {
+    config = {}
     renderer = createStubInstance(NativeJsonObjectRenderer)
     renderer.render.resolves({
       contentType: 'text/plain',
@@ -295,14 +301,10 @@ describe('HttpPipeline', () => {
       beforeEach(async () => {
         harness.register(TestPreparer)
         registerHandler(new TestController(), 'method')
-        const config = {
+        config = {
           before: [TestPreparer, DependentTestPreparer],
         }
         harness.register(
-          {
-            provide: HttpPipelineConfig,
-            useFactory: () => config,
-          },
           underTest(TestPreparer),
           underTest(DependentTestPreparer),
         )
