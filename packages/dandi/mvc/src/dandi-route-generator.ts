@@ -8,8 +8,8 @@ import { getControllerMetadata } from './controller-metadata'
 import { getCorsConfig } from './cors.decorator'
 import { Route } from './route'
 import { RouteGenerator } from './route-generator'
-import { RouteTransformer } from './route-transformer'
 import { RouteGeneratorError } from './route-generator.error'
+import { RouteTransformer } from './route-transformer'
 
 @Injectable(RouteGenerator)
 export class DandiRouteGenerator implements RouteGenerator {

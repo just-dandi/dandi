@@ -7,8 +7,8 @@ import {
   corsRequestAllowed,
 } from '@dandi/http-pipeline'
 
-import { SinonStubbedInstance } from 'sinon'
 import { expect } from 'chai'
+import { SinonStubbedInstance } from 'sinon'
 
 describe('CorsPreparer', () => {
 

@@ -16,8 +16,8 @@ import {
 import { HttpPipelineResult } from '../http-pipeline-result'
 import { localOpinionatedToken } from '../local-token'
 
-import { RendererInfo, RendererInfoProvider, RendererMetadata } from './renderer-decorator'
 import { HttpPipelineRendererFactoryError } from './http-pipeline-renderer-factory-error'
+import { RendererInfo, RendererInfoProvider, RendererMetadata } from './renderer-decorator'
 
 export interface HttpPipelineRendererResult {
   headers?: HttpHeaders

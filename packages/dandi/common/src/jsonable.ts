@@ -1,5 +1,5 @@
 export interface Jsonable {
-  toJSON(): any;
+  toJSON(): any
 }
 
 export function isJsonable(obj: any): obj is Jsonable {

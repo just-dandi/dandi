@@ -6,6 +6,10 @@ import { Uuid } from './uuid'
 
 export type PrimitiveType = Boolean | Currency | DateTime | Number | String | Url | Uuid
 
+export class Primitive<T extends PrimitiveType> {
+  constructor(public readonly value: T) {}
+}
+
 export function isPrimitiveType(type: any): type is PrimitiveType {
   return (
     type === Boolean ||
@@ -17,8 +21,4 @@ export function isPrimitiveType(type: any): type is PrimitiveType {
     type === Url ||
     type === Uuid
   )
-}
-
-export class Primitive<T extends PrimitiveType> {
-  constructor(public readonly value: T) {}
 }

@@ -3,8 +3,8 @@ import { Constructor } from '@dandi/common'
 import { getResourceMetadata, resourceMetaKey } from './resource.metadata'
 
 export interface ResourceDecorator {
-  (): ClassDecorator;
-  isResource(obj: any): boolean;
+  (): ClassDecorator
+  isResource(obj: any): boolean
 }
 
 const Resource: ResourceDecorator = function Resource() {

@@ -1,3 +1,4 @@
+import { Constructor } from '@dandi/common'
 import { Injector } from '@dandi/core'
 import { DandiInjector } from '@dandi/core/internal'
 import { LoggerFixture, stub } from '@dandi/core/testing'
@@ -5,7 +6,6 @@ import { ViewEngineResolver } from '@dandi/mvc-view'
 
 import { expect } from 'chai'
 import { createStubInstance, SinonStub, SinonStubbedInstance } from 'sinon'
-import { Constructor } from '@dandi/common'
 
 describe('ViewEngineResolver', () => {
 

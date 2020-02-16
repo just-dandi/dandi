@@ -3,7 +3,7 @@ import { Provider } from '@dandi/core'
 import { AuthorizationCondition } from './authorization.condition'
 
 export interface AuthorizationMetadata {
-  authorization?: Array<Provider<AuthorizationCondition>>;
+  authorization?: Provider<AuthorizationCondition>[]
 }
 
 export function mergeAuthorization(...args: AuthorizationMetadata[]): AuthorizationMetadata {

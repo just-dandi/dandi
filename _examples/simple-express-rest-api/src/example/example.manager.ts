@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@dandi/core'
 
 import { List, ListRequest } from '../lists/list'
-import { ListResource } from '../lists/list.resource'
 import { ListManager } from '../lists/list.manager'
+import { ListResource } from '../lists/list.resource'
 import { TaskRequest } from '../tasks/task'
 
 const LIST_TITLES = ['Todo', 'Stuff', 'Things', "Don't Forget", 'Honey-dos']

@@ -8,7 +8,7 @@ import { ModelBindingError } from './errors'
 import { RequestParamModelBuilderOptions, RequestParamModelBuilderOptionsProvider } from './request-param.decorator'
 
 export interface RequestBody<TModel, TTarget> extends ParamMetadata<TTarget> {
-  model: Constructor<TModel>;
+  model: Constructor<TModel>
 }
 
 export function requestBodyProvider(model: Constructor<any>): Provider<any> {

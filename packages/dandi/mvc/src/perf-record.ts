@@ -1,11 +1,11 @@
 import { PerformanceLogger } from '@dandi/http-pipeline'
 
 export interface PerfRecordEntry {
-  component: string;
-  name: string;
-  sinceLast: [number, number];
-  sinceStart: [number, number];
-  time: [number, number];
+  component: string
+  name: string
+  sinceLast: [number, number]
+  sinceStart: [number, number]
+  time: [number, number]
 }
 
 /* eslint-disable no-magic-numbers */

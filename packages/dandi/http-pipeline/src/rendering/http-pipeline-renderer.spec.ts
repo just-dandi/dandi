@@ -10,8 +10,8 @@ import {
 } from '@dandi/http-pipeline'
 import { TestApplicationJsonRenderer, TestTextPlainRenderer } from '@dandi/http-pipeline/testing'
 
-import { SinonStubbedInstance, stub } from 'sinon'
 import { expect } from 'chai'
+import { SinonStubbedInstance, stub } from 'sinon'
 
 describe('HttpPipelineRenderer', () => {
 

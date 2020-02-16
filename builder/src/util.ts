@@ -46,15 +46,15 @@ export class Util {
     })
   }
 
-  public spawn(command: string, args?: string[], options?: SpawnOptions, ignoreErrors: boolean = false): Promise<string> {
+  public spawn(command: string, args?: string[], options?: SpawnOptions, ignoreErrors = false): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       options = Object.assign(options || {}, {
         env: process.env,
       }, options)
       this.logger.debug('Spawning', command, ...args, 'in', options && options.cwd || process.cwd())
       const cmd = spawn(command, args, options)
-      let output: string = ''
-      let error: string = ''
+      let output = ''
+      let error = ''
       cmd.stdout.on('data', chunk => output += chunk)
       cmd.stderr.on('data', chunk => error += chunk)
       cmd.on('close', code => {

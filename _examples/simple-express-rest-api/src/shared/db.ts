@@ -14,8 +14,6 @@ function delayedDo(fn: () => any): Promise<any> {
 export class Db {
   private storage: Map<string, any> = new Map<string, any>()
 
-  constructor() {}
-
   public set(key: string, value: any): Promise<any> {
     return delayedDo(() => {
       this.storage.set(key, value)

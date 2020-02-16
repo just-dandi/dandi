@@ -7,7 +7,7 @@ import { localSymbolToken } from './local.token'
 export type TransactionFn<T> = (client: DbTransactionClient) => Promise<T>
 
 export interface DbClient extends DbQueryable {
-  transaction<T>(transactionFn: TransactionFn<T>): Promise<T>;
+  transaction<T>(transactionFn: TransactionFn<T>): Promise<T>
 }
 
 export const DbClient: InjectionToken<DbClient> = localSymbolToken<DbClient>('DbClient')

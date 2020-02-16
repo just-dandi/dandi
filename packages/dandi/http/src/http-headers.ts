@@ -65,7 +65,7 @@ export interface HttpHeaders {
   [HttpHeader.accessControlAllowOrigin]?: HttpHeaderWildcard | string
   [HttpHeader.accessControlExposeHeaders]?: string | string[]
   [HttpHeader.accessControlMaxAge]?: number
-  [HttpHeader.accessControlRequestHeaders]?: HttpHeader[],
+  [HttpHeader.accessControlRequestHeaders]?: HttpHeader[]
   [HttpHeader.accessControlRequestMethod]?: Omit<HttpMethod, HttpMethod.options>
   [HttpHeader.age]?: number
   [HttpHeader.allow]?: string[]

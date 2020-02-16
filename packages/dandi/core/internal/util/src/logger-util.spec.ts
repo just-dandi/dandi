@@ -1,7 +1,7 @@
 import { createLoggerMethodChain, MODIFIER_KEYS } from '@dandi/core/internal/util'
 
-import { stub } from 'sinon'
 import { expect } from 'chai'
+import { stub } from 'sinon'
 
 describe('createLoggerMethodChain', function() {
 

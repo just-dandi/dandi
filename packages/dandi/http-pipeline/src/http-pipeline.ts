@@ -16,13 +16,13 @@ import { HttpPipelineConfig } from './http-pipeline-config'
 import { HttpPipelineErrorResult } from './http-pipeline-error-result'
 import { HttpPipelineErrorResultHandler } from './http-pipeline-error-result-handler'
 import { HttpPipelineHandlerResult } from './http-pipeline-handler-result'
-import { HttpPipelineRenderer, HttpPipelineRendererResult } from './rendering/http-pipeline-renderer'
+import { HttpPipelinePreparerResult, httpPipelinePreparerResultProvider } from './http-pipeline-preparer'
 import { HttpPipelineResult, HttpPipelineVoidResult, isHttpPipelineResult } from './http-pipeline-result'
 import { HttpPipelineResultTransformer } from './http-pipeline-result-transformer'
 import { HttpPipelineTerminator } from './http-pipeline-terminator'
 import { HttpRequestHandler, HttpRequestHandlerMethod } from './http-request-handler'
 import { HttpRequestInfo } from './http-request-info'
-import { HttpPipelinePreparerResult, httpPipelinePreparerResultProvider } from './http-pipeline-preparer'
+import { HttpPipelineRenderer, HttpPipelineRendererResult } from './rendering/http-pipeline-renderer'
 
 @Injectable()
 export class HttpPipeline {

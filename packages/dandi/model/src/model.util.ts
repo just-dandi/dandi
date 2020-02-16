@@ -11,9 +11,9 @@ export type RecursionFilter<TMetadata extends MemberMetadata> = (meta: TMetadata
 const DEFAULT_FORMATTER: PropertyNameFormatter = (prop: string): string => prop
 
 export interface PathListOptions {
-  formatter?: PropertyNameFormatter;
-  maxDepth?: number;
-  recursionFilter?: RecursionFilter<MemberMetadata>;
+  formatter?: PropertyNameFormatter
+  maxDepth?: number
+  recursionFilter?: RecursionFilter<MemberMetadata>
 }
 
 export class ModelUtil {

@@ -2,8 +2,8 @@ import { Constructor } from '@dandi/common'
 import { InjectionToken, Provider } from '@dandi/core'
 
 import { localToken } from './local-token'
-import { ViewMetadata } from './view-metadata'
 import { ViewEngineErrorConfig } from './view-engine-config'
+import { ViewMetadata } from './view-metadata'
 
 export interface ViewEngine {
   render(view: ViewMetadata, templatePath: string, data?: any): string | Promise<string>

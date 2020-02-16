@@ -1,4 +1,6 @@
+const { resolve } = require('path')
+
 require('ts-node').register({
-  project: 'tsconfig.spec.json',
+  project: resolve(__dirname, '../tsconfig.spec.json'),
   transpileOnly: true,
 })

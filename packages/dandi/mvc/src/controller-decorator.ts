@@ -9,8 +9,8 @@ export const CONTROLLER_REGISTRATION_SOURCE: RegistrationSource = {
 }
 
 export interface Controller<T> {
-  multi?: false | null | undefined;
-  path?: string;
+  multi?: false | null | undefined
+  path?: string
 }
 
 export function controllerDecorator<T>(options: Controller<T>, target: Constructor<T>): void {
@@ -18,6 +18,12 @@ export function controllerDecorator<T>(options: Controller<T>, target: Construct
   const meta = getControllerMetadata(target)
   meta.path = options.path
   Repository.for(Controller).register(CONTROLLER_REGISTRATION_SOURCE, target)
+}
+
+export class MissingControllerPathError extends AppError {
+  constructor() {
+    super('@Controller must specify a path')
+  }
 }
 
 export function Controller<T>(path: string | Controller<T>): ClassDecorator {
@@ -29,10 +35,4 @@ export function Controller<T>(path: string | Controller<T>): ClassDecorator {
     throw new MissingControllerPathError()
   }
   return controllerDecorator.bind(null, options)
-}
-
-export class MissingControllerPathError extends AppError {
-  constructor() {
-    super('@Controller must specify a path')
-  }
 }

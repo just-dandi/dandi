@@ -16,10 +16,10 @@ export function makeViewResult(viewEngine: ViewEngine, view: ViewMetadata, templ
   return {
     data,
     render(): string | Promise<string> {
-        if (!value) {
-          value = viewEngine.render(view, templatePath, this.data)
-        }
-        return value
+      if (!value) {
+        value = viewEngine.render(view, templatePath, this.data)
+      }
+      return value
     },
   }
 }

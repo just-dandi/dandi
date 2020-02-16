@@ -1,6 +1,6 @@
 {
   "extends": [
-    "eslint:recommended"
+    "plugin:@typescript-eslint/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "plugins": ["import", "@typescript-eslint", "mocha"],
@@ -16,15 +16,21 @@
       "env": {
         "commonjs": true,
         "node": true
+      },
+      "rules": {
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/no-var-requires": "off"
       }
     },
     {
-      "files": ["**/src/**/*.*spec.ts"],
+      "files": ["**/src/**/*.*spec.ts", "**/test/**/*.ts"],
       "rules": {
         "mocha/no-exclusive-tests": "error",
         "no-magic-numbers": "off",
         "no-invalid-this": "off",
-        "no-new": "off"
+        "no-new": "off",
+        "@typescript-eslint/no-empty-function": "off",
+        "@typescript-eslint/no-use-before-define": "off"
       }
     },
     {
@@ -38,6 +44,12 @@
         "no-dupe-class-members": "off",
         "no-undef": "off",
         "no-unused-vars": "off"
+      }
+    },
+    {
+      "files": ["test/**/*.js"],
+      "rules": {
+         "@typescript-eslint/no-var-requires": "off"
       }
     }
   ],
@@ -120,15 +132,32 @@
     "space-in-parens": ["error", "never"],
     "spaced-comment": ["error", "always"],
 
-    "import/order": ["error", { "newlines-between":  "always-and-inside-groups" }],
+    "import/order": ["error", {
+      "alphabetize": {
+        "order": "asc",
+        "caseInsensitive": false
+      },
+      "groups": [
+        "builtin",
+        "external",
+        "internal",
+        "parent",
+        "sibling",
+        "index"
+      ],
+      "newlines-between":  "always-and-inside-groups"
+    }],
 
+    "@typescript-eslint/ban-types": ["off"],
     "@typescript-eslint/class-name-casing": ["error"],
     "@typescript-eslint/explicit-function-return-type": ["error", { "allowExpressions":  true }],
     "@typescript-eslint/generic-type-naming": ["error", "^T(?:[A-Z][a-zA-Z]+)*$"],
-//    "@typescript-eslint/indent": ["error", 2, { "ObjectExpression": 1 }],
     "@typescript-eslint/indent": ["off"],
+    "@typescript-eslint/member-delimiter-style": ["error", { "multiline": { "delimiter":  "none"} }],
+    "@typescript-eslint/no-inferrable-types": ["error", { "ignoreParameters": true, "ignoreProperties": true }],
     "@typescript-eslint/no-explicit-any": ["off"],
     "@typescript-eslint/no-unused-vars": ["error"],
+    "@typescript-eslint/no-use-before-define": ["error", { "functions": false, "classes": false, "variables": true, "enums": true }],
     "@typescript-eslint/semi": ["error", "never"]
   }
 }

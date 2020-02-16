@@ -12,11 +12,11 @@ export enum CacheProviderType {
 }
 
 export interface Cache {
-  get<T>(key: symbol): Promise<T>;
+  get<T>(key: symbol): Promise<T>
 
-  set(key: symbol, value: any, duration?: Duration): Promise<void>;
+  set(key: symbol, value: any, duration?: Duration): Promise<void>
 
-  delete(key: symbol): Promise<boolean>;
+  delete(key: symbol): Promise<boolean>
 }
 
 const tokens = new Map<CacheProviderType, MappedInjectionToken<CacheProviderType, Cache>>()

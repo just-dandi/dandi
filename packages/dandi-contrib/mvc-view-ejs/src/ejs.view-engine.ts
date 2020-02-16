@@ -2,9 +2,9 @@ import { Inject, Injectable, Optional } from '@dandi/core'
 import { ConfiguredViewEngine, ViewEngine, ViewEngineErrorConfig, ViewMetadata } from '@dandi/mvc-view'
 import * as ejs from 'ejs'
 
-import { EjsOptions } from './ejs-options'
 import { EJS_DEFAULT_ERROR_CONFIG } from './ejs-default-error-config'
 import { EJS_DEFAULT_OPTIONS } from './ejs-default-options'
+import { EjsOptions } from './ejs-options'
 
 @Injectable(ViewEngine)
 export class EjsViewEngine implements ViewEngine {

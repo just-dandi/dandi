@@ -18,6 +18,7 @@ export class ModelBuilderFixture implements ModelBuilder {
   }
 
   public constructMember(): any {
+    return undefined
   }
 
   public constructModel<T>(): T {

@@ -2,9 +2,9 @@ import { Inject, Injectable, Optional } from '@dandi/core'
 import { ConfiguredViewEngine, ViewEngine, ViewEngineErrorConfig, ViewMetadata } from '@dandi/mvc-view'
 import * as pug from 'pug'
 
+import { PUG_DEFAULT_ERROR_CONFIG } from './pug-default-error-config'
 import { PUG_DEFAULT_OPTIONS } from './pug-default-options'
 import { PugOptions } from './pug-options'
-import { PUG_DEFAULT_ERROR_CONFIG } from './pug-default-error-config'
 
 @Injectable(ViewEngine)
 export class PugViewEngine implements ViewEngine {

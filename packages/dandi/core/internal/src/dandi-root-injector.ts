@@ -9,8 +9,8 @@ import {
 
 import { DandiInjector } from './dandi-injector'
 import { DandiInjectorContext } from './dandi-injector-context'
-import { RootInjectionScope } from './root-injection-scope'
 import { DandiRootInjectorContext } from './dandi-root-injector-context'
+import { RootInjectionScope } from './root-injection-scope'
 
 /**
  * @internal

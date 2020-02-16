@@ -8,12 +8,12 @@ import { localOpinionatedToken } from './local.token'
 import { ModelValidator } from './model.validator'
 
 export interface MemberBuilderOptions {
-  validators?: ModelValidator[];
-  keyTransform?: KeyTransformFn;
+  validators?: ModelValidator[]
+  keyTransform?: KeyTransformFn
 }
 
 export interface ModelBuilderOptions extends MemberBuilderOptions {
-  dataTransformers?: DataTransformer[];
+  dataTransformers?: DataTransformer[]
 }
 
 export const ModelBuilderOptions = {
@@ -26,8 +26,8 @@ export const ModelBuilderOptions = {
 }
 
 export interface ModelBuilder {
-  constructModel<T>(type: Constructor<T>, obj: any, options?: ModelBuilderOptions): T;
-  constructMember(metadata: MemberMetadata, key: string, value: any, options?: ModelBuilderOptions): any;
+  constructModel<T>(type: Constructor<T>, obj: any, options?: ModelBuilderOptions): T
+  constructMember(metadata: MemberMetadata, key: string, value: any, options?: ModelBuilderOptions): any
 }
 
 export const ModelBuilder: InjectionToken<ModelBuilder> = localOpinionatedToken<ModelBuilder>('ModelBuilder', {

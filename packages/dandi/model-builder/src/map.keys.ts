@@ -1,4 +1,4 @@
-function isObject(obj: any): obj is Object {
+function isObject(obj: any): obj is Record<string, any> {
   return typeof obj === 'object'
 }
 
@@ -11,6 +11,7 @@ function walkCaseEntry(caseKeysFn: (str: string) => string, obj: any): any {
     if (!obj.length) {
       return obj
     }
+
     return mapKeys(caseKeysFn, obj)
   }
 

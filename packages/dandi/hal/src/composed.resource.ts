@@ -40,7 +40,7 @@ export class ComposedResource<T> implements Jsonable {
     return Object.assign({ _links: this.links }, entity, this.getEmbeddedJsonObject())
   }
 
-  private getEmbeddedJsonObject(): { [key: string]: any, _embedded?: { [key: string]: any } } {
+  private getEmbeddedJsonObject(): { [key: string]: any; _embedded?: { [key: string]: any } } {
     if (!Object.keys(this.embedded).length) {
       return {}
     }

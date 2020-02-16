@@ -4,8 +4,8 @@ import { DbClient, DbTransactionClient, TransactionFn } from '@dandi/data'
 import { ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder'
 
 import { PgDbModelBuilderOptions } from './pg-db-model-builder-options'
-import { PgDbQueryableBase } from './pg-db-queryable'
 import { PgDbPoolClient } from './pg-db-pool-client'
+import { PgDbQueryableBase } from './pg-db-queryable'
 
 @Injectable(DbClient)
 export class PgDbClient extends PgDbQueryableBase<PgDbPoolClient> implements DbClient, Disposable {

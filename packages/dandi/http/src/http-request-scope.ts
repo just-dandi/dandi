@@ -5,7 +5,7 @@ import { HttpRequest } from './http-request'
 const HTTP_REQUEST_SCOPE = '@dandi/http#HttpRequest'
 
 export interface HttpRequestScope extends CustomInjectionScope {
-  description: '@dandi/http#HttpRequest',
+  description: '@dandi/http#HttpRequest'
 }
 
 export interface HttpRequestScopeInstance extends HttpRequestScope {

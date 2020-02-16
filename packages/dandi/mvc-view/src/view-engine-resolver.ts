@@ -6,17 +6,17 @@ import { Inject, Injectable, Logger, Injector, Optional } from '@dandi/core'
 
 import { MissingTemplateError } from './missing-template.error'
 import { ViewEngine } from './view-engine'
-import { ViewMetadata } from './view-metadata'
 import { ViewEngineConfig } from './view-engine-config'
+import { ViewMetadata } from './view-metadata'
 
 export interface ResolvedView {
-  engine: ViewEngine;
-  templatePath: string;
+  engine: ViewEngine
+  templatePath: string
 }
 
 interface ViewEngineIndexedConfig extends ViewEngineConfig {
-  index: number;
-  ignored: boolean;
+  index: number
+  ignored: boolean
 }
 
 @Injectable()

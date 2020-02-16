@@ -1,6 +1,6 @@
+import { LambdaHandler } from '@dandi-contrib/aws-lambda'
 import { Inject, Injectable } from '@dandi/core'
 import { RequestBody } from '@dandi/http-model'
-import { LambdaHandler } from '@dandi-contrib/aws-lambda'
 
 import { DataProcessorService } from './data-processor.service'
 import { ReceiveDataModel, ReceiveDataResponse } from './receive-data.model'

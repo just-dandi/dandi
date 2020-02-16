@@ -9,8 +9,8 @@ import { localToken } from './local-token'
 const DEFAULT_EXTENSIONS = ['.ts', '.js']
 
 export interface FileSystemScannerConfig {
-  extensions?: string[];
-  include?: RegExp | RegExp[];
+  extensions?: string[]
+  include?: RegExp | RegExp[]
 }
 export const FileSystemScannerConfig = localToken.opinionated('FileSystemScannerConfig', {
   multi: true,

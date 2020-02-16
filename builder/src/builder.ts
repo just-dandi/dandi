@@ -86,7 +86,7 @@ export class Builder {
     await this.copyProjectFile(info, this.project.licenseFile)
   }
 
-  private async copyPackageFile(info: PackageInfo, packageFileName: string, skipIfNotExists: boolean = false): Promise<void> {
+  private async copyPackageFile(info: PackageInfo, packageFileName: string, skipIfNotExists = false): Promise<void> {
     try {
       const sourcePath = resolve(info.path, packageFileName)
       if (!(await pathExists(sourcePath))) {

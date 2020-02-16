@@ -1,3 +1,3 @@
 export interface PerformanceLogger {
-  mark(component: string, name: string): [number, number];
+  mark(component: string, name: string): [number, number]
 }

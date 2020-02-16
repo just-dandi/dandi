@@ -7,8 +7,8 @@ export type Registerable = RegisterableTypes | RegisterableTypes[]
 export abstract class Module extends Array<Registerable> {}
 
 export interface ModuleInfo {
-  name: string;
-  package: string;
-  module: Module;
+  name: string
+  package: string
+  module: Module
   registeredBy: Module[]
 }

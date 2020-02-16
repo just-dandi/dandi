@@ -1,11 +1,11 @@
 import { testHarness } from '@dandi/core/testing'
+import { HttpHeader, HttpMethod } from '@dandi/http'
 import {
   CorsHandler,
   CorsHeaderValues,
   HttpPipelineResult,
   isHttpPipelineVoidResult,
 } from '@dandi/http-pipeline'
-import { HttpHeader, HttpMethod } from '@dandi/http'
 
 import { expect } from 'chai'
 

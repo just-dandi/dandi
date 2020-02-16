@@ -5,10 +5,10 @@ import { SinonStub, stub } from 'sinon'
 export type ConsoleMethodName = keyof Console
 
 export interface StubConsoleFn {
-  (methods?: ConsoleMethodName[]): void;
+  (methods?: ConsoleMethodName[]): void
 
-  defaults: ConsoleMethodName[];
-  all: ConsoleMethodName[];
+  defaults: ConsoleMethodName[]
+  all: ConsoleMethodName[]
 }
 
 function stubConsoleFn(

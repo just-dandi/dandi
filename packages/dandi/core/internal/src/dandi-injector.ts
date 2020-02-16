@@ -151,7 +151,7 @@ export class DandiInjector implements Injector, Disposable {
         const paramScope = new DependencyInjectionScope(instance, methodName as string, param.name)
         const paramInjector = this.createChild(paramScope, param.providers)
         return (await paramInjector.inject(param.token, param.optional))?.value
-        },
+      },
       ))
       : []
     return await method.apply(instance, invokeTargetArgs)

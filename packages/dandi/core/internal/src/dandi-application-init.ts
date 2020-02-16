@@ -54,8 +54,8 @@ export class DandiApplicationInit<TConfig extends DandiApplicationInternalConfig
   }
 
   private appInjector: Injector
-  private initialized: boolean = false
-  private started: boolean = false
+  private initialized = false
+  private started = false
   private readonly initHost: DandiApplicationInit<TConfig>
 
   constructor(public logger: Logger, private config: TConfig) {
