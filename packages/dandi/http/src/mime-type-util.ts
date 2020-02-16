@@ -54,10 +54,17 @@ export function parseMimeTypes(...acceptHeaders: string[]): MimeTypeInfo[] {
     })
 }
 
-export function mimeTypesAreCompatible(allowed: MimeTypeInfo, target: MimeTypeInfo): boolean {
+function mimeTypeIsCompatible(allowed: MimeTypeInfo, target: MimeTypeInfo): boolean {
   const matchesType = allowed.type === '*' || allowed.type === target.type
   const matchesSubtype = allowed.subtype === '*' || allowed.subtype === target.subtype
   return matchesType && matchesSubtype
+}
+
+export function mimeTypesAreCompatible(allowed: MimeTypeInfo | MimeTypeInfo[], target: MimeTypeInfo): boolean {
+  if (Array.isArray(allowed)) {
+    return allowed.some(allowedEntry => mimeTypeIsCompatible(allowedEntry, target))
+  }
+  return mimeTypeIsCompatible(allowed, target)
 }
 
 export function mimeTypesAreIdentical(a: MimeTypeInfo, b: MimeTypeInfo): boolean {
