@@ -1,7 +1,7 @@
 import { expect } from 'chai'
 
-import { DateTimeTypeConverter } from './date.time.type.converter'
-import { TypeConversionError } from './type.converter'
+import { DateTimeTypeConverter } from './date-time-type-converter'
+import { TypeConversionError } from './type-converter'
 
 describe('DateTimeTypeConverter', () => {
   let validator: DateTimeTypeConverter

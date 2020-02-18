@@ -1,8 +1,8 @@
 import { Uuid } from '@dandi/common'
 import { expect } from 'chai'
 
-import { TypeConversionError } from './type.converter'
-import { UuidTypeConverter } from './uuid.type.converter'
+import { TypeConversionError } from './type-converter'
+import { UuidTypeConverter } from './uuid-type-converter'
 
 describe('UuidTypeConverter', () => {
   let validator: UuidTypeConverter

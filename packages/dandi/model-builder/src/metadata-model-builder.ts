@@ -2,11 +2,11 @@ import { Constructor, isPrimitiveType } from '@dandi/common'
 import { Inject, Injectable } from '@dandi/core'
 import { MemberMetadata, OneOf, getAllKeys, getModelMetadata } from '@dandi/model'
 
-import { MemberBuilderOptions, ModelBuilder, ModelBuilderOptions } from './model.builder'
-import { ModelValidationError } from './model.validation.error'
-import { OneOfConversionAttempt, OneOfConversionError } from './one.of.conversion.error'
-import { PrimitiveTypeConverter } from './primitive.type.converter'
-import { TypeConversionError } from './type.converter'
+import { MemberBuilderOptions, ModelBuilder, ModelBuilderOptions } from './model-builder'
+import { ModelValidationError } from './model-validation-error'
+import { OneOfConversionAttempt, OneOfConversionError } from './one-of-conversion-error'
+import { PrimitiveTypeConverter } from './primitive-type-converter'
+import { TypeConversionError } from './type-converter'
 
 @Injectable(ModelBuilder)
 export class MetadataModelBuilder implements ModelBuilder {
