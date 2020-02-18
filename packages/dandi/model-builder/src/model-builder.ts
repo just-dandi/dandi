@@ -4,7 +4,7 @@ import { MemberMetadata } from '@dandi/model'
 
 import { DataTransformer } from './data-transformer'
 import { KeyTransformFn } from './key-transformer'
-import { localOpinionatedToken } from './local-token'
+import { localToken } from './local-token'
 import { ModelValidator } from './model-validator'
 
 export interface MemberBuilderOptions {
@@ -30,6 +30,6 @@ export interface ModelBuilder {
   constructMember(metadata: MemberMetadata, key: string, value: any, options?: ModelBuilderOptions): any
 }
 
-export const ModelBuilder: InjectionToken<ModelBuilder> = localOpinionatedToken<ModelBuilder>('ModelBuilder', {
+export const ModelBuilder: InjectionToken<ModelBuilder> = localToken.opinionated<ModelBuilder>('ModelBuilder', {
   multi: false,
 })

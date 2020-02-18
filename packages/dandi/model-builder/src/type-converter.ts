@@ -2,7 +2,7 @@ import { AppError, Constructor, PrimitiveConstructor } from '@dandi/common'
 import { InjectionToken } from '@dandi/core'
 import { MemberMetadata } from '@dandi/model'
 
-import { localOpinionatedToken } from './local-token'
+import { localToken } from './local-token'
 
 export interface TypeConverter<T> {
   convert(value: any, metadata?: MemberMetadata): T
@@ -11,7 +11,7 @@ export interface TypeConverter<T> {
 
 export type ConvertedType = Constructor | ((...args: any[]) => ParameterDecorator)
 
-export const TypeConverter: InjectionToken<TypeConverter<any>> = localOpinionatedToken('TypeConverter', {
+export const TypeConverter: InjectionToken<TypeConverter<any>> = localToken.opinionated<TypeConverter<any>>('TypeConverter', {
   multi: true,
 })
 

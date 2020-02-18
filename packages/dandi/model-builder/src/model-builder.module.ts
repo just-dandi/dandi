@@ -1,12 +1,12 @@
 import { ModuleBuilder, Registerable } from '@dandi/core'
 
-import { PKG } from './local-token'
+import { localToken } from './local-token'
 import { MetadataModelBuilder } from './metadata-model-builder'
 import { TypeConverters } from './type-converters'
 
 export class ModelBuilderModuleBuilder extends ModuleBuilder<ModelBuilderModuleBuilder> {
   constructor(...entries: Registerable[]) {
-    super(ModelBuilderModuleBuilder, PKG, ...entries)
+    super(ModelBuilderModuleBuilder, localToken.PKG, ...entries)
   }
 }
 
