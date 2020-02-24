@@ -19,7 +19,7 @@ export class AppError extends Error {
     return undefined
   }
 
-  private static indent(source: string, level: number): string {
+  public static indent(source: string, level: number): string {
     if (!source) {
       return source
     }
@@ -27,6 +27,10 @@ export class AppError extends Error {
     const [, linebreak] = source.match(/(\r?\n)/) || [undefined, '']
     const lines = source.split(/\r?\n/)
     return lines.join(`${linebreak}${spacer}`)
+  }
+
+  public static indentLine(source: string, level: number): string {
+    return `${AppError.getIndent(level)}${source}`
   }
 
   private static getIndent(level: number): string {
