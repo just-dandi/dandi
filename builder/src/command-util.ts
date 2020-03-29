@@ -45,6 +45,7 @@ export class CommandUtil {
 
       const container = new DandiApplication({
         providers: [
+          Builder,
           BuilderProject,
           CommandRunner,
           LoggingModule.use(
