@@ -1,10 +1,10 @@
 import { AppError } from '@dandi/common'
 
 const PATTERNS = {
-  ctrOrFunctionSig: /(?:constructor|(?:async\s*)?[fF]unction)\s?(\([\w.=,\s()+[\]]*\))/,
-  arrowFnSig: /^(?:async\s*)?(\(?[\w.=,\s]*\)?) =>/,
-  methodSig: (name) => new RegExp(`^(?:async\\s*)?${name}(\\(([\\w.=,\\s]*)\\))`),
-  params: /\w+/g,
+  ctrOrFunctionSig: /(?:constructor|(?:async\s*)?[fF]unction)\s?(\([\w$.=,\s()+[\]]*\))/,
+  arrowFnSig: /^(?:async\s*)?(\(?[\w$.=,\s]*\)?) =>/,
+  methodSig: (name) => new RegExp(`^(?:async\\s*)?${name}(\\(([\\w$.=,\\s]*)\\))`),
+  params: /[\w$]+/g,
 }
 
 const CACHE_KEYS = new Map<Function, Map<string, symbol>>()
