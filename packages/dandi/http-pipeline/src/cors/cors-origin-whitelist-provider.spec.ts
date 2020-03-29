@@ -1,6 +1,5 @@
 import { testHarness, TestInjector } from '@dandi/core/testing'
 import {
-  createHttpRequestScope,
   HttpHeader,
   HttpHeaderWildcard,
   HttpRequest,
@@ -12,6 +11,7 @@ import {
   CorsOriginWhitelist,
   CorsOriginWhitelistProvider,
 } from '@dandi/http-pipeline'
+import { createTestHttpRequestScope } from '@dandi/http/testing'
 
 import { expect } from 'chai'
 
@@ -38,7 +38,7 @@ describe('CorsOriginWhitelistProvider', () => {
     headers = HttpRequestHeadersHashAccessor.fromRaw({
       [HttpHeader.origin]: origin,
     })
-    injector = harness.createChild(createHttpRequestScope({} as HttpRequest))
+    injector = harness.createChild(createTestHttpRequestScope())
   })
   afterEach(() => {
     origin = undefined

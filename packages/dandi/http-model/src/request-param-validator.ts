@@ -5,6 +5,9 @@ import { MemberBuilderOptions, ModelBuilder } from '@dandi/model-builder'
 
 import { InvalidParamError, MissingParamError } from './errors'
 
+/**
+ * @internal
+ */
 export function requestParamValidatorFactory(
   type: any,
   paramName: string,
@@ -15,14 +18,14 @@ export function requestParamValidatorFactory(
   options: MemberBuilderOptions,
 ): any {
   const value = paramMap[paramName]
-  if (typeof value === 'undefined') {
+  if (typeof value === 'undefined' || value === null || value === '') {
     if (paramMeta.optional) {
       return undefined
     }
     throw new MissingParamError(paramName)
   }
   try {
-    return builder.constructMember(memberMetadata, paramName, value, options)
+    return builder.constructMember(memberMetadata, paramName, value, options)?.builderValue
   } catch (err) {
     throw new InvalidParamError(paramName, err)
   }

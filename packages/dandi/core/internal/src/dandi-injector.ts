@@ -1,10 +1,11 @@
 import { Disposable } from '@dandi/common'
 import {
   DandiInjectionError,
-  MissingTokenError,
   InvalidTokenError,
   InvalidTokenScopeError,
+  MetadataProviderError,
   MissingProviderError,
+  MissingTokenError,
 } from '@dandi/core/errors'
 import {
   getInjectableMetadata,
@@ -14,6 +15,7 @@ import {
   getScopeRestriction,
   isInjectionToken,
   scopesAreCompatible,
+  ParamMetadata,
 } from '@dandi/core/internal/util'
 import {
   DependencyInjectionScope,
@@ -28,6 +30,7 @@ import {
   InvokableFn,
   InvokeInjectionScope,
   OpinionatedToken,
+  Provider,
   Registerable,
   ResolvedProvider,
   ResolverContext,
@@ -51,6 +54,7 @@ type KnownArgs<T> = { [TProp in keyof Args<T>]?: Args<T>[TProp] }
 export class DandiInjector implements Injector, Disposable {
 
   public readonly context: DandiInjectorContext
+  public readonly app: Injector
 
   protected generator: InstanceGenerator
   protected readonly generatorReady: Promise<void>
@@ -72,7 +76,9 @@ export class DandiInjector implements Injector, Disposable {
         },
         ...providers || [],
       )
+      this.app = parent.app || this
     }
+
     this.generatorReady = this.initGeneratorFactory(generatorFactory)
   }
 
@@ -100,10 +106,10 @@ export class DandiInjector implements Injector, Disposable {
       }
       return resolverContext.resolveValue(result)
     } catch (err) {
-      if (err instanceof DandiInjectionError) {
-        throw err
+      if (DandiInjectionError.shouldWrap(err)) {
+        throw new DandiInjectionError(token, this.context, `${err.message} while injecting`, err)
       }
-      throw new DandiInjectionError(token, this.context, `${err.message} while injecting`, err)
+      throw err
     }
   }
 
@@ -112,8 +118,13 @@ export class DandiInjector implements Injector, Disposable {
     methodName: InstanceInvokableFn<TInstance, TResult>,
     ...providers: Registerable[]
   ): Promise<TResult> {
-    const invokeInjectionScope: InvokeInjectionScope = { instance, methodName: methodName.toString() }
-    return await Disposable.useAsync(this.createChild(invokeInjectionScope, providers), async (injector) => {
+    const methodMeta = getInjectableMetadata(instance[methodName.toString()])
+    const invokeInjectionScope: InvokeInjectionScope = methodMeta.scopeFn ?
+      methodMeta.scopeFn(instance, methodName) :
+      { instance, methodName: methodName.toString() }
+    const methodProviders = this.getMethodProviders(instance, methodName.toString())
+    const scopeProviders = providers.concat(methodProviders)
+    return await Disposable.useAsync(this.createChild(invokeInjectionScope, scopeProviders), async (injector) => {
       return await injector.invokeInternal(instance, methodName)
     })
   }
@@ -155,6 +166,30 @@ export class DandiInjector implements Injector, Disposable {
       ))
       : []
     return await method.apply(instance, invokeTargetArgs)
+  }
+
+  private getMethodProviders(instance: any, methodName: string): Provider<any>[] {
+    const method = instance[methodName]
+    const meta = getInjectableMetadata(method)
+    const methodProviders = meta.params.reduce((result, paramMeta) => {
+      if (paramMeta.methodProviders) {
+        paramMeta.methodProviders.forEach(provider => {
+          const existing = result.get(provider.provide)
+          if (existing) {
+            // FIXME: allow multi providers/tokens
+            const [originalParam] = existing
+            throw new MetadataProviderError(
+              `Parameter ${paramMeta.name} of ${instance.constructor.name}.${methodName} is attempting to ` +
+              `register a provider for token ${provider.provide}, but it is already registered by param ` +
+              `${originalParam.name}`,
+            )
+          }
+          result.set(provider.provide, [paramMeta, provider])
+        })
+      }
+      return result
+    }, new Map<InjectionToken<any>, [ParamMetadata<any>, Provider<any>]>())
+    return [...methodProviders.values()].map(([, provider]) => provider)
   }
 
   private async initGeneratorFactory(generatorFactory: InstanceGeneratorFactory): Promise<void> {

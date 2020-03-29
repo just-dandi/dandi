@@ -1,7 +1,6 @@
 import { AppError, Disposable, Uuid } from '@dandi/common'
-import { Inject, Injectable, Logger, Injector, Optional } from '@dandi/core'
+import { Inject, Injectable, Logger, Injector, Optional, InjectionScope } from '@dandi/core'
 import {
-  createHttpRequestScope,
   ForbiddenError,
   HttpHeader,
   HttpRequest,
@@ -60,7 +59,13 @@ export class DandiRouteExecutor implements RouteExecutor {
       )
 
       performance.mark('DandiRouteExecutor.execRoute', 'beforeHandleRequest')
-      await Disposable.useAsync(this.injector.createChild(createHttpRequestScope(req), requestProviders), async requestInjector => {
+      const preRequestScope: InjectionScope = {
+        type: 'DandiRouteExecutor.execRoute',
+        description: '',
+        instanceId: req,
+      }
+      await Disposable.useAsync(this.injector.createChild(preRequestScope, requestProviders), async requestInjector => {
+        // TODO: move auth checks into HttpPipeline so the preRequestScope is no longer needed
         await requestInjector.invoke(this as DandiRouteExecutor, 'checkAuthorizationConditions')
         await requestInjector.invoke(this.pipeline, 'handleRequest')
       })

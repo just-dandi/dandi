@@ -1,6 +1,7 @@
 import { stub, testHarness, TestInjector } from '@dandi/core/testing'
-import { createHttpRequestScope, HttpHeader, HttpMethod, HttpRequest, MimeType } from '@dandi/http'
+import { HttpHeader, HttpMethod, HttpRequest, MimeType } from '@dandi/http'
 import { CorsHeaderValues, CorsTransformer, HttpPipelineResult } from '@dandi/http-pipeline'
+import { createTestHttpRequestScope } from '@dandi/http/testing'
 import { expect } from 'chai'
 import { SinonStubbedInstance } from 'sinon'
 
@@ -32,7 +33,7 @@ describe('CorsTransformer', () => {
     req = {
       get: stub(),
     } as SinonStubbedInstance<HttpRequest>
-    injector = harness.createChild(createHttpRequestScope(req))
+    injector = harness.createChild(createTestHttpRequestScope())
     transformer = await injector.inject(CorsTransformer)
     result = {
       headers: {

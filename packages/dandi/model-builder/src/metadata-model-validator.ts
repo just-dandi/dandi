@@ -1,42 +1,100 @@
 import { Injectable } from '@dandi/core'
 import { MemberMetadata } from '@dandi/model'
 
-import { MetadataValidationError } from './metadata-validation-error'
+import { ModelError } from './model-error'
+import { ModelErrorKey } from './model-error-key'
+import { ModelValidationError } from './model-validation-error'
 import { ModelValidator } from './model-validator'
 import { RequiredPropertyError } from './required-property-error'
 
 @Injectable(ModelValidator)
 export class MetadataModelValidator implements ModelValidator {
-  public validateMember(metadata: MemberMetadata, key: string, value: any): void {
-    if (value === null || value === undefined) {
+
+  public validateMember(metadata: MemberMetadata, key: string, value: any): ModelError[] {
+
+    if (value === null || value === undefined || value === '') {
       if (metadata.required) {
-        throw new RequiredPropertyError(key)
+        return [new RequiredPropertyError(key)]
       }
-      return
+      return []
     }
+
+    const errors: ModelError[] = []
 
     if (metadata.pattern && !metadata.pattern.test(value.toString())) {
-      throw new MetadataValidationError('pattern')
+      errors.push(new ModelValidationError(key, 'pattern', metadata.pattern))
     }
-    if ((!isNaN(metadata.minLength) || !isNaN(metadata.maxLength)) && value.length === undefined) {
-      throw new MetadataValidationError('minLength or maxLength', 'value does not have a length property')
-    }
-    if (!isNaN(metadata.minLength) && value.length < metadata.minLength) {
-      throw new MetadataValidationError('minLength')
-    }
-    if (!isNaN(metadata.maxLength) && value.length > metadata.maxLength) {
-      throw new MetadataValidationError('maxLength')
-    }
-    if ((!isNaN(metadata.minValue) || !isNaN(metadata.maxValue)) && isNaN(value as any)) {
-      throw new MetadataValidationError('minValue or maxValue', 'value is not numeric')
-    }
-    if (!isNaN(metadata.minValue) && (value as any) < metadata.minValue) {
-      throw new MetadataValidationError('minValue')
-    }
-    if (!isNaN(metadata.maxValue) && (value as any) > metadata.maxValue) {
-      throw new MetadataValidationError('maxValue')
+    if (value.length === undefined) {
+
+      if (!isNaN(metadata.minLength)) {
+        errors.push(new ModelValidationError(key, ModelErrorKey.minLength, metadata.minLength, 'value does not have a length property'))
+      }
+      if (!isNaN(metadata.maxLength)) {
+        errors.push(new ModelValidationError(key, ModelErrorKey.maxLength, metadata.minLength, 'value does not have a length property'))
+      }
+
+    } else {
+
+      if (!isNaN(metadata.minLength) && value.length < metadata.minLength) {
+        errors.push(new ModelValidationError(
+          key,
+          ModelErrorKey.minLength,
+          metadata.minLength,
+          `value must have a length of at least ${metadata.minLength}`,
+
+        ))
+      }
+      if (!isNaN(metadata.maxLength) && value.length > metadata.maxLength) {
+        errors.push(new ModelValidationError(
+          key,
+          ModelErrorKey.maxLength,
+          metadata.maxLength,
+          `value must have a length of at most ${metadata.maxLength}`,
+        ))
+      }
+
     }
 
-    return value
+    if (isNaN(value)) {
+
+      if (!isNaN(metadata.minValue)) {
+        errors.push(new ModelValidationError(
+          key,
+          ModelErrorKey.minValue,
+          metadata.minValue,
+          'value is not numeric',
+        ))
+      }
+      if (!isNaN(metadata.maxValue)) {
+        errors.push(new ModelValidationError(
+          key,
+          ModelErrorKey.maxValue,
+          metadata.maxValue,
+          'value is not numeric',
+        ))
+      }
+
+    } else {
+
+      if (!isNaN(metadata.minValue) && (value as any) < metadata.minValue) {
+        errors.push(new ModelValidationError(
+          key,
+          ModelErrorKey.minValue,
+          metadata.minValue,
+          `value must be at least ${metadata.minValue}`,
+        ))
+      }
+      if (!isNaN(metadata.maxValue) && (value as any) > metadata.maxValue) {
+        errors.push(new ModelValidationError(
+          key,
+          ModelErrorKey.maxValue,
+          metadata.maxValue,
+          `value must be at most ${metadata.maxValue}`,
+        ))
+      }
+
+    }
+
+    return errors
   }
 }

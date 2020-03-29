@@ -1,4 +1,5 @@
 export * from './src/create-stub-object'
+export * from './src/get-provider-value'
 export * from './src/logger-fixture'
 export * from './src/sandbox'
 export * from './src/stub-provider'

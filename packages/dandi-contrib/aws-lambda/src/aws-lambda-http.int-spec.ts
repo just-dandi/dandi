@@ -2,7 +2,7 @@ import { AwsLambdaHttpModule, LambdaHandler, LambdaHandlerFn, Lambda } from '@da
 import { APIGatewayProxyEvent } from '@dandi-contrib/aws-lambda/node_modules/@types/aws-lambda'
 import { Injectable } from '@dandi/core'
 import { HttpHeader, HttpMethod, HttpModule, HttpStatusCode, MimeType } from '@dandi/http'
-import { QueryParam, RequestBody } from '@dandi/http-model'
+import { QueryParam, RequestModel } from '@dandi/http-model'
 import { HttpPipelineModule, NativeJsonObjectRenderer } from '@dandi/http-pipeline'
 import { Property, Required } from '@dandi/model'
 import { ModelBuilderModule } from '@dandi/model-builder'
@@ -34,7 +34,7 @@ describe('AWS Lambda Http Events', () => {
   @Injectable()
   class TestPostHandler implements LambdaHandler {
 
-    public handleEvent(@RequestBody(TestModel) model: TestModel): any {
+    public handleEvent(@RequestModel(TestModel) model: TestModel): any {
       return {
         message: model.message,
       }

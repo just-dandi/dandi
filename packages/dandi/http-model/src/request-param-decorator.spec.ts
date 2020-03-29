@@ -36,22 +36,20 @@ describe('@RequestParam', () => {
     const pathMeta = getInjectableParamMetadata(methodTarget(TestController), 'method', 0)
     const queryMeta = getInjectableParamMetadata(methodTarget(TestController), 'method', 1)
 
-    expect(pathMeta.providers).to.exist
-    expect(pathMeta.providers).not.to.be.empty
-    expect(pathMeta.providers[0].provide).to.equal(pathMeta.token)
-    expect((pathMeta.providers[0] as FactoryProvider<any>).deps).to.include.members([
+    expect(pathMeta.methodProviders).to.exist
+    expect(pathMeta.methodProviders).not.to.be.empty
+    expect(pathMeta.methodProviders[0].provide).to.equal(pathMeta.token)
+    expect((pathMeta.methodProviders[0] as FactoryProvider<any>).deps).to.include.members([
       ModelBuilder,
       HttpRequestPathParamMap,
     ])
 
-    expect(queryMeta.providers).to.exist
-    expect(queryMeta.providers).not.to.be.empty
-    expect(queryMeta.providers[0].provide).to.equal(queryMeta.token)
-    expect((queryMeta.providers[0] as FactoryProvider<any>).deps).to.include.members([
+    expect(queryMeta.methodProviders).to.exist
+    expect(queryMeta.methodProviders).not.to.be.empty
+    expect(queryMeta.methodProviders[0].provide).to.equal(queryMeta.token)
+    expect((queryMeta.methodProviders[0] as FactoryProvider<any>).deps).to.include.members([
       ModelBuilder,
       HttpRequestQueryParamMap,
     ])
   })
-
-  describe('validatorFactory', () => {})
 })

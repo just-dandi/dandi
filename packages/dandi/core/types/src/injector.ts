@@ -50,6 +50,7 @@ export interface Invoker {
 export interface TokenInjector {
 
   readonly parent: Injector
+  readonly app: Injector
   readonly context: InjectorContext
 
   inject<T>(token: InjectionToken<T>, optional?: boolean): Promise<InjectionResult<T>>

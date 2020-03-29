@@ -9,7 +9,6 @@ import {
   Provider,
   Registerable,
 } from '@dandi/core'
-import { createHttpRequestScope } from '@dandi/http'
 import {
   DefaultHttpRequestInfo,
   HttpPipeline,
@@ -74,9 +73,7 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
 
   public async handleEvent(event: TEvent, context: Context): Promise<any> {
     const providers = this.createProviders(event, context)
-    return Disposable.useAsync(this.injector.createChild(createHttpRequestScope(event as any), providers), async (injector) => {
-      return await injector.invoke(this.httpPipeline, 'handleRequest', ...providers)
-    })
+    return await this.injector.invoke(this.httpPipeline, 'handleRequest', ...providers)
   }
 
   private createProviders(event: TEvent, context: Context): Provider<any>[] {

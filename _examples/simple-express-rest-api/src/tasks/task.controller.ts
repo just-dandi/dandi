@@ -1,6 +1,6 @@
 import { Uuid } from '@dandi/common'
 import { Inject } from '@dandi/core'
-import { PathParam, RequestBody } from '@dandi/http-model'
+import { PathParam, RequestModel } from '@dandi/http-model'
 import { Controller, HttpGet, HttpPatch } from '@dandi/mvc'
 import { AccessorResourceId, ResourceAccessor } from '@dandi/mvc-hal'
 
@@ -22,7 +22,7 @@ export class TaskController {
   }
 
   @HttpPatch(':taskId')
-  public async updateTask(@PathParam(Uuid) taskId, @RequestBody(Task) task): Promise<TaskResource> {
+  public async updateTask(@PathParam(Uuid) taskId, @RequestModel(Task) task): Promise<TaskResource> {
     if (taskId !== task.taskId) {
       throw new Error('taskId on path did not match taskId on model')
     }

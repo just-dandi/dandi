@@ -1,4 +1,4 @@
-import { RequestBody } from '@dandi/http-model'
+import { RequestModel } from '@dandi/http-model'
 import { Property, Required } from '@dandi/model'
 import { Controller, HttpGet, HttpPost } from '@dandi/mvc'
 import { View } from '@dandi/mvc-view'
@@ -26,7 +26,7 @@ export class HyperviewController {
 
   @HttpPost('detail.xml')
   @View('detail.pug', { xml: true })
-  public detail(@RequestBody(FormModel) form: FormModel): any {
+  public detail(@RequestModel(FormModel) form: FormModel): any {
     return form
   }
 

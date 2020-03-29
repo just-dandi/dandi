@@ -1,11 +1,12 @@
 import { testHarness, stub, TestInjector } from '@dandi/core/testing'
-import { createHttpRequestScope, HttpHeader, HttpRequest } from '@dandi/http'
+import { HttpHeader, HttpRequest } from '@dandi/http'
 import {
   CorsAllowRequest,
   CorsHeaderValues,
   CorsPreparer,
   corsRequestAllowed,
 } from '@dandi/http-pipeline'
+import { createTestHttpRequestScope } from '@dandi/http/testing'
 
 import { expect } from 'chai'
 import { SinonStubbedInstance } from 'sinon'
@@ -27,7 +28,7 @@ describe('CorsPreparer', () => {
     req = {
       get: stub(),
     } as SinonStubbedInstance<HttpRequest>
-    injector = harness.createChild(createHttpRequestScope(req))
+    injector = harness.createChild(createTestHttpRequestScope())
     preparer = await injector.inject(CorsPreparer)
   })
   afterEach(() => {

@@ -1,4 +1,5 @@
 import { Constructor, isConstructor } from '@dandi/common'
+import { isFactoryProvider, isInjectionToken } from '@dandi/core/internal/util'
 
 import { localToken } from '../../src/local-token'
 
@@ -28,6 +29,13 @@ export interface InvokeParamInjectionScope<TInstance = any, TResult = any> exten
 export interface FactoryParamInjectionScope {
   target: FactoryProvider<any>
   paramToken: InjectionToken<any>
+}
+
+/**
+ * @internal
+ */
+export function isFactoryParamInjectionScope(obj: any): obj is FactoryParamInjectionScope {
+  return obj && isFactoryProvider(obj.target) && isInjectionToken(obj.paramToken)
 }
 
 export class DependencyInjectionScope {

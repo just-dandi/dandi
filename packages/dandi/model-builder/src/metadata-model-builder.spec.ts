@@ -1,29 +1,32 @@
 import { Uuid } from '@dandi/common'
+import { createStubInstance, spy, stub } from '@dandi/core/testing'
 import { Json, MapOf, MemberMetadata, OneOf, Property, SourceAccessor } from '@dandi/model'
 import {
   DataTransformer,
+  MemberBuilderResult,
   MetadataModelBuilder,
-  ModelValidationError,
-  OneOfConversionError,
+  ModelBuilderError,
+  ModelError,
   PrimitiveTypeConverter,
+  TypeConversionError,
 } from '@dandi/model-builder'
 
 import { expect } from 'chai'
 import { camel } from 'change-case'
-import { SinonSpy, SinonStubbedInstance, createStubInstance, spy, stub } from 'sinon'
+import { SinonSpy, SinonStubbedInstance } from 'sinon'
 
 describe('MetadataModelBuilder', () => {
-  let primitiveTypeValidator: SinonStubbedInstance<PrimitiveTypeConverter>
+  let primitiveTypeConverter: SinonStubbedInstance<PrimitiveTypeConverter>
   let builder: MetadataModelBuilder
 
   beforeEach(() => {
-    primitiveTypeValidator = createStubInstance(PrimitiveTypeConverter)
-    primitiveTypeValidator.convert.returnsArg(0)
-    builder = new MetadataModelBuilder(primitiveTypeValidator as any)
+    primitiveTypeConverter = createStubInstance(PrimitiveTypeConverter)
+    primitiveTypeConverter.convert.returnsArg(0)
+    builder = new MetadataModelBuilder(primitiveTypeConverter as any)
   })
   afterEach(() => {
     builder = undefined
-    primitiveTypeValidator = undefined
+    primitiveTypeConverter = undefined
   })
 
   describe('constructModel', () => {
@@ -174,9 +177,9 @@ describe('MetadataModelBuilder', () => {
       constructMember.restore()
       stub(builder as any, 'constructMemberInternal')
         .onFirstCall()
-        .returnsArg(2)
+        .callsFake((metadata, key, source) => [[], source])
         .onSecondCall()
-        .returns(123)
+        .returns([[], 123])
 
       const result = builder.constructModel(TestModel, value)
 
@@ -184,32 +187,45 @@ describe('MetadataModelBuilder', () => {
       expect(result.prop2).to.equal(123)
     })
 
-    it('catches member validation errors and throws a ModelValidationError', () => {
-      const value = { prop1: 'foo', prop2: '123' }
+    it('converts uncaught member conversion errors to ModelError', () => {
+      class TestModel {
+        @Property(String)
+        public prop1: string
+
+        @Property(Number)
+        public prop2: number
+
+        @Property(String)
+        public prop3: string
+      }
+      const value = { prop1: 'foo', prop2: '123', prop3: 'abc' }
       constructMember.restore()
-      const memberError = new Error('Your llama is lloose!')
+      const memberError = new ModelError('prop2', 'llama', 'Your llama is lloose!')
+      const otherError = new Error('You other llama is allso lloose')
       stub(builder as any, 'constructMemberInternal')
         .onFirstCall()
-        .returnsArg(2)
+        .callsFake((meta, key, source) => [[], source])
         .onSecondCall()
         .throws(memberError)
+        .onThirdCall()
+        .throws(otherError)
 
-      expect(() => builder.constructModel(TestModel, value))
-        .to.throw(ModelValidationError)
-        .contains({
-          message: 'Error validating prop2: Your llama is lloose!',
-          innerError: memberError,
-        })
+      const expectErrors = expect(() => builder.constructModel(TestModel, value))
+        .to.throw(ModelBuilderError)
+        .that.has.property('errors')
+        .that.is.an('array')
+      expectErrors.includes(memberError)
+      expectErrors.has.nested.property('[1].innerError', otherError)
     })
 
     it('uses the data transformers if specified', () => {
       const source = { 'prop1.value': 'foo', 'prop2.value': 'bar' }
       const value = { prop1: { value: 'foo' }, prop2: { value: 'bar' } }
-      stub(builder as any, 'constructModelInternal')
+      stub(builder as any, 'constructModelInternal').returns([[], undefined])
       const transformer: DataTransformer = {
         transform: stub().returns(value),
       }
-      const options = { dataTransformers: [transformer] }
+      const options = { dataTransformers: [transformer], throwOnError: true }
 
       builder.constructModel(TestModel, source, options)
 
@@ -233,7 +249,7 @@ describe('MetadataModelBuilder', () => {
 
       // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
       const source = { foo_bar: 'yeah', hey_man: 'okay' }
-      const options = { keyTransform: camel }
+      const options = { keyTransform: camel, throwOnError: true }
 
       builder.constructModel(KeyTransformerTest, source, options)
 
@@ -259,7 +275,7 @@ describe('MetadataModelBuilder', () => {
 
       // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
       const source = { blob: { foo_bar: 'yeah' }, hey_man: 'okay' }
-      const options = { keyTransform: camel }
+      const options = { keyTransform: camel, throwOnError: true }
 
       builder.constructModel(KeyTransformerTest, source, options)
 
@@ -288,7 +304,8 @@ describe('MetadataModelBuilder', () => {
 
       // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
       const source = { map: { foo_bar: 'yeah' }, hey_man: 'okay' }
-      const options = { keyTransform: camel }
+      const options = { keyTransform: camel, throwOnError: true }
+      const keyOptions = { throwOnError: true }
 
       builder.constructModel(KeyTransformerTest, source, options)
 
@@ -296,9 +313,21 @@ describe('MetadataModelBuilder', () => {
         .to.have.callCount(4)
         // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
         .calledWithExactly({ type: Map, keyType: String, valueType: String }, 'map', { foo_bar: 'yeah' }, options)
-        .calledWithExactly({ type: String }, "map.(key for 'foo_bar')", 'foo_bar', {})
-        .calledWithExactly({ type: String }, 'map.foo_bar', 'yeah', options)
+        .calledWithExactly({ type: String }, 'map.foo_bar.key', 'foo_bar', keyOptions)
+        .calledWithExactly({ type: String }, 'map.foo_bar.value', 'yeah', options)
         .calledWithExactly({ type: String }, 'heyMan', 'okay', options)
+    })
+
+    it('returns a ModelBuilderResult object if throwOnError is explicitly set to false', () => {
+      const value = { prop1: 'foo', prop2: '123' }
+
+      const result = builder.constructModel(TestModel, value, { throwOnError: false })
+
+      expect(result).to.deep.equal({
+        builderValue: value,
+        source: value,
+        errors: undefined,
+      })
     })
   })
 
@@ -311,10 +340,10 @@ describe('MetadataModelBuilder', () => {
       expect(builder.constructMember({}, 'prop', undefined)).to.be.undefined
     })
 
-    it('uses the primitive validator to convert primitive types', () => {
+    it('uses the primitive converter to convert primitive types', () => {
       builder.constructMember({ type: String }, 'prop', 'foo')
 
-      expect(primitiveTypeValidator.convert).to.have.been.calledOnce.calledWithExactly('foo', { type: String })
+      expect(primitiveTypeConverter.convert).to.have.been.calledOnce.calledWithExactly('foo', { type: String })
     })
 
     it('converts complex types with constructModelInternal', () => {
@@ -337,8 +366,50 @@ describe('MetadataModelBuilder', () => {
         TestModel,
         { prop1: 'foo', prop2: 'bar' },
         'prop',
-        {},
+        { throwOnError: true },
       )
+    })
+
+    it('returns a MemberBuilderResult when throwOnError is set to false', () => {
+      expect(builder.constructMember({ type: String }, 'prop', 'foo', { throwOnError: false }))
+        .to.deep.equal({
+          builderValue: 'foo',
+          source: 'foo',
+          errors: undefined,
+        })
+    })
+
+    it('runs optional validators if there are no errors', () => {
+      const validator = {
+        validateMember: stub().returns([]),
+      }
+      builder.constructMember({ type: String }, 'prop', 'foo', {
+        validators: [validator],
+      })
+      expect(validator.validateMember).to.have.been.calledOnce
+    })
+
+    it('does not run validators if there are errors', () => {
+      primitiveTypeConverter.convert.throws(new Error('Your llama is lloose!'))
+      const validator = {
+        validateMember: stub().returns([]),
+      }
+      builder.constructMember({ type: String }, 'prop', 'foo', {
+        validators: [validator],
+        throwOnError: false,
+      })
+      expect(validator.validateMember).not.to.have.been.called
+    })
+
+    it('catches uncaught type conversion errors', () => {
+      const err = new ModelError('prop', 'llamas')
+      stub(builder as any, 'constructMemberByType').throws(err)
+
+      expect(() => builder.constructMember({ type: String }, 'prop', 'foo'))
+        .to.throw(ModelBuilderError)
+        .that.has.property('errors')
+        .that.is.an('array')
+        .that.includes(err)
     })
 
     describe('arrays', () => {
@@ -349,7 +420,7 @@ describe('MetadataModelBuilder', () => {
         }
 
         builder.constructMember(meta, 'obj', ['foo', 'bar'])
-        expect(primitiveTypeValidator.convert)
+        expect(primitiveTypeConverter.convert)
           .to.have.been.calledTwice.calledWithExactly('foo', { type: String })
           .calledWithExactly('bar', { type: String })
       })
@@ -360,7 +431,9 @@ describe('MetadataModelBuilder', () => {
           valueType: String,
         }
 
-        expect(() => builder.constructMember(meta, 'obj', '1, 2')).to.throw(ModelValidationError)
+        expect(() => builder.constructMember(meta, 'obj', '1, 2'))
+          .to.throw(ModelBuilderError)
+          .to.have.nested.property('modelErrors.obj.array')
       })
     })
 
@@ -372,7 +445,7 @@ describe('MetadataModelBuilder', () => {
         }
 
         builder.constructMember(meta, 'obj', ['foo', 'bar'])
-        expect(primitiveTypeValidator.convert)
+        expect(primitiveTypeConverter.convert)
           .to.have.been.calledTwice.calledWithExactly('foo', { type: String })
           .calledWithExactly('bar', { type: String })
       })
@@ -383,7 +456,9 @@ describe('MetadataModelBuilder', () => {
           valueType: String,
         }
 
-        expect(() => builder.constructMember(meta, 'obj', '1, 2')).to.throw(ModelValidationError)
+        expect(() => builder.constructMember(meta, 'obj', '1, 2'))
+          .to.throw(ModelBuilderError)
+          .to.have.nested.property('modelErrors.obj.set')
       })
 
       it('returns a set', () => {
@@ -413,7 +488,7 @@ describe('MetadataModelBuilder', () => {
           [key2]: '2',
         }
         builder.constructMember(meta, 'obj', input)
-        expect(primitiveTypeValidator.convert)
+        expect(primitiveTypeConverter.convert)
           .to.have.been.callCount(4)
           .calledWithExactly(key1, { type: Uuid })
           .calledWithExactly('1', { type: Number })
@@ -428,7 +503,9 @@ describe('MetadataModelBuilder', () => {
           valueType: Number,
         }
 
-        expect(() => builder.constructMember(meta, 'obj', '1, 2')).to.throw(ModelValidationError)
+        expect(() => builder.constructMember(meta, 'obj', '1, 2'))
+          .to.throw(ModelBuilderError)
+          .to.have.nested.property('modelErrors.obj.map')
       })
 
       it('returns a map', () => {
@@ -448,6 +525,28 @@ describe('MetadataModelBuilder', () => {
         expect(result).to.be.instanceOf(Map)
         expect(result.size).to.equal(2)
       })
+
+      it('does not set entries when a key cannot be converted', () => {
+        const meta: MemberMetadata = {
+          type: Map,
+          keyType: Uuid,
+          valueType: Number,
+        }
+
+        const key1 = Uuid.create().toString()
+        const key2 = 'nope'
+        const input = {
+          [key1]: '1',
+          [key2]: '2',
+        }
+        primitiveTypeConverter.convert.withArgs('nope').throws(new TypeConversionError(key2, Uuid))
+
+        const result: MemberBuilderResult = builder.constructMember(meta, 'obj', input, { throwOnError: false })
+        expect(result.errors).to.exist
+        expect(result.errors).to.deep.include({ 'obj.nope.key': { type: true }})
+        expect(result.builderValue).to.have.key(key1)
+        expect(result.builderValue).not.to.have.key(key2)
+      })
     })
 
     describe('oneOf', () => {
@@ -459,7 +558,7 @@ describe('MetadataModelBuilder', () => {
 
         spy(builder as any, 'constructMemberInternal')
 
-        primitiveTypeValidator.convert
+        primitiveTypeConverter.convert
           .onFirstCall()
           .throws(new Error('Not a number'))
           .onSecondCall()
@@ -477,13 +576,15 @@ describe('MetadataModelBuilder', () => {
 
         spy(builder as any, 'constructMemberInternal')
 
-        primitiveTypeValidator.convert
+        primitiveTypeConverter.convert
           .onFirstCall()
           .throws(new Error('Not a number'))
           .onSecondCall()
           .throws(new Error('Not a boolean'))
 
-        expect(() => builder.constructMember(meta, 'prop', 'foo')).to.throw(OneOfConversionError)
+        expect(() => builder.constructMember(meta, 'prop', 'foo'))
+          .to.throw(ModelBuilderError)
+          .to.have.nested.property('modelErrors.prop.oneOf')
       })
     })
   })

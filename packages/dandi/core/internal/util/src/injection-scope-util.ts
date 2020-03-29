@@ -95,6 +95,10 @@ export function scopesAreCompatible(test: InjectionScope, restriction: Injection
     return test.target === restriction
   }
 
+  if (isFactoryParamInjectionScope(test)) {
+    // return test.target.provide
+  }
+
   if (aType !== bType) {
     return false
   }

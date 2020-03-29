@@ -1,7 +1,8 @@
-import { AppError } from '@dandi/common'
+import { ModelErrorKey } from './model-error-key'
+import { ModelValidationError } from './model-validation-error'
 
-export class RequiredPropertyError extends AppError {
-  constructor(public readonly propertyName: string | number) {
-    super(`The '${propertyName}' property is required`)
+export class RequiredPropertyError extends ModelValidationError {
+  constructor(memberKey: string) {
+    super(memberKey, ModelErrorKey.required)
   }
 }

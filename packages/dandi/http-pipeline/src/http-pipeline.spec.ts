@@ -11,7 +11,7 @@ import {
   MimeType,
   parseMimeTypes,
 } from '@dandi/http'
-import { MissingParamError, PathParam } from '@dandi/http-model'
+import { HttpModelModule, MissingParamError, PathParam } from '@dandi/http-model'
 import {
   CorsAllowRequest,
   DefaultHttpPipelineErrorHandler,
@@ -39,6 +39,7 @@ import { stub, createStubInstance, SinonStubbedInstance } from 'sinon'
 describe('HttpPipeline', () => {
 
   const harness = stubHarness(HttpPipeline,
+    HttpModelModule,
     ModelBuilderModule,
     HttpRequestAcceptTypesProvider,
     {

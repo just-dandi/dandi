@@ -1,7 +1,12 @@
-import { AppError } from '@dandi/common'
+import { ModelError } from './model-error'
 
-export class ModelValidationError extends AppError {
-  constructor(public readonly propertyName: string, innerError: Error) {
-    super(`Error validating ${propertyName}: ${innerError.message}`, innerError)
+export class ModelValidationError extends ModelError {
+  constructor(
+    memberKey: string,
+    errorKey: string,
+    public readonly metaValue?: any,
+    message?: string,
+  ) {
+    super(memberKey, errorKey, message)
   }
 }

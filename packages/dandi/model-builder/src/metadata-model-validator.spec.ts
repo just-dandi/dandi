@@ -1,4 +1,4 @@
-import { MetadataModelValidator, MetadataValidationError, RequiredPropertyError } from '@dandi/model-builder'
+import { MetadataModelValidator, ModelValidationError, RequiredPropertyError } from '@dandi/model-builder'
 import { expect } from 'chai'
 
 describe('MetadataModelValidator', () => {
@@ -12,125 +12,142 @@ describe('MetadataModelValidator', () => {
   })
 
   describe('validate', () => {
-    it('throws a RequiredPropertyError for properties marked with @Required() if the value is null', () => {
-      expect(() => validator.validateMember({ required: true }, 'prop', null))
-        .to.throw(RequiredPropertyError)
-        .contains({ message: "The 'prop' property is required" })
+    it('returns a RequiredPropertyError for properties marked with @Required() if the value is an empty string', () => {
+      const [error] = validator.validateMember({ required: true }, 'prop', '')
+      expect(error)
+        .to.be.instanceof(RequiredPropertyError)
+        .contains({ errorKey: 'required', memberKey: 'prop' })
+    })
+    it('returns a RequiredPropertyError for properties marked with @Required() if the value is null', () => {
+      const [error] = validator.validateMember({ required: true }, 'prop', null)
+      expect(error)
+        .to.be.instanceof(RequiredPropertyError)
+        .contains({ errorKey: 'required', memberKey: 'prop' })
     })
 
     it('throws a RequiredPropertyError for properties marked with @Required() if the value is undefined', () => {
-      expect(() => validator.validateMember({ required: true }, 'prop', undefined))
-        .to.throw(RequiredPropertyError)
-        .contains({ message: "The 'prop' property is required" })
+      const [error] = validator.validateMember({ required: true }, 'prop', undefined)
+      expect(error)
+        .to.be.instanceof(RequiredPropertyError)
+        .contains({ errorKey: 'required', memberKey: 'prop' })
     })
     it('validates patterns', () => {
-      expect(validator.validateMember({ type: String, pattern: /foo/ }, 'prop', 'foo')).to.equal('foo')
+      expect(validator.validateMember({ type: String, pattern: /foo/ }, 'prop', 'foo')).to.be.empty
     })
 
-    it('throws a MetadataValidationError if the value does not match a pattern', () => {
-      expect(() => validator.validateMember({ type: String, pattern: /bar/ }, 'prop', 'foo'))
-        .to.throw(MetadataValidationError)
-        .contains({ message: 'pattern' })
+    it('throws a ModelValidationError if the value does not match a pattern', () => {
+      const [error] = validator.validateMember({ type: String, pattern: /bar/ }, 'prop', 'foo')
+      expect(error)
+        .to.be.instanceof(ModelValidationError)
+        .contains({ errorKey: 'pattern' })
     })
 
     it('validates a minimum string length', () => {
-      expect(validator.validateMember({ type: String, minLength: 3 }, 'prop', 'foo')).to.equal('foo')
+      expect(validator.validateMember({ type: String, minLength: 3 }, 'prop', 'foo')).to.be.empty
     })
 
-    it('throws a MetadataValidationError if the value is shorter than the minimum length', () => {
-      expect(() => validator.validateMember({ type: String, minLength: 4 }, 'prop', 'foo'))
-        .to.throw(MetadataValidationError)
-        .contains({ message: 'minLength' })
+    it('throws a ModelValidationError if the value is shorter than the minimum length', () => {
+      const [error] = validator.validateMember({ type: String, minLength: 4 }, 'prop', 'foo')
+      expect(error)
+        .to.be.instanceof(ModelValidationError)
+        .contains({ errorKey: 'minLength' })
     })
 
     it('validates a maximum string length', () => {
-      expect(validator.validateMember({ type: String, maxLength: 4 }, 'prop', 'foo')).to.equal('foo')
+      expect(validator.validateMember({ type: String, maxLength: 4 }, 'prop', 'foo')).to.be.empty
     })
 
-    it('throws a MetadataValidationError if the value is longer than the maximum length', () => {
-      expect(() => validator.validateMember({ type: String, maxLength: 2 }, 'prop', 'foo'))
-        .to.throw(MetadataValidationError)
-        .contains({ message: 'maxLength' })
+    it('throws a ModelValidationError if the value is longer than the maximum length', () => {
+      const [error] = validator.validateMember({ type: String, maxLength: 2 }, 'prop', 'foo')
+      expect(error)
+        .to.be.instanceof(ModelValidationError)
+        .contains({ errorKey: 'maxLength' })
     })
 
     it('validates a minimum array length', () => {
       expect(
         validator.validateMember({ type: Array, valueType: String, minLength: 3 }, 'prop', [1, 2, 3]),
-      ).to.deep.equal([1, 2, 3])
+      ).to.be.empty
     })
 
-    it('throws a MetadataValidationError if the array is smaller than the minimum length', () => {
-      expect(() => validator.validateMember({ type: Array, valueType: String, minLength: 4 }, 'prop', [1, 2, 3]))
-        .to.throw(MetadataValidationError)
-        .contains({ message: 'minLength' })
+    it('throws a ModelValidationError if the array is smaller than the minimum length', () => {
+      const [error] = validator.validateMember({ type: Array, valueType: String, minLength: 4 }, 'prop', [1, 2, 3])
+      expect(error)
+        .to.be.instanceof(ModelValidationError)
+        .contains({ errorKey: 'minLength' })
     })
 
     it('validates a maximum array length', () => {
       expect(
         validator.validateMember({ type: Array, valueType: String, maxLength: 4 }, 'prop', [1, 2, 3]),
-      ).to.deep.equal([1, 2, 3])
+      ).to.be.empty
     })
 
-    it('throws a MetadataValidationError if the array is larger than the maximum length', () => {
-      expect(() => validator.validateMember({ type: Array, valueType: String, maxLength: 2 }, 'prop', [1, 2, 3]))
-        .to.throw(MetadataValidationError)
-        .contains({ message: 'maxLength' })
+    it('throws a ModelValidationError if the array is larger than the maximum length', () => {
+      const [error] = validator.validateMember({ type: Array, valueType: String, maxLength: 2 }, 'prop', [1, 2, 3])
+      expect(error)
+        .to.be.instanceof(ModelValidationError)
+        .contains({ errorKey: 'maxLength' })
     })
 
     it('throws if minLength is defined, but the value does not have a length property', () => {
-      expect(() =>
-        validator.validateMember({ type: Object, minLength: 4 }, 'prop', {
+      const [error] = validator.validateMember({ type: Object, minLength: 4 }, 'prop', {
           foo: 'bar ',
-        }),
-      )
-        .to.throw(MetadataValidationError)
+        })
+      expect(error)
+        .to.be.instanceof(ModelValidationError)
         .contains({
-          message: 'minLength or maxLength value does not have a length property',
+          errorKey: 'minLength',
+          message: 'value does not have a length property',
         })
     })
 
     it('throws if maxLength is defined, but the value does not have a length property', () => {
-      expect(() =>
-        validator.validateMember({ type: Object, maxLength: 4 }, 'prop', {
+      const [error] = validator.validateMember({ type: Object, maxLength: 4 }, 'prop', {
           foo: 'bar ',
-        }),
-      )
-        .to.throw(MetadataValidationError)
+        })
+      expect(error)
+        .to.be.instanceof(ModelValidationError)
         .contains({
-          message: 'minLength or maxLength value does not have a length property',
+          errorKey: 'maxLength',
+          message: 'value does not have a length property',
         })
     })
 
     it('throws if minValue is defined, but the value is not numeric', () => {
-      expect(() => validator.validateMember({ type: Number, minValue: 4 }, 'prop', 'foo'))
-        .to.throw(MetadataValidationError)
-        .contains({ message: 'minValue or maxValue value is not numeric' })
+      const [error] = validator.validateMember({ type: Number, minValue: 4 }, 'prop', 'foo')
+      expect(error)
+        .to.be.instanceof(ModelValidationError)
+        .contains({ errorKey: 'minValue', message: 'value is not numeric' })
     })
 
     it('throws if maxValue is defined, but the value is not numeric', () => {
-      expect(() => validator.validateMember({ type: Number, maxValue: 4 }, 'prop', 'foo'))
-        .to.throw(MetadataValidationError)
-        .contains({ message: 'minValue or maxValue value is not numeric' })
+      const [error] = validator.validateMember({ type: Number, maxValue: 4 }, 'prop', 'foo')
+      expect(error)
+        .to.be.instanceof(ModelValidationError)
+        .contains({ errorKey: 'maxValue', message: 'value is not numeric' })
     })
 
     it('validates a minimum value', () => {
-      expect(validator.validateMember({ type: Number, minValue: 4 }, 'prop', 5)).to.equal(5)
+      expect(validator.validateMember({ type: Number, minValue: 4 }, 'prop', 5)).to.be.empty
     })
 
-    it('throws a MetadataValidationError if the value is less than the minimum value', () => {
-      expect(() => validator.validateMember({ type: Number, minValue: 2 }, 'prop', 1))
-        .to.throw(MetadataValidationError)
-        .contains({ message: 'minValue' })
+    it('throws a ModelValidationError if the value is less than the minimum value', () => {
+      const [error] = validator.validateMember({ type: Number, minValue: 2 }, 'prop', 1)
+      expect(error)
+        .to.be.instanceof(ModelValidationError)
+        .contains({ errorKey: 'minValue' })
     })
 
     it('validates a maximum value', () => {
-      expect(validator.validateMember({ type: Number, minValue: 4 }, 'prop', 5)).to.equal(5)
+      expect(validator.validateMember({ type: Number, minValue: 4 }, 'prop', 5)).to.be.empty
     })
 
-    it('throws a MetadataValidationError if the value is greater than the maximum value', () => {
-      expect(() => validator.validateMember({ type: Number, maxValue: 4 }, 'prop', 5))
-        .to.throw(MetadataValidationError)
-        .contains({ message: 'maxValue' })
+    it('throws a ModelValidationError if the value is greater than the maximum value', () => {
+      const [error] = validator.validateMember({ type: Number, maxValue: 4 }, 'prop', 5)
+      expect(error)
+        .to.be.instanceof(ModelValidationError)
+        .contains({ errorKey: 'maxValue' })
     })
   })
 })

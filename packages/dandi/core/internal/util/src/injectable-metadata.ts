@@ -1,5 +1,5 @@
 import { Constructor, MetadataAccessor, MethodTarget, getMetadata } from '@dandi/common'
-import { InjectionToken, Provider } from '@dandi/core/types'
+import { InjectionToken, InvokeInjectionScope, Provider } from '@dandi/core/types'
 
 import { globalSymbol } from '../../../src/global-symbol'
 
@@ -11,16 +11,20 @@ export function methodTarget<T>(target: Constructor<T>): MethodTarget<T> {
   return target.prototype as MethodTarget<T>
 }
 
+export type CreateScopeFn = (instance: any, methodName, ...context: any[]) => InvokeInjectionScope
+
 export interface ParamMetadata<T> {
   name: string
   token?: InjectionToken<T>
   providers?: Provider<any>[]
+  methodProviders?: Provider<any>[]
   optional?: boolean
 }
 
 export interface InjectableMetadata {
   paramNames?: string[]
-  params: Array<ParamMetadata<any>>
+  params: ParamMetadata<any>[]
+  scopeFn?: CreateScopeFn
 }
 
 export const getInjectableMetadata: MetadataAccessor<InjectableMetadata> = getMetadata.bind(null, META_KEY, () => ({

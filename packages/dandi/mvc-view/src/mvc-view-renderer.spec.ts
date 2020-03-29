@@ -1,6 +1,5 @@
 import { testHarness, TestInjector } from '@dandi/core/testing'
 import {
-  createHttpRequestScope,
   HttpHeader,
   HttpModule,
   HttpRequest,
@@ -15,6 +14,7 @@ import {
   HttpPipelineResult,
 } from '@dandi/http-pipeline'
 import { TestApplicationJsonRenderer } from '@dandi/http-pipeline/testing'
+import { createTestHttpRequestScope } from '@dandi/http/testing'
 import { Route } from '@dandi/mvc'
 import { makeViewResult, MvcViewRenderer, ViewEngineConfig, ViewResultFactory } from '@dandi/mvc-view'
 
@@ -70,7 +70,7 @@ describe('MvcViewRenderer', () => {
         .withArgs(HttpHeader.accept)
         .returns(MimeType.textHtml),
     } as SinonStubbedInstance<HttpRequest>
-    requestInjector = harness.createChild(createHttpRequestScope(req))
+    requestInjector = harness.createChild(createTestHttpRequestScope())
     pipelineRenderer = await requestInjector.inject(HttpPipelineRenderer)
   })
   afterEach(() => {

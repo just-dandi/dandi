@@ -2,7 +2,6 @@ import { resolve } from 'path'
 
 import { createStubInstance, stub, testHarness, TestInjector } from '@dandi/core/testing'
 import {
-  createHttpRequestScope,
   HttpHeader,
   HttpRequestHeadersAccessor,
   HttpRequestHeadersHashAccessor,
@@ -10,6 +9,7 @@ import {
   MimeType,
   parseMimeTypes,
 } from '@dandi/http'
+import { createTestHttpRequestScope } from '@dandi/http/testing'
 import { Route } from '@dandi/mvc'
 import {
   HttpRequestHeaderComparers,
@@ -93,7 +93,7 @@ describe('ViewResultFactory', () => {
   }
 
   beforeEach(async () => {
-    injector = harness.createChild(createHttpRequestScope({} as any))
+    injector = harness.createChild(createTestHttpRequestScope())
     errorConfig = {}
     headers = createStubInstance(HttpRequestHeadersHashAccessor)
   })

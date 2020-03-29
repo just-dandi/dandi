@@ -1,12 +1,12 @@
 import { MethodTarget, isConstructor } from '@dandi/common'
-import { InjectionToken, Provider, SyncFactoryProvider } from '@dandi/core'
+import { InjectionToken, Provider, Scope, SyncFactoryProvider } from '@dandi/core'
 import { getInjectableParamMetadata, ParamMetadata } from '@dandi/core/internal/util'
-import { ParamMap } from '@dandi/http'
+import { createHttpRequestHandlerScope, ParamMap } from '@dandi/http'
 import { MemberMetadata, getMemberMetadata } from '@dandi/model'
 import { ConvertedType, MetadataModelValidator, ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder'
 
 import { ConditionDecorators } from './condition'
-import { localSymbolTokenFor, localOpinionatedToken } from './local-token'
+import { localToken } from './local-token'
 import { requestParamValidatorFactory } from './request-param-validator'
 
 export interface RequestParamDecorator<T> extends ParameterDecorator, ConditionDecorators {
@@ -21,10 +21,10 @@ export function requestParamToken<T>(
   paramName: string,
   requestParamName: string,
 ): InjectionToken<T> {
-  return localSymbolTokenFor<T>(`${mapToken}:${paramName}:${requestParamName}`)
+  return localToken.symbol<T>(`${mapToken}:${paramName}:${requestParamName}`)
 }
 
-export const RequestParamModelBuilderOptions: InjectionToken<ModelBuilderOptions> = localOpinionatedToken(
+export const RequestParamModelBuilderOptions: InjectionToken<ModelBuilderOptions> = localToken.opinionated<ModelBuilderOptions>(
   'RequestParamModelBuilderOptions',
   {
     multi: false,
@@ -35,6 +35,7 @@ export const RequestParamModelBuilderOptionsProvider: SyncFactoryProvider<ModelB
   provide: RequestParamModelBuilderOptions,
   useFactory: () => ({
     validators: [new MetadataModelValidator()],
+    throwOnError: false,
   }),
 }
 
@@ -50,7 +51,6 @@ export function requestParamProvider(
     provide: token,
     useFactory: requestParamValidatorFactory.bind(undefined, type, paramName, paramMeta, memberMetadata),
     deps: [mapToken, ModelBuilder, RequestParamModelBuilderOptions],
-    providers: [RequestParamModelBuilderOptionsProvider],
   }
 }
 
@@ -61,10 +61,11 @@ export function makeRequestParamDecorator<T>(
   optional: boolean,
 ): RequestParamDecorator<T> {
   const apply: ParameterDecorator & RequestParamDecorator<T> = function(
-    target: MethodTarget<any>,
+    target: MethodTarget,
     memberName: string,
     paramIndex: number,
   ) {
+    Scope(createHttpRequestHandlerScope)(target, memberName, undefined)
     const meta = getInjectableParamMetadata(target, memberName, paramIndex)
     const memberMetadata = getMemberMetadata(target.constructor, memberName, paramIndex)
     const token = requestParamToken<T>(mapToken, memberName, name || meta.name)
@@ -73,7 +74,9 @@ export function makeRequestParamDecorator<T>(
     }
     meta.token = token
     meta.optional = optional
-    meta.providers = [requestParamProvider(mapToken, token, type, name || meta.name, meta, memberMetadata)]
+    meta.methodProviders = [
+      requestParamProvider(mapToken, token, type, name || meta.name, meta, memberMetadata),
+    ]
 
     return {
       meta,

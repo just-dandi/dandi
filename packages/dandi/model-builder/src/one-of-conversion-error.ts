@@ -1,12 +1,18 @@
-import { AppError, Constructor } from '@dandi/common'
+import { Constructor } from '@dandi/common'
+
+import { ModelError } from './model-error'
 
 export interface OneOfConversionAttempt {
   type: Constructor
-  error: Error
+  errors: Error[]
 }
 
-export class OneOfConversionError extends AppError {
-  constructor(public readonly attempts: OneOfConversionAttempt[]) {
-    super(`Could not convert to any of the specified types`)
+export class OneOfConversionError extends ModelError {
+  constructor(
+    memberKey: string,
+    errorKey: string,
+    public readonly attempts: OneOfConversionAttempt[],
+  ) {
+    super(memberKey, errorKey, 'Could not convert to any of the specified types', undefined, attempts)
   }
 }

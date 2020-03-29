@@ -6,6 +6,10 @@ import { ParamMap } from './param-map'
 
 const options = { restrictScope: HttpRequestScope }
 
+/**
+ * Represents the object parsed from the raw request body data.
+ */
 export const HttpRequestBody: InjectionToken<any> = localOpinionatedToken<any>('HttpRequestBody', options)
+
 export const HttpRequestPathParamMap: InjectionToken<ParamMap> = localOpinionatedToken<ParamMap>('HttpRequestPathParamMap', options)
 export const HttpRequestQueryParamMap: InjectionToken<ParamMap> = localOpinionatedToken<ParamMap>('HttpRequestQueryParamMap', options)

@@ -2,14 +2,13 @@ import { OpinionatedToken } from '@dandi/core'
 import { getInjectableParamMetadata, methodTarget, ParamMetadata } from '@dandi/core/internal/util'
 import { testHarness } from '@dandi/core/testing'
 import {
-  createHttpRequestScope,
   HttpHeader,
-  HttpRequest,
   HttpRequestHeadersAccessor,
   HttpRequestHeadersHashAccessor,
   MimeType,
   requestHeaderToken,
 } from '@dandi/http'
+import { createTestHttpRequestScope } from '@dandi/http/testing'
 
 import { expect } from 'chai'
 
@@ -47,7 +46,7 @@ describe('@RequestHeader', () => {
         [HttpHeader.contentType]: MimeType.applicationJson,
       }),
     })
-    const injector = harness.createChild(createHttpRequestScope({} as HttpRequest))
+    const injector = harness.createChild(createTestHttpRequestScope())
 
     expect(await injector.inject(requestHeaderToken(HttpHeader.contentType))).to.deep.equal({ contentType: MimeType.applicationJson })
 

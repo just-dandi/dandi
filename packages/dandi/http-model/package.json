@@ -4,6 +4,7 @@
     "@dandi/common": "*",
     "@dandi/core": "*",
     "@dandi/http": "*",
+    "@dandi/model": "*",
     "@dandi/model-builder": "*"
   }
 }

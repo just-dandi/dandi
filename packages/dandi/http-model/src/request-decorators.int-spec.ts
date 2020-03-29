@@ -1,5 +1,5 @@
 import { AppError, Url } from '@dandi/common'
-import { testHarness, TestInjector } from '@dandi/core/testing'
+import { spy, stub, testHarness, TestInjector  } from '@dandi/core/testing'
 import {
   createHttpRequestScope,
   DandiHttpRequestHeadersAccessor,
@@ -7,16 +7,24 @@ import {
   HttpRequest,
   HttpRequestPathParamMap,
   HttpRequestQueryParamMap,
-  HttpRequestRawBodyProvider,
   HttpRequestScope,
+  HttpRequestBody,
 } from '@dandi/http'
-import { MissingParamError, PathParam, QueryParam, RequestBody } from '@dandi/http-model'
-import { BodyParserInfo, HttpBodyParser, HttpRequestBodySourceProvider } from '@dandi/http-pipeline'
-import { PassThroughBodyParser } from '@dandi/http-pipeline/testing'
+import {
+  HandleModelErrors,
+  HttpModelModule,
+  MissingParamError,
+  PathParam,
+  QueryParam,
+  RequestModel,
+  RequestModelErrors,
+  RequestModelErrorsCollector,
+} from '@dandi/http-model'
 import { Required, UrlProperty } from '@dandi/model'
 import { ModelBuilderModule } from '@dandi/model-builder'
 
 import { expect } from 'chai'
+import { SinonSpy } from 'sinon'
 
 describe('Request Decorators', () => {
   class TestModel {
@@ -25,8 +33,9 @@ describe('Request Decorators', () => {
     public url: Url
   }
   class TestController {
-    public testBody(@RequestBody(TestModel) body: TestModel): TestModel {
-      return body
+
+    public testModel(@RequestModel(TestModel) model: TestModel): TestModel {
+      return model
     }
 
     public testPathParam(@PathParam(String) id: string): string {
@@ -36,61 +45,83 @@ describe('Request Decorators', () => {
     public testQueryParam(@QueryParam(String) search?: string): string {
       return search
     }
+
+    @HandleModelErrors()
+    public testModelErrors(
+      @RequestModelErrors() errors: RequestModelErrors,
+      @RequestModel(TestModel) body: TestModel,
+    ): any {
+      testModelErrors(errors, body)
+      return { errors, body }
+    }
   }
 
-  const harness = testHarness(ModelBuilderModule,
-    {
-      provide: HttpRequest,
-      useFactory: () => ({
-        body: {
-          url: 'http://localhost',
-        },
-      }),
-    },
-    HttpRequestRawBodyProvider,
-    HttpRequestBodySourceProvider,
-    {
-      provide: HttpBodyParser,
-      useClass: PassThroughBodyParser,
-    },
+  const harness = testHarness(
+    HttpModule,
+    HttpModelModule,
+    ModelBuilderModule,
     DandiHttpRequestHeadersAccessor,
     {
+      provide: HttpRequest,
+      useFactory: () => req,
+    },
+    {
+      provide: HttpRequestBody,
+      useFactory: () => req.body,
+    },
+    {
       provide: HttpRequestPathParamMap,
-      useFactory: () => ({}),
+      useFactory: () => pathMap,
     },
     {
       provide: HttpRequestQueryParamMap,
-      useFactory: () => ({}),
+      useFactory: () => queryMap,
     },
     {
-      provide: BodyParserInfo,
-      useValue: [],
+      provide: RequestModelErrorsCollector,
+      useFactory: () => errorsCollector,
     },
   )
 
+  let req: HttpRequest
+  let pathMap: any
+  let queryMap: any
   let controller: TestController
   let scope: HttpRequestScope
   let requestInjector: TestInjector
+  let errorsCollector: RequestModelErrorsCollector
+  let testModelErrors: SinonSpy
 
   beforeEach(() => {
+    req = {
+      body: {
+        url: 'http://localhost',
+      },
+      get: stub() as any,
+    } as HttpRequest
+    pathMap = {}
+    queryMap = {}
     controller = new TestController()
-    scope = createHttpRequestScope({} as any)
+    scope = createHttpRequestScope({} as any, 'test')
     requestInjector = harness.createChild(scope)
+    errorsCollector = new RequestModelErrorsCollector()
+    testModelErrors = spy()
   })
   afterEach(() => {
+    req = undefined
+    pathMap = undefined
+    queryMap = undefined
     controller = undefined
     scope = undefined
     requestInjector = undefined
+    errorsCollector = undefined
+    testModelErrors = undefined
   })
 
-  describe('@RequestBody', () => {
+  describe('@RequestModel', () => {
 
-    beforeEach(() => {
-      harness.register(HttpModule)
-    })
-
-    it('constructs and validates the body', async () => {
-      const result: TestModel = await requestInjector.invoke(controller, 'testBody')
+    it('constructs and validates the model', async () => {
+      const result: TestModel = await requestInjector.invoke(controller, 'testModel')
       expect(result).to.be.instanceof(TestModel)
       expect(result.url).to.be.instanceof(Url)
     })
@@ -123,6 +154,23 @@ describe('Request Decorators', () => {
       queryMap.search = 'foo'
 
       expect(await requestInjector.invoke(controller, 'testQueryParam')).to.equal('foo')
+    })
+
+  })
+
+  describe('@RequestModelErrors', () => {
+
+    it('injects undefined if there are no errors', async () => {
+      await requestInjector.invoke(controller, 'testModelErrors')
+
+      expect(testModelErrors).to.have.been.calledOnceWith(undefined)
+    })
+
+    it('injects errors if there are errors', async () => {
+      delete req.body.url
+      await requestInjector.invoke(controller, 'testModelErrors')
+
+      expect(testModelErrors).to.have.been.calledOnceWith({ body: { url: { required: true } } })
     })
 
   })

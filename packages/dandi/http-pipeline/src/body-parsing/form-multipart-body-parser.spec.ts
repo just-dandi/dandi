@@ -1,11 +1,9 @@
 import { testHarness, TestInjector, stub } from '@dandi/core/testing'
 import {
   ContentDisposition,
-  createHttpRequestScope,
   HttpHeader,
-  HttpHeaders,
   HttpRequest,
-  HttpRequestHeader,
+  HttpRequestHeader, HttpRequestHeaders,
   HttpRequestHeadersAccessor,
   HttpRequestHeadersHashAccessor,
   MimeType,
@@ -20,6 +18,7 @@ import {
   NativeJsonBodyParser,
   PlainTextBodyParser,
 } from '@dandi/http-pipeline'
+import { createTestHttpRequestScope } from '@dandi/http/testing'
 
 import { expect } from 'chai'
 
@@ -68,7 +67,7 @@ describe('FormMultipartBodyParser', () => {
     },
   )
 
-  let headersSource: HttpHeaders
+  let headersSource: HttpRequestHeaders
   let headers: HttpRequestHeadersAccessor
   let req: HttpRequest
   let requestInjector: TestInjector
@@ -83,7 +82,7 @@ describe('FormMultipartBodyParser', () => {
     req = {
       get: (name: HttpRequestHeader) => headers.get(name),
     } as HttpRequest
-    requestInjector = harness.createChild(createHttpRequestScope(req))
+    requestInjector = harness.createChild(createTestHttpRequestScope())
     parser = await requestInjector.inject(FormMultipartBodyParser)
   })
   afterEach(() => {

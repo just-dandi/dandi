@@ -207,7 +207,7 @@ export class DandiRouteInitializer implements RouteInitializer {
   private async determineAllowedMethods(siblingRoutes: Route[], req: HttpRequest): Promise<HttpMethod[]> {
     const allowedMethods = await Promise.all(siblingRoutes.map(async siblingRoute => {
       const siblingRequest = Object.assign({
-        get: req.get.bind(req),
+        get: (key: string) => req.get(key),
       }, req)
       const providers = this.generateCorsProviders(siblingRoute).concat([
         {
@@ -224,7 +224,7 @@ export class DandiRouteInitializer implements RouteInitializer {
           deps: [CorsHeaderValues, HttpRequestHeadersAccessor],
         },
       ])
-      const childInjector = this.injector.createChild(createHttpRequestScope(siblingRequest), providers)
+      const childInjector = this.injector.app.createChild(createHttpRequestScope(this, 'determineAllowedMethod'), providers)
       if ((await childInjector.inject(CorsAllowRequest))?.singleValue) {
         return siblingRoute.httpMethod
       }

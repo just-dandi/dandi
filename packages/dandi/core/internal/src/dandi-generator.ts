@@ -15,11 +15,12 @@ import {
   FactoryParamInjectionScope,
   FactoryProvider,
   GeneratingProvider,
+  InjectionScope,
   Injector,
+  InjectorContext,
   InstanceGenerator,
   Provider,
   ResolverContext,
-  InjectionScope, InjectorContext,
 } from '@dandi/core/types'
 
 import { DandiResolverContext } from './dandi-resolver-context'
@@ -80,6 +81,7 @@ export class DandiGenerator implements InstanceGenerator {
       ? await Promise.all(
         provider.deps.map(async (paramToken) => {
           const paramScope: FactoryParamInjectionScope = {
+            // target: provider,
             target: provider,
             paramToken,
           }

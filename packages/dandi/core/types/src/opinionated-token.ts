@@ -1,11 +1,10 @@
 import { AppError } from '@dandi/common'
 
-import { InjectionToken } from './injection-token'
 import { InjectionOptions, Provider } from './provider'
 import { SymbolTokenBase } from './symbol-token'
 
 export class OpinionatedToken<T> extends SymbolTokenBase<T> {
-  public static local<T>(pkg: string, target: string, options: InjectionOptions): InjectionToken<T> {
+  public static local<T>(pkg: string, target: string, options: InjectionOptions): OpinionatedToken<T> {
     return new OpinionatedToken<T>(`${pkg}#${target}`, options)
   }
 

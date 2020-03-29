@@ -9,7 +9,13 @@ import {
   Optional,
   Provider,
 } from '@dandi/core'
-import { HttpRequest, HttpRequestAcceptTypes, HttpStatusCode, MimeType } from '@dandi/http'
+import {
+  HttpRequest,
+  HttpRequestAcceptTypes,
+  HttpRequestScope,
+  HttpStatusCode,
+  MimeType,
+} from '@dandi/http'
 
 import { CorsAllowRequest } from './cors/cors-allow-request'
 import { HttpPipelineConfig } from './http-pipeline-config'
@@ -31,6 +37,7 @@ export class HttpPipeline {
     @Inject(HttpPipelineConfig) private config: HttpPipelineConfig,
   ) {}
 
+  @HttpRequestScope()
   public async handleRequest(
     @Inject(Injector) injector: Injector,
     @Inject(HttpRequestHandler) handler: any,

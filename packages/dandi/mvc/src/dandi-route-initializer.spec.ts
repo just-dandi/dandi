@@ -2,7 +2,6 @@ import { Uuid } from '@dandi/common'
 import { Injector, Registerable } from '@dandi/core'
 import { stubValueProvider, testHarness, TestInjector, TestInjectorBase } from '@dandi/core/testing'
 import {
-  createHttpRequestScope,
   HttpHeader,
   HttpMethod,
   HttpModule,
@@ -12,7 +11,7 @@ import {
   HttpRequestQueryParamMap,
   HttpResponse,
 } from '@dandi/http'
-import { RequestBody } from '@dandi/http-model'
+import { RequestModel } from '@dandi/http-model'
 import {
   CorsAllowCredentials,
   CorsAllowHeaders,
@@ -21,10 +20,10 @@ import {
   CorsExposeHeaders,
   CorsHeaderValues,
   CorsMaxAge,
-  CorsOriginWhitelist,
+  CorsOriginWhitelist, HttpPipelineModule,
   HttpRequestInfo,
 } from '@dandi/http-pipeline'
-import { httpResponseFixture } from '@dandi/http/testing'
+import { httpResponseFixture, createTestHttpRequestScope } from '@dandi/http/testing'
 import {
   AuthorizationAuthProviderFactory,
   AuthProviderFactory,
@@ -41,6 +40,8 @@ import { createStubInstance, SinonStubbedInstance, stub } from 'sinon'
 describe('DandiRouteInitializer', () => {
 
   const harness = testHarness(DandiRouteInitializer,
+    HttpModule,
+    HttpPipelineModule,
     {
       provide: AuthProviderFactory,
       useFactory: () => createStubInstance(AuthorizationAuthProviderFactory),
@@ -56,11 +57,11 @@ describe('DandiRouteInitializer', () => {
   @Controller('/dandi-route-initializer-test')
   class TestController {
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public method(@RequestBody(TestModel) body: TestModel): void {}
+    public method(@RequestModel(TestModel) body: TestModel): void {}
   }
 
   function createRequestInjector(providers: Registerable[]): TestInjector {
-    return new TestInjectorBase(injector.createChild(createHttpRequestScope(req), providers))
+    return new TestInjectorBase(injector.createChild(createTestHttpRequestScope(), providers))
   }
 
   let injector: Injector
@@ -170,11 +171,6 @@ describe('DandiRouteInitializer', () => {
         .includes({
           innerError: error,
         })
-    })
-
-    it('adds request body providers if the method has a parameter that requests HttpRequestBody', async () => {
-      const providers = initializer.initRouteRequest(route, req, requestInfo, res)
-      expect(providers.find(p => p.provide === HttpRequestBody)).to.exist
     })
 
     it('registers any authProviders', async () => {
@@ -306,13 +302,12 @@ describe('DandiRouteInitializer', () => {
       routes = undefined
     })
 
-    it('returns the array of HttpMethods that are allowed given the request', async () => {
+    it.only('returns the array of HttpMethods that are allowed given the request', async () => {
 
-      harness.register(CorsHeaderValues, HttpModule)
       req.get.withArgs(HttpHeader.origin).returns('some-origin.com')
       req.get.withArgs(HttpHeader.host).returns('another-origin.com')
       const providers = initializer.initRouteRequest(routes[0], req, requestInfo, res)
-      const injector = harness.createChild(createHttpRequestScope(req), providers)
+      const injector = harness.createChild(createTestHttpRequestScope(), providers)
       const allowedMethods = await injector.inject(CorsAllowMethods)
 
       expect(allowedMethods).to.deep.equal([HttpMethod.get, HttpMethod.post])
