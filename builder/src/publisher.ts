@@ -103,7 +103,7 @@ export class Publisher {
       publishArgs.push('--access', 'public')
     }
     publishArgs.push('--tag', 'latest')
-    await this.util.spawn('yarn', publishArgs, {
+    await this.util.spawn('npm', publishArgs, {
       cwd: info.outPath,
     })
     this.logger.debug(`${publishTarget}: publish complete`)
@@ -120,7 +120,7 @@ export class Publisher {
     if (registry) {
       infoArgs.push('--registry', registry)
     }
-    return JSON.parse((await this.util.spawn('yarn', infoArgs, undefined, true)) || '{}')
+    return JSON.parse((await this.util.spawn('npm', infoArgs, undefined, true)) || '{}')
   }
 
 }
