@@ -122,7 +122,8 @@ export interface HttpHeaders {
   [HttpHeader.userAgent]?: string
   [HttpHeader.vary]?: string
   [HttpHeader.warning]?: string
-  [HttpHeader.wwwAuthenticate]?: HttpWwwAuthenticate
+  // [HttpHeader.wwwAuthenticate]?: HttpWwwAuthenticate
+  [HttpHeader.wwwAuthenticate]?: string
   [HttpHeader.xContentTypeOptions]?: string
   [HttpHeader.xDownloadOptions]?: string
   [HttpHeader.xFrameOptions]?: string

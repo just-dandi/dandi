@@ -13,7 +13,7 @@ describe('FormUrlEncodedBodyParser', () => {
 
   beforeEach(async () => {
     parser = await harness.inject(FormUrlencodedBodyParser)
-    headers = new HttpRequestHeadersHashAccessor({})
+    headers = HttpRequestHeadersHashAccessor.fromRaw({})
   })
   afterEach(() => {
     parser = undefined

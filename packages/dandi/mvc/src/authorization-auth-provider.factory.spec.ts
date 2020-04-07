@@ -27,6 +27,7 @@ describe('AuthorizationAuthProviderFactory', () => {
       controllerMethod: null,
       httpMethod: HttpMethod.get,
       siblingMethods: new Set<HttpMethod>([HttpMethod.get]),
+      siblingRoutes: new Map<HttpMethod, Route>(),
     }
     req = {
       get: stub(),

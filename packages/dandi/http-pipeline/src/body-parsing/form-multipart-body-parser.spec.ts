@@ -5,7 +5,7 @@ import {
   HttpHeader,
   HttpHeaders,
   HttpRequest,
-  HttpRequestHeader,
+  HttpRequestHeader, HttpRequestHeaders,
   HttpRequestHeadersAccessor,
   HttpRequestHeadersHashAccessor,
   MimeType,
@@ -68,7 +68,7 @@ describe('FormMultipartBodyParser', () => {
     },
   )
 
-  let headersSource: HttpHeaders
+  let headersSource: HttpRequestHeaders
   let headers: HttpRequestHeadersAccessor
   let req: HttpRequest
   let requestInjector: TestInjector
