@@ -100,3 +100,11 @@ the features they require.
 
 [Simple Express REST API](./_examples/simple-express-rest-api) - An
 implementation of a very simple REST API using `@dandi`
+
+## Dev Setup
+
+To set up this project as a local repository:
+- [Install Yarn Classic](https://classic.yarnpkg.com/en/docs/install) if you don't have it installed
+- After cloning the repostory, run `yarn setup` - this will install the dependencies for all the individual packages,
+  as well as the Dandi builder 
+- You can now run `yarn build` to build all packages, or `yarn test` to run all tests
