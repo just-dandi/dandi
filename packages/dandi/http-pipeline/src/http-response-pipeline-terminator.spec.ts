@@ -57,15 +57,15 @@ describe('HttpResponsePipelineTerminator', () => {
 
     it('sets headers if any are specified', async () => {
       renderResult.headers = {
-        'WWW-Authenticate': 'Bearer',
-        'X-Served-By': 'Joe Llama',
+        [HttpHeader.wwwAuthenticate]: 'Bearer',
+        [HttpHeader.xPoweredBy]: 'Joe Llama',
       }
       await classUnderTest.terminateResponse(renderResult)
 
       expect(response.header).to.have.been
         .calledThrice
-        .calledWithExactly('WWW-Authenticate', 'Bearer')
-        .calledWithExactly('X-Served-By', 'Joe Llama')
+        .calledWithExactly(HttpHeader.wwwAuthenticate, 'Bearer')
+        .calledWithExactly(HttpHeader.xPoweredBy, 'Joe Llama')
         .calledWithExactly(HttpHeader.contentType, MimeType.textPlain)
     })
   })

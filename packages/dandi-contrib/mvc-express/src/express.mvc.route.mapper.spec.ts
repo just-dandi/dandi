@@ -55,6 +55,7 @@ describe('ExpressMvcRouteMapper', function() {
       path: '/',
       controllerCtr: TestController,
       controllerMethod: 'method',
+      siblingRoutes: new Map<HttpMethod, Route>(),
     }
 
     this.mapper.mapRoute(route)
@@ -71,6 +72,7 @@ describe('ExpressMvcRouteMapper', function() {
       path: '/',
       controllerCtr: TestController,
       controllerMethod: 'method',
+      siblingRoutes: new Map<HttpMethod, Route>(),
     }
 
     this.mapper.mapRoute(route)
