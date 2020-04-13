@@ -9,7 +9,7 @@ export interface MappedInjectionToken<TKey, TService> {
 
 export type MappedInjectionTokenFactory<T> = (<TKey, TService>(key: TKey) => MappedInjectionToken<TKey, TService>)
 
-export type ClassDecoratorToken<T> = () => ClassDecorator
+export type ClassDecoratorToken<T> = (...args: any[]) => ClassDecorator
 
 export type InjectionToken<T> =
   | SymbolTokenBase<T>
