@@ -6,6 +6,7 @@ import { ViewEngineResolver } from '@dandi/mvc-view'
 
 import { expect } from 'chai'
 import { createStubInstance, SinonStub, SinonStubbedInstance } from 'sinon'
+import { MissingTemplateError } from './missing-template.error'
 
 describe('ViewEngineResolver', () => {
 
@@ -154,7 +155,26 @@ describe('ViewEngineResolver', () => {
 
       await viewResolver.resolve({ context: __dirname, name: 'whateva' }, 'foo')
       // should only get one call to exists with a path that ends with .c
-      expect(exists.getCalls().filter((call) => call.args[0].endsWith('e')).length).to.equal(1)
+      expect(exists.getCalls().filter((call) => call.args[0].endsWith('e')).length).to.equal(5)
+    })
+  })
+
+  describe('#resolveFile', () => {
+    it('calls all the right functions', async () => {
+      const knownPath = '/path/to/file'
+      expect(await viewResolver['resolveFile'](knownPath)).to.throw(MissingTemplateError)
+    })
+  })
+
+  describe('#getCasedPaths', () => {
+    it('returns alternatively cased file paths for unresolved templates', () => {
+      
+    })
+  })
+
+  describe('#getAlternateResolvedView', () => {
+    it('tries to resolve alternate view templates based on registered view engines', () => {
+
     })
   })
 })

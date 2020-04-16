@@ -16,17 +16,10 @@
       <li><a href="/view/explicit-pug">PUG Explicit View Resolution</a></li>
       <li><a href="/view/explicit-ejs">EJS Explicit View Resolution</a></li>
     </ul>
-
-    <p>Set a value in the <code>content</code> querystring key to test binding EJS locals.</p>
-
-    <% if (query.content) { %>
-    <h2>Your Content</h2>
-    <p><%= query.content %></p>
-    <% } else { %>
+    <h2>Dynamic File Extension Resolution (EJS) Selection (A)</h2>
     <p>
-      <a href="?content=Your+content+here!">For example</a>
+      <a href="?mode=a">Go to mode A (Pug)</a>
     </p>
-    <% } %>
 
   </body>
 

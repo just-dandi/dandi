@@ -1,5 +1,5 @@
 import { access, constants } from 'fs'
-import { basename, dirname, extname, resolve } from 'path'
+import { basename, dirname, extname, resolve, join } from 'path'
 
 import { AppError, Constructor } from '@dandi/common'
 import { Inject, Injectable, Logger, Injector, Optional } from '@dandi/core'
@@ -8,13 +8,14 @@ import { MissingTemplateError } from './missing-template.error'
 import { ViewEngine } from './view-engine'
 import { ViewEngineConfig } from './view-engine-config'
 import { ViewMetadata } from './view-metadata'
+import { camelCase, kebabCase, startCase, snakeCase, lowerCase } from 'lodash'
 
 export interface ResolvedView {
   engine: ViewEngine
   templatePath: string
 }
 
-interface ViewEngineIndexedConfig extends ViewEngineConfig {
+export interface ViewEngineIndexedConfig extends ViewEngineConfig {
   index: number
   ignored: boolean
 }
@@ -101,20 +102,57 @@ export class ViewEngineResolver {
       throw new AppError('No view engines have been configured')
     }
 
+    const alternateResolvedView = await this.getAlternateResolvedView(knownPath)
+
+    if (alternateResolvedView) return alternateResolvedView
+    
+    throw new MissingTemplateError(this.getCasedPaths(knownPath), basename(knownPath), this.configs)
+  }
+
+  private getCasedPaths(path: string): string[] {
+    const supportedNamingSchemes = {
+      camelCase: (name: string) => camelCase(name),
+      kebabCase: (name: string) => kebabCase(name),
+      lowerCase: (name: string) => lowerCase(name).replace(/\s/g, ''),
+      snakeCase: (name: string) => snakeCase(name),
+      pascalCase: (name: string) => startCase(name).replace(/\s/g, ''),
+    }
+    const casedPaths = []
+    const pathSegments = path.split('/')
+    const fileName = pathSegments.pop()
+    
+    for (const namingScheme in supportedNamingSchemes) {
+      casedPaths.push(join('/',...pathSegments, supportedNamingSchemes[namingScheme](fileName)))
+    }
+    return casedPaths
+  }
+
+  private async getAlternateResolvedView(knownPath: string): Promise<ResolvedView> {
+    let configuredPath
+    let resolvedConfig
+
     for (const config of this.configs) {
       if (config.ignored) {
         continue
       }
-      const configuredPath = `${knownPath}.${config.extension}`
-      if (await ViewEngineResolver.exists(configuredPath)) {
-        return {
-          templatePath: configuredPath,
-          engine: await this.getEngineInstance(config.engine),
+      const casedPaths = this.getCasedPaths(knownPath)
+      for (const casedPath of casedPaths) {
+        configuredPath = `${casedPath}.${config.extension}`
+        if (await ViewEngineResolver.exists(configuredPath)) {
+          resolvedConfig = config
+          break
         }
       }
+      
+      if (resolvedConfig) break
     }
 
-    throw new MissingTemplateError(dirname(knownPath), basename(knownPath))
+    if (configuredPath && resolvedConfig) {
+      return {
+        templatePath: configuredPath,
+        engine: await this.getEngineInstance(resolvedConfig.engine)
+      }
+    }
   }
 
   private async getEngineInstance(engine: Constructor<ViewEngine>): Promise<ViewEngine> {

@@ -30,7 +30,7 @@ export class ViewController {
   }
 
   @HttpGet('explicit-ejs')
-  @View('example-explicit.ejs')
+  @View('example-explicit')
   public explicitEjs(@Inject(HttpRequestQueryParamMap) query): { query: ParamMap } {
     return { query }
   }
@@ -44,6 +44,27 @@ export class ViewController {
   public dynamic(@QueryParam(String) mode: string): Promise<ViewResult> {
     return this.view(mode === 'b' ? 'dynamic-b' : 'dynamic-a', { data: { mode } })
   }
+
+    /** dynamic template extensions -
+   * when the template type needs to vary, use the @View decorator with no value, and return the result
+   * of ViewResultFactory(name, data).
+   */
+  @HttpGet('dynamic-extension')
+  @View()
+  public dynamicExtension(@QueryParam(String) mode: string): Promise<ViewResult> {
+    return this.view(mode === 'b' ? 'dynamic-extension-b' : 'dynamic-extension-a', { data: { mode } })
+  }
+
+      /** dynamic template extensions -
+   * when the template type needs to vary, use the @View decorator with no value, and return the result
+   * of ViewResultFactory(name, data).
+   */
+  @HttpGet('dynamic-extension2')
+  @View()
+  public dynamicExtension2(@QueryParam(String) mode: string): Promise<ViewResult> {
+    return this.view('dynamic-extension-1', { data: { mode } })
+  }
+
 
   /** helper route for testing CORS
    *
