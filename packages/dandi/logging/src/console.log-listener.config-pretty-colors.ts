@@ -1,3 +1,4 @@
+import { Logger } from '@dandi/core'
 import {
   ConsoleLogListenerConfig,
   ConsoleLogListenerConfigProvider,
@@ -9,15 +10,18 @@ import {
 import * as colors from './colors'
 import { ColorsNotLoadedError } from './colors-not-loaded-error'
 
+type LoggerTheme = { [TLevel in keyof Logger]: string }
+const DEFAULT_THEME: LoggerTheme = {
+  debug: 'grey',
+  info: 'white',
+  warn: 'yellow',
+  error: 'red',
+  trace: 'cyan',
+}
 
 export function initColors(): void {
   if (!colors['debug']) {
-    colors.setTheme({
-      debug: 'cyan',
-      info: 'grey',
-      warn: 'yellow',
-      error: 'red',
-    })
+    colors.setTheme(DEFAULT_THEME)
   }
 }
 
