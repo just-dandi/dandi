@@ -1,13 +1,14 @@
 import { Constructor } from '@dandi/common'
-import { InjectionToken, Provider, Injector, ScopeBehavior, MissingProviderError, InjectorContext } from '@dandi/core'
+import { InjectionToken, Injector, Provider, ScopeBehavior } from '@dandi/core'
 import {
   HttpContentType,
   HttpHeader,
   HttpRequest,
   HttpRequestHeadersAccessor,
   HttpRequestScope,
-  mimeTypesAreCompatible,
+  MimeType,
   MimeTypeInfo,
+  mimeTypesAreCompatible,
   parseMimeTypes,
 } from '@dandi/http'
 
@@ -58,13 +59,9 @@ const SelectedBodyParserProvider: Provider<Constructor<HttpBodyParser>> = {
     headers: HttpRequestHeadersAccessor,
     bodyParsers: BodyParserInfo[],
     cache: HttpBodyParserCache,
-    context: InjectorContext,
   ) {
 
-    const contentType = headers.get(HttpHeader.contentType)
-    if (!contentType) {
-      throw new MissingProviderError(SelectedBodyParser, context)
-    }
+    const contentType = headers.get(HttpHeader.contentType) || { contentType: MimeType.unknown }
     const cacheKey = `${req.path};${contentType.contentType}`
 
     let bodyParser = cache.get(cacheKey)
@@ -84,7 +81,6 @@ const SelectedBodyParserProvider: Provider<Constructor<HttpBodyParser>> = {
     HttpRequestHeadersAccessor,
     BodyParserInfo,
     HttpBodyParserCache,
-    InjectorContext,
   ],
 }
 
