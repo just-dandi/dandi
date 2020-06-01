@@ -6,6 +6,7 @@ import { FormMultipartBodyParser } from './body-parsing/form-multipart-body-pars
 import { FormUrlencodedBodyParser } from './body-parsing/form-urlencoded-body-parser'
 import { HttpBodyParserCacheProvider, HttpBodyParserProvider } from './body-parsing/http-body-parser'
 import { NativeJsonBodyParser } from './body-parsing/native-json-body-parser'
+import { PassThroughBodyParser } from './body-parsing/pass-through-body-parser'
 import { PlainTextBodyParser } from './body-parsing/plain-text-body-parser'
 
 import { CorsAllowCredentials, CorsAllowHeaders, CorsExposeHeaders, CorsMaxAge, CorsOrigin } from './cors/cors'
@@ -130,6 +131,7 @@ export const HttpPipelineModule = new HttpPipelineModuleBuilder(
   HttpResponsePipelineTerminator,
   NativeJsonBodyParser,
   NativeJsonObjectRenderer,
+  PassThroughBodyParser,
   PlainTextObjectRenderer,
   PlainTextBodyParser,
 
