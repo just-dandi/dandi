@@ -10,4 +10,6 @@ export enum MimeType {
   textHtml = 'text/html',
   textHtmlPartial = 'text/html-partial',
   textPlain = 'text/plain',
+
+  unknown = '?/?',
 }
