@@ -63,6 +63,6 @@ export class ExpressMvcRouteMapper implements RouteMapper {
   }
 
   private bindRoute(route: Route): void {
-    this.app[route.httpMethod](route.path, this.routeExecutor.execRoute.bind(this.routeExecutor, route))
+    this.app[route.httpMethod.toLowerCase()](route.path, this.routeExecutor.execRoute.bind(this.routeExecutor, route))
   }
 }
