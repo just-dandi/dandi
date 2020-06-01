@@ -29,6 +29,7 @@ import {
 } from '@dandi/http-pipeline'
 
 import { AuthProviderFactory } from './auth-provider.factory'
+import { HttpRequestWrapper } from './http-request-wrapper'
 import { Route } from './route'
 import { RouteInitializationError } from './route-initialization.error'
 import { RouteInitializer } from './route-initializer'
@@ -55,6 +56,7 @@ export class DandiRouteInitializer implements RouteInitializer {
       route.httpMethod.toUpperCase(),
       route.path,
     )
+    req = new HttpRequestWrapper(req)
     const providers: Provider<any>[] = []
 
     try {
