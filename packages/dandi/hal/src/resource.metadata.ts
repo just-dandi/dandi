@@ -2,8 +2,17 @@ import { Constructor, getMetadata, isConstructor } from '@dandi/common'
 
 import { globalSymbol } from './global.symbol'
 
-export function resourceMetaKey(target: Constructor<any>): symbol {
-  return globalSymbol(`meta:Resource:${target.name}`)
+interface ResourceDescriptor {
+  resourceKey: string
+}
+
+function isResourceDescriptor(obj: any): obj is ResourceDescriptor {
+  return obj && typeof obj.resourceKey === 'string'
+}
+
+export function resourceMetaKey(target: Constructor): symbol {
+  const name = isResourceDescriptor(target) ? target.resourceKey : target.name
+  return globalSymbol(`meta:Resource:${name}`)
 }
 
 export interface ResourceAccessorMetadata {
@@ -62,7 +71,7 @@ export class CompositeResourceMetadata implements ResourceMetadata {
 }
 
 export function getResourceMetadata(obj: any): ResourceMetadata {
-  const target = isConstructor(obj) ? obj : (obj.constructor as Constructor<any>)
+  const target = isConstructor(obj) ? obj : (obj.constructor as Constructor)
   return getMetadata<ResourceMetadata>(
     resourceMetaKey(target),
     () => {
