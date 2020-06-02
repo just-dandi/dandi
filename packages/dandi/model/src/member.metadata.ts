@@ -24,21 +24,20 @@ export interface ModelMetadata {
   [propertyName: string]: MemberMetadata
 }
 
-const protoKeys = new Map<Function, Map<symbol, any>>()
+const protoKeys = new Map<Function, Map<Function, any>>()
 
 export function getModelMetadata(target: Function): ModelMetadata {
   let protoKey = protoKeys.get(target)
   if (!protoKey) {
-    protoKey = new Map<symbol, any>()
+    protoKey = new Map<Function, any>()
     protoKeys.set(target, protoKey)
   }
-  const classKey = Symbol.for(target.name)
-  let classTarget = protoKey.get(classKey)
+  let classTarget = protoKey.get(target)
   if (!classTarget) {
     const superClass = Object.getPrototypeOf(target)
     const usePrototypeTarget = !!target.prototype && !!superClass.name
     classTarget = Object.create(usePrototypeTarget ? getModelMetadata(superClass) : null)
-    protoKey.set(classKey, classTarget)
+    protoKey.set(target, classTarget)
   }
   return classTarget
 }
