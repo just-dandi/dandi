@@ -2,18 +2,7 @@ import { Constructor, getMetadata, isConstructor } from '@dandi/common'
 
 import { globalSymbol } from './global.symbol'
 
-interface ResourceDescriptor {
-  resourceKey: string
-}
-
-function isResourceDescriptor(obj: any): obj is ResourceDescriptor {
-  return obj && typeof obj.resourceKey === 'string'
-}
-
-export function resourceMetaKey(target: Constructor): symbol {
-  const name = isResourceDescriptor(target) ? target.resourceKey : target.name
-  return globalSymbol(`meta:Resource:${name}`)
-}
+export const RESOURCE_META_KEY = globalSymbol('meta:Resource')
 
 export interface ResourceAccessorMetadata {
   resource?: Constructor
@@ -66,14 +55,14 @@ export class CompositeResourceMetadata implements ResourceMetadata {
     if (source.parent) {
       this.mergePropertyValues(source.parent, prop, value)
     }
-    return Object.assign(value, source[prop], value)
+    return Object.assign({}, source[prop], value)
   }
 }
 
 export function getResourceMetadata(obj: any): ResourceMetadata {
   const target = isConstructor(obj) ? obj : (obj.constructor as Constructor)
   return getMetadata<ResourceMetadata>(
-    resourceMetaKey(target),
+    RESOURCE_META_KEY,
     () => {
       const meta: ResourceMetadata = { resource: target, relations: {} }
       const targetParent = Object.getPrototypeOf(target)

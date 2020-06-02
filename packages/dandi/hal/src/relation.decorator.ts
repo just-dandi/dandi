@@ -37,10 +37,10 @@ export function relationDecorator(
   memberMeta.sourceAccessor = `_embedded.${rel || propertyKey}`
 }
 
-export function Relation(resource?: Constructor<any>, rel?: string): PropertyDecorator {
+export function Relation(resource?: Constructor, rel?: string): PropertyDecorator {
   return relationDecorator.bind(null, resource, rel, false)
 }
 
-export function ListRelation(resource?: Constructor<any>, rel?: string): PropertyDecorator {
+export function ListRelation(resource?: Constructor, rel?: string): PropertyDecorator {
   return relationDecorator.bind(null, resource, rel, true)
 }

@@ -1,6 +1,6 @@
 import { Constructor } from '@dandi/common'
 
-import { getResourceMetadata, resourceMetaKey } from './resource.metadata'
+import { getResourceMetadata, RESOURCE_META_KEY } from './resource.metadata'
 
 export interface ResourceDecorator {
   (): ClassDecorator
@@ -8,7 +8,7 @@ export interface ResourceDecorator {
 }
 
 const Resource: ResourceDecorator = function Resource() {
-  return function(target: Constructor<any>) {
+  return function(target: Constructor) {
     getResourceMetadata(target)
   }
 } as ResourceDecorator
@@ -17,7 +17,7 @@ Resource.isResource = function isResource(obj: any): boolean {
     return false
   }
   const target = typeof obj === 'function' ? obj : obj.constructor
-  const meta = Reflect.get(target, resourceMetaKey(target))
+  const meta = Reflect.get(target, RESOURCE_META_KEY)
   return !!(meta && meta.resource === target)
 }
 
