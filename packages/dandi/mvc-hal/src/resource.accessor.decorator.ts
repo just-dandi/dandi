@@ -1,5 +1,5 @@
 import { Constructor, MethodTarget, getMetadata } from '@dandi/common'
-import { ResourceAccessorMetadata, getResourceMetadata, resourceMetaKey } from '@dandi/hal'
+import { ResourceAccessorMetadata, getResourceMetadata, RESOURCE_META_KEY } from '@dandi/hal'
 
 import { globalSymbol } from './global.symbol'
 
@@ -17,7 +17,7 @@ export function getAccessorMetadata(target: MethodTarget<any>, propertyKey: stri
   )
 }
 
-export function resourceAccessor(resource: Constructor<any>, target: MethodTarget<any>, propertyKey: string): void {
+export function resourceAccessor(resource: Constructor, target: MethodTarget<any>, propertyKey: string): void {
   const meta = getResourceMetadata(resource)
   meta.getAccessor = getAccessorMetadata(target, propertyKey)
   if (resource) {
@@ -25,9 +25,9 @@ export function resourceAccessor(resource: Constructor<any>, target: MethodTarge
   }
 
   // also set a reference to the metadata on the method itself so it can be retrieved and updated by resourceIdDecorator
-  getMetadata(resourceMetaKey(resource), () => meta, target[propertyKey])
+  getMetadata(RESOURCE_META_KEY, () => meta, target[propertyKey])
 }
 
-export function ResourceAccessor(resource: Constructor<any>): MethodDecorator {
+export function ResourceAccessor(resource: Constructor): MethodDecorator {
   return resourceAccessor.bind(null, resource)
 }
