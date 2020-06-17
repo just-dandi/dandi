@@ -49,6 +49,12 @@ describe('NumberTypeValidator', () => {
       expect(result).to.equal(42)
     })
 
+    it('retains decimal values', () => {
+      const result = validator.convert('3.1415')
+      expect(result).to.be.a('number')
+      expect(result).to.equal(3.1415)
+    })
+
     it('throws an error if the value is not a valid number', () => {
       expect(() => validator.convert('foo')).to.throw(TypeConversionError)
     })
