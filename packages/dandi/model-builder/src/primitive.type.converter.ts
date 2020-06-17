@@ -16,7 +16,7 @@ export class StringTypeConverter implements TypeConverter<string> {
 export class NumberTypeConverter implements TypeConverter<number> {
   public readonly type = Number
   public convert(obj: string): number {
-    const result = parseInt(obj, 10)
+    const result = Number(obj)
     if (isNaN(result)) {
       throw new TypeConversionError(obj, Number)
     }
