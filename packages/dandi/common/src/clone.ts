@@ -1,10 +1,10 @@
-export function cloneObject<T extends any>(obj: T): T {
+export function cloneObject<T>(obj: T): T {
   if (!obj) {
     return obj
   }
   const type = typeof obj
   if (type === 'object' && Array.isArray(obj)) {
-    return obj.slice(0).map(cloneObject)
+    return obj.slice(0).map(cloneObject) as unknown as T
   }
   if (type !== 'object') {
     return obj
