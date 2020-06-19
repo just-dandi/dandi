@@ -89,7 +89,9 @@ export class AsyncMutex<T extends object> implements Disposable {
     if (Disposable.isDisposable(this.lockObject) && !Disposable.isDisposed(this.lockObject)) {
       await this.lockObject.dispose(reason)
     }
-    Disposable.remapDisposed(this, reason)
+    if (!Disposable.isDisposable(this)) {
+      Disposable.remapDisposed(this, reason)
+    }
   }
 
 }
