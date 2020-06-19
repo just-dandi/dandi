@@ -36,7 +36,7 @@ export class CommandRunner<THost extends any> implements EntryPoint {
 
   private async runAction(): Promise<void> {
     if (isActionName<THost>(this.host.constructor, this.actionName)) {
-      return await this.host[this.actionName](this.info.args)
+      return await (this.host[this.actionName] as any)(this.info.args)
     }
     throw new Error('Invalid argument for actionName')
   }
