@@ -75,6 +75,25 @@ describe('PgDbClient', function() {
 
       expect(second).to.have.been.called
     })
+
+    it('creates multiple transaction clients in a way to allows one to fail without affecting the other', async function() {
+      let onTxnClient1: Function
+      const txnClient1 = new Promise(resolve => onTxnClient1 = resolve)
+      let onTxnClient2: Function
+      const txnClient2 = new Promise(resolve => onTxnClient2 = resolve)
+
+      let onReady: Function
+      const ready = new Promise(resolve => onReady = resolve)
+
+      const txn1 = this.dbClient.transaction(async txnClient => { onTxnClient1(txnClient); await ready; throw new Error('oh nooo') })
+      const txn2 = this.dbClient.transaction(async txnClient => { onTxnClient2(txnClient); await ready; return 'hi!' })
+
+      expect(await txnClient1).not.to.equal(await txnClient2)
+      onReady()
+
+      await expect(txn1).to.be.rejectedWith('oh nooo')
+      await expect(txn2).to.become('hi!')
+    })
   })
 
   describe('query', function() {
@@ -128,7 +147,6 @@ describe('PgDbClient', function() {
     })
 
   })
-
 
   describe('dispose', function() {
     it('calls dispose() on the current transaction, if there is one', async function() {
