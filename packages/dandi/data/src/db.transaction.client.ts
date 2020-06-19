@@ -2,6 +2,7 @@ import { Disposable } from '@dandi/common'
 import { InjectionToken } from '@dandi/core'
 
 import { DbQueryable } from './db.queryable'
+import { DbTransactionScope } from './db-transaction-scope'
 import { localOpinionatedToken } from './local.token'
 
 export interface DbTransactionClient extends DbQueryable, Disposable {
@@ -13,5 +14,6 @@ export const DbTransactionClient: InjectionToken<DbTransactionClient> = localOpi
   'DbTransactionClient',
   {
     multi: false,
+    restrictScope: DbTransactionScope,
   },
 )
