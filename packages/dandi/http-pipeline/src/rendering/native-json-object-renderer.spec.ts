@@ -1,42 +1,73 @@
-import { stubHarness } from '@dandi/core/testing'
-import { MimeType } from '@dandi/http'
-import { NativeJsonObjectRenderer } from '@dandi/http-pipeline'
+import { testHarness } from '@dandi/core/testing'
+import { HttpStatusCode, MimeType, parseMimeTypes } from '@dandi/http'
+import {
+  HttpPipelineConfig,
+  HttpPipelineErrorRendererDataFactory,
+  HttpPipelineErrorResult,
+  NativeJsonObjectRenderer,
+} from '@dandi/http-pipeline'
 
 import { expect } from 'chai'
 
-describe('NativeJsonObjectRenderer', function() {
+describe('NativeJsonObjectRenderer', () => {
 
-  const harness = stubHarness(NativeJsonObjectRenderer)
+  const harness = testHarness(NativeJsonObjectRenderer,
+    {
+      provide: HttpPipelineConfig,
+      useValue: {},
+    },
+  )
 
-  beforeEach(async function() {
-    this.renderer = await harness.inject(NativeJsonObjectRenderer)
+  let renderer: NativeJsonObjectRenderer
+  const accept = parseMimeTypes(MimeType.applicationJson)
+
+  beforeEach(async () => {
+    renderer = await harness.inject(NativeJsonObjectRenderer)
+  })
+  afterEach(() => {
+    renderer = undefined
   })
 
-  describe('renderPipelineResult', function() {
+  describe('renderPipelineResult', () => {
 
-    it('returns a JSON representation of an object', async function() {
+    it('returns a JSON representation of an object', async () => {
       const pipelineResult = {
         data: {
           foo: 'bar',
         },
       }
-      const result = await this.renderer.renderPipelineResult(MimeType.textPlain, pipelineResult)
+      const result = await renderer.render(accept, pipelineResult)
 
-      expect(result).to.equal('{"foo":"bar"}')
+      expect(result.renderedBody).to.equal('{"foo":"bar"}')
     })
 
-    it('returns a JSON representation of a string', async function() {
+    it('returns a JSON representation of a string', async () => {
       const pipelineResult = { data: 'foo' }
-      const result = await this.renderer.renderPipelineResult(MimeType.textPlain, pipelineResult)
+      const result = await renderer.render(accept, pipelineResult)
 
-      expect(result).to.equal('"foo"')
+      expect(result.renderedBody).to.equal('"foo"')
     })
 
-    it('returns a JSON representation of a number', async function() {
+    it('returns a JSON representation of a number', async () => {
       const pipelineResult = { data: 42 }
-      const result = await this.renderer.renderPipelineResult(MimeType.textPlain, pipelineResult)
+      const result = await renderer.render(accept, pipelineResult)
 
-      expect(result).to.equal('42')
+      expect(result.renderedBody).to.equal('42')
+    })
+    
+    it('returns a JSON representation of error results', async () => {
+      const pipelineResult: HttpPipelineErrorResult = {
+        statusCode: HttpStatusCode.internalServerError,
+        errors: [
+          new Error('wtf'),
+        ],
+      }
+      const errorResult: HttpPipelineErrorResult = Object.assign({}, pipelineResult, {
+        data: new HttpPipelineErrorRendererDataFactory(pipelineResult)
+      })
+      const result = await renderer.render(accept, errorResult)
+
+      expect(result.renderedBody).to.equal('{"statusCode":500,"message":"wtf","errors":[{"message":"wtf"}]}')
     })
 
   })
