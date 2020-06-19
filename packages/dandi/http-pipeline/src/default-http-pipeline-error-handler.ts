@@ -27,7 +27,7 @@ export class DefaultHttpPipelineErrorHandler implements HttpPipelineErrorResultH
       headers: result.headers,
       errors: result.errors,
     }
-    return Object.assign(transformedResult, {
+    return Object.assign({}, transformedResult, {
       data: new HttpPipelineErrorRendererDataFactory(transformedResult),
     })
   }
