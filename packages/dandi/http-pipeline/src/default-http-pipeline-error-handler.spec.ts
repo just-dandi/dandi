@@ -32,6 +32,12 @@ describe('DefaultHttpPipelineErrorHandler', () => {
 
       expect(handledResult.statusCode).to.equal(HttpStatusCode.teapot)
     })
+
+    it('does not create a circular structure', async () => {
+      const handledResult = await classUnderTest.handleError(initialResult)
+
+      expect(handledResult.data.result).not.to.equal(handledResult)
+    })
   })
 
 })
