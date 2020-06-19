@@ -2,7 +2,12 @@ import { Disposable } from '@dandi/common'
 import { Inject, Injectable, RestrictScope } from '@dandi/core'
 import { ComposedResource, Resource, SELF_RELATION } from '@dandi/hal'
 import { HttpRequest, HttpRequestQueryParamMap, HttpRequestScope, ParamMap } from '@dandi/http'
-import { HttpPipelineResult, HttpPipelineResultTransformer, isHttpPipelineDataResult } from '@dandi/http-pipeline'
+import {
+  HttpPipelineResult,
+  HttpPipelineResultTransformer,
+  isHttpPipelineDataResult,
+  isHttpPipelineErrorResult,
+} from '@dandi/http-pipeline'
 import { Route } from '@dandi/mvc'
 import { getAccessorMetadata } from '@dandi/mvc-hal'
 
@@ -21,7 +26,7 @@ export class HalResultTransformer implements HttpPipelineResultTransformer {
   ) {}
 
   public async transform(result: HttpPipelineResult): Promise<HttpPipelineResult> {
-    if (!isHttpPipelineDataResult(result) || result.data instanceof ComposedResource) {
+    if (isHttpPipelineErrorResult(result) || !isHttpPipelineDataResult(result) || result.data instanceof ComposedResource) {
       return result
     }
     const meta = getAccessorMetadata(this.route.controllerCtr.prototype, this.route.controllerMethod.toString())
