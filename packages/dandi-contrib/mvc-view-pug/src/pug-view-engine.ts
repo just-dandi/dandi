@@ -29,7 +29,7 @@ export class PugViewEngine implements ViewEngine {
   }
 
   public async render(view: ViewMetadata, templatePath: string, data?: any): Promise<string> {
-    const options = Object.assign({}, this.defaultOptions, { basedir: view.context }, data)
+    const options = Object.assign({}, this.defaultOptions, { basedir: view?.context }, data)
     return pug.renderFile(templatePath, options)
   }
 }
