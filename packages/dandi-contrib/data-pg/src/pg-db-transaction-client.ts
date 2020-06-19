@@ -128,7 +128,9 @@ export class PgDbTransactionClient extends PgDbQueryableBase<PgDbPoolClient> imp
       }
     } finally {
       await this.mutex.dispose(reason)
-      Disposable.remapDisposed(this, reason)
+      if (!Disposable.isDisposed(this)) {
+        Disposable.remapDisposed(this, reason)
+      }
     }
   }
 
