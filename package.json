@@ -1,7 +1,7 @@
 {
   "name": "dandi",
   "private": true,
-  "version": "1.0.0-alpha.63",
+  "version": "1.0.0-alpha.64",
   "description": "",
   "scripts": {
     "setup": "./setup",
