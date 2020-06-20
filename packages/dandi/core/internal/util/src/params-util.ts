@@ -3,7 +3,7 @@ import { AppError } from '@dandi/common'
 const PATTERNS = {
   ctrOrFunctionSig: /(?:constructor|(?:async\s*)?[fF]unction)\s?(\([\w$.=,\s()+[\]]*\))/,
   arrowFnSig: /^(?:async\s*)?(\(?[\w$.=,\s]*\)?) =>/,
-  methodSig: (name) => new RegExp(`^(?:async\\s*)?${name}(\\(([\\w$.=,\\s]*)\\))`),
+  methodSig: (name) => new RegExp(`^(?:async\\s*)?(?:function\\s*)?${name}(\\(([\\w$.=,\\s]*)\\))`),
   params: /[\w$]+/g,
 }
 
