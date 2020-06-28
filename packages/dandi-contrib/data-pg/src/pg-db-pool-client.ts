@@ -1,5 +1,5 @@
 import { Disposable } from '@dandi/common'
-import { Provider } from '@dandi/core'
+import { Provider, ScopeBehavior } from '@dandi/core'
 import { PoolClient, QueryResult } from 'pg'
 
 import { PgDbPool } from './pg-db-pool'
@@ -33,4 +33,5 @@ export const POOL_CLIENT_PROVIDER: Provider<PgDbPoolClient> = {
   useFactory: poolClientFactory,
   deps: [PgDbPool],
   async: true,
+  restrictScope: ScopeBehavior.perInjector,
 }
