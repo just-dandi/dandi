@@ -2,11 +2,11 @@ import { ConfigToken } from '@dandi/config'
 import { ModelBase, Property } from '@dandi/model'
 
 export class DbConnectionInfo extends ModelBase {
-  public static configToken(key: string): ConfigToken<DbConnectionInfo> {
+  public static configToken(key: string, encrypted: boolean = true): ConfigToken<DbConnectionInfo> {
     return {
       key,
       type: DbConnectionInfo,
-      encrypted: true,
+      encrypted,
     }
   }
 

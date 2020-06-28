@@ -12,6 +12,8 @@ import { stub, restore } from './sandbox'
 import { StubInjectorContext } from './stub-injector-context'
 import { RootTestInjector, TestInjectorBase } from './test-injector'
 
+const instances: TestHarness[] = []
+
 export class TestHarness extends TestInjectorBase implements RootTestInjector, Disposable {
 
   private _application: DandiApplication
@@ -25,9 +27,13 @@ export class TestHarness extends TestInjectorBase implements RootTestInjector, D
   }
 
   private rootInjector: RootInjector
+  private readonly providers: Registerable[]
 
-  constructor(providers: any[], suite: boolean = true, stubMissing: boolean = false) {
+  constructor(providers: Registerable[], suite: boolean = true, stubMissing: boolean = false, isClone: boolean = false) {
     super(undefined, stubMissing)
+    instances.push(this)
+
+    this.providers = providers
     if (stubMissing) {
       providers.push({
         provide: InjectorContextConstructor,
@@ -36,12 +42,24 @@ export class TestHarness extends TestInjectorBase implements RootTestInjector, D
     }
 
     if (suite) {
-      this.initSandbox()
-      this.stubInjectableRegistration()
+      if (!isClone) {
+        this.initSandbox()
+        this.stubInjectableRegistration()
+      }
       this.initApplication(providers)
     } else {
       this._ready = this.setUpApplication(providers)
     }
+  }
+
+  public async single(...entries: Registerable[]): Promise<RootTestInjector> {
+    const harness = new TestHarness(this.providers.concat(entries), false)
+    await harness.ready
+    return harness
+  }
+
+  public clone(...entries: Registerable[]): RootTestInjector {
+    return new TestHarness(this.providers.concat(entries), true, false, true)
   }
 
   private initSandbox(): void {
@@ -87,9 +105,16 @@ export class TestHarness extends TestInjectorBase implements RootTestInjector, D
   }
 
   public async dispose(): Promise<void> {
-    await this._application.dispose('test complete')
-    this._application = undefined
+    if (this._application) {
+      await this._application.dispose('test complete')
+      this._application = undefined
+    }
     this._injector = undefined
     this._ready = undefined
   }
 }
+
+afterEach(async () => {
+  await instances.map(harness => harness.dispose())
+  instances.splice(0, instances.length)
+})

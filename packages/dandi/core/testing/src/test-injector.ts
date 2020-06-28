@@ -32,6 +32,8 @@ export interface RootTestInjector extends TestInjector {
 
   readonly application: DandiApplication
   register(...providers: Registerable[]): this
+  single(...providers: Registerable[]): Promise<RootTestInjector>
+  clone(...providers: Registerable[]): RootTestInjector
 
 }
 
