@@ -17,6 +17,8 @@ import { Db } from './shared/db'
 import { TaskController } from './tasks/task.controller'
 import { ViewController } from './view/view.controller'
 
+import { CustomErrorHandler } from './custom-error-handler'
+
 const DEFAULT_SERVER_PORT = 8085
 
 export const server = new DandiApplication({
@@ -40,6 +42,7 @@ export const server = new DandiApplication({
       .engine('pug', PugViewEngine.config({ cache: false })),
     MvcHalModule,
     HyperviewViewRenderer,
+    CustomErrorHandler,
 
     // Model Validation
     ModelBuilderModule,
