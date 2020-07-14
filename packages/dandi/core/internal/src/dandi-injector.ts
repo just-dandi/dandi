@@ -55,7 +55,7 @@ export class DandiInjector implements Injector, Disposable {
   protected generator: InstanceGenerator
   protected readonly generatorReady: Promise<void>
 
-  private readonly children: Array<DandiInjector> = []
+  private readonly children: Set<DandiInjector> = new Set<DandiInjector>()
 
   protected constructor(
     public readonly parent: DandiInjector,
@@ -123,20 +123,23 @@ export class DandiInjector implements Injector, Disposable {
     const [originalReason, ...reasonStack] = reason.split('\n\t')
     reasonStack.unshift(`while ${getInjectionScopeVerb(this.scope)} ${getInjectionScopeName(this.scope)}`)
     const injectorReason = [originalReason, ...reasonStack].join('\n\t')
-    await Promise.all(this.children.map((child) => {
+    await Promise.all([...this.children].map((child) => {
       if (Disposable.canDispose(child)) {
         const prefix = reason.startsWith('Disposing parent Injector ') ? '' : 'Disposing parent Injector '
         return child.dispose(`${prefix}${injectorReason}`)
       }
     }))
-    this.children.length = 0
+    this.children.clear()
+    if (this.parent) {
+      this.parent.children.delete(this)
+    }
     await this.context.dispose(injectorReason)
     Disposable.remapDisposed(this, reason)
   }
 
   public createChild(scope: InjectionScope, providers: Registerable[] = []): DandiInjector {
     const child = new DandiInjector(this, scope, this.generatorFactory, this.injectorContextConstructor, providers)
-    this.children.push(child)
+    this.children.add(child)
     return child
   }
 
