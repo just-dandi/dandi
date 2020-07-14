@@ -1,0 +1,11 @@
+{
+  "name": "@dandi-contrib/send-grid",
+  "dependencies": {
+    "@sendgrid/mail": "^7.2.1"
+  },
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/config": "*",
+    "@dandi/core": "*"
+  }
+}
