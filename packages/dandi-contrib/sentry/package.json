@@ -1,0 +1,11 @@
+{
+  "name": "@dandi-contrib/sentry",
+  "dependencies": {
+    "@sentry/node": "^5.19.2"
+  },
+  "peerDependencies": {
+    "@dandi/common": "*",
+    "@dandi/config": "*",
+    "@dandi/core": "*"
+  }
+}
