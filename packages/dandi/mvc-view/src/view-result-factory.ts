@@ -89,7 +89,7 @@ function viewResultFactory(
     errors?: Error[],
     statusCode?: HttpStatusCode,
   ): Promise<ViewResult> => {
-    statusCode = statusCode || (errors?.length ? HttpStatusCode.internalServerError : HttpStatusCode.ok)
+    statusCode = statusCode || (errors?.length ? HttpStatusCode.internalServerError : undefined)
     const [error] = errors || []
     if (error) {
       const errorViewPath = errorConfig.templates[statusCode] || errorConfig.templates.default
