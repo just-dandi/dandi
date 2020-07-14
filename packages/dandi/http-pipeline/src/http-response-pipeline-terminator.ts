@@ -27,9 +27,6 @@ export class HttpResponsePipelineTerminator<TResponse = void> implements HttpPip
   ) {}
 
   public async terminateResponse(renderResult: HttpPipelineRendererResult): Promise<TResponse> {
-    if (renderResult.statusCode) {
-      this.response.status(renderResult.statusCode)
-    }
     if (renderResult.headers) {
       Object
         .keys(renderResult.headers)
@@ -41,7 +38,7 @@ export class HttpResponsePipelineTerminator<TResponse = void> implements HttpPip
       .send(renderResult.renderedBody || '')
       .end()
 
-    this.logger.debug(this.request.method, this.request.path, renderResult.statusCode || HttpStatusCode.ok)
+    this.logger.debug(this.request.method, this.request.path, renderResult.statusCode || this.defaultStatusCode())
 
     return
   }

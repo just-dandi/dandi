@@ -1,6 +1,6 @@
 import { AppError, Uuid } from '@dandi/common'
 import { Inject, SymbolToken } from '@dandi/core'
-import { stubHarness, stubProvider, TestInjector, underTest } from '@dandi/core/testing'
+import { stubHarness, TestInjector, underTest } from '@dandi/core/testing'
 import {
   HttpMethod,
   HttpRequest,
@@ -87,7 +87,10 @@ describe('HttpPipeline', () => {
       provide: HttpPipelineConfig,
       useFactory: () => config,
     },
-    stubProvider(DefaultHttpPipelineErrorHandler, HttpPipelineErrorResultHandler),
+    {
+      provide: HttpPipelineErrorResultHandler,
+      useFactory: () => errorHandler,
+    },
   )
 
   function registerHandler<THandler>(instance: THandler, method: keyof THandler): void {
@@ -124,8 +127,9 @@ describe('HttpPipeline', () => {
     requestInjector = harness.createChild(HttpRequestScope)
     terminator = createStubInstance(HttpResponsePipelineTerminator)
     terminator.terminateResponse.returnsArg(0);
-    [errorHandler] = await harness.injectMultiStub(HttpPipelineErrorResultHandler)
-    errorHandler.handleError.returnsArg(0)
+
+    errorHandler = createStubInstance(DefaultHttpPipelineErrorHandler)
+    errorHandler.handleError.callsFake(async result => result)
   })
   afterEach(() => {
     pipeline = undefined
