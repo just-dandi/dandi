@@ -1,9 +1,15 @@
+import { Provider } from '@dandi/core'
+
 import { ConfigToken } from './config.token'
 
 export interface ConfigClient {
   readonly async: boolean
   readonly allowsEncryption: boolean
   get(token: ConfigToken<any>): any
+}
+
+export interface ConfigClientStatic {
+  provider<T>(token: ConfigToken<T>): Provider<T>
 }
 
 export interface SyncConfigClient extends ConfigClient {
