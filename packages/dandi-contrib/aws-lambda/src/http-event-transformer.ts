@@ -64,7 +64,7 @@ export class HttpEventTransformer implements LambdaEventTransformer<APIGatewayPr
       path: event.path,
       query: this.getQueryStringParams(event),
       params: event.pathParameters,
-      method: event.httpMethod.toLowerCase() as HttpMethod,
+      method: event.httpMethod.toUpperCase() as HttpMethod,
     })
   }
 
