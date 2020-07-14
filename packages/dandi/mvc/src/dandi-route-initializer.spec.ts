@@ -34,6 +34,7 @@ import {
   Route,
   RouteInitializationError,
 } from '@dandi/mvc'
+import { HttpRequestWrapper } from '@dandi/mvc/src/http-request-wrapper'
 
 import { expect } from 'chai'
 import { createStubInstance, SinonStubbedInstance, stub } from 'sinon'
@@ -123,7 +124,14 @@ describe('DandiRouteInitializer', () => {
       const providers = initializer.initRouteRequest(route, req, requestInfo, res)
       const routeInjector = createRequestInjector(providers)
 
-      expect(await routeInjector.inject(HttpRequest)).to.equal(req)
+      const providedReq = await routeInjector.inject(HttpRequest)
+
+      expect(providedReq).to.be.instanceof(HttpRequestWrapper)
+      expect(providedReq.method).to.equal(req.method)
+      expect(providedReq.body).to.equal(req.body)
+      expect(providedReq.path).to.equal(req.path)
+      expect(providedReq.params).to.equal(req.params)
+      expect(providedReq.query).to.equal(req.query)
     })
 
     it('generates a provider for the response object', async () => {

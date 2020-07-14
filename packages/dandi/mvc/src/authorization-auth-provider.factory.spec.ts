@@ -1,6 +1,6 @@
 import { InjectionResult, Injector } from '@dandi/core'
 import { DandiInjector } from '@dandi/core/internal'
-import { HttpMethod, UnauthorizedError } from '@dandi/http'
+import { HttpMethod } from '@dandi/http'
 import {
   AuthorizationAuthProviderFactory,
   AuthorizationService,
@@ -42,16 +42,7 @@ describe('AuthorizationAuthProviderFactory', () => {
     req = undefined
   })
 
-  describe('createAuthProviders', () => {
-    it('throws an UnauthorizedError if there is no Authorization header and the route has authorization conditions', async () => {
-      route.authorization = [IsAuthorized]
-      await expect(() => authProviderFactory.generateAuthProviders(route, req)).to.throw(UnauthorizedError)
-    })
-
-    it('returns an empty array if there are no authorization conditions', async () => {
-      const result = await authProviderFactory.generateAuthProviders(route, req)
-      expect(result).to.be.empty
-    })
+  describe('generateAuthProviders', () => {
 
     it('adds a provider for a scheme-specific AuthorizationService', async () => {
       const authService = {}
