@@ -105,13 +105,13 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
 
   public getInstance<T>(provider: Provider<T>): T {
     return this.withInstanceContext(provider, instanceContext => {
-      return instanceContext?.repository.getInstance(provider.provide)
+      return instanceContext?.repository.getInstance(provider)
     })
   }
 
   public getInstanceRequest<T>(provider: Provider<T>): Promise<T> {
     return this.withInstanceContext(provider, instanceContext => {
-      const existingInstance = instanceContext.repository.getInstance<T>(provider.provide)
+      const existingInstance = instanceContext.repository.getInstance<T>(provider)
       if (existingInstance) {
         return Promise.resolve(existingInstance)
       }
@@ -121,7 +121,7 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
 
   public async setInstanceRequest<T>(provider: Provider<T>, value: Promise<T>): Promise<T> {
     return await this.withInstanceContext(provider, async instanceContext => {
-      const existingInstance = instanceContext.repository.getInstance<T>(provider.provide)
+      const existingInstance = instanceContext.repository.getInstance<T>(provider)
       if (existingInstance) {
         return existingInstance
       }

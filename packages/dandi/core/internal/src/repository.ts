@@ -1,6 +1,7 @@
-import { Constructor, Disposable, InvalidDisposeTargetError } from '@dandi/common'
+import { Constructor, Disposable, InvalidDisposeTargetError, Memoizer } from '@dandi/common'
 import { isProvider, getInjectionScopeName, isInjectionToken } from '@dandi/core/internal/util'
 import {
+  ClassProvider,
   DependencyInjectionScope,
   InjectionScope,
   InjectionToken,
@@ -23,6 +24,17 @@ export interface RegisterOptions<T> extends ProviderOptions<T> {
 export type RepositoryEntry<T> = Provider<T> | Set<Provider<T>>
 
 export const GLOBAL_SCOPE = new DependencyInjectionScope('Repository:GLOBAL_SCOPE')
+
+const memoizedProviders = new Memoizer<Provider<any>>()
+
+export type RepositoryInstanceKey<T> = InjectionToken<T> | Provider<T>
+
+function getRepositoryInstanceKey<T>(provider: Provider<T>): RepositoryInstanceKey<T> {
+  if (provider.multi || (provider.provide instanceof OpinionatedToken && provider.provide.options.multi)) {
+    return provider
+  }
+  return provider.provide
+}
 
 /**
  * Contains mappings of injection tokens to providers, and stores instances of injectables.
@@ -50,7 +62,7 @@ export class Repository implements Disposable {
   }
 
   private readonly registry = new Map<InjectionToken<any>, RepositoryEntry<any>>()
-  private readonly instances = new Map<InjectionToken<any>, any>()
+  private readonly instances = new Map<RepositoryInstanceKey<any>, any>()
   private readonly children = new Map<InjectionScope, Repository>()
 
   private constructor(private scope: InjectionScope, private readonly _allowInstances: boolean) {}
@@ -71,11 +83,16 @@ export class Repository implements Disposable {
           useClass: target,
         },
         effectiveOptions,
-      )
+      ) as ClassProvider<T>
 
-      this.registerProvider(Object.assign({}, provider, { provide }))
+      this.registerProvider(memoizedProviders.add(Object.assign({}, provider, { provide })))
       if (provide !== target && !noSelf) {
-        this.registerProvider(Object.assign({}, provider, { provide: target }))
+        // only use multi if it is explicitly set - otherwise it could unintentionally create duplicates
+        const selfProvider = Object.assign({}, provider, { provide: target })
+        if (effectiveOptions.multi) {
+          Object.assign(selfProvider, { multi: true })
+        }
+        this.registerProvider(memoizedProviders.add(selfProvider))
       }
       return this
     }
@@ -91,20 +108,21 @@ export class Repository implements Disposable {
     return this.registry.values()
   }
 
-  public addInstance<TInstance>(token: InjectionToken<TInstance>, value: TInstance): TInstance {
+  public addInstance<TInstance>(key: RepositoryInstanceKey<TInstance>, value: TInstance): TInstance {
     if (!this._allowInstances) {
       // TODO: create error type
       throw new Error('Instances are not allowed to be registered on this Repository instance')
     }
-    if (!isInjectionToken(token)) {
-      throw new InjectionTokenTypeError(token)
+    if (!isInjectionToken(key) && !isProvider(key)) {
+      throw new InjectionTokenTypeError(key)
     }
-    this.instances.set(token, value)
+    this.instances.set(key, value)
     return value
   }
 
-  public getInstance<TInstance>(token: InjectionToken<TInstance>): TInstance {
-    return this.instances.get(token)
+  public getInstance<TInstance>(provider: Provider<TInstance>): TInstance {
+    const key = getRepositoryInstanceKey(provider)
+    return this.instances.get(key)
   }
 
   public getChild(scope: InjectionScope): Repository {

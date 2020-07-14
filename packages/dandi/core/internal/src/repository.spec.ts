@@ -237,7 +237,7 @@ describe('Repository', () => {
     it('adds the value to the instances set', () => {
       Disposable.use(Repository.for(Math.random().toString()), (repo) => {
         repo.addInstance(provider.provide, value)
-        expect(repo.getInstance(provider.provide)).to.equal(value)
+        expect(repo.getInstance(provider)).to.equal(value)
       })
     })
 
@@ -252,7 +252,7 @@ describe('Repository', () => {
     it('returns the value of a registered singleton', () => {
       Disposable.use(Repository.for(Math.random().toString()), (repo) => {
         repo.addInstance(provider.provide, value)
-        expect(repo.getInstance(provider.provide)).to.equal(value)
+        expect(repo.getInstance(provider)).to.equal(value)
       })
     })
   })
