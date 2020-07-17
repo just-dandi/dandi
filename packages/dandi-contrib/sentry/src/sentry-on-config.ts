@@ -4,7 +4,7 @@ import { Severity } from '@sentry/types'
 import { SentryClient } from './sentry-client'
 
 function sentryOnConfigFactory(client: SentryClient) {
-  return () => client.captureMessage('onConfig', Severity.Info)
+  return () => client.captureMessage('appStart', Severity.Info)
 }
 
 export const SentryOnConfig: Provider<OnConfig> = {

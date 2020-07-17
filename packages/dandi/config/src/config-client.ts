@@ -12,6 +12,10 @@ export interface ConfigClientStatic {
   provider<T>(token: ConfigToken<T>): Provider<T>
 }
 
+export function isConfigClientStatic(obj: any): obj is ConfigClientStatic {
+  return typeof obj?.provider === 'function'
+}
+
 export interface SyncConfigClient extends ConfigClient {
   readonly async: false
   get(token: ConfigToken<any>): string

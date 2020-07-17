@@ -1,3 +1,7 @@
 export * from './src/sentry.module'
 export * from './src/sentry-client'
 export * from './src/sentry-config'
+export * from './src/sentry-credentials'
+export * from './src/sentry-options'
+export * from './src/sentry-scope-data'
+export * from './src/sentry-static'

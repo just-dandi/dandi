@@ -2,6 +2,7 @@ import { ModuleBuilder, Registerable } from '@dandi/core'
 
 import { localToken } from './local-token'
 import { SentryErrorHandler } from './sentry-error-handler'
+import { SentryHttpPipelineScopePreparer } from './sentry-http-pipeline-scope-preparer'
 
 export class SentryHttpPipelineModuleBuilder extends ModuleBuilder<SentryHttpPipelineModuleBuilder> {
   constructor(...entries: Registerable[]) {
@@ -9,4 +10,7 @@ export class SentryHttpPipelineModuleBuilder extends ModuleBuilder<SentryHttpPip
   }
 }
 
-export const SentryHttpPipelineModule = new SentryHttpPipelineModuleBuilder(SentryErrorHandler)
+export const SentryHttpPipelineModule = new SentryHttpPipelineModuleBuilder(
+  SentryErrorHandler,
+  SentryHttpPipelineScopePreparer,
+)

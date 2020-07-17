@@ -1,28 +1,49 @@
-import { ConfigClientStatic } from '@dandi/config'
+import { ConfigClientStatic, isConfigClientStatic } from '@dandi/config'
 import { ModuleBuilder, Registerable } from '@dandi/core'
 
 import { localToken } from './local-token'
 import { SentryClient } from './sentry-client'
-import { SentryConfig } from './sentry-config'
+import { SentryConfigProvider } from './sentry-config'
+import { SentryCredentials } from './sentry-credentials'
 import { SentryOnConfig } from './sentry-on-config'
+import { SentryOptions } from './sentry-options'
+import { SentryScopeDataProvider } from './sentry-scope-data'
+import { SentryStaticProvider } from './sentry-static'
 
 export class SentryModuleBuilder extends ModuleBuilder<SentryModuleBuilder> {
   constructor(...entries: Registerable[]) {
     super(SentryModuleBuilder, localToken.PKG, entries)
   }
 
-  public config(config: SentryConfig): this
-  public config(configClient: ConfigClientStatic, key: string): this
-  public config(configOrConfigClient: SentryConfig | ConfigClientStatic, key?: string): this {
-    if (configOrConfigClient instanceof SentryConfig) {
-      return this.add({
-        provide: SentryConfig,
-        useValue: configOrConfigClient,
-      })
-    }
+  public credentials(configClient: ConfigClientStatic, key: string): this {
+    return this.add(configClient.provider(SentryCredentials.configToken(key)))
+  }
 
-    return this.add(configOrConfigClient.provider(SentryConfig.configToken(key)))
+  public config(config: SentryOptions): this
+  public config(configClient: ConfigClientStatic, key: string, encrypted?: boolean): this
+  public config(
+    configOrConfigClient: SentryOptions | ConfigClientStatic,
+    key?: string,
+    encrypted: boolean = true,
+  ): this {
+    if (isConfigClientStatic(configOrConfigClient)) {
+      return this.add(configOrConfigClient.provider(SentryCredentials.configToken(key, encrypted)))
+    }
+    return this.add({
+      provide: SentryOptions,
+      useValue: configOrConfigClient,
+    })
   }
 }
 
-export const SentryModule = new SentryModuleBuilder(SentryOnConfig, SentryClient)
+export const SentryModule = new SentryModuleBuilder(
+  SentryClient,
+  SentryConfigProvider,
+  SentryOnConfig,
+  SentryScopeDataProvider,
+  SentryStaticProvider,
+  {
+    provide: SentryOptions,
+    useValue: {},
+  },
+)
