@@ -1,16 +1,10 @@
 import { createLoggerMethodChain } from '@dandi/core/internal/util'
-import {
-  LogCallOptions,
-  Logger,
-  LoggerMethod,
-  LogLevel,
-} from '@dandi/core/types'
+import { LogCallOptions, Logger, LoggerMethod, LogLevel } from '@dandi/core/types'
 
 /**
  * @internal
  */
 export abstract class LoggerBase implements Logger {
-
   public get debug(): LoggerMethod {
     return createLoggerMethodChain(this.log.bind(this, LogLevel.debug))
   }
@@ -32,5 +26,4 @@ export abstract class LoggerBase implements Logger {
   }
 
   protected abstract log(level: LogLevel, options: LogCallOptions, ...args: any[]): void
-
 }

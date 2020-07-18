@@ -12,7 +12,6 @@ const JSON_SPACING = 2
 
 @Injectable()
 export class Util {
-
   constructor(@Inject(Logger) private logger: Logger) {}
 
   public async writeJson(path: string, data: any): Promise<void> {
@@ -48,16 +47,20 @@ export class Util {
 
   public spawn(command: string, args?: string[], options?: SpawnOptions, ignoreErrors = false): Promise<string> {
     return new Promise<string>((resolve, reject) => {
-      options = Object.assign(options || {}, {
-        env: process.env,
-      }, options)
-      this.logger.debug('Spawning', command, ...args, 'in', options && options.cwd || process.cwd())
+      options = Object.assign(
+        options || {},
+        {
+          env: process.env,
+        },
+        options,
+      )
+      this.logger.debug('Spawning', command, ...args, 'in', (options && options.cwd) || process.cwd())
       const cmd = spawn(command, args, options)
       let output = ''
       let error = ''
-      cmd.stdout.on('data', chunk => output += chunk)
-      cmd.stderr.on('data', chunk => error += chunk)
-      cmd.on('close', code => {
+      cmd.stdout.on('data', (chunk) => (output += chunk))
+      cmd.stderr.on('data', (chunk) => (error += chunk))
+      cmd.on('close', (code) => {
         if (code === 0 || ignoreErrors) {
           if (error) {
             this.logger.debug('Ignored error:', error)
@@ -71,13 +74,25 @@ export class Util {
   }
 
   public spawnForPackage(info: PackageInfo, command: string, args?: string[], options?: SpawnOptions): Promise<string> {
-    return this.spawn(command, args, Object.assign({
-      cwd: info.path,
-    }, options))
+    return this.spawn(
+      command,
+      args,
+      Object.assign(
+        {
+          cwd: info.path,
+        },
+        options,
+      ),
+    )
   }
 
-  public spawnForPackages(packages: PackageInfo[], command: string, args?: string[], options?: SpawnOptions): Promise<string[]> {
-    return Promise.all(packages.map(info => this.spawnForPackage(info, command, args, options)))
+  public spawnForPackages(
+    packages: PackageInfo[],
+    command: string,
+    args?: string[],
+    options?: SpawnOptions,
+  ): Promise<string[]> {
+    return Promise.all(packages.map((info) => this.spawnForPackage(info, command, args, options)))
   }
 
   private handleReadJsonError(err: Error & { code?: string }, defaultValue: any): any {

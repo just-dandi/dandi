@@ -6,7 +6,6 @@ import { CorsHeaderValues } from './cors-headers'
 
 @Injectable()
 export class CorsHandler {
-
   public async handleOptionsRequest(
     @Inject(CorsHeaderValues) corsHeaders: CorsHeaderValues,
   ): Promise<HttpPipelineResult> {
@@ -15,5 +14,4 @@ export class CorsHandler {
       headers: corsHeaders,
     }
   }
-
 }

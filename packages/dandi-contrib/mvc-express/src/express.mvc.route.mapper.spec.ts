@@ -6,9 +6,9 @@ import { Route, RouteExecutor } from '@dandi/mvc'
 import { expect } from 'chai'
 import { stub } from 'sinon'
 
-describe('ExpressMvcRouteMapper', function() {
-
-  const harness = stubHarness(ExpressMvcRouteMapper,
+describe('ExpressMvcRouteMapper', function () {
+  const harness = stubHarness(
+    ExpressMvcRouteMapper,
     {
       provide: RouteExecutor,
       useFactory: () => ({ execRoute: stub() }),
@@ -40,13 +40,13 @@ describe('ExpressMvcRouteMapper', function() {
     },
   )
 
-  beforeEach(async function() {
+  beforeEach(async function () {
     this.app = await harness.injectStub(ExpressInstance)
     this.mapper = await harness.inject(ExpressMvcRouteMapper)
     this.routeExec = await harness.injectStub(RouteExecutor)
   })
 
-  it('calls the corresponding express app method to register the route handler', function() {
+  it('calls the corresponding express app method to register the route handler', function () {
     class TestController {}
 
     const route: Route = {
@@ -63,7 +63,7 @@ describe('ExpressMvcRouteMapper', function() {
     expect(this.app.get).to.have.been.calledWith(route.path)
   })
 
-  it('binds the route executor with the route', function() {
+  it('binds the route executor with the route', function () {
     class TestController {}
 
     const route: Route = {

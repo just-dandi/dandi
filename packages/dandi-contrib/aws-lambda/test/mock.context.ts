@@ -20,7 +20,7 @@ export class MockContext implements Context {
     return 0
   }
 
-  public succeed(messageOrObject: any): void;
-  public succeed(message: string, object: any): void;
+  public succeed(messageOrObject: any): void
+  public succeed(message: string, object: any): void
   public succeed(): void {}
 }

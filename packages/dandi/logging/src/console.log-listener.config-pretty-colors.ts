@@ -51,4 +51,6 @@ export const PRETTY_COLORS_LOGGING_CONFIG: ConsoleLogListenerConfig = {
   },
 }
 
-export const PrettyColorsLogging: ConsoleLogListenerConfigProvider = PrettyLogging.clone().set(PRETTY_COLORS_LOGGING_CONFIG)
+export const PrettyColorsLogging: ConsoleLogListenerConfigProvider = PrettyLogging.clone().set(
+  PRETTY_COLORS_LOGGING_CONFIG,
+)

@@ -7,7 +7,6 @@ import { RootInjectionScope } from './root-injection-scope'
  * @internal
  */
 export class DandiRootInjectorContext extends DandiInjectorContext {
-
   constructor() {
     super(undefined, new RootInjectionScope())
   }
@@ -15,5 +14,4 @@ export class DandiRootInjectorContext extends DandiInjectorContext {
   public register(source: RegistrationSource, ...providers: Registerable[]): this {
     return this.registerInternal(providers, source)
   }
-
 }

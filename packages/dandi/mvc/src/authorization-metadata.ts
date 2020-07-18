@@ -20,7 +20,7 @@ export function mergeAuthorization(...args: AuthorizationMetadata[]): Authorizat
 
   return conditions.size
     ? {
-      authorization: Array.from(conditions),
-    }
+        authorization: Array.from(conditions),
+      }
     : undefined
 }

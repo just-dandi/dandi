@@ -10,13 +10,10 @@ import {
 import { expect } from 'chai'
 
 describe('NativeJsonObjectRenderer', () => {
-
-  const harness = testHarness(NativeJsonObjectRenderer,
-    {
-      provide: HttpPipelineConfig,
-      useValue: {},
-    },
-  )
+  const harness = testHarness(NativeJsonObjectRenderer, {
+    provide: HttpPipelineConfig,
+    useValue: {},
+  })
 
   let renderer: NativeJsonObjectRenderer
   const accept = parseMimeTypes(MimeType.applicationJson)
@@ -29,7 +26,6 @@ describe('NativeJsonObjectRenderer', () => {
   })
 
   describe('renderPipelineResult', () => {
-
     it('returns a JSON representation of an object', async () => {
       const pipelineResult = {
         data: {
@@ -54,22 +50,18 @@ describe('NativeJsonObjectRenderer', () => {
 
       expect(result.renderedBody).to.equal('42')
     })
-    
+
     it('returns a JSON representation of error results', async () => {
       const pipelineResult: HttpPipelineErrorResult = {
         statusCode: HttpStatusCode.internalServerError,
-        errors: [
-          new Error('wtf'),
-        ],
+        errors: [new Error('wtf')],
       }
       const errorResult: HttpPipelineErrorResult = Object.assign({}, pipelineResult, {
-        data: new HttpPipelineErrorRendererDataFactory(pipelineResult)
+        data: new HttpPipelineErrorRendererDataFactory(pipelineResult),
       })
       const result = await renderer.render(accept, errorResult)
 
       expect(result.renderedBody).to.equal('{"statusCode":500,"message":"wtf","errors":[{"message":"wtf"}]}')
     })
-
   })
-
 })

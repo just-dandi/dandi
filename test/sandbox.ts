@@ -2,10 +2,10 @@ import { createSandbox } from 'sinon'
 
 const sandbox = createSandbox()
 
-beforeEach(function() {
+beforeEach(function () {
   // eslint-disable-next-line no-invalid-this
   this.sandbox = sandbox
 })
-afterEach(function() {
+afterEach(function () {
   sandbox.restore()
 })

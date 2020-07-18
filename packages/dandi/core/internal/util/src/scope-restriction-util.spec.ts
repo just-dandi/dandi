@@ -5,7 +5,6 @@ import { globalSymbol } from '@dandi/core/src/global-symbol'
 import { expect } from 'chai'
 
 describe('isScopeBehavior', () => {
-
   it('returns true if the passed object is a valid ScopeBehavior instance', () => {
     expect(isScopeBehavior(ScopeBehavior.perInjector)).to.be.true
   })
@@ -30,13 +29,10 @@ describe('isScopeBehavior', () => {
     })
     expect(isScopeBehavior(obj)).to.be.false
   })
-
 })
 
 describe('getScopeRestriction', () => {
-
   describe('when called with an injection token', () => {
-
     it('returns undefined in the token is not opinionated', () => {
       const token = new SymbolToken('scope-restriction-test')
 
@@ -55,11 +51,9 @@ describe('getScopeRestriction', () => {
 
       expect(getScopeRestriction(token)).to.equal(TestScope)
     })
-
   })
 
   describe('when called with a provider', () => {
-
     it('returns undefined if the provider does not define a scope restriction, and the token it provides is not opinionated', () => {
       const token = new SymbolToken('scope-restriction-test')
       const provider: Provider<string> = {
@@ -115,14 +109,10 @@ describe('getScopeRestriction', () => {
 
       expect(getScopeRestriction(provider)).to.equal(TestTokenScope)
     })
-
   })
-
-
 })
 
 describe('getRestrictedScope', () => {
-
   it('returns undefined when called with undefined', () => {
     expect(getRestrictedScope(undefined)).to.be.undefined
   })
@@ -143,5 +133,4 @@ describe('getRestrictedScope', () => {
 
     expect(getRestrictedScope(TestScope)).to.equal(TestScope)
   })
-
 })

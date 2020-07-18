@@ -49,7 +49,6 @@ function throwAlreadyDisposed(target: any, reason: string): never {
  * Provides utility functions for working with {@see Disposable} objects.
  */
 export class Disposable {
-
   /**
    * Returns {true} if the object implements {@see Disposable}; otherwise, {false}.
    */
@@ -58,7 +57,7 @@ export class Disposable {
   }
 
   public static isDisposed(obj: any): boolean {
-    return obj && obj[DISPOSED] || false
+    return (obj && obj[DISPOSED]) || false
   }
 
   public static isDisposing(obj: any): boolean {
@@ -103,7 +102,7 @@ export class Disposable {
     }
 
     if (!Disposable.isDisposable(obj)) {
-      (obj as any).dispose = dispose
+      ;(obj as any).dispose = dispose
       return obj as T & Disposable
     }
 

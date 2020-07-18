@@ -14,7 +14,6 @@ import { expect } from 'chai'
 import { SinonStubbedInstance, stub } from 'sinon'
 
 describe('HttpPipelineRenderer', () => {
-
   // IMPORTANT! stubHarness cannot be used here, since RendererInfoProvider relies on not being able to resolve classes
   // to determine which renderers are actually registered
   const harness = testHarness(
@@ -56,7 +55,6 @@ describe('HttpPipelineRenderer', () => {
   })
 
   it('returns a matching renderer', async () => {
-
     harness.register(TestApplicationJsonRenderer)
 
     req.get.returns(MimeType.applicationJson)
@@ -64,11 +62,9 @@ describe('HttpPipelineRenderer', () => {
     const result = await getRenderer()
 
     expect(result).to.be.instanceof(TestApplicationJsonRenderer)
-
   })
 
   it('returns the type of renderer for subsequent requests', async () => {
-
     harness.register(TestApplicationJsonRenderer)
 
     req.get.returns(MimeType.applicationJson)
@@ -78,7 +74,5 @@ describe('HttpPipelineRenderer', () => {
 
     expect(result1).to.be.instanceof(TestApplicationJsonRenderer)
     expect(result2).to.be.instanceof(TestApplicationJsonRenderer)
-
   })
-
 })

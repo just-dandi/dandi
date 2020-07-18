@@ -15,10 +15,7 @@ export interface PgDbQueryableClient {
  * @internal
  */
 export class PgDbQueryableBase<TClient extends PgDbQueryableClient> {
-  constructor(
-    protected modelBuilder: ModelBuilder,
-    protected modelBuilderOptions?: ModelBuilderOptions,
-  ) {}
+  constructor(protected modelBuilder: ModelBuilder, protected modelBuilderOptions?: ModelBuilderOptions) {}
 
   protected async baseQuery(client: TClient, cmd: string, args: any[] = []): Promise<any[]> {
     let result: QueryResult
@@ -44,7 +41,12 @@ export class PgDbQueryableBase<TClient extends PgDbQueryableClient> {
     return result.map((item) => this.modelBuilder.constructModel(model, item, this.modelBuilderOptions))
   }
 
-  protected async baseQueryModelSingle<T>(client: TClient, model: Constructor<T>, cmd: string, args: any[]): Promise<T> {
+  protected async baseQueryModelSingle<T>(
+    client: TClient,
+    model: Constructor<T>,
+    cmd: string,
+    args: any[],
+  ): Promise<T> {
     const result = await this.baseQueryModel(client, model, cmd, args)
     if (!result || !result.length) {
       return undefined

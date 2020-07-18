@@ -1,4 +1,4 @@
-import { localToken } from'../../src/local-token'
+import { localToken } from '../../src/local-token'
 
 import { InjectorContext } from './injector-context'
 

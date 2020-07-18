@@ -42,12 +42,10 @@ export interface DandiApplicationInternalConfig extends DandiApplicationConfig {
 
 const RootInjector = localToken.opinionated<RootInjector>('RootInjector', { multi: false })
 
-
 /**
  * @internal
  */
 export class DandiApplicationInit<TConfig extends DandiApplicationInternalConfig> {
-
   public startTs: number
   public get injector(): Injector {
     return this.appInjector
@@ -144,7 +142,7 @@ export class DandiApplicationInit<TConfig extends DandiApplicationInternalConfig
     @Inject(LogStream) @Optional() logStream?: LogStream,
   ): Promise<void> {
     if (logStream) {
-      (this.logger as QueueingLogger).flush(logStream)
+      ;(this.logger as QueueingLogger).flush(logStream)
     }
     this.logger = logger
 
@@ -182,7 +180,7 @@ export class DandiApplicationInit<TConfig extends DandiApplicationInternalConfig
       logger.debug(`Application configuring after ${now() - this.startTs}ms`)
     }
     if (configs) {
-      await Promise.all(configs.map(config => config()))
+      await Promise.all(configs.map((config) => config()))
     }
     if (logger) {
       logger.debug(`Application configured after ${now() - this.startTs}ms`)
@@ -193,21 +191,21 @@ export class DandiApplicationInit<TConfig extends DandiApplicationInternalConfig
     return this.runConfig(undefined, undefined, configs)
   }
 
-  public async bootstrap(
-  ): Promise<any> {
+  public async bootstrap(): Promise<any> {
     const bootstrapper = (await this.appInjector.inject(Bootstrapper)).singleValue
     return await bootstrapper.run(this.startTs)
   }
 
   public registerRootProviders(rootInjector: RootInjector, parentSource: RegistrationSource, module: any): void {
     if (Array.isArray(module)) {
-      const source = module.constructor === Array ?
-        // use parentSource if the "module" is just a plain array to avoid an extra useless entry in the source chain
-        parentSource :
-        {
-          constructor: module.constructor,
-          parent: parentSource,
-        }
+      const source =
+        module.constructor === Array
+          ? // use parentSource if the "module" is just a plain array to avoid an extra useless entry in the source chain
+            parentSource
+          : {
+              constructor: module.constructor,
+              parent: parentSource,
+            }
       module.forEach((provider) => this.registerRootProviders(rootInjector, source, provider))
       return
     }

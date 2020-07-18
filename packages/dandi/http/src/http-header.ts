@@ -1,5 +1,4 @@
 export enum HttpHeader {
-
   /**
    * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept
    */
@@ -384,8 +383,10 @@ export enum HttpHeader {
   xXssProtection = 'x-xss-protection',
 }
 
-export const HttpHeaderLookup: { [key: string]: HttpHeader } =
-  [...Object.entries(HttpHeader)].reduce((result, [key, value]) => {
+export const HttpHeaderLookup: { [key: string]: HttpHeader } = [...Object.entries(HttpHeader)].reduce(
+  (result, [key, value]) => {
     result[value] = key
     return result
-  }, {})
+  },
+  {},
+)

@@ -22,8 +22,14 @@ describe('mapKeys', () => {
   })
 
   it('converts the keys of an array of objects to camel case', () => {
-    const source = [{ Foo: 1, Bar: 2 }, { Foo: 3, Bar: 4 }]
-    const expected = [{ foo: 1, bar: 2 }, { foo: 3, bar: 4 }]
+    const source = [
+      { Foo: 1, Bar: 2 },
+      { Foo: 3, Bar: 4 },
+    ]
+    const expected = [
+      { foo: 1, bar: 2 },
+      { foo: 3, bar: 4 },
+    ]
     const actual = mapKeys(camelCase, source)
 
     expect(actual).to.deep.equal(expected)

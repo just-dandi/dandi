@@ -35,24 +35,25 @@ export class PgDbClient extends PgDbQueryableBase<PgDbPoolClient> implements DbC
 
   public async transaction<T>(transactionFn: TransactionFn<T>): Promise<T> {
     // TBD: is this better implemented using invoke?
-    return await Disposable.useAsync(this.injector.createChild(createDbTransactionScope()), async injector => {
-      return await Disposable.useAsync((await injector.inject(DbTransactionClient)).singleValue, async transaction => {
-        this.activeTransactions.push(transaction)
+    return await Disposable.useAsync(this.injector.createChild(createDbTransactionScope()), async (injector) => {
+      return await Disposable.useAsync(
+        (await injector.inject(DbTransactionClient)).singleValue,
+        async (transaction) => {
+          this.activeTransactions.push(transaction)
 
-        try {
-          // IMPORTANT! must await the useAsync so that errors are caught and the active transaction is not removed
-          // until the transaction is complete
-          return await transactionFn(transaction)
-        } finally {
-          this.activeTransactions.splice(this.activeTransactions.indexOf(transaction), 1)
-        }
-      })
+          try {
+            // IMPORTANT! must await the useAsync so that errors are caught and the active transaction is not removed
+            // until the transaction is complete
+            return await transactionFn(transaction)
+          } finally {
+            this.activeTransactions.splice(this.activeTransactions.indexOf(transaction), 1)
+          }
+        },
+      )
     })
   }
 
   public async dispose(reason: string): Promise<void> {
-    await this.activeTransactions.map((transaction) =>
-      transaction.dispose(`aborting due to pool disposing: ${reason}`),
-    )
+    await this.activeTransactions.map((transaction) => transaction.dispose(`aborting due to pool disposing: ${reason}`))
   }
 }

@@ -6,9 +6,9 @@ import { DandiModule } from './dandi-module'
 function getRegistrationTargetSourceString(source: RegistrationSource): string {
   const str = source.parent ? `${getRegistrationTargetSourceString(source.parent)} -> ` : ''
   const moduleInfo = DandiModule.moduleInfo(source.constructor)
-  const sourceName = moduleInfo ?
-    `(${moduleInfo.package}#${moduleInfo.name}):${source.constructor.name}` :
-    source.constructor.name
+  const sourceName = moduleInfo
+    ? `(${moduleInfo.package}#${moduleInfo.name}):${source.constructor.name}`
+    : source.constructor.name
   return `${str}${sourceName}${source.tag || ''}`
 }
 

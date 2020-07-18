@@ -15,7 +15,10 @@ export interface AuthorizationMetadata {
   methodMetadata?: ControllerMethodMetadata
 }
 
-export function initAuthorizationMetadata(target: MethodTarget<any>, propertyKey: string | symbol): AuthorizationMetadata {
+export function initAuthorizationMetadata(
+  target: MethodTarget<any>,
+  propertyKey: string | symbol,
+): AuthorizationMetadata {
   const metaTarget = isConstructor(target) ? target : target.constructor
   const controllerMetadata = getControllerMetadata(metaTarget)
 
@@ -77,7 +80,7 @@ export const IsAuthorized: Provider<AuthorizationCondition> = {
   deps: [AuthorizedUser],
 }
 
-const Authorized: AuthorizedDecorator = function(...conditions: Provider<AuthorizationCondition>[]) {
+const Authorized: AuthorizedDecorator = function (...conditions: Provider<AuthorizationCondition>[]) {
   return authorizedDecorator.bind(null, [IsAuthorized, ...conditions])
 } as any
 

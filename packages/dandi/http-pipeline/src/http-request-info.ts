@@ -12,7 +12,10 @@ export interface HttpRequestInfo {
   performance: PerformanceLogger
 }
 
-export const HttpRequestInfo: InjectionToken<HttpRequestInfo> = localOpinionatedToken<HttpRequestInfo>('HttpRequestInfo', {
-  multi: false,
-  restrictScope: HttpRequestScope,
-})
+export const HttpRequestInfo: InjectionToken<HttpRequestInfo> = localOpinionatedToken<HttpRequestInfo>(
+  'HttpRequestInfo',
+  {
+    multi: false,
+    restrictScope: HttpRequestScope,
+  },
+)

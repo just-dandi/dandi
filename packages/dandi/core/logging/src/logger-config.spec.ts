@@ -8,11 +8,14 @@ import { isFactoryProvider } from '../../internal/util/src/provider-util'
 
 import { LoggerConfig } from './logger-config'
 
-describe('LoggerConfig', function() {
-
-  it('subscribes all listeners to the provided stream', function() {
+describe('LoggerConfig', function () {
+  it('subscribes all listeners to the provided stream', function () {
     const stream = createStubInstance(LogStreamSubject)
-    const listeners = [createStubInstance(ConsoleLogListener), createStubInstance(ConsoleLogListener), createStubInstance(ConsoleLogListener)]
+    const listeners = [
+      createStubInstance(ConsoleLogListener),
+      createStubInstance(ConsoleLogListener),
+      createStubInstance(ConsoleLogListener),
+    ]
 
     if (isFactoryProvider(LoggerConfig)) {
       const config: OnConfig = LoggerConfig.useFactory(stream, listeners) as OnConfig
@@ -29,14 +32,10 @@ describe('LoggerConfig', function() {
           args: [`foo${index}`],
         }
         subscriber(entry)
-        expect(listener.log).to.have.been
-          .calledOnce
-          .calledWithExactly(entry)
+        expect(listener.log).to.have.been.calledOnce.calledWithExactly(entry)
       })
     } else {
       this.fail('expected a factory provider')
     }
-
   })
-
 })

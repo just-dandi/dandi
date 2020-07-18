@@ -8,7 +8,7 @@ export interface ResourceDecorator {
 }
 
 const Resource: ResourceDecorator = function Resource() {
-  return function(target: Constructor) {
+  return function (target: Constructor) {
     getResourceMetadata(target)
   }
 } as ResourceDecorator

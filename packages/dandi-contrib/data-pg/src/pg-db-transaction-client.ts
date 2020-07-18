@@ -56,8 +56,8 @@ export class TransactionRollbackError extends AppError {
 }
 
 @Injectable(DbTransactionClient)
-export class PgDbTransactionClient extends PgDbQueryableBase<PgDbPoolClient> implements DbTransactionClient, DbQueryable {
-
+export class PgDbTransactionClient extends PgDbQueryableBase<PgDbPoolClient>
+  implements DbTransactionClient, DbQueryable {
   private state: TransactionState = TransactionState.idle
   private readonly mutex: AsyncMutex<PgDbPoolClient>
 
@@ -75,15 +75,15 @@ export class PgDbTransactionClient extends PgDbQueryableBase<PgDbPoolClient> imp
   }
 
   public query(cmd: string, ...args: any[]): Promise<any[]> {
-    return this.transactionQuery(client => this.baseQuery(client, cmd, args))
+    return this.transactionQuery((client) => this.baseQuery(client, cmd, args))
   }
 
   public queryModel<T>(model: Constructor<T>, cmd: string, ...args: any[]): Promise<T[]> {
-    return this.transactionQuery(client => this.baseQueryModel(client, model, cmd, args))
+    return this.transactionQuery((client) => this.baseQueryModel(client, model, cmd, args))
   }
 
   public async queryModelSingle<T>(model: Constructor<T>, cmd: string, ...args: any[]): Promise<T> {
-    return this.transactionQuery(client => this.baseQueryModelSingle(client, model, cmd, args))
+    return this.transactionQuery((client) => this.baseQueryModelSingle(client, model, cmd, args))
   }
 
   public async rollback(err?: Error): Promise<void> {
@@ -164,7 +164,10 @@ export class PgDbTransactionClient extends PgDbQueryableBase<PgDbPoolClient> imp
     }
   }
 
-  private async validateAndExecuteAction(lockedClient: LockedObject<PgDbPoolClient>, action: TransactionAction): Promise<void> {
+  private async validateAndExecuteAction(
+    lockedClient: LockedObject<PgDbPoolClient>,
+    action: TransactionAction,
+  ): Promise<void> {
     this.validateTransactionAction(action)
     await this.executeAction(lockedClient, action)
   }
@@ -175,7 +178,9 @@ export class PgDbTransactionClient extends PgDbQueryableBase<PgDbPoolClient> imp
       await this.executeAction(lockedClient, TransactionAction.begin)
     }
     if (this.state !== TransactionState.ready && this.state !== TransactionState.beginning) {
-      throw new InvalidTransactionStateError(`query cannot be called while the transaction is in the '${this.state}' state`)
+      throw new InvalidTransactionStateError(
+        `query cannot be called while the transaction is in the '${this.state}' state`,
+      )
     }
   }
 }

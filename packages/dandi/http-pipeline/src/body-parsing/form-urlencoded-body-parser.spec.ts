@@ -5,7 +5,6 @@ import { FormUrlencodedBodyParser } from '@dandi/http-pipeline'
 import { expect } from 'chai'
 
 describe('FormUrlEncodedBodyParser', () => {
-
   const harness = testHarness(FormUrlencodedBodyParser)
 
   let parser: FormUrlencodedBodyParser
@@ -21,7 +20,6 @@ describe('FormUrlEncodedBodyParser', () => {
   })
 
   describe('parseBody', () => {
-
     it('can parse simple url encoded bodies', async () => {
       const body = 'foo=bar'
 
@@ -61,7 +59,5 @@ describe('FormUrlEncodedBodyParser', () => {
 
       expect(result).to.deep.equal({ bleep: ['bloop', 'blarp', 'boogie'] })
     })
-
   })
-
 })

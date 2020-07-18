@@ -52,9 +52,9 @@ export class ViewController {
   @View('cors.pug')
   public cors(
     @QueryParam(String) restApiHost: string,
-      @QueryParam(String) awsHost: string,
-      @RequestHeader(HttpHeader.host) host: string,
-      @Inject(HttpRequest) req: HttpRequest,
+    @QueryParam(String) awsHost: string,
+    @RequestHeader(HttpHeader.host) host: string,
+    @Inject(HttpRequest) req: HttpRequest,
   ): { restApiHost: string; restApiPort: string; awsHost: string; search: string; appendSearch: string } {
     const [, restApiPort] = host.split(':')
     const search = [...Object.entries(req.query)].reduce((result, [key, value]) => {

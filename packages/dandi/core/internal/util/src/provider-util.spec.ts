@@ -10,7 +10,7 @@ describe('isClassProvider', () => {
   })
 
   it('returns true when useClass is a constructable function', () => {
-    expect(isClassProvider({ provide: TestClass, useClass: function() {} })).to.be.true
+    expect(isClassProvider({ provide: TestClass, useClass: function () {} })).to.be.true
   })
 
   it('returns false when useClass is a non-constructable function', () => {

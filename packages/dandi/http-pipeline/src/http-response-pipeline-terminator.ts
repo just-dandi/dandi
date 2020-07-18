@@ -19,7 +19,6 @@ import { HttpPipelineRendererResult } from './rendering/http-pipeline-renderer'
  */
 @Injectable(HttpPipelineTerminator, RestrictScope(HttpRequestScope))
 export class HttpResponsePipelineTerminator<TResponse = void> implements HttpPipelineTerminator {
-
   constructor(
     @Inject(HttpRequest) protected request: HttpRequest,
     @Inject(HttpResponse) protected response: HttpResponse,
@@ -28,9 +27,9 @@ export class HttpResponsePipelineTerminator<TResponse = void> implements HttpPip
 
   public async terminateResponse(renderResult: HttpPipelineRendererResult): Promise<TResponse> {
     if (renderResult.headers) {
-      Object
-        .keys(renderResult.headers)
-        .forEach(headerName => this.response.header(headerName, renderResult.headers[headerName]))
+      Object.keys(renderResult.headers).forEach((headerName) =>
+        this.response.header(headerName, renderResult.headers[headerName]),
+      )
     }
     this.response
       .header(HttpHeader.contentType, renderResult.contentType || MimeType.textPlain)
@@ -46,5 +45,4 @@ export class HttpResponsePipelineTerminator<TResponse = void> implements HttpPip
   private defaultStatusCode(): HttpStatusCode {
     return this.request.method === HttpMethod.post ? HttpStatusCode.created : HttpStatusCode.ok
   }
-
 }

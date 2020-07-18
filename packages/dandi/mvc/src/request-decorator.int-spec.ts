@@ -38,7 +38,8 @@ describe('Request Decorators', () => {
     }
   }
 
-  const harness = testHarness(ModelBuilderModule,
+  const harness = testHarness(
+    ModelBuilderModule,
     {
       provide: HttpRequest,
       useFactory: () => ({
@@ -84,7 +85,6 @@ describe('Request Decorators', () => {
   })
 
   describe('@RequestBody', () => {
-
     beforeEach(() => {
       harness.register(HttpModule)
     })
@@ -94,11 +94,9 @@ describe('Request Decorators', () => {
       expect(result).to.be.instanceof(TestModel)
       expect(result.url).to.be.instanceof(Url)
     })
-
   })
 
   describe('@PathParam', () => {
-
     it('throws an error if a path param is missing', async () => {
       const err = await expect(requestInjector.invoke(controller, 'testPathParam')).to.be.rejected
       expect(AppError.getInnerError(MissingParamError, err)).to.exist
@@ -113,7 +111,6 @@ describe('Request Decorators', () => {
   })
 
   describe('@QueryParam', () => {
-
     it('does not throw an error if a query param is optional', async () => {
       expect(await requestInjector.invoke(controller, 'testQueryParam')).to.equal(undefined)
     })
@@ -124,6 +121,5 @@ describe('Request Decorators', () => {
 
       expect(await requestInjector.invoke(controller, 'testQueryParam')).to.equal('foo')
     })
-
   })
 })

@@ -16,19 +16,12 @@ import { RootInjectionScope } from './root-injection-scope'
  * @internal
  */
 export class DandiRootInjector extends DandiInjector implements RootInjector {
-
   public readonly context: DandiRootInjectorContext
 
   protected injectorContextConstructor: InjectorContextConstructor
 
   constructor(generatorFactory: InstanceGeneratorFactory) {
-    super(
-      undefined,
-      new RootInjectionScope(),
-      generatorFactory,
-      DandiInjectorContext,
-      [],
-    )
+    super(undefined, new RootInjectionScope(), generatorFactory, DandiInjectorContext, [])
     this.context = new DandiRootInjectorContext()
   }
 
@@ -37,7 +30,9 @@ export class DandiRootInjector extends DandiInjector implements RootInjector {
     return this
   }
 
-  public init(@Inject(InjectorContextConstructor) @Optional() injectorContextConstructor: InjectorContextConstructor): void {
+  public init(
+    @Inject(InjectorContextConstructor) @Optional() injectorContextConstructor: InjectorContextConstructor,
+  ): void {
     if (injectorContextConstructor) {
       this.injectorContextConstructor = injectorContextConstructor
     }

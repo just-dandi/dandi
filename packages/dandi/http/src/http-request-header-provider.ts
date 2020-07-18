@@ -37,9 +37,7 @@ export function requestHeaderProvider<THeaderName extends HttpRequestHeader>(
     useFactory: function requestHeaderFactory(headers: HttpRequestHeadersAccessor): HttpRequestHeaders[THeaderName] {
       return headers.get(headerName)
     },
-    deps: [
-      HttpRequestHeadersAccessor,
-    ],
+    deps: [HttpRequestHeadersAccessor],
   }
   providers.set(headerName, provider)
   return provider

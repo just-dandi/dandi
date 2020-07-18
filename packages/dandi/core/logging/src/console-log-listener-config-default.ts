@@ -10,16 +10,15 @@ import {
   TagFormatOptions,
 } from './console-log-listener-config'
 
-export const DEFAULT_CONTEXT_TAG: ConsoleLogListenerFormatter = (entry: ConsoleLogListenerEntryInfo): string => entry.contextName
-export const DEFAULT_LEVEL_TAG: ConsoleLogListenerFormatter = (entry: ConsoleLogListenerEntryInfo): string => entry.level.toLocaleUpperCase().padEnd(entry.levelTagHighWater, ' ')
-export const DEFAULT_TIMESTAMP_FORMATTER: ConsoleLogListenerFormatter = (entry: ConsoleLogListenerEntryInfo): string => entry.ts ? entry.ts.toString() : undefined
-const DEFAULT_TAG_PART_ORDER: (keyof LogCallOptions)[] = [
-  'level',
-  'timestamp',
-  'context',
-]
+export const DEFAULT_CONTEXT_TAG: ConsoleLogListenerFormatter = (entry: ConsoleLogListenerEntryInfo): string =>
+  entry.contextName
+export const DEFAULT_LEVEL_TAG: ConsoleLogListenerFormatter = (entry: ConsoleLogListenerEntryInfo): string =>
+  entry.level.toLocaleUpperCase().padEnd(entry.levelTagHighWater, ' ')
+export const DEFAULT_TIMESTAMP_FORMATTER: ConsoleLogListenerFormatter = (entry: ConsoleLogListenerEntryInfo): string =>
+  entry.ts ? entry.ts.toString() : undefined
+const DEFAULT_TAG_PART_ORDER: (keyof LogCallOptions)[] = ['level', 'timestamp', 'context']
 export const DEFAULT_TAG_FORMATTER = (tagInfo: LogEntryTagInfo): string => {
-  if (!tagInfo.partOrder.find(part => !!tagInfo[part])) {
+  if (!tagInfo.partOrder.find((part) => !!tagInfo[part])) {
     return undefined
   }
 
@@ -35,7 +34,7 @@ export const DEFAULT_TAG_FORMATTER = (tagInfo: LogEntryTagInfo): string => {
       return
     }
     if (partAppended) {
-      tag += (tagInfo.tagPartSeparator || '')
+      tag += tagInfo.tagPartSeparator || ''
     }
     tag += tagInfo[part]
     partAppended = true

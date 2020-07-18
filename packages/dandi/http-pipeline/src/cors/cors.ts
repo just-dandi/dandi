@@ -1,10 +1,5 @@
 import { InjectionToken } from '@dandi/core'
-import {
-  HttpMethod,
-  HttpRequestScope,
-  HttpRequestHeader,
-  HttpHeaderWildcard,
-} from '@dandi/http'
+import { HttpMethod, HttpRequestScope, HttpRequestHeader, HttpHeaderWildcard } from '@dandi/http'
 
 import { localOpinionatedToken } from '../local-token'
 

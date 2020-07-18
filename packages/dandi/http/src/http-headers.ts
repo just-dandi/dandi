@@ -13,7 +13,7 @@ export const HttpHeaderWildcard: HttpHeaderWildcard = '*'
 export enum ContentDisposition {
   attachment = 'attachment',
   formData = 'form-data',
-  inline = 'inline'
+  inline = 'inline',
 }
 
 export enum HttpAcceptRanges {
@@ -132,95 +132,97 @@ export interface HttpHeaders {
   [HttpHeader.xXssProtection]?: string
 }
 
-export type HttpRequestHeaders = Pick<HttpHeaders,
-  HttpHeader.accept |
-  HttpHeader.acceptCharset |
-  HttpHeader.acceptEncoding |
-  HttpHeader.acceptLanguage |
-  HttpHeader.accessControlRequestHeaders |
-  HttpHeader.accessControlRequestMethod |
-  HttpHeader.authorization |
-  HttpHeader.cacheControl |
-  HttpHeader.connection |
-  HttpHeader.contentDisposition |
-  HttpHeader.contentLanguage |
-  HttpHeader.contentLength |
-  HttpHeader.contentType |
-  HttpHeader.cookie |
-  HttpHeader.dnt |
-  HttpHeader.expect |
-  HttpHeader.host |
-  HttpHeader.ifMatch |
-  HttpHeader.ifModifiedSince |
-  HttpHeader.ifNoneMatch |
-  HttpHeader.ifRange |
-  HttpHeader.ifUnmodifiedSince |
-  HttpHeader.keepAlive |
-  HttpHeader.pragma |
-  HttpHeader.origin |
-  HttpHeader.range |
-  HttpHeader.referer |
-  HttpHeader.secFetchDest |
-  HttpHeader.secFetchMode |
-  HttpHeader.secFetchSite |
-  HttpHeader.secFetchUser |
-  HttpHeader.upgradeInsecureRequests |
-  HttpHeader.userAgent |
-  HttpHeader.warning
+export type HttpRequestHeaders = Pick<
+  HttpHeaders,
+  | HttpHeader.accept
+  | HttpHeader.acceptCharset
+  | HttpHeader.acceptEncoding
+  | HttpHeader.acceptLanguage
+  | HttpHeader.accessControlRequestHeaders
+  | HttpHeader.accessControlRequestMethod
+  | HttpHeader.authorization
+  | HttpHeader.cacheControl
+  | HttpHeader.connection
+  | HttpHeader.contentDisposition
+  | HttpHeader.contentLanguage
+  | HttpHeader.contentLength
+  | HttpHeader.contentType
+  | HttpHeader.cookie
+  | HttpHeader.dnt
+  | HttpHeader.expect
+  | HttpHeader.host
+  | HttpHeader.ifMatch
+  | HttpHeader.ifModifiedSince
+  | HttpHeader.ifNoneMatch
+  | HttpHeader.ifRange
+  | HttpHeader.ifUnmodifiedSince
+  | HttpHeader.keepAlive
+  | HttpHeader.pragma
+  | HttpHeader.origin
+  | HttpHeader.range
+  | HttpHeader.referer
+  | HttpHeader.secFetchDest
+  | HttpHeader.secFetchMode
+  | HttpHeader.secFetchSite
+  | HttpHeader.secFetchUser
+  | HttpHeader.upgradeInsecureRequests
+  | HttpHeader.userAgent
+  | HttpHeader.warning
 > & {
   [HttpHeader.contentType]?: HttpContentType
 }
 export type HttpRequestHeader = keyof HttpRequestHeaders
 
-export type HttpResponseHeaders = Pick<HttpHeaders,
-  HttpHeader.accessControlAllowCredentials |
-  HttpHeader.accessControlAllowHeaders |
-  HttpHeader.accessControlAllowMethods |
-  HttpHeader.accessControlAllowOrigin |
-  HttpHeader.accessControlExposeHeaders |
-  HttpHeader.accessControlMaxAge |
-  HttpHeader.age |
-  HttpHeader.allow |
-  HttpHeader.cacheControl |
-  HttpHeader.clearSiteData |
-  HttpHeader.connection |
-  HttpHeader.contentDisposition |
-  HttpHeader.contentEncoding |
-  HttpHeader.contentLanguage |
-  HttpHeader.contentLength |
-  HttpHeader.contentLocation |
-  HttpHeader.contentRange |
-  HttpHeader.contentSecurityPolicy |
-  HttpHeader.contentSecurityPolicyReportOnly |
-  HttpHeader.contentType |
-  HttpHeader.crossOriginEmbedderPolicy |
-  HttpHeader.crossOriginOpenerPolicy |
-  HttpHeader.crossOriginResourcePolicy |
-  HttpHeader.expectCt |
-  HttpHeader.expires |
-  HttpHeader.eTag |
-  HttpHeader.featurePolicy |
-  HttpHeader.keepAlive |
-  HttpHeader.lastModified |
-  HttpHeader.location |
-  HttpHeader.pragma |
-  HttpHeader.proxyAuthenticate |
-  HttpHeader.publicKeyPins |
-  HttpHeader.publicKeyPinsReportOnly |
-  HttpHeader.server |
-  HttpHeader.setCookie |
-  HttpHeader.strictTransportSecurity |
-  HttpHeader.timingAllowOrigin |
-  HttpHeader.tk |
-  HttpHeader.vary |
-  HttpHeader.warning |
-  HttpHeader.wwwAuthenticate |
-  HttpHeader.xContentTypeOptions |
-  HttpHeader.xDownloadOptions |
-  HttpHeader.xFrameOptions |
-  HttpHeader.xPermittedCrossDomainPolicies |
-  HttpHeader.xPoweredBy |
-  HttpHeader.xXssProtection
+export type HttpResponseHeaders = Pick<
+  HttpHeaders,
+  | HttpHeader.accessControlAllowCredentials
+  | HttpHeader.accessControlAllowHeaders
+  | HttpHeader.accessControlAllowMethods
+  | HttpHeader.accessControlAllowOrigin
+  | HttpHeader.accessControlExposeHeaders
+  | HttpHeader.accessControlMaxAge
+  | HttpHeader.age
+  | HttpHeader.allow
+  | HttpHeader.cacheControl
+  | HttpHeader.clearSiteData
+  | HttpHeader.connection
+  | HttpHeader.contentDisposition
+  | HttpHeader.contentEncoding
+  | HttpHeader.contentLanguage
+  | HttpHeader.contentLength
+  | HttpHeader.contentLocation
+  | HttpHeader.contentRange
+  | HttpHeader.contentSecurityPolicy
+  | HttpHeader.contentSecurityPolicyReportOnly
+  | HttpHeader.contentType
+  | HttpHeader.crossOriginEmbedderPolicy
+  | HttpHeader.crossOriginOpenerPolicy
+  | HttpHeader.crossOriginResourcePolicy
+  | HttpHeader.expectCt
+  | HttpHeader.expires
+  | HttpHeader.eTag
+  | HttpHeader.featurePolicy
+  | HttpHeader.keepAlive
+  | HttpHeader.lastModified
+  | HttpHeader.location
+  | HttpHeader.pragma
+  | HttpHeader.proxyAuthenticate
+  | HttpHeader.publicKeyPins
+  | HttpHeader.publicKeyPinsReportOnly
+  | HttpHeader.server
+  | HttpHeader.setCookie
+  | HttpHeader.strictTransportSecurity
+  | HttpHeader.timingAllowOrigin
+  | HttpHeader.tk
+  | HttpHeader.vary
+  | HttpHeader.warning
+  | HttpHeader.wwwAuthenticate
+  | HttpHeader.xContentTypeOptions
+  | HttpHeader.xDownloadOptions
+  | HttpHeader.xFrameOptions
+  | HttpHeader.xPermittedCrossDomainPolicies
+  | HttpHeader.xPoweredBy
+  | HttpHeader.xXssProtection
 > & {
   [HttpHeader.contentType]?: MimeType
 }

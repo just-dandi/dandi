@@ -5,13 +5,10 @@ import { HttpPipelineConfig, PlainTextObjectRenderer } from '@dandi/http-pipelin
 import { expect } from 'chai'
 
 describe('PlainTextObjectRenderer', () => {
-
-  const harness = testHarness(PlainTextObjectRenderer,
-    {
-      provide: HttpPipelineConfig,
-      useValue: {},
-    },
-  )
+  const harness = testHarness(PlainTextObjectRenderer, {
+    provide: HttpPipelineConfig,
+    useValue: {},
+  })
   const acceptTypes = parseMimeTypes(MimeType.textPlain)
 
   let renderer: PlainTextObjectRenderer
@@ -24,7 +21,6 @@ describe('PlainTextObjectRenderer', () => {
   })
 
   describe('renderPipelineResult', () => {
-
     it('returns an empty string for undefined values', async () => {
       const result = await renderer.render(acceptTypes, { data: undefined })
 
@@ -49,7 +45,5 @@ describe('PlainTextObjectRenderer', () => {
 
       expect(result.renderedBody).to.equal('hi')
     })
-
   })
-
 })

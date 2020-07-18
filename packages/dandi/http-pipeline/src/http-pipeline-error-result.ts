@@ -12,16 +12,13 @@ export function isHttpPipelineErrorResult(obj: any): obj is HttpPipelineErrorRes
 }
 
 export class HttpPipelineErrorRendererDataFactory {
-
-  constructor(
-    private readonly result: HttpPipelineErrorResult,
-  ) {}
+  constructor(private readonly result: HttpPipelineErrorResult) {}
 
   public getErrorRendererData(debugMode: boolean): HttpPipelineErrorData {
     return {
       statusCode: this.result.statusCode,
       message: this.result.errors[0].message,
-      errors: this.result.errors.map(error => ({
+      errors: this.result.errors.map((error) => ({
         message: error.message,
         innerMessage: debugMode ? (error as any).innerMessage : undefined,
         stack: debugMode ? AppError.stack(error) : undefined,

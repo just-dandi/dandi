@@ -26,16 +26,15 @@ export const MODIFIER_KEYS = Object.keys(LOGGER_METHOD_CONFIG)
 export function createLoggerMethodChain(logAction: (options: LogCallOptions, ...args: any[]) => void): LoggerMethod {
   const options: LogCallOptions = {}
   const chain: LoggerMethod = logAction.bind(null, options)
-  MODIFIER_KEYS.forEach(key => {
+  MODIFIER_KEYS.forEach((key) => {
     const config = LOGGER_METHOD_CONFIG[key]
     Object.defineProperty(chain, key, {
       get: setOption.bind(null, config),
     })
   })
   function setOption(config: LoggerMethodConfig): LoggerMethod {
-    config.props.forEach(prop => options[prop] = config.value)
+    config.props.forEach((prop) => (options[prop] = config.value))
     return chain
   }
   return chain
 }
-

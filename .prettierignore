@@ -1,0 +1,10 @@
+.coverage
+.modules
+.nyc_output
+.prettierignore
+.yarn-cache
+*.pug
+*.tf
+node_modules
+out
+yarn.lock

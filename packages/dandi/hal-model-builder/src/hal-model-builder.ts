@@ -5,7 +5,6 @@ import { MetadataModelBuilder, ModelBuilder, ModelBuilderOptions, PrimitiveTypeC
 
 @Injectable(ModelBuilder)
 export class HalModelBuilder extends MetadataModelBuilder {
-
   constructor(@Inject(PrimitiveTypeConverter) primitive: PrimitiveTypeConverter) {
     super(primitive)
   }
@@ -14,7 +13,6 @@ export class HalModelBuilder extends MetadataModelBuilder {
     const result = super.constructModel(type, source, options)
 
     if (isHalObject(source)) {
-
       result._links = source._links
 
       if (typeof source._embedded === 'object') {
@@ -25,17 +23,20 @@ export class HalModelBuilder extends MetadataModelBuilder {
     return result
   }
 
-  private constructEmbeddedResources(resourceMeta: ResourceMetadata, source: HalObject, options?: ModelBuilderOptions): { [rel: string]: any } {
+  private constructEmbeddedResources(
+    resourceMeta: ResourceMetadata,
+    source: HalObject,
+    options?: ModelBuilderOptions,
+  ): { [rel: string]: any } {
     return Object.keys(source._embedded).reduce((embedded, rel) => {
       const relMeta = resourceMeta.relations[rel]
       const relSource = source._embedded[rel]
       if (Array.isArray(relSource)) {
-        embedded[rel] = relSource.map(relSourceItem => this.constructModel(relMeta.resource, relSourceItem, options))
+        embedded[rel] = relSource.map((relSourceItem) => this.constructModel(relMeta.resource, relSourceItem, options))
       } else {
         embedded[rel] = this.constructModel(relMeta.resource, relSource, options)
       }
       return embedded
     }, {})
   }
-
 }

@@ -7,7 +7,6 @@ import { HttpPipelineRenderer, HttpPipelineRendererResult } from './http-pipelin
 import { getRendererMetadata } from './renderer-decorator'
 
 export abstract class HttpPipelineRendererBase implements HttpPipelineRenderer {
-
   public readonly renderableTypes: MimeTypeInfo[]
   protected abstract readonly defaultContentType: string
 
@@ -15,7 +14,10 @@ export abstract class HttpPipelineRendererBase implements HttpPipelineRenderer {
     this.renderableTypes = getRendererMetadata(this.constructor as Constructor<HttpPipelineRenderer>).acceptTypes
   }
 
-  public async render(acceptTypes: MimeTypeInfo[], pipelineResult: HttpPipelineResult): Promise<HttpPipelineRendererResult> {
+  public async render(
+    acceptTypes: MimeTypeInfo[],
+    pipelineResult: HttpPipelineResult,
+  ): Promise<HttpPipelineRendererResult> {
     const contentType = this.determineContentType(acceptTypes)
     return {
       statusCode: pipelineResult.statusCode,
@@ -28,11 +30,13 @@ export abstract class HttpPipelineRendererBase implements HttpPipelineRenderer {
   protected abstract renderPipelineResult(contentType: string, value: HttpPipelineResult): string | Promise<string>
 
   protected determineContentType(acceptTypes: MimeTypeInfo[]): string {
-    const renderedType = acceptTypes.find(acceptType => !!this.renderableTypes.find(renderableType => mimeTypesAreCompatible(acceptType, renderableType)))
+    const renderedType = acceptTypes.find(
+      (acceptType) =>
+        !!this.renderableTypes.find((renderableType) => mimeTypesAreCompatible(acceptType, renderableType)),
+    )
     if (!renderedType || renderedType.fullType === MimeType.any) {
       return this.defaultContentType
     }
     return renderedType.fullType
   }
-
 }

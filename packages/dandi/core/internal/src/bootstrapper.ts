@@ -21,5 +21,4 @@ export class Bootstrapper {
     this.logger.debug(`Application started after ${this.now() - startTs}ms`)
     return result
   }
-
 }

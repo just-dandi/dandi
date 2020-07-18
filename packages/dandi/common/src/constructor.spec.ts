@@ -10,7 +10,7 @@ describe('isConstructor', () => {
   })
 
   it('returns true for constructable functions', () => {
-    expect(isConstructor(function() {})).to.be.true
+    expect(isConstructor(function () {})).to.be.true
   })
 
   it('returns false for non-constructable functions', () => {

@@ -21,13 +21,13 @@ import { expect } from 'chai'
 import { stub } from 'sinon'
 
 describe('HalObjectRenderer', () => {
-
   let renderer: HalObjectRenderer
   let jsonRenderer: TestApplicationJsonRenderer
   let result: HttpPipelineResult
   let requestInjector: TestInjector
 
-  const harness = testHarness(HalObjectRenderer,
+  const harness = testHarness(
+    HalObjectRenderer,
     HttpModule,
     {
       provide: TestApplicationJsonRenderer,
@@ -69,13 +69,11 @@ describe('HalObjectRenderer', () => {
   })
 
   describe('renderPipelineResult', () => {
-
     beforeEach(async () => {
       renderer = await requestInjector.inject(HalObjectRenderer)
     })
 
     it('finds a renderer matching the base type and uses it to render the output', async () => {
-
       stub(jsonRenderer, 'render').resolves({
         contentType: MimeType.applicationJson,
         renderedBody: '{"foo":"bar"}',
@@ -85,14 +83,13 @@ describe('HalObjectRenderer', () => {
 
       await renderer.renderPipelineResult(HalMimeTypes.halJson)
 
-      expect(jsonRenderer.render).to.have.been
-        .calledOnce
-        .calledWithExactly(parseMimeTypes(MimeType.applicationJson), result)
-
+      expect(jsonRenderer.render).to.have.been.calledOnce.calledWithExactly(
+        parseMimeTypes(MimeType.applicationJson),
+        result,
+      )
     })
 
     it('returns the renderedBody of the subrenderer', async () => {
-
       const expected = '{"foo":"bar"}'
       stub(jsonRenderer, 'render').resolves({
         contentType: MimeType.applicationJson,
@@ -105,17 +102,14 @@ describe('HalObjectRenderer', () => {
 
       expect(result).to.deep.equal(expected)
     })
-
   })
 
   describe('render', () => {
-
     beforeEach(async () => {
       renderer = await requestInjector.inject(HalObjectRenderer)
     })
 
     it('returns the expected HAL mime type with the renderedBody of the subrenderer', async () => {
-
       const expected = '{"foo":"bar"}'
       stub(jsonRenderer, 'render').resolves({
         statusCode: undefined,
@@ -134,9 +128,6 @@ describe('HalObjectRenderer', () => {
         headers: undefined,
         renderedBody: expected,
       })
-
     })
-
   })
-
 })

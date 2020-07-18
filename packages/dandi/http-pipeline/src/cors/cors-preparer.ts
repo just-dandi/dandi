@@ -9,23 +9,24 @@ import { isCorsRequest, corsRequestAllowed } from './cors-util'
 
 @HttpPipelinePreparer()
 export class CorsPreparer implements HttpPipelinePreparer {
-
-  constructor(
-    @Inject(CorsHeaderValues) private corsHeaders: CorsHeaderValues,
-  ) {}
+  constructor(@Inject(CorsHeaderValues) private corsHeaders: CorsHeaderValues) {}
 
   public async prepare(req: HttpRequest): Promise<HttpPipelinePreparerResult> {
     if (isCorsRequest(req)) {
-      return [{
-        provide: CorsAllowRequest,
-        useFactory: corsRequestAllowed,
-        deps: [CorsHeaderValues, HttpRequestHeadersAccessor],
-      }]
+      return [
+        {
+          provide: CorsAllowRequest,
+          useFactory: corsRequestAllowed,
+          deps: [CorsHeaderValues, HttpRequestHeadersAccessor],
+        },
+      ]
     }
 
-    return [{
-      provide: CorsAllowRequest,
-      useValue: true,
-    }]
+    return [
+      {
+        provide: CorsAllowRequest,
+        useValue: true,
+      },
+    ]
   }
 }

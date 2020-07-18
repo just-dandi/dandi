@@ -17,7 +17,6 @@ import { SinonStubbedInstance } from 'sinon'
 import { createStubInstance } from './sandbox'
 
 export interface TestInjector extends Resolver, Invoker {
-
   readonly injector: Injector
 
   inject<T>(token: InjectionToken<T>, optional?: boolean): Promise<T>
@@ -29,14 +28,11 @@ export interface TestInjector extends Resolver, Invoker {
 }
 
 export interface RootTestInjector extends TestInjector {
-
   readonly application: DandiApplication
   register(...providers: Registerable[]): this
-
 }
 
 export class TestInjectorBase implements TestInjector {
-
   public get injector(): Injector {
     return this._injector
   }
@@ -62,7 +58,7 @@ export class TestInjectorBase implements TestInjector {
         return undefined
       }
       return result.singleValue
-    } catch(err) {
+    } catch (err) {
       if (err instanceof MissingProviderError && this.stubMissing && isConstructor(token)) {
         return createStubInstance(token)
       }
@@ -77,7 +73,7 @@ export class TestInjectorBase implements TestInjector {
         return undefined
       }
       return result.arrayValue
-    } catch(err) {
+    } catch (err) {
       if (err instanceof MissingProviderError && this.stubMissing && isConstructor(token)) {
         return [createStubInstance(token)]
       }
@@ -90,7 +86,7 @@ export class TestInjectorBase implements TestInjector {
   }
 
   public async injectMultiStub<T>(token: InjectionToken<T>, optional?: boolean): Promise<SinonStubbedInstance<T>[]> {
-    return (await this.inject(token, optional)) as unknown as SinonStubbedInstance<T>[]
+    return ((await this.inject(token, optional)) as unknown) as SinonStubbedInstance<T>[]
   }
 
   public invoke<TInstance extends object, TResult>(): Promise<TResult> {
@@ -106,5 +102,4 @@ export class TestInjectorBase implements TestInjector {
     this.invoke = this.injector.invoke.bind(this.injector)
     this.resolve = this.injector.resolve.bind(this.injector)
   }
-
 }

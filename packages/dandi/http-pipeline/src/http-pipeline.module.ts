@@ -37,9 +37,7 @@ import { PlainTextObjectRenderer } from './rendering/plain-text-object-renderer'
 const IS_PRODUCTION_ENV = process.env.NODE_ENV === 'production'
 
 export const DEFAULT_CONFIG: HttpPipelineConfig = {
-  before: [
-    CorsPreparer,
-  ],
+  before: [CorsPreparer],
   debugMode: IS_PRODUCTION_ENV,
   logHandledErrors: IS_PRODUCTION_ENV ? LogLevel.debug : LogLevel.error,
 }
@@ -92,10 +90,13 @@ export class HttpPipelineModuleBuilder extends ModuleBuilder<HttpPipelineModuleB
           useFactory: config.allowOrigin,
         })
       } else {
-        this.add({
-          provide: CorsOriginWhitelist,
-          useValue: config.allowOrigin,
-        }, CorsOriginWhitelistProvider)
+        this.add(
+          {
+            provide: CorsOriginWhitelist,
+            useValue: config.allowOrigin,
+          },
+          CorsOriginWhitelistProvider,
+        )
       }
     }
     if (typeof config.maxAge !== 'undefined') {

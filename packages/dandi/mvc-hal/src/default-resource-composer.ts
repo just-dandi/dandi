@@ -1,12 +1,5 @@
 import { InvalidAccessError } from '@dandi/common'
-import {
-  Inject,
-  Injectable,
-  Injector,
-  InjectorContext,
-  ResolverContext,
-  RestrictScope,
-} from '@dandi/core'
+import { Inject, Injectable, Injector, InjectorContext, ResolverContext, RestrictScope } from '@dandi/core'
 import {
   ComposedResource,
   getResourceMetadata,
@@ -53,17 +46,7 @@ export class DefaultResourceComposer implements ResourceComposer {
     if (Array.isArray(resource)) {
       // TODO: support pagination
       const result = new ComposedResource({ count: resource.length, total: resource.length })
-      result.embedResource(
-        ITEMS_RELATION,
-        await Promise.all(
-          resource.map((item) =>
-            this.compose(
-              item,
-              context,
-            ),
-          ),
-        ),
-      )
+      result.embedResource(ITEMS_RELATION, await Promise.all(resource.map((item) => this.compose(item, context))))
 
       result.addSelfLink({
         href: context.path,
@@ -82,7 +65,7 @@ export class DefaultResourceComposer implements ResourceComposer {
     if (context.embeddedRels && context.embeddedRels.length) {
       const embeds = context.embeddedRels.map(async (rel) => {
         if (rel === SELF_RELATION) {
-          throw new Error('Cannot embed \'self\' relation')
+          throw new Error("Cannot embed 'self' relation")
         }
 
         const dotIndex = rel.indexOf('.')
@@ -267,18 +250,8 @@ export class DefaultResourceComposer implements ResourceComposer {
     const result = await injector.invoke(controller, route.controllerMethod as string)
     const resultResource: any = isHttpPipelineDataResult(result) ? result.data : result
     if (Array.isArray(resultResource)) {
-      return Promise.all(
-        resultResource.map((resource) =>
-          this.compose(
-            resource,
-            compositionContext,
-          ),
-        ),
-      )
+      return Promise.all(resultResource.map((resource) => this.compose(resource, compositionContext)))
     }
-    return this.compose(
-      resultResource,
-      compositionContext,
-    )
+    return this.compose(resultResource, compositionContext)
   }
 }

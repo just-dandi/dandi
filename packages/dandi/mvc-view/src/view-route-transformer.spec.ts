@@ -5,7 +5,6 @@ import { ControllerViewMethodMetadata, ViewRoute, ViewRouteTransformer } from '@
 import { expect } from 'chai'
 
 describe('ViewRouteTransformer', () => {
-
   let transformer: ViewRouteTransformer
 
   beforeEach(() => {

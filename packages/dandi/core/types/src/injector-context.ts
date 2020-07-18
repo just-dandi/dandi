@@ -1,6 +1,6 @@
 import { ResolverContext } from '@dandi/core'
 
-import { localToken } from'../../src/local-token'
+import { localToken } from '../../src/local-token'
 
 import { InjectionScope } from './injection-scope'
 import { InjectionToken } from './injection-token'

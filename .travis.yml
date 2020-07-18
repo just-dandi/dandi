@@ -16,13 +16,13 @@ cache:
     - packages/dandi-contrib/mvc-view-pug/node_modules
 
 install:
-  - "yarn setup"
-  - "yarn tsc --version"
-  - "yarn ts-node --version"
+  - 'yarn setup'
+  - 'yarn tsc --version'
+  - 'yarn ts-node --version'
 
 script:
-  - "yarn build"
-  - "yarn coverage"
+  - 'yarn build'
+  - 'yarn coverage'
 
 after_script:
-  - "yarn coverage-report"
+  - 'yarn coverage-report'

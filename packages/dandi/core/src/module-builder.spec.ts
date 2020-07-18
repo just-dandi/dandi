@@ -1,7 +1,7 @@
 import { ModuleBuilder, Registerable } from '@dandi/core'
 import { expect } from 'chai'
 
-describe('ModuleBuilder', function() {
+describe('ModuleBuilder', function () {
   class TestModuleBuilder extends ModuleBuilder<TestModuleBuilder> {
     constructor(...entries: any[]) {
       super(TestModuleBuilder, '@dandi/core', ...entries)
@@ -14,8 +14,8 @@ describe('ModuleBuilder', function() {
 
   class TestClass {}
 
-  describe('add', function() {
-    it('creates a copy of itself the first time it is called', function() {
+  describe('add', function () {
+    it('creates a copy of itself the first time it is called', function () {
       const builder = new TestModuleBuilder()
       const afterAdd = builder.reg(TestClass)
 
@@ -23,7 +23,7 @@ describe('ModuleBuilder', function() {
       expect(builder === afterAdd).to.be.false
     })
 
-    it('reuses the same instance for subsequent copies', function() {
+    it('reuses the same instance for subsequent copies', function () {
       const builder = new TestModuleBuilder()
       const afterAdd1 = builder.reg(TestClass)
       const afterAdd2 = afterAdd1.reg(TestClass)

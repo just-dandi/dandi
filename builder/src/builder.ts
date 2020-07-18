@@ -10,7 +10,6 @@ import { Util } from './util'
 
 @Injectable()
 export class Builder {
-
   constructor(
     @Inject(BuilderProject) private readonly project: BuilderProject,
     @Inject(Util) private util: Util,
@@ -39,7 +38,6 @@ export class Builder {
       this.logger.error('Error finalizing packages', err)
       throw err
     }
-
   }
 
   private compile(): Promise<any> {
@@ -49,11 +47,11 @@ export class Builder {
   }
 
   private finalizePackages(packages: PackageInfo[]): Promise<any> {
-    return Promise.all(packages.map(info => Promise.all([
-      this.copyPackageJson(info),
-      this.copyLicense(info),
-      this.copyManifestFiles(info),
-    ])))
+    return Promise.all(
+      packages.map((info) =>
+        Promise.all([this.copyPackageJson(info), this.copyLicense(info), this.copyManifestFiles(info)]),
+      ),
+    )
   }
 
   private async copyPackageJson(info: PackageInfo): Promise<void> {
@@ -70,8 +68,12 @@ export class Builder {
 
     // replace versions for configured scopes
     if (builtPackage.peerDependencies) {
-      Object.keys(builtPackage.peerDependencies).forEach(dep => {
-        if (builtPackage.peerDependencies[dep] === '*' && this.project.scopes && this.project.scopes.find(scope => dep.startsWith(`@${scope}/`))) {
+      Object.keys(builtPackage.peerDependencies).forEach((dep) => {
+        if (
+          builtPackage.peerDependencies[dep] === '*' &&
+          this.project.scopes &&
+          this.project.scopes.find((scope) => dep.startsWith(`@${scope}/`))
+        ) {
           builtPackage.peerDependencies[dep] = this.project.mainPkg.version
         }
       })
@@ -122,5 +124,4 @@ export class Builder {
       throw err
     }
   }
-
 }

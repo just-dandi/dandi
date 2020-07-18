@@ -5,7 +5,6 @@ import { stub } from 'sinon'
 
 @Renderer(MimeType.textHtml)
 export class TestTextHtmlRenderer extends HttpPipelineRendererBase {
-
   protected readonly defaultContentType: string = MimeType.textHtml
 
   constructor() {
@@ -17,5 +16,4 @@ export class TestTextHtmlRenderer extends HttpPipelineRendererBase {
   protected renderPipelineResult(): string | Promise<string> {
     return undefined
   }
-
 }

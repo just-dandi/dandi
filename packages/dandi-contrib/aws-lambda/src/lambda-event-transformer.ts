@@ -7,7 +7,6 @@ export interface LambdaEventTransformer<TEvent> {
   transform(event: TEvent, context: Context): Provider<any>[]
 }
 
-export const LambdaEventTransformer: InjectionToken<LambdaEventTransformer<any>> = localOpinionatedToken(
-  'LambdaEventTransformer',
-  { multi: false },
-)
+export const LambdaEventTransformer: InjectionToken<LambdaEventTransformer<
+  any
+>> = localOpinionatedToken('LambdaEventTransformer', { multi: false })

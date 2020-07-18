@@ -12,37 +12,32 @@ import { ModelBuilderFixture } from '@dandi/model-builder/testing'
 import { expect } from 'chai'
 import { stub } from 'sinon'
 
-describe('PgDbTransactionClient', function() {
+describe('PgDbTransactionClient', function () {
+  const harness = stubHarness(PgDbTransactionClient, PgDbPoolClientFixture.factory(), ModelBuilderFixture.factory)
 
-  const harness = stubHarness(PgDbTransactionClient,
-    PgDbPoolClientFixture.factory(),
-    ModelBuilderFixture.factory,
-  )
-
-  beforeEach(async function() {
+  beforeEach(async function () {
     this.client = await harness.inject(PgDbPoolClient)
     this.transactionClient = await harness.inject(PgDbTransactionClient)
     let transactionState = this.transactionClient.state
     this.state = stub()
     stub(this.transactionClient, 'state')
       .get(() => transactionState)
-      .set(state => {
+      .set((state) => {
         transactionState = state
         this.state(state)
       })
   })
 
-  it('initializes the client in the IDLE state', function() {
+  it('initializes the client in the IDLE state', function () {
     expect(this.transactionClient.state).to.equal('IDLE')
   })
 
-  describe('transactionQuery', function() {
-    beforeEach(function() {
+  describe('transactionQuery', function () {
+    beforeEach(function () {
       stub(this.transactionClient, 'rollback')
     })
 
-    it('begins the transaction if it has not already begun and sets the internal state to READY', async function() {
-
+    it('begins the transaction if it has not already begun and sets the internal state to READY', async function () {
       await this.transactionClient.query('SELECT foo FROM bar')
 
       expect(this.transactionClient.state).to.equal('READY')
@@ -51,7 +46,7 @@ describe('PgDbTransactionClient', function() {
       expect(this.client.query.secondCall.args).to.deep.equal(['SELECT foo FROM bar', []])
     })
 
-    it('does not send additional BEGIN queries if the transaction has already begun', async function() {
+    it('does not send additional BEGIN queries if the transaction has already begun', async function () {
       await this.transactionClient.query('INSERT INTO bar (foo) VALUES ($1)', 42)
       await this.transactionClient.query('SELECT foo FROM bar')
 
@@ -61,7 +56,7 @@ describe('PgDbTransactionClient', function() {
       expect(this.client.query.thirdCall.args).to.deep.equal(['SELECT foo FROM bar', []])
     })
 
-    it('rolls the transaction back if an exception is thrown and rethrows the error', async function() {
+    it('rolls the transaction back if an exception is thrown and rethrows the error', async function () {
       const catcher = stub()
       this.client.query.onSecondCall().callsFake(() => {
         throw new Error()
@@ -80,8 +75,7 @@ describe('PgDbTransactionClient', function() {
       expect(this.transactionClient.rollback).to.have.been.calledOnce
     })
 
-    it('waits for an existing state transition before continuing', async function() {
-
+    it('waits for an existing state transition before continuing', async function () {
       this.transactionClient.query('SELECT foo FROM bar')
       const secondQuery = this.transactionClient.query('SELECT more FROM stuff')
 
@@ -91,29 +85,23 @@ describe('PgDbTransactionClient', function() {
       expect(this.client.query.firstCall.args).to.deep.equal(['BEGIN', []])
       expect(this.client.query.secondCall.args).to.deep.equal(['SELECT foo FROM bar', []])
       expect(this.client.query.thirdCall.args).to.deep.equal(['SELECT more FROM stuff', []])
-
     })
 
-    it('throws an error if called when the transaction cannot accept a query', async function() {
-
+    it('throws an error if called when the transaction cannot accept a query', async function () {
       this.transactionClient.state = 'COMMITTING'
 
-      await expect(this.transactionClient.query('SELECT foo FROM bar'))
-        .to.be.rejectedWith(InvalidTransactionStateError)
-
+      await expect(this.transactionClient.query('SELECT foo FROM bar')).to.be.rejectedWith(InvalidTransactionStateError)
     })
-
   })
 
-  describe('queryModel', function() {
-
+  describe('queryModel', function () {
     class TestModel {}
 
-    beforeEach(function() {
+    beforeEach(function () {
       stub(this.transactionClient, 'baseQueryModel')
     })
 
-    it('calls through to baseQueryModel', async function() {
+    it('calls through to baseQueryModel', async function () {
       await this.transactionClient.queryModel(TestModel, 'SELECT foo FROM bar WHERE id = $1', 1)
 
       expect(this.transactionClient.baseQueryModel).to.have.been.calledOnce
@@ -123,18 +111,16 @@ describe('PgDbTransactionClient', function() {
       expect(args[2]).to.equal('SELECT foo FROM bar WHERE id = $1')
       expect(args[3]).to.deep.equal([1])
     })
-
   })
 
-  describe('queryModelSingle', function() {
-
+  describe('queryModelSingle', function () {
     class TestModel {}
 
-    beforeEach(function() {
+    beforeEach(function () {
       stub(this.transactionClient, 'baseQueryModelSingle')
     })
 
-    it('calls through to baseQueryModelSingle', async function() {
+    it('calls through to baseQueryModelSingle', async function () {
       await this.transactionClient.queryModelSingle(TestModel, 'SELECT foo FROM bar WHERE id = $1', 1)
 
       expect(this.transactionClient.baseQueryModelSingle).to.have.been.calledOnce
@@ -144,22 +130,19 @@ describe('PgDbTransactionClient', function() {
       expect(args[2]).to.equal('SELECT foo FROM bar WHERE id = $1')
       expect(args[3]).to.deep.equal([1])
     })
-
   })
 
-  describe('commit', function() {
-
-    beforeEach(function() {
+  describe('commit', function () {
+    beforeEach(function () {
       stub(this.transactionClient, 'rollback')
     })
 
-    it('throws an InvalidTransactionState error if no queries have been made', async function() {
+    it('throws an InvalidTransactionState error if no queries have been made', async function () {
       await expect(this.transactionClient.commit()).to.be.rejectedWith(InvalidTransactionStateError)
     })
 
-    it('commits the transaction and sets the internal state to COMMITING', async function() {
-
-      const waiter = (): any => new Promise(resolve => setTimeout(resolve.bind(undefined, { rows: [] }), 1))
+    it('commits the transaction and sets the internal state to COMMITING', async function () {
+      const waiter = (): any => new Promise((resolve) => setTimeout(resolve.bind(undefined, { rows: [] }), 1))
       this.client.query.callsFake(waiter)
 
       await this.transactionClient.query('SELECT foo FROM bar')
@@ -174,14 +157,13 @@ describe('PgDbTransactionClient', function() {
       expect(this.transactionClient.rollback).not.to.have.been.called
     })
 
-    it('resets the internal state to IDLE when the commit successfully completes', async function() {
+    it('resets the internal state to IDLE when the commit successfully completes', async function () {
       await this.transactionClient.query('SELECT foo FROM bar')
       await this.transactionClient.commit()
       expect(this.transactionClient.state).to.equal('IDLE')
     })
 
-    it('rolls back the transaction if an error is thrown', async function() {
-
+    it('rolls back the transaction if an error is thrown', async function () {
       await this.transactionClient.query('SELECT foo FROM bar')
 
       const err = new Error('Your llama is lloose!')
@@ -203,8 +185,7 @@ describe('PgDbTransactionClient', function() {
       expect(receivedErr.innerError).to.equal(err)
     })
 
-    it('rethrows the error if it cannot roll back', async function() {
-
+    it('rethrows the error if it cannot roll back', async function () {
       this.transactionClient.state = 'READY'
       const err = new Error('Your llama is lloose!')
 
@@ -215,18 +196,15 @@ describe('PgDbTransactionClient', function() {
 
       const commitErr = await expect(this.transactionClient.commit()).to.be.rejected
       expect(commitErr.innerError).to.equal(err)
-
     })
   })
 
-  describe('rollback', function() {
-
-    it('throws an InvalidTransactionState error if no queries have been made', async function() {
+  describe('rollback', function () {
+    it('throws an InvalidTransactionState error if no queries have been made', async function () {
       await expect(this.transactionClient.rollback()).to.be.rejectedWith(InvalidTransactionStateError)
     })
 
-    it('attempts to rollback the transaction and sets the internal state to ROLLING_BACK', async function() {
-
+    it('attempts to rollback the transaction and sets the internal state to ROLLING_BACK', async function () {
       await this.transactionClient.query('SELECT foo FROM bar')
       await this.transactionClient.rollback()
 
@@ -237,15 +215,14 @@ describe('PgDbTransactionClient', function() {
       expect(this.client.query).to.have.been.calledWith('ROLLBACK')
     })
 
-    it('rethrows an error if specified', async function() {
+    it('rethrows an error if specified', async function () {
       const err = new Error('your llama is lloose!')
       await this.transactionClient.query('SELECT foo FROM bar')
 
       await expect(this.transactionClient.rollback(err)).to.be.rejectedWith(err)
     })
 
-    it('throws a TransactionRollbackError if an error occurs during the rollback', async function() {
-
+    it('throws a TransactionRollbackError if an error occurs during the rollback', async function () {
       await this.transactionClient.query('SELECT foo FROM bar')
 
       const rollbackError = new Error('your llama is lloose!')
@@ -256,8 +233,7 @@ describe('PgDbTransactionClient', function() {
       await expect(this.transactionClient.rollback()).to.be.rejectedWith(TransactionRollbackError)
     })
 
-    it('includes the original query error in the TransactionRollbackError if specified', async function() {
-
+    it('includes the original query error in the TransactionRollbackError if specified', async function () {
       await this.transactionClient.query('SELECT foo FROM bar')
 
       const rollbackError = new Error('your llama is lloose!')
@@ -267,32 +243,29 @@ describe('PgDbTransactionClient', function() {
 
       const resultError = await expect(this.transactionClient.rollback()).to.be.rejectedWith(TransactionRollbackError)
       expect(resultError.innerError.innerError).to.equal(rollbackError)
-
     })
   })
 
-  describe('dispose', function() {
-    beforeEach(function() {
+  describe('dispose', function () {
+    beforeEach(function () {
       stub(this.transactionClient, 'commit')
     })
 
-    it('calls dispose() on the pg PoolClient', async function() {
+    it('calls dispose() on the pg PoolClient', async function () {
       await this.transactionClient.dispose('')
 
       expect(this.client.dispose).to.have.been.calledOnce
     })
 
-    it('attempts to commit the transaction if it has begun', async function() {
+    it('attempts to commit the transaction if it has begun', async function () {
       this.transactionClient.state = 'READY'
 
       await this.transactionClient.dispose('')
 
-      expect(this.transactionClient.commit).to.have.been
-        .calledOnce
-        .calledBefore(this.client.dispose)
+      expect(this.transactionClient.commit).to.have.been.calledOnce.calledBefore(this.client.dispose)
     })
 
-    it('does not attempt to commit the transaction if it has already been committed', async function() {
+    it('does not attempt to commit the transaction if it has already been committed', async function () {
       this.transactionClient.state = 'COMMITTED'
 
       await this.transactionClient.dispose('')
@@ -300,7 +273,7 @@ describe('PgDbTransactionClient', function() {
       expect(this.transactionClient.commit).not.to.have.been.called
     })
 
-    it('releases the client even if an error is thrown, and rethrows the error', async function() {
+    it('releases the client even if an error is thrown, and rethrows the error', async function () {
       this.transactionClient.state = 'READY'
       const err = new Error('Your llama is lloose!')
       this.transactionClient.commit.callsFake(() => {

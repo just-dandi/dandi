@@ -3,7 +3,6 @@ import { HttpHeader, HttpHeadersRaw, HttpResponse, HttpStatusCode } from '@dandi
 
 @Injectable(HttpResponse)
 export class LambdaHttpResponse implements HttpResponse {
-
   public body: any
   public redirectUrl: string
   public statusCode: HttpStatusCode
@@ -56,5 +55,4 @@ export class LambdaHttpResponse implements HttpResponse {
     this.statusCode = code
     return this
   }
-
 }

@@ -1,22 +1,13 @@
 import { isConstructor } from '@dandi/common'
 import { InjectionScope, InjectionToken, InjectorContext, Registerable } from '@dandi/core'
-import {
-  DandiInjectorContext,
-  FindCacheEntry,
-  RepositoryEntry,
-} from '@dandi/core/internal'
+import { DandiInjectorContext, FindCacheEntry, RepositoryEntry } from '@dandi/core/internal'
 
 import { stubProvider } from './stub-provider'
 
 const stubProviders = new Map<InjectionToken<any>, RepositoryEntry<any>>()
 
 export class StubInjectorContext extends DandiInjectorContext {
-
-  constructor(
-    parent: DandiInjectorContext,
-    scope: InjectionScope,
-    providers: Registerable[] = [],
-  ) {
+  constructor(parent: DandiInjectorContext, scope: InjectionScope, providers: Registerable[] = []) {
     super(parent, scope, providers)
   }
 
@@ -39,7 +30,6 @@ export class StubInjectorContext extends DandiInjectorContext {
     }
 
     return result
-
   }
 
   // protected findInstanceContext(matchContext: DandiInjectorContext, scope?: InjectionScope): DandiInjectorContext {
@@ -48,5 +38,4 @@ export class StubInjectorContext extends DandiInjectorContext {
   //     return baseResult
   //   }
   // }
-
 }

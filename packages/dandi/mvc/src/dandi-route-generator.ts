@@ -61,9 +61,7 @@ export class DandiRouteGenerator implements RouteGenerator {
               const existing = pathRoutes.get(httpMethod)
               const locA = `${existing.controllerCtr.name}.${existing.controllerMethod.toString()}`
               const locB = `${controllerCtr.name}.${controllerMethod.toString()}`
-              throw new RouteGeneratorError(
-                `The path ${path} has conflicting routes configured in ${locA} and ${locB}`,
-              )
+              throw new RouteGeneratorError(`The path ${path} has conflicting routes configured in ${locA} and ${locB}`)
             }
 
             const route = (this.routeTransformers || []).reduce(

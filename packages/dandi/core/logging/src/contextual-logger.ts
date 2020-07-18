@@ -15,7 +15,6 @@ import { LoggerBase } from '@dandi/core/internal'
 
 @Injectable(Logger, RestrictScope(ScopeBehavior.perInjector))
 export class ContextualLogger extends LoggerBase {
-
   constructor(
     @Inject(LogStream) private stream: LogStream,
     @Inject(InjectionScope) private context: InjectionScope,
@@ -33,5 +32,4 @@ export class ContextualLogger extends LoggerBase {
       options,
     })
   }
-
 }

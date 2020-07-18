@@ -11,11 +11,11 @@ can be used on classes shared with projects targeted for the web.
 The type of a model member is defined using the `@Property()` decorator:
 
 ```typescript
-import { Property } from '@dandi/model';
+import { Property } from '@dandi/model'
 
 class MyModel {
   @Property(String)
-  public name: string;
+  public name: string
 }
 ```
 
@@ -35,16 +35,16 @@ Models can have any number of levels of hierarchy, so long as the class
 for child models is referenced in the `@Property` decorator:
 
 ```typescript
-import { Property } from '@dandi/model';
+import { Property } from '@dandi/model'
 
 class ParentModel {
   @Property(ChildModel)
-  public child: ChildModel;
+  public child: ChildModel
 }
 
 class ChildModel {
   @Property(String)
-  public name: string;
+  public name: string
 }
 ```
 
@@ -54,17 +54,17 @@ When using the `@Property()` decorator for a native primitive type such
 as `string`, `number`, or `boolean`, use the corresponding class:
 
 ```typescript
-import { Property } from '@dandi/model';
+import { Property } from '@dandi/model'
 
 class MyModel {
   @Property(String)
-  public stringProperty: string;
+  public stringProperty: string
 
   @Property(Number)
-  public numberProperty: number;
+  public numberProperty: number
 
   @Property(Boolean)
-  public booleanProperty: boolean;
+  public booleanProperty: boolean
 }
 ```
 
@@ -79,11 +79,11 @@ of the array. The `@ArrayOf()` decorator is used in place of
 `@Property()`:
 
 ```typescript
-import { ArrayOf } from '@dandi/model';
+import { ArrayOf } from '@dandi/model'
 
 class MyModel {
   @ArrayOf(String)
-  public allMyStrings: string[];
+  public allMyStrings: string[]
 }
 ```
 
@@ -94,11 +94,11 @@ of items contained in the set. The `@SetOf()` decorator is used in place
 of `@Property()`:
 
 ```typescript
-import { SetOf } from '@dandi/model';
+import { SetOf } from '@dandi/model'
 
 class MyModel {
   @SetOf(String)
-  public setMeUp: Set<string>;
+  public setMeUp: Set<string>
 }
 ```
 
@@ -109,12 +109,12 @@ of items contained in the set. The `@MapOf()` decorator is used in place
 of `@Property()`:
 
 ```typescript
-import { Uuid } from '@dandi/common';
-import { MapOf } from '@dandi/model';
+import { Uuid } from '@dandi/common'
+import { MapOf } from '@dandi/model'
 
 class MyModel {
   @MapOf(Uuid, Number)
-  public hereIsAMap: Map<Uuid, Number>[];
+  public hereIsAMap: Map<Uuid, Number>[]
 }
 ```
 
@@ -124,12 +124,12 @@ Use the `@Required()` decorator to specify a member that must be present
 in order to pass validation.
 
 ```typescript
-import { Property, Required } from '@dandi/model';
+import { Property, Required } from '@dandi/model'
 
 class MyModel {
   @Property(String)
   @Required()
-  public youNeedThis: string;
+  public youNeedThis: string
 }
 ```
 
@@ -140,20 +140,20 @@ requirements for a string or array. These decorators are valid on any
 type that has a `length` property.
 
 ```typescript
-import { ArrayOf, MaxLength, MinLength, Property } from '@dandi/model';
+import { ArrayOf, MaxLength, MinLength, Property } from '@dandi/model'
 
 class MyModel {
   @Property(String)
   @MinLength(20)
-  public longString: string;
+  public longString: string
 
   @Property(String)
   @MaxLength(5)
-  public shortString: string;
+  public shortString: string
 
   @ArrayOf(String)
   @MinLength(1)
-  public gottaHaveOne: string[];
+  public gottaHaveOne: string[]
 }
 ```
 
@@ -163,13 +163,13 @@ Use the `@MinValue()` and `@MaxValue()` decorators to define value
 requirements for number values.
 
 ```typescript
-import { MaxValue, MinValue, Property } from '@dandi/model';
+import { MaxValue, MinValue, Property } from '@dandi/model'
 
 class MyModel {
   @Property(Number)
   @MinValue(5)
   @MaxValue(25)
-  public llamaCount: string;
+  public llamaCount: string
 }
 ```
 
@@ -179,11 +179,11 @@ Use the `@OneOf()` decorator in place of `@Property()` to allow a member
 be validated as one of two or more types.
 
 ```typescript
-import { OneOf } from '@dandi/model';
+import { OneOf } from '@dandi/model'
 
 class MyModel {
   @OneOf(Number, String)
-  public key: number | string;
+  public key: number | string
 }
 ```
 

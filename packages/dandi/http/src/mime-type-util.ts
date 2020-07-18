@@ -62,7 +62,7 @@ function mimeTypeIsCompatible(allowed: MimeTypeInfo, target: MimeTypeInfo): bool
 
 export function mimeTypesAreCompatible(allowed: MimeTypeInfo | MimeTypeInfo[], target: MimeTypeInfo): boolean {
   if (Array.isArray(allowed)) {
-    return allowed.some(allowedEntry => mimeTypeIsCompatible(allowedEntry, target))
+    return allowed.some((allowedEntry) => mimeTypeIsCompatible(allowedEntry, target))
   }
   return mimeTypeIsCompatible(allowed, target)
 }

@@ -37,8 +37,8 @@ import { expect } from 'chai'
 import { stub, createStubInstance, SinonStubbedInstance } from 'sinon'
 
 describe('HttpPipeline', () => {
-
-  const harness = stubHarness(HttpPipeline,
+  const harness = stubHarness(
+    HttpPipeline,
     ModelBuilderModule,
     HttpRequestAcceptTypesProvider,
     {
@@ -126,10 +126,10 @@ describe('HttpPipeline', () => {
     })
     requestInjector = harness.createChild(HttpRequestScope)
     terminator = createStubInstance(HttpResponsePipelineTerminator)
-    terminator.terminateResponse.returnsArg(0);
+    terminator.terminateResponse.returnsArg(0)
 
     errorHandler = createStubInstance(DefaultHttpPipelineErrorHandler)
-    errorHandler.handleError.callsFake(async result => result)
+    errorHandler.handleError.callsFake(async (result) => result)
   })
   afterEach(() => {
     pipeline = undefined
@@ -137,7 +137,6 @@ describe('HttpPipeline', () => {
   })
 
   describe('handleRequest', () => {
-
     describe('no optional plugins', () => {
       beforeEach(async () => {
         pipeline = await harness.inject(HttpPipeline)
@@ -174,9 +173,9 @@ describe('HttpPipeline', () => {
         await invokePipeline()
 
         expect(spy).to.have.been.called
-        expect(renderer.render).to.have.been
-          .calledOnce
-          .calledWith(parseMimeTypes(MimeType.applicationJson), { data: { foo: 'yeah!' } })
+        expect(renderer.render).to.have.been.calledOnce.calledWith(parseMimeTypes(MimeType.applicationJson), {
+          data: { foo: 'yeah!' },
+        })
       })
 
       it('sets the contentType using the renderer result', async () => {
@@ -203,7 +202,6 @@ describe('HttpPipeline', () => {
       })
 
       it('calls res.send() with the rendered output of the renderer result', async () => {
-
         const result = { data: { foo: 'yeah!' }, headers: { 'x-fizzle-bizzle': 'okay' } }
 
         class TestController {
@@ -227,7 +225,6 @@ describe('HttpPipeline', () => {
       })
 
       it('returns an error result one of the path params is missing', async () => {
-
         class TestController {
           public method(@PathParam(String) someParam): any {
             return { message: 'OK', param: someParam }
@@ -243,7 +240,6 @@ describe('HttpPipeline', () => {
       })
 
       it('returns a text/plain render result if the renderer throws an error', async () => {
-
         class TestController {
           public method(): any {
             return { message: 'OK' }
@@ -254,7 +250,7 @@ describe('HttpPipeline', () => {
         renderer.render.rejects(new Error('Your llama is lloose!'))
 
         const result = await invokePipeline()
-        const thrownError = await (renderer.render.firstCall.returnValue as Promise<any>).catch(err => err)
+        const thrownError = await (renderer.render.firstCall.returnValue as Promise<any>).catch((err) => err)
 
         expect(result).to.deep.equal({
           statusCode: HttpStatusCode.internalServerError,
@@ -262,35 +258,35 @@ describe('HttpPipeline', () => {
           headers: undefined,
           renderedBody: thrownError.stack,
         })
-
       })
-
     })
 
     describe('preparers', () => {
-
       const testPreparerProvides = SymbolToken.for('http-pipeline-test-preparer')
       const dependentTestPreparerProvides = SymbolToken.for('http-pipeline-dependent-test-preparer')
 
       @HttpPipelinePreparer()
       class TestPreparer implements HttpPipelinePreparer {
         public async prepare(): Promise<HttpPipelinePreparerResult> {
-          return [{
-            provide: testPreparerProvides,
-            useValue: 'foo',
-          }]
+          return [
+            {
+              provide: testPreparerProvides,
+              useValue: 'foo',
+            },
+          ]
         }
       }
 
       @HttpPipelinePreparer(TestPreparer)
       class DependentTestPreparer implements HttpPipelinePreparer {
         public async prepare(): Promise<HttpPipelinePreparerResult> {
-          return [{
-            provide: dependentTestPreparerProvides,
-            useValue: 'bar',
-          }]
+          return [
+            {
+              provide: dependentTestPreparerProvides,
+              useValue: 'bar',
+            },
+          ]
         }
-
       }
 
       class TestController {
@@ -308,10 +304,7 @@ describe('HttpPipeline', () => {
         config = {
           before: [TestPreparer, DependentTestPreparer],
         }
-        harness.register(
-          underTest(TestPreparer),
-          underTest(DependentTestPreparer),
-        )
+        harness.register(underTest(TestPreparer), underTest(DependentTestPreparer))
         await harness.inject(TestPreparer)
         await harness.inject(DependentTestPreparer)
 
@@ -329,11 +322,9 @@ describe('HttpPipeline', () => {
           },
         })
       })
-
     })
 
     describe('transformers', () => {
-
       class TestController {
         public method(): any {
           return { message: 'OK' }
@@ -355,7 +346,7 @@ describe('HttpPipeline', () => {
             return result
           }),
         }
-        anotherThrowingTransformer = { transform: stub().rejects(new Error('Your other llama is allso lloose!'))}
+        anotherThrowingTransformer = { transform: stub().rejects(new Error('Your other llama is allso lloose!')) }
         harness.register(
           { provide: HttpPipelineResultTransformer, useFactory: () => passThroughTransformer },
           { provide: HttpPipelineResultTransformer, useFactory: () => throwingTransformer },
@@ -384,13 +375,13 @@ describe('HttpPipeline', () => {
       it('passes the result of the each successful transformer on to the next', async () => {
         await invokePipeline()
 
-        expect(throwingTransformer.transform).to.have.been
-          .calledWith(await passThroughTransformer.transform.firstCall.returnValue)
-        expect(anotherThrowingTransformer.transform).to.have.been
-          .calledWith(await identifyingTransformer.transform.firstCall.returnValue)
+        expect(throwingTransformer.transform).to.have.been.calledWith(
+          await passThroughTransformer.transform.firstCall.returnValue,
+        )
+        expect(anotherThrowingTransformer.transform).to.have.been.calledWith(
+          await identifyingTransformer.transform.firstCall.returnValue,
+        )
       })
-
     })
-
   })
 })

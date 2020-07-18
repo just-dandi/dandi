@@ -1,10 +1,5 @@
 import { Disposable } from '@dandi/common'
-import {
-  DandiApplication,
-  InjectorContextConstructor,
-  Registerable,
-  RootInjector,
-} from '@dandi/core'
+import { DandiApplication, InjectorContextConstructor, Registerable, RootInjector } from '@dandi/core'
 import { DandiRootInjector } from '@dandi/core/internal'
 import { INJECTABLE_REGISTRATION_DATA, InjectableRegistrationData } from '@dandi/core/internal/util'
 
@@ -13,7 +8,6 @@ import { StubInjectorContext } from './stub-injector-context'
 import { RootTestInjector, TestInjectorBase } from './test-injector'
 
 export class TestHarness extends TestInjectorBase implements RootTestInjector, Disposable {
-
   private _application: DandiApplication
   public get application(): DandiApplication {
     return this._application
@@ -54,8 +48,8 @@ export class TestHarness extends TestInjectorBase implements RootTestInjector, D
     let injectableRegistrationData: InjectableRegistrationData[]
     beforeEach(() => {
       injectableRegistrationData = []
-      stub(INJECTABLE_REGISTRATION_DATA, 'push').callsFake(entry => injectableRegistrationData.push(entry))
-      stub(INJECTABLE_REGISTRATION_DATA, 'forEach').callsFake(fn => injectableRegistrationData.forEach(fn))
+      stub(INJECTABLE_REGISTRATION_DATA, 'push').callsFake((entry) => injectableRegistrationData.push(entry))
+      stub(INJECTABLE_REGISTRATION_DATA, 'forEach').callsFake((fn) => injectableRegistrationData.forEach(fn))
     })
     afterEach(() => {
       injectableRegistrationData = undefined

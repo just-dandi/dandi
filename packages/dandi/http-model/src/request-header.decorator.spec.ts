@@ -40,7 +40,6 @@ describe('@RequestHeader', () => {
   })
 
   it('creates a provider to handle injecting the header value', async () => {
-
     harness.register(...meta.providers, {
       provide: HttpRequestHeadersAccessor,
       useValue: HttpRequestHeadersHashAccessor.fromRaw({
@@ -49,8 +48,8 @@ describe('@RequestHeader', () => {
     })
     const injector = harness.createChild(createHttpRequestScope({} as HttpRequest))
 
-    expect(await injector.inject(requestHeaderToken(HttpHeader.contentType))).to.deep.equal({ contentType: MimeType.applicationJson })
-
+    expect(await injector.inject(requestHeaderToken(HttpHeader.contentType))).to.deep.equal({
+      contentType: MimeType.applicationJson,
+    })
   })
-
 })

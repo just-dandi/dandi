@@ -1,26 +1,12 @@
-import {
-  Inject,
-  Injectable,
-  InjectionToken,
-  Optional,
-  Registerable,
-  ResolverContext,
-  SymbolToken,
-} from '@dandi/core'
-import {
-  DandiGenerator,
-  DandiRootInjector,
-  DandiRootInjectorContext,
-} from '@dandi/core/internal'
+import { Inject, Injectable, InjectionToken, Optional, Registerable, ResolverContext, SymbolToken } from '@dandi/core'
+import { DandiGenerator, DandiRootInjector, DandiRootInjectorContext } from '@dandi/core/internal'
 import { getInjectionScope } from '@dandi/core/internal/util'
 
 import { expect } from 'chai'
 import { spy } from 'sinon'
 
 describe('DandiGenerator', () => {
-
   class TestRootInjector extends DandiRootInjector {
-
     public readonly context: DandiRootInjectorContext
 
     constructor() {
@@ -69,18 +55,14 @@ describe('DandiGenerator', () => {
   })
 
   describe('generateInstance', () => {
-
     it('returns undefined if the injection scope has an undefined match', async () => {
-
-      resolverContext = {} as unknown as ResolverContext
+      resolverContext = ({} as unknown) as ResolverContext
       const result = await generate()
 
       expect(result).to.be.undefined
-
     })
 
     it('instantiates an injectable class and tracks the instance with the resolverContext', async () => {
-
       const provider = {
         provide: TestInjectable,
         useClass: TestInjectable,
@@ -96,7 +78,6 @@ describe('DandiGenerator', () => {
     })
 
     it('can instantiate an injectable class with dependencies', async () => {
-
       register(TestWithDependency, TestInjectable)
       initResolverContext(TestWithDependency)
 
@@ -109,7 +90,6 @@ describe('DandiGenerator', () => {
     })
 
     it('can instantiate an injectable class with missing optional dependencies', async () => {
-
       register({
         provide: TestWithMissingOptionalDependency,
         useClass: TestWithMissingOptionalDependency,
@@ -121,11 +101,9 @@ describe('DandiGenerator', () => {
       expect(result).to.exist
       expect(result).to.be.instanceOf(TestWithMissingOptionalDependency)
       expect(result.dep).not.to.exist
-
     })
 
     it('instantiates an array of instances for multi providers, using a child injector for each provider', async () => {
-
       const token = SymbolToken.for('test')
       const provider1 = {
         provide: token,
@@ -143,15 +121,12 @@ describe('DandiGenerator', () => {
       const result = await generate()
 
       expect(result).to.deep.equal([1, 2])
-      expect(rootInjector.createChild).to.have.been
-        .calledTwice
-        .calledWithExactly(getInjectionScope(provider1))
+      expect(rootInjector.createChild)
+        .to.have.been.calledTwice.calledWithExactly(getInjectionScope(provider1))
         .calledWithExactly(getInjectionScope(provider2))
-
     })
 
     it('includes providers specified by a provider when resolving parameters', async () => {
-
       const token = SymbolToken.for('test')
       const depToken = SymbolToken.for('test-dep')
       const depProvider = {
@@ -162,9 +137,7 @@ describe('DandiGenerator', () => {
         provide: token,
         useFactory: (dep) => ({ dep }),
         deps: [depToken],
-        providers: [
-          depProvider,
-        ],
+        providers: [depProvider],
       }
       register(provider)
       initResolverContext(token)
@@ -172,15 +145,13 @@ describe('DandiGenerator', () => {
       const result = await generate()
 
       expect(result).to.deep.equal({ dep: 1 })
-
     })
 
     it('creates instances from async factory providers', async () => {
-
       const token = SymbolToken.for('test')
       const provider = {
         provide: token,
-        useFactory: () => new Promise(resolve => setTimeout(resolve.bind(undefined, 1), 0)),
+        useFactory: () => new Promise((resolve) => setTimeout(resolve.bind(undefined, 1), 0)),
         async: true,
       }
       register(provider)
@@ -189,11 +160,9 @@ describe('DandiGenerator', () => {
       const result = await generate()
 
       expect(result).to.equal(1)
-
     })
 
     it('returns values from value providers', async () => {
-
       const token = SymbolToken.for('test')
       const provider = {
         provide: token,
@@ -205,11 +174,9 @@ describe('DandiGenerator', () => {
       const result = await generate()
 
       expect(result).to.equal(1)
-
     })
 
     it('creates instances from class providers', async () => {
-
       const provider = {
         provide: TestInjectable,
         useClass: TestInjectable,
@@ -221,11 +188,9 @@ describe('DandiGenerator', () => {
 
       expect(result).to.exist
       expect(result).to.be.instanceof(TestInjectable)
-
     })
 
     it('does not create duplicate instances', async () => {
-
       const provider = {
         provide: TestInjectable,
         useClass: TestInjectable,
@@ -239,11 +204,9 @@ describe('DandiGenerator', () => {
       expect(result1).to.exist
       expect(result1).to.be.instanceof(TestInjectable)
       expect(result1).to.equal(result2)
-
     })
 
     it('does not create duplicate instances when a second request is made before the first is generated', async () => {
-
       const generated = []
       const generateInjectable = (): TestInjectable => {
         const instance = new TestInjectable()
@@ -253,7 +216,7 @@ describe('DandiGenerator', () => {
       let resolve
       const provider = {
         provide: TestInjectable,
-        useFactory: () => new Promise(r => resolve = r.bind(undefined, generateInjectable())),
+        useFactory: () => new Promise((r) => (resolve = r.bind(undefined, generateInjectable()))),
       }
       register(provider)
       initResolverContext(TestInjectable)
@@ -268,9 +231,6 @@ describe('DandiGenerator', () => {
       expect(await result1).to.be.instanceof(TestInjectable)
       expect(await result1).to.equal(await result2)
       expect(generated.length).to.equal(1)
-
     })
-
   })
-
 })

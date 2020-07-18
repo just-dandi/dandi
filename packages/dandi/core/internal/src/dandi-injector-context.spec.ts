@@ -26,7 +26,6 @@ describe('DandiInjectorContext', () => {
   class ParentContextScope {}
   class ChildContextScope {}
 
-
   function provider<T, TProvider extends Provider<T>>(obj: TProvider): TProvider {
     obj[chaiInspect] = () => `Provider[provide: ${obj.provide}]`
     return obj
@@ -110,7 +109,8 @@ describe('DandiInjectorContext', () => {
       scopedParentProvider2,
       parentsOnlyParentProvider,
     ]) as ContextUnderTest
-    childContext = parentContext.createChild(ChildContextScope,
+    childContext = parentContext.createChild(
+      ChildContextScope,
       childProvider1,
       childProvider2,
       parentsOnlyChildProvider,
@@ -164,16 +164,7 @@ describe('DandiInjectorContext', () => {
     it('registers nested arrays of providers', () => {
       const scope = new DependencyInjectionScope('test')
       const context = new DandiInjectorContext(undefined, scope, [
-        [
-          childProvider1,
-          childProvider2,
-          [
-            parentProvider1,
-            [
-              parentProvider2,
-            ],
-          ],
-        ],
+        [childProvider1, childProvider2, [parentProvider1, [parentProvider2]]],
       ])
 
       expect(context.find(childToken1)).to.exist
@@ -235,7 +226,6 @@ describe('DandiInjectorContext', () => {
 
         const result = childContext.find(parentsOnlyMultiToken)?.match as Set<Provider<any>>
         expect([...result]).to.deep.equal([parentProvider1, parentProvider2])
-
       })
     })
 
@@ -285,14 +275,11 @@ describe('DandiInjectorContext', () => {
   })
 
   describe('addInstance', () => {
-
     it('adds the value for a non-scoped-restricted token and provider to the instances map of the repository where the provider was found', () => {
       childContext.addInstance(parentProvider1, parentValue1)
 
-      expect(
-        childContext.repository.getInstance(parentProvider1),
-        'instance was found on the wrong repository',
-      ).to.be.undefined
+      expect(childContext.repository.getInstance(parentProvider1), 'instance was found on the wrong repository').to.be
+        .undefined
 
       expect(
         parentContext.repository.getInstance(parentProvider1),
@@ -304,10 +291,8 @@ describe('DandiInjectorContext', () => {
       const value = {}
       childContext.addInstance(scopedParentProvider1, value)
 
-      expect(
-        parentContext.repository.getInstance(scopedParentProvider1),
-        'instance was found on the wrong repository',
-      ).to.be.undefined
+      expect(parentContext.repository.getInstance(scopedParentProvider1), 'instance was found on the wrong repository')
+        .to.be.undefined
 
       expect(
         childContext.repository.getInstance(scopedParentProvider1),
@@ -319,10 +304,8 @@ describe('DandiInjectorContext', () => {
       const value = {}
       childContext.addInstance(scopedParentProvider2, value)
 
-      expect(
-        parentContext.repository.getInstance(scopedParentProvider2),
-        'instance was found on the wrong repository',
-      ).to.be.undefined
+      expect(parentContext.repository.getInstance(scopedParentProvider2), 'instance was found on the wrong repository')
+        .to.be.undefined
 
       expect(
         childContext.repository.getInstance(scopedParentProvider2),

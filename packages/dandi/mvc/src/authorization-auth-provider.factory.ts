@@ -39,9 +39,7 @@ export const AuthorizationSchemeProvider: Provider<string> = {
 @Injectable(AuthProviderFactory)
 @HttpPipelinePreparer()
 export class AuthorizationAuthProviderFactory implements AuthProviderFactory {
-
   public generateAuthProviders(route: Route, req: HttpRequest): Provider<any>[] {
-
     if (req.method === HttpMethod.options) {
       return []
     }
@@ -54,10 +52,7 @@ export class AuthorizationAuthProviderFactory implements AuthProviderFactory {
         provide: RequestAuthorizationService,
         useFactory: authServiceResultFactory,
         restrictScope: HttpRequestScope,
-        deps: [
-          AuthorizationScheme,
-          Injector,
-        ],
+        deps: [AuthorizationScheme, Injector],
       },
       AuthorizedUserProvider,
       AuthorizationSchemeProvider,

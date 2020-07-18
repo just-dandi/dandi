@@ -29,8 +29,9 @@ export const BodyParserInfo: InjectionToken<BodyParserInfo[]> = localOpinionated
 export const BodyParserInfoProvider: Provider<BodyParserInfo[]> = {
   provide: BodyParserInfo,
   useFactory(injector: Injector) {
-    const parserEntries = [...Repository.for(BodyParser).providers as IterableIterator<ClassProvider<HttpBodyParser>>]
-      .filter(entry => injector.canResolve(entry.useClass))
+    const parserEntries = [
+      ...(Repository.for(BodyParser).providers as IterableIterator<ClassProvider<HttpBodyParser>>),
+    ].filter((entry) => injector.canResolve(entry.useClass))
     return parserEntries.map((entry: ClassProvider<HttpBodyParser>) => {
       return {
         constructor: entry.useClass,
@@ -38,9 +39,7 @@ export const BodyParserInfoProvider: Provider<BodyParserInfo[]> = {
       }
     })
   },
-  deps: [
-    Injector,
-  ],
+  deps: [Injector],
 }
 
 export function getBodyParserMetadata(target: Constructor<HttpBodyParser>): BodyParserMetadata {

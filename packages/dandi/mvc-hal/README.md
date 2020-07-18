@@ -32,7 +32,7 @@ export class TaskList {
   @ResourceId()
   @Property(Uuid)
   @Required()
-  public listId: Uuid;
+  public listId: Uuid
 }
 ```
 
@@ -95,15 +95,15 @@ export class Task {
   @Property(Uuid)
   @Required()
   @ResourceId()
-  public taskId: Uuid;
+  public taskId: Uuid
 
   @Property(Uuid)
   @Required()
   @ResourceId(List, 'list')
-  public listId: Uuid;
+  public listId: Uuid
 
   @Relation(List)
-  public list?: List;
+  public list?: List
 }
 ```
 

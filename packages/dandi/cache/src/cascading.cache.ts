@@ -11,16 +11,16 @@ export class CascadingCache implements Cache {
   constructor(
     @Inject(CacheProvider(CacheProviderType.localMemory))
     @Optional()
-      localMem: Cache,
+    localMem: Cache,
     @Inject(CacheProvider(CacheProviderType.localService))
     @Optional()
-      localSvc: Cache,
+    localSvc: Cache,
     @Inject(CacheProvider(CacheProviderType.network))
     @Optional()
-      network: Cache,
+    network: Cache,
     @Inject(CacheProvider(CacheProviderType.remote))
     @Optional()
-      remote: Cache,
+    remote: Cache,
   ) {
     this.caches = [localMem, localSvc, network, remote].filter((cache) => cache)
     this.local = this.caches[0]

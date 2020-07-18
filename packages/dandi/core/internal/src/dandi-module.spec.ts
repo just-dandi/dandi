@@ -4,36 +4,36 @@ import { DandiModule } from '@dandi/core/internal'
 import { expect } from 'chai'
 import { stub } from 'sinon'
 
-describe('DandiModule', function() {
+describe('DandiModule', function () {
   class TestModule extends DandiModule {
     constructor(...entries: Registerable[]) {
       super('@dandi/core', ...entries)
     }
   }
 
-  describe('#ctr', function() {
-    beforeEach(function() {
+  describe('#ctr', function () {
+    beforeEach(function () {
       stub(TestModule.prototype as any, 'tag')
     })
-    afterEach(function() {
-      (TestModule.prototype as any).tag.restore()
+    afterEach(function () {
+      ;(TestModule.prototype as any).tag.restore()
     })
 
-    it('is an array', function() {
+    it('is an array', function () {
       expect(Array.isArray(new TestModule())).to.be.true
     })
 
-    it('it sets the package name using the symbol key', function() {
+    it('it sets the package name using the symbol key', function () {
       const module = new TestModule()
       expect(module[DandiModule.PACKAGE]).to.equal('@dandi/core')
     })
 
-    it('sets the module name to the name of the constructor', function() {
+    it('sets the module name to the name of the constructor', function () {
       const module = new TestModule()
       expect(module[DandiModule.MODULE_NAME]).to.equal('TestModule')
     })
 
-    it('sets the module name to the name of the constructor, removing any "Builder" suffix', function() {
+    it('sets the module name to the name of the constructor, removing any "Builder" suffix', function () {
       class TestModuleBuilder extends TestModule {
         constructor(...entries: any[]) {
           super(...entries)
@@ -43,7 +43,7 @@ describe('DandiModule', function() {
       expect(module[DandiModule.MODULE_NAME]).to.equal('TestModule')
     })
 
-    it('adds any provided providers to itself', function() {
+    it('adds any provided providers to itself', function () {
       class TestClass {}
       const testProvider = {
         provide: TestClass,
@@ -54,7 +54,7 @@ describe('DandiModule', function() {
       expect(module).to.include(testProvider)
     })
 
-    it('calls tag on the array of providers', function() {
+    it('calls tag on the array of providers', function () {
       class TestClass {}
       const testProvider = {
         provide: TestClass,
@@ -65,8 +65,8 @@ describe('DandiModule', function() {
     })
   })
 
-  describe('#tag', function() {
-    it('adds module info to class providers', function() {
+  describe('#tag', function () {
+    it('adds module info to class providers', function () {
       class TestClass {}
 
       const module = new TestModule(TestClass)
@@ -83,7 +83,7 @@ describe('DandiModule', function() {
       expect(moduleInfo.module).to.equal(module)
     })
 
-    it('adds module info to provider providers', function() {
+    it('adds module info to provider providers', function () {
       const provider = {
         provide: SymbolToken.for('testProvider'),
         useValue: {},
@@ -103,7 +103,7 @@ describe('DandiModule', function() {
       expect(moduleInfo.module).to.equal(module)
     })
 
-    it('adds module info for tokens of provider providers', function() {
+    it('adds module info for tokens of provider providers', function () {
       const provider = {
         provide: SymbolToken.for('testProvider'),
         useValue: {},

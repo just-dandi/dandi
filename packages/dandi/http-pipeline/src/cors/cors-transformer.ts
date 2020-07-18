@@ -9,7 +9,6 @@ import { isCorsRequest } from './cors-util'
 
 @Injectable(HttpPipelineResultTransformer, RestrictScope(HttpRequestScope))
 export class CorsTransformer implements HttpPipelineResultTransformer {
-
   constructor(
     @Inject(HttpRequest) private req: HttpRequest,
     @Inject(CorsHeaderValues) private corsHeaders: CorsHeaderValues,
@@ -23,5 +22,4 @@ export class CorsTransformer implements HttpPipelineResultTransformer {
     }
     return result
   }
-
 }

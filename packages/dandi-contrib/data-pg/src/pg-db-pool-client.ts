@@ -6,7 +6,6 @@ import { PgDbPool } from './pg-db-pool'
 import { PgDbQueryableClient } from './pg-db-queryable'
 
 export class PgDbPoolClient implements Disposable, PgDbQueryableClient {
-
   private disposed = false
 
   constructor(private readonly client: PoolClient) {}

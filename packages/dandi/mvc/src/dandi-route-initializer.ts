@@ -96,7 +96,7 @@ export class DandiRouteInitializer implements RouteInitializer {
           const header = res.header.bind(res)
           return Object.assign(res, {
             header: (field: string, value: string): HttpResponse => {
-              const normalizedField = field.replace(/(^\w|-\w)/g, m => m.toLocaleUpperCase())
+              const normalizedField = field.replace(/(^\w|-\w)/g, (m) => m.toLocaleUpperCase())
               header(normalizedField, value)
               return res
             },
@@ -128,7 +128,7 @@ export class DandiRouteInitializer implements RouteInitializer {
     // registers value providers from @PathParam, @QueryParam, @RequestBody decorators
     const meta = getInjectableMetadata(route.controllerCtr.prototype[route.controllerMethod])
     for (const param of meta.params) {
-      result.push(...param.providers || [])
+      result.push(...(param.providers || []))
     }
     return result
   }
@@ -171,12 +171,8 @@ export class DandiRouteInitializer implements RouteInitializer {
         results.push({
           provide: CorsAllowOrigin,
           useFactory: route.cors.allowOrigin,
-          deps: [
-            requestHeaderToken(HttpHeader.origin),
-          ],
-          providers: [
-            requestHeaderProvider(HttpHeader.origin),
-          ],
+          deps: [requestHeaderToken(HttpHeader.origin)],
+          providers: [requestHeaderProvider(HttpHeader.origin)],
         })
       } else {
         results.push(
@@ -207,31 +203,36 @@ export class DandiRouteInitializer implements RouteInitializer {
   }
 
   private async determineAllowedMethods(siblingRoutes: Route[], req: HttpRequest): Promise<HttpMethod[]> {
-    const allowedMethods = await Promise.all(siblingRoutes.map(async siblingRoute => {
-      const siblingRequest = Object.assign({
-        get: req.get.bind(req),
-      }, req)
-      const providers = this.generateCorsProviders(siblingRoute).concat([
-        {
-          provide: HttpRequest,
-          useValue: siblingRequest,
-        },
-        {
-          provide: CorsAllowMethods,
-          useValue: [siblingRoute.httpMethod],
-        },
-        {
-          provide: CorsAllowRequest,
-          useFactory: corsRequestAllowed,
-          deps: [CorsHeaderValues, HttpRequestHeadersAccessor],
-        },
-      ])
-      const childInjector = this.injector.createChild(createHttpRequestScope(siblingRequest), providers)
-      if ((await childInjector.inject(CorsAllowRequest))?.singleValue) {
-        return siblingRoute.httpMethod
-      }
-      return undefined
-    }))
-    return allowedMethods.filter(method => !!method)
+    const allowedMethods = await Promise.all(
+      siblingRoutes.map(async (siblingRoute) => {
+        const siblingRequest = Object.assign(
+          {
+            get: req.get.bind(req),
+          },
+          req,
+        )
+        const providers = this.generateCorsProviders(siblingRoute).concat([
+          {
+            provide: HttpRequest,
+            useValue: siblingRequest,
+          },
+          {
+            provide: CorsAllowMethods,
+            useValue: [siblingRoute.httpMethod],
+          },
+          {
+            provide: CorsAllowRequest,
+            useFactory: corsRequestAllowed,
+            deps: [CorsHeaderValues, HttpRequestHeadersAccessor],
+          },
+        ])
+        const childInjector = this.injector.createChild(createHttpRequestScope(siblingRequest), providers)
+        if ((await childInjector.inject(CorsAllowRequest))?.singleValue) {
+          return siblingRoute.httpMethod
+        }
+        return undefined
+      }),
+    )
+    return allowedMethods.filter((method) => !!method)
   }
 }

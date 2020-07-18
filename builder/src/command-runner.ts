@@ -8,7 +8,6 @@ function isActionName<T>(ctr: Function, obj: any): obj is Actions<T> {
 
 @Injectable(EntryPoint)
 export class CommandRunner<THost extends any> implements EntryPoint {
-
   constructor(
     @Inject(CommandAction) private actionName: CommandAction<THost>,
     @Inject(ActionHost) private host: THost,
@@ -23,9 +22,7 @@ export class CommandRunner<THost extends any> implements EntryPoint {
   private async safeRun(): Promise<void> {
     try {
       await this.runAction()
-      const firstLetter = this.actionName.toString()
-        .substring(0, 1)
-        .toLocaleUpperCase()
+      const firstLetter = this.actionName.toString().substring(0, 1).toLocaleUpperCase()
       const actionDisplayName = `${firstLetter}${this.actionName.toString().substring(1)}`
       this.logger.info(`${actionDisplayName} complete.`)
     } catch (err) {
@@ -40,5 +37,4 @@ export class CommandRunner<THost extends any> implements EntryPoint {
     }
     throw new Error('Invalid argument for actionName')
   }
-
 }

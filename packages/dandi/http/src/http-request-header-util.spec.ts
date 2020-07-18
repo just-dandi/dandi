@@ -12,7 +12,6 @@ import {
 import { expect } from 'chai'
 
 describe('HTTP Header Utilities', () => {
-
   describe('splitRawHeader', () => {
     it('returns an object containing the header name and the raw value', () => {
       expect(splitRawHeader('content-type: text/plain')).to.deep.equal({
@@ -111,11 +110,8 @@ describe('HTTP Header Utilities', () => {
 
   describe('parseHeaders', () => {
     it('returns an object containing the headers and their header-specific object values', () => {
-      expect(parseHeaders([
-        'accept: text/plain',
-        'content-type: text/plain; charset=utf-8',
-      ])).to.deep.equal({
-        'accept': parseMimeTypes('text/plain'),
+      expect(parseHeaders(['accept: text/plain', 'content-type: text/plain; charset=utf-8'])).to.deep.equal({
+        accept: parseMimeTypes('text/plain'),
         'content-type': {
           contentType: 'text/plain',
           charset: 'utf-8',
@@ -123,5 +119,4 @@ describe('HTTP Header Utilities', () => {
       })
     })
   })
-
 })

@@ -8,8 +8,8 @@ export class ModuleBuilder<TBuilder extends ModuleBuilder<TBuilder>> extends Dan
   }
 
   protected add(...entries: Registerable[]): this {
-    const builder = this.cloneCtr ? new this.cloneCtr(...this) : this;
-    (builder as ModuleBuilder<TBuilder>).cloneCtr = undefined
+    const builder = this.cloneCtr ? new this.cloneCtr(...this) : this
+    ;(builder as ModuleBuilder<TBuilder>).cloneCtr = undefined
     this.tag(entries)
     builder.push(...entries)
     return builder as this

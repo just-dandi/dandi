@@ -33,5 +33,4 @@ describe('InjectionResult', () => {
       expect(result.arrayValue).to.equal(value)
     })
   })
-
 })

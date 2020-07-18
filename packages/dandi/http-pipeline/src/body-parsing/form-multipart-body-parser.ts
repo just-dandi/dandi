@@ -24,7 +24,6 @@ interface PreppedPart {
 // must use ScopeBehavior.perInjector so that the correct Injector instance can be injected
 @Injectable(RestrictScope(ScopeBehavior.perInjector(HttpRequestScope)))
 export class FormMultipartBodyParser extends HttpBodyParserBase {
-
   constructor(@Inject(Injector) private injector: Injector) {
     super()
   }
@@ -39,30 +38,32 @@ export class FormMultipartBodyParser extends HttpBodyParserBase {
 
     // last part is the "epilogue" and can be ignored https://www.w3.org/Protocols/rfc1341/7_2_Multipart.html
     parts.pop()
-    const results = await Promise.all(parts.map(async part => {
-      const preppedPart: PreppedPart = this.prepPart(part.trim())
-      if (!preppedPart) {
-        return undefined
-      }
-      const partScope: InjectionScope = class FormMultiPartBodyParsingScope {}
-      const partInjector = this.injector.createChild(partScope, [
-        {
-          provide: HttpRequestRawBody,
-          useValue: preppedPart.contentSource,
-        },
-        {
-          provide: HttpRequestHeadersAccessor,
-          useValue: HttpRequestHeadersHashAccessor.fromParsed(preppedPart.headers),
-        } as Provider<HttpRequestHeadersAccessor>,
-      ])
+    const results = await Promise.all(
+      parts.map(async (part) => {
+        const preppedPart: PreppedPart = this.prepPart(part.trim())
+        if (!preppedPart) {
+          return undefined
+        }
+        const partScope: InjectionScope = class FormMultiPartBodyParsingScope {}
+        const partInjector = this.injector.createChild(partScope, [
+          {
+            provide: HttpRequestRawBody,
+            useValue: preppedPart.contentSource,
+          },
+          {
+            provide: HttpRequestHeadersAccessor,
+            useValue: HttpRequestHeadersHashAccessor.fromParsed(preppedPart.headers),
+          } as Provider<HttpRequestHeadersAccessor>,
+        ])
 
-      // recursively use the parser system to parse the individual parts
-      return (await partInjector.inject(HttpRequestBodySource)).singleValue
-    }))
+        // recursively use the parser system to parse the individual parts
+        return (await partInjector.inject(HttpRequestBodySource)).singleValue
+      }),
+    )
 
     // FIXME: this won't support multiple parts of the same name, like arrays of files
     return results
-      .filter(result => !!result)
+      .filter((result) => !!result)
       .reduce((result, part) => {
         return Object.assign(result, part as any)
       }, {})
@@ -88,5 +89,4 @@ export class FormMultipartBodyParser extends HttpBodyParserBase {
       headers,
     }
   }
-
 }

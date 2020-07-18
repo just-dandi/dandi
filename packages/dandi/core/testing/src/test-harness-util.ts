@@ -43,12 +43,15 @@ export function underTest<T>(provider: Constructor<T> | Provider<T>): TestProvid
       underTest: true,
     }
   }
-  return Object.assign({
-    underTest: true,
-  }, provider)
+  return Object.assign(
+    {
+      underTest: true,
+    },
+    provider,
+  )
 }
 
 afterEach(async () => {
-  await instances.map(harness => harness.dispose())
+  await instances.map((harness) => harness.dispose())
   instances.splice(0, instances.length)
 })

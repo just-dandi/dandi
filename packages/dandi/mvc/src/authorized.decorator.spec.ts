@@ -19,7 +19,6 @@ const TestConditionB: Provider<AuthorizationCondition> = {
 }
 
 describe('AuthorizedDecorator', () => {
-
   @Authorized(TestConditionA)
   @Controller('/authorized-test')
   class TestController {

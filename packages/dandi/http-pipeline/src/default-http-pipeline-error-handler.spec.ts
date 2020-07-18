@@ -4,7 +4,6 @@ import { DefaultHttpPipelineErrorHandler, HttpPipelineErrorResult } from '@dandi
 import { expect } from 'chai'
 
 describe('DefaultHttpPipelineErrorHandler', () => {
-
   let classUnderTest: DefaultHttpPipelineErrorHandler
   let initialResult: HttpPipelineErrorResult
 
@@ -27,7 +26,7 @@ describe('DefaultHttpPipelineErrorHandler', () => {
     })
 
     it('uses the status code from the first error', async () => {
-      (initialResult.errors[0] as any).statusCode = HttpStatusCode.teapot
+      ;(initialResult.errors[0] as any).statusCode = HttpStatusCode.teapot
       const handledResult = await classUnderTest.handleError(initialResult)
 
       expect(handledResult.statusCode).to.equal(HttpStatusCode.teapot)
@@ -39,5 +38,4 @@ describe('DefaultHttpPipelineErrorHandler', () => {
       expect(handledResult.data.result).not.to.equal(handledResult)
     })
   })
-
 })

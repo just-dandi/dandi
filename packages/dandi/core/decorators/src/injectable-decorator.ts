@@ -39,5 +39,5 @@ export const Multi = new InjectableOption((options: ProviderOptions<any>) => (op
 export const NotMulti = new InjectableOption((options: ProviderOptions<any>) => (options.multi = false))
 export const NoSelf = new InjectableOption((options: ProviderOptions<any>) => (options.noSelf = true))
 export function RestrictScope(scope: ScopeRestriction): InjectableOption {
-  return new InjectableOption((options: ProviderOptions<any>) => options.restrictScope = scope)
+  return new InjectableOption((options: ProviderOptions<any>) => (options.restrictScope = scope))
 }

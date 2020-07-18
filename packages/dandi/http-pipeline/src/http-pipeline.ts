@@ -26,10 +26,7 @@ import { HttpPipelineRenderer, HttpPipelineRendererResult } from './rendering/ht
 
 @Injectable()
 export class HttpPipeline {
-  constructor(
-    @Inject(Logger) private logger: Logger,
-    @Inject(HttpPipelineConfig) private config: HttpPipelineConfig,
-  ) {}
+  constructor(@Inject(Logger) private logger: Logger, @Inject(HttpPipelineConfig) private config: HttpPipelineConfig) {}
 
   public async handleRequest(
     @Inject(Injector) injector: Injector,
@@ -53,7 +50,15 @@ export class HttpPipeline {
 
     if (allowRequest === true) {
       preparedProviders.push(
-        await this.safeInvokeStepAsProvider(injector, req, this.invokeHandler, requestInfo, preparedProviders, errorHandlers, HttpPipelineHandlerResult),
+        await this.safeInvokeStepAsProvider(
+          injector,
+          req,
+          this.invokeHandler,
+          requestInfo,
+          preparedProviders,
+          errorHandlers,
+          HttpPipelineHandlerResult,
+        ),
       )
     } else {
       preparedProviders.push({
@@ -63,10 +68,26 @@ export class HttpPipeline {
     }
 
     preparedProviders.push(
-      await this.safeInvokeStepAsProvider(injector, req, this.transformResult, requestInfo, preparedProviders, errorHandlers, HttpPipelineResult),
+      await this.safeInvokeStepAsProvider(
+        injector,
+        req,
+        this.transformResult,
+        requestInfo,
+        preparedProviders,
+        errorHandlers,
+        HttpPipelineResult,
+      ),
     )
     preparedProviders.push(
-      await this.safeInvokeStepAsProvider(injector, req, this.renderResult, requestInfo, preparedProviders, errorHandlers, HttpPipelineRendererResult),
+      await this.safeInvokeStepAsProvider(
+        injector,
+        req,
+        this.renderResult,
+        requestInfo,
+        preparedProviders,
+        errorHandlers,
+        HttpPipelineRendererResult,
+      ),
     )
 
     const terminatorResult = await this.invokeStep(injector, this.terminateResponse, requestInfo, preparedProviders)
@@ -126,9 +147,7 @@ export class HttpPipeline {
     }
   }
 
-  public async prepare(
-    @Inject(Injector) injector: Injector,
-  ): Promise<Provider<any>[]> {
+  public async prepare(@Inject(Injector) injector: Injector): Promise<Provider<any>[]> {
     if (!this.config.before) {
       return []
     }
@@ -143,9 +162,7 @@ export class HttpPipeline {
     return providers
   }
 
-  private checkCors(
-    @Inject(CorsAllowRequest) allowRequest: boolean,
-  ): true | HttpPipelineVoidResult {
+  private checkCors(@Inject(CorsAllowRequest) allowRequest: boolean): true | HttpPipelineVoidResult {
     if (allowRequest) {
       return true
     }
@@ -170,11 +187,11 @@ export class HttpPipeline {
     @Inject(HttpPipelineHandlerResult) handlerResult: any,
     @Inject(HttpPipelineResultTransformer) @Optional() transformers: HttpPipelineResultTransformer[],
   ): Promise<HttpPipelineResult> {
-    const initialResult: HttpPipelineResult = isHttpPipelineResult(handlerResult) ?
-      handlerResult :
-      {
-        data: handlerResult,
-      }
+    const initialResult: HttpPipelineResult = isHttpPipelineResult(handlerResult)
+      ? handlerResult
+      : {
+          data: handlerResult,
+        }
 
     if (transformers?.length) {
       return await this.executeTransformers(initialResult, transformers)
@@ -195,7 +212,10 @@ export class HttpPipeline {
 
     if (this.config.logHandledErrors) {
       const logLevel = this.config.logHandledErrors === true ? LogLevel.error : this.config.logHandledErrors
-      this.logger[logLevel](`Error handling request ${req.method} ${req.path} requestId ${requestInfo.requestId}`, err.stack)
+      this.logger[logLevel](
+        `Error handling request ${req.method} ${req.path} requestId ${requestInfo.requestId}`,
+        err.stack,
+      )
     }
     const pipelineResult = await this.executeErrorHandlers(result, errorHandlers)
 
@@ -216,9 +236,12 @@ export class HttpPipeline {
         if (result.errors) {
           result.errors.push(err)
         } else {
-          result = Object.assign({
-            errors: [err],
-          }, result)
+          result = Object.assign(
+            {
+              errors: [err],
+            },
+            result,
+          )
         }
       }
     }

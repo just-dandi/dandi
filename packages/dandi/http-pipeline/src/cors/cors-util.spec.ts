@@ -12,7 +12,6 @@ import { expect } from 'chai'
 import { SinonStubbedInstance } from 'sinon'
 
 describe('corsRequestAllowed', () => {
-
   let headersStub: SinonStubbedInstance<HttpRequestHeadersAccessor>
   let headers: HttpRequestHeadersAccessor
 
@@ -33,61 +32,71 @@ describe('corsRequestAllowed', () => {
     expect(corsRequestAllowed({ [HttpHeader.accessControlAllowOrigin]: 'foo.com' }, headers)).to.be.false
   })
 
-  it('returns false if not all of the headers in the Access-Control-Request-Headers request header are included in the' +
-    'Access-Control-Allow-Headers response header', () => {
+  it(
+    'returns false if not all of the headers in the Access-Control-Request-Headers request header are included in the' +
+      'Access-Control-Allow-Headers response header',
+    () => {
+      headersStub.get.withArgs(HttpHeader.accessControlRequestHeaders).returns([HttpHeader.contentType])
+      const corsHeaders: Partial<CorsResponseHeaders> = {
+        [HttpHeader.accessControlAllowHeaders]: `${HttpHeader.contentLanguage} ${HttpHeader.cacheControl}`,
+      }
+      headersStub.get.withArgs(HttpHeader.accessControlRequestHeaders).returns([HttpHeader.contentType])
 
-    headersStub.get.withArgs(HttpHeader.accessControlRequestHeaders).returns([HttpHeader.contentType])
-    const corsHeaders: Partial<CorsResponseHeaders> = {
-      [HttpHeader.accessControlAllowHeaders]: `${HttpHeader.contentLanguage} ${HttpHeader.cacheControl}`,
-    }
-    headersStub.get.withArgs(HttpHeader.accessControlRequestHeaders).returns([HttpHeader.contentType])
+      expect(corsRequestAllowed(corsHeaders, headers)).to.be.false
+    },
+  )
 
-    expect(corsRequestAllowed(corsHeaders, headers)).to.be.false
-  })
+  it(
+    'returns true if the Access-Control-Allow-Origin and Access-Control-Allow-Methods response headers both have' +
+      'values, and the Access-Control-Request-Headers request header is not specified',
+    () => {
+      const corsHeaders: Partial<CorsResponseHeaders> = {
+        [HttpHeader.accessControlAllowOrigin]: 'foo.com',
+        [HttpHeader.accessControlAllowMethods]: HttpMethod.get,
+      }
 
-  it('returns true if the Access-Control-Allow-Origin and Access-Control-Allow-Methods response headers both have' +
-    'values, and the Access-Control-Request-Headers request header is not specified', () => {
+      expect(corsRequestAllowed(corsHeaders, headers)).to.be.true
+    },
+  )
 
-    const corsHeaders: Partial<CorsResponseHeaders> = {
-      [HttpHeader.accessControlAllowOrigin]: 'foo.com',
-      [HttpHeader.accessControlAllowMethods]: HttpMethod.get,
-    }
+  it(
+    'returns true if the Access-Control-Allow-Origin and Access-Control-Allow-Methods response headers both have' +
+      'values, and the Access-Control-Allow-Headers response header includes all requested headers from the ' +
+      'Access-Control-Request-Headers request header',
+    () => {
+      const corsHeaders: Partial<CorsResponseHeaders> = {
+        [HttpHeader.accessControlAllowOrigin]: 'foo.com',
+        [HttpHeader.accessControlAllowMethods]: HttpMethod.get,
+        [HttpHeader.accessControlAllowHeaders]: `${HttpHeader.contentType} ${HttpHeader.cacheControl}`,
+      }
+      headersStub.get
+        .withArgs(HttpHeader.accessControlRequestHeaders)
+        .returns([HttpHeader.contentType, HttpHeader.cacheControl])
 
-    expect(corsRequestAllowed(corsHeaders, headers)).to.be.true
-  })
+      expect(corsRequestAllowed(corsHeaders, headers)).to.be.true
+    },
+  )
 
-  it('returns true if the Access-Control-Allow-Origin and Access-Control-Allow-Methods response headers both have' +
-    'values, and the Access-Control-Allow-Headers response header includes all requested headers from the ' +
-    'Access-Control-Request-Headers request header', () => {
+  it(
+    'returns false if the Access-Control-Allow-Origin and Access-Control-Allow-Methods response headers both have' +
+      'values, but the Access-Control-Allow-Headers response header does not include all requested headers from the ' +
+      'Access-Control-Request-Headers request header',
+    () => {
+      const corsHeaders: Partial<CorsResponseHeaders> = {
+        [HttpHeader.accessControlAllowOrigin]: 'foo.com',
+        [HttpHeader.accessControlAllowMethods]: HttpMethod.get,
+        [HttpHeader.accessControlAllowHeaders]: `${HttpHeader.contentType}`,
+      }
+      headersStub.get
+        .withArgs(HttpHeader.accessControlRequestHeaders)
+        .returns([HttpHeader.contentType, HttpHeader.cacheControl])
 
-    const corsHeaders: Partial<CorsResponseHeaders> = {
-      [HttpHeader.accessControlAllowOrigin]: 'foo.com',
-      [HttpHeader.accessControlAllowMethods]: HttpMethod.get,
-      [HttpHeader.accessControlAllowHeaders]: `${HttpHeader.contentType} ${HttpHeader.cacheControl}`,
-    }
-    headersStub.get.withArgs(HttpHeader.accessControlRequestHeaders).returns([HttpHeader.contentType, HttpHeader.cacheControl])
-
-    expect(corsRequestAllowed(corsHeaders, headers)).to.be.true
-  })
-
-  it('returns false if the Access-Control-Allow-Origin and Access-Control-Allow-Methods response headers both have' +
-    'values, but the Access-Control-Allow-Headers response header does not include all requested headers from the ' +
-    'Access-Control-Request-Headers request header', () => {
-
-    const corsHeaders: Partial<CorsResponseHeaders> = {
-      [HttpHeader.accessControlAllowOrigin]: 'foo.com',
-      [HttpHeader.accessControlAllowMethods]: HttpMethod.get,
-      [HttpHeader.accessControlAllowHeaders]: `${HttpHeader.contentType}`,
-    }
-    headersStub.get.withArgs(HttpHeader.accessControlRequestHeaders).returns([HttpHeader.contentType, HttpHeader.cacheControl])
-
-    expect(corsRequestAllowed(corsHeaders, headers)).to.be.false
-  })
-
+      expect(corsRequestAllowed(corsHeaders, headers)).to.be.false
+    },
+  )
 })
 
 describe('isCorsRequest', () => {
-
   let req: SinonStubbedInstance<HttpRequest>
 
   beforeEach(() => {
@@ -104,23 +113,14 @@ describe('isCorsRequest', () => {
   })
 
   it('returns false if the origin matches the host', () => {
-    req.get
-      .withArgs(HttpHeader.origin)
-      .returns('http://foo.com')
-      .withArgs(HttpHeader.host)
-      .returns('foo.com')
+    req.get.withArgs(HttpHeader.origin).returns('http://foo.com').withArgs(HttpHeader.host).returns('foo.com')
 
     expect(isCorsRequest(req)).to.be.false
   })
 
   it('returns false if the origin does not match the host', () => {
-    req.get
-      .withArgs(HttpHeader.origin)
-      .returns('http://foo.com')
-      .withArgs(HttpHeader.host)
-      .returns('bar.com')
+    req.get.withArgs(HttpHeader.origin).returns('http://foo.com').withArgs(HttpHeader.host).returns('bar.com')
 
     expect(isCorsRequest(req)).to.be.true
   })
-
 })

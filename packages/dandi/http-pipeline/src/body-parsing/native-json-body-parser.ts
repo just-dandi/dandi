@@ -5,7 +5,6 @@ import { HttpBodyParserBase } from './http-body-parser-base'
 
 @BodyParser(MimeType.applicationJson)
 export class NativeJsonBodyParser extends HttpBodyParserBase {
-
   constructor() {
     super()
   }
@@ -13,5 +12,4 @@ export class NativeJsonBodyParser extends HttpBodyParserBase {
   protected parseBodyFromString(body: string): object {
     return JSON.parse(body)
   }
-
 }

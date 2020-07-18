@@ -43,7 +43,6 @@ describe('AuthorizationAuthProviderFactory', () => {
   })
 
   describe('generateAuthProviders', () => {
-
     it('adds a provider for a scheme-specific AuthorizationService', async () => {
       const authService = {}
       req.get.returns('Bearer foo')
@@ -51,7 +50,7 @@ describe('AuthorizationAuthProviderFactory', () => {
 
       const result = await authProviderFactory.generateAuthProviders(route, req)
 
-      const requestAuthProvider = result.find(provider => provider.provide === RequestAuthorizationService)
+      const requestAuthProvider = result.find((provider) => provider.provide === RequestAuthorizationService)
       expect(requestAuthProvider).to.exist
     })
 

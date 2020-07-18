@@ -14,28 +14,24 @@ export interface FormUrlencodedBodyResult {
  */
 @BodyParser(MimeType.applicationFormUrlencoded)
 export class FormUrlencodedBodyParser extends HttpBodyParserBase {
-
   constructor() {
     super()
   }
 
   protected parseBodyFromString(body: string): FormUrlencodedBodyResult {
-    return body
-      .split('&')
-      .reduce((result, entry) => {
-        const [key, rawValue] = entry.split('=')
-        const value = decodeURIComponent(rawValue)
-        if (result[key]) {
-          if (Array.isArray(result[key])) {
-            result[key].push(value)
-          } else {
-            result[key] = [result[key], value]
-          }
+    return body.split('&').reduce((result, entry) => {
+      const [key, rawValue] = entry.split('=')
+      const value = decodeURIComponent(rawValue)
+      if (result[key]) {
+        if (Array.isArray(result[key])) {
+          result[key].push(value)
         } else {
-          result[key] = value
+          result[key] = [result[key], value]
         }
-        return result
-      }, {})
+      } else {
+        result[key] = value
+      }
+      return result
+    }, {})
   }
-
 }

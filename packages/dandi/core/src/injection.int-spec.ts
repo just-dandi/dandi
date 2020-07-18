@@ -17,8 +17,7 @@ import { testHarness, testHarnessSingle } from '@dandi/core/testing'
 import { expect } from 'chai'
 import { stub } from 'sinon'
 
-describe('DI Integration', function() {
-
+describe('DI Integration', function () {
   const harness = testHarness()
 
   @Injectable()
@@ -29,33 +28,28 @@ describe('DI Integration', function() {
     constructor(@Inject(TestInjectable) public dep: TestInjectable) {}
   }
 
-  beforeEach(function() {
+  beforeEach(function () {
     harness.register(TestInjectable)
     harness.register(TestWithDependency)
   })
 
-  it('injects a class injectable', async function() {
-
+  it('injects a class injectable', async function () {
     const result = await harness.inject(TestInjectable)
 
     expect(result).to.exist
     expect(result).to.be.instanceof(TestInjectable)
-
   })
 
-  it('injects injectable class params', async function() {
-
+  it('injects injectable class params', async function () {
     const result = await harness.inject(TestWithDependency)
 
     expect(result).to.exist
     expect(result).to.be.instanceof(TestWithDependency)
     expect(result.dep).to.exist
     expect(result.dep).to.be.instanceof(TestInjectable)
-
   })
 
-  it('injects a token backed by a factory provider', async function() {
-
+  it('injects a token backed by a factory provider', async function () {
     const token = SymbolToken.for('test')
     const provider = {
       provide: token,
@@ -67,14 +61,10 @@ describe('DI Integration', function() {
 
     expect(result).to.exist
     expect(result).to.be.instanceof(TestInjectable)
-    expect(provider.useFactory).to.have.been
-      .calledOnce
-      .calledWithExactly()
-
+    expect(provider.useFactory).to.have.been.calledOnce.calledWithExactly()
   })
 
-  it('injects a token backed by an async factory provider', async function() {
-
+  it('injects a token backed by an async factory provider', async function () {
     const token = SymbolToken.for('test')
     async function useFactory(): Promise<TestInjectable> {
       return new TestInjectable()
@@ -90,14 +80,10 @@ describe('DI Integration', function() {
 
     expect(result).to.exist
     expect(result).to.be.instanceof(TestInjectable)
-    expect(provider.useFactory).to.have.been
-      .calledOnce
-      .calledWithExactly()
-
+    expect(provider.useFactory).to.have.been.calledOnce.calledWithExactly()
   })
 
-  it('injects a token backed by a value provider', async function() {
-
+  it('injects a token backed by a value provider', async function () {
     const token = SymbolToken.for('test')
     const provider = {
       provide: token,
@@ -109,20 +95,20 @@ describe('DI Integration', function() {
 
     expect(result).to.exist
     expect(result).to.equal(provider.useValue)
-
   })
 
-  it('provides the injection scope of the requesting entity when injecting', async function() {
+  it('provides the injection scope of the requesting entity when injecting', async function () {
     @Injectable(RestrictScope(ScopeBehavior.perInjector))
     class ContextTester {
-      constructor(@Inject(InjectionScope) public scope: InjectionScope) {
-      }
+      constructor(@Inject(InjectionScope) public scope: InjectionScope) {}
     }
 
     @Injectable()
     class ContextHost {
-      constructor(@Inject(ContextTester) public tester: ContextTester, @Inject(InjectionScope) public scope: InjectionScope) {
-      }
+      constructor(
+        @Inject(ContextTester) public tester: ContextTester,
+        @Inject(InjectionScope) public scope: InjectionScope,
+      ) {}
     }
 
     harness.register(ContextHost, ContextTester)
@@ -134,8 +120,7 @@ describe('DI Integration', function() {
     expect(result.tester.scope).to.equal(ContextHost)
   })
 
-  it('provides the injection scope of the requesting entity when invoking', async function() {
-
+  it('provides the injection scope of the requesting entity when invoking', async function () {
     interface TestResult {
       tester: any
       context: any
@@ -143,8 +128,7 @@ describe('DI Integration', function() {
 
     @Injectable(RestrictScope(ScopeBehavior.perInjector))
     class ContextTester {
-      constructor(@Inject(InjectionScope) public context: InjectionScope) {
-      }
+      constructor(@Inject(InjectionScope) public context: InjectionScope) {}
     }
 
     class ContextHost {
@@ -170,7 +154,7 @@ describe('DI Integration', function() {
     })
   })
 
-  it('does not create multiple instances of singletons', async function() {
+  it('does not create multiple instances of singletons', async function () {
     let id = 0
     const token = new SymbolToken('test')
     const provider = {
@@ -190,21 +174,18 @@ describe('DI Integration', function() {
     expect(result2).to.equal(1)
   })
 
-  it('does not create multiple instances of singletons when required by different dependents', async function() {
+  it('does not create multiple instances of singletons when required by different dependents', async function () {
     @Injectable()
-    class Singlejon {
-    }
+    class Singlejon {}
 
     @Injectable()
     class TestA {
-      constructor(@Inject(Singlejon) public jon: Singlejon) {
-      }
+      constructor(@Inject(Singlejon) public jon: Singlejon) {}
     }
 
     @Injectable()
     class TestB {
-      constructor(@Inject(Singlejon) public jon: Singlejon) {
-      }
+      constructor(@Inject(Singlejon) public jon: Singlejon) {}
     }
     harness.register(Singlejon, TestA, TestB)
 
@@ -212,24 +193,20 @@ describe('DI Integration', function() {
     const result2 = await harness.inject(TestB)
 
     expect(result1.jon).to.equal(result2.jon)
-
   })
 
-  it('does not create multiple instances of singletons when explicitly resolving', async function() {
+  it('does not create multiple instances of singletons when explicitly resolving', async function () {
     @Injectable()
-    class Singlejon {
-    }
+    class Singlejon {}
 
     @Injectable()
     class Test {
-      constructor(@Inject(Singlejon) public jon: Singlejon) {
-      }
+      constructor(@Inject(Singlejon) public jon: Singlejon) {}
     }
 
     @Injectable()
     class TestFactory {
-      constructor(@Inject(Singlejon) public jon: Singlejon, @Inject(Injector) private injector: Injector) {
-      }
+      constructor(@Inject(Singlejon) public jon: Singlejon, @Inject(Injector) private injector: Injector) {}
 
       public async createTest(): Promise<Test> {
         return (await this.injector.inject(Test)).singleValue
@@ -240,24 +217,20 @@ describe('DI Integration', function() {
     const factory = await harness.inject(TestFactory)
     const test = await factory.createTest()
     expect(factory.jon).to.equal(test.jon)
-
   })
 
-  it('does not create multiple instances of singletons when invoking', async function() {
+  it('does not create multiple instances of singletons when invoking', async function () {
     @Injectable()
-    class Singlejon {
-    }
+    class Singlejon {}
 
     @Injectable()
     class Test {
-      constructor(@Inject(Singlejon) public jon: Singlejon) {
-      }
+      constructor(@Inject(Singlejon) public jon: Singlejon) {}
     }
 
     @Injectable()
     class TestFactory {
-      constructor(@Inject(Singlejon) public jon: Singlejon) {
-      }
+      constructor(@Inject(Singlejon) public jon: Singlejon) {}
 
       public async getJon(@Inject(Singlejon) jon: Singlejon): Promise<Singlejon> {
         return jon
@@ -268,10 +241,9 @@ describe('DI Integration', function() {
     const factory = await harness.inject(TestFactory)
     const jon = await harness.invoke(factory, 'getJon')
     expect(jon).to.equal(factory.jon)
-
   })
 
-  it('does not leak token providers outside of resolving the token', async function() {
+  it('does not leak token providers outside of resolving the token', async function () {
     const token = new SymbolToken('test')
     const dep = new SymbolToken('test-dep')
     const depProvider = {
@@ -291,12 +263,10 @@ describe('DI Integration', function() {
     expect(result).not.to.exist
   })
 
-  it('can resolve singletons from class providers', async function() {
-    class TestToken {
-    }
+  it('can resolve singletons from class providers', async function () {
+    class TestToken {}
 
-    class TestClass {
-    }
+    class TestClass {}
 
     const provider = {
       provide: TestToken,
@@ -312,10 +282,9 @@ describe('DI Integration', function() {
     expect(secondResult).to.equal(result)
   })
 
-  it('can resolve singletons discovered on the global/ambient repository', async function() {
+  it('can resolve singletons discovered on the global/ambient repository', async function () {
     @Injectable()
-    class TestClass {
-    }
+    class TestClass {}
 
     const harness = await testHarnessSingle(AmbientInjectableScanner)
 
@@ -355,7 +324,6 @@ describe('DI Integration', function() {
 
     const result = await harness.invoke(tester, 'test')
     expect(result).to.equal('foo')
-
   })
 
   it('can execute nested invocations using providers from the nested injector contexts', async () => {
@@ -387,7 +355,6 @@ describe('DI Integration', function() {
 
     const result = await harness.invoke(tester, 'test')
     expect(result).to.equal('foo')
-
   })
 
   it('leaves instances created in a perInjector context due to an invocation in a state that they can still be used', async () => {
@@ -398,7 +365,6 @@ describe('DI Integration', function() {
     }
     @Injectable()
     class TestClassA {
-
       public foo = 'bar'
 
       public test(@Inject(Token) token: string): string {
@@ -407,7 +373,6 @@ describe('DI Integration', function() {
     }
     @Injectable()
     class TestClassB {
-
       public foo = 'bar'
 
       // the class-level injector must be branched off the injector where the class is registered
@@ -443,7 +408,6 @@ describe('DI Integration', function() {
   })
 
   it('uses the correct contexts and injectors to instantiate injectable instances when dealing with scoped restrictions', async () => {
-
     class TestJobScope {}
 
     @Injectable(RestrictScope(TestJobScope))
@@ -452,11 +416,9 @@ describe('DI Integration', function() {
     }
 
     harness.register(TestJobProcessor)
-
   })
 
   it('uses the correct provider when tokens are overridden using value providers', async () => {
-
     const token = SymbolToken.for('test-override')
 
     harness.register({
@@ -471,11 +433,9 @@ describe('DI Integration', function() {
 
     expect(await harness.inject(token)).to.equal(1)
     expect(await child.inject(token)).to.equal(2)
-
   })
 
   it('uses the correct provider when tokens are overridden using factory providers', async () => {
-
     const token = SymbolToken.for('test-override')
 
     harness.register({
@@ -490,11 +450,9 @@ describe('DI Integration', function() {
 
     expect(await harness.inject(token)).to.equal(1)
     expect(await child.inject(token)).to.equal(2)
-
   })
 
   it('uses the correct provider when scope restricted tokens are overridden using factory providers', async () => {
-
     const token = new OpinionatedToken('test-override', {
       restrictScope: 'test',
     })
@@ -510,6 +468,5 @@ describe('DI Integration', function() {
     })
 
     expect(await child.inject(token)).to.equal(2)
-
   })
 })

@@ -34,7 +34,7 @@ describe('HttpEventTransformer', () => {
       resource: 'resource',
       stageVariables: 'stageVariables',
     }
-    context = createStubInstance(MockContext) as unknown as Context
+    context = (createStubInstance(MockContext) as unknown) as Context
   })
   afterEach(() => {
     body = undefined
@@ -57,7 +57,7 @@ describe('HttpEventTransformer', () => {
 
     it('creates a provider for HttpRequest', () => {
       const result = transformer.transform(event, context)
-      const httpProvider = result.find(provider => provider.provide === HttpRequest)
+      const httpProvider = result.find((provider) => provider.provide === HttpRequest)
 
       expect(httpProvider).to.exist
     })
@@ -67,7 +67,7 @@ describe('HttpEventTransformer', () => {
       delete eventWithoutBody.body
 
       const result = transformer.transform(event, context)
-      const httpProvider = result.find(provider => provider.provide === HttpRequest)
+      const httpProvider = result.find((provider) => provider.provide === HttpRequest)
       const request = (httpProvider as any).useValue
 
       expect(request.path).to.include(event.path)
@@ -83,7 +83,7 @@ describe('HttpEventTransformer', () => {
       delete eventWithoutBody.isBase64Encoded
 
       const result = transformer.transform(event, context)
-      const httpProvider = result.find(provider => provider.provide === HttpRequest)
+      const httpProvider = result.find((provider) => provider.provide === HttpRequest)
       const request = (httpProvider as any).useValue
 
       expect(request.body).to.equal(JSON.stringify(body))
@@ -92,7 +92,7 @@ describe('HttpEventTransformer', () => {
     it('creates a HttpHandlerRequest object using the event values and no body when none exists', () => {
       delete event.body
       const result = transformer.transform(event, context)
-      const httpProvider = result.find(provider => provider.provide === HttpRequest)
+      const httpProvider = result.find((provider) => provider.provide === HttpRequest)
       const request = (httpProvider as any).useValue
 
       expect(request.body).not.to.exist

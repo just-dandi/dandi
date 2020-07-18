@@ -2,19 +2,19 @@ import { SymbolToken } from '@dandi/core'
 import { MvcViewModuleBuilder, ViewEngine, ViewEngineConfig } from '@dandi/mvc-view'
 import { expect } from 'chai'
 
-describe('MvcViewModuleBuilder', function() {
+describe('MvcViewModuleBuilder', function () {
   class TestViewEngine implements ViewEngine {
     render(): string | Promise<string> {
       return undefined
     }
   }
 
-  beforeEach(function() {
+  beforeEach(function () {
     this.builder = new MvcViewModuleBuilder()
   })
 
-  describe('#engine', function() {
-    it('configures a ViewEngine with the specified priority', function() {
+  describe('#engine', function () {
+    it('configures a ViewEngine with the specified priority', function () {
       const builder = this.builder.engine('test', TestViewEngine, 1)
       expect(builder).to.include(TestViewEngine)
       expect(
@@ -27,7 +27,7 @@ describe('MvcViewModuleBuilder', function() {
       ).to.exist
     })
 
-    it('configures a ConfiguredViewEngine with the specified priority', function() {
+    it('configures a ConfiguredViewEngine with the specified priority', function () {
       const viewEngineConfig = {
         provide: new SymbolToken('testViewEngineConfig'),
         useValue: {},

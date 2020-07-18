@@ -40,7 +40,10 @@ export function isSupportingBodyParser(bodyParser: BodyParserMetadata, contentTy
   return !!bodyParser.contentTypes.find(mimeTypesAreCompatible.bind(undefined, contentTypeMimeInfo))
 }
 
-export function selectBodyParser(contentType: HttpContentType, bodyParsers: BodyParserInfo[]): Constructor<HttpBodyParser> {
+export function selectBodyParser(
+  contentType: HttpContentType,
+  bodyParsers: BodyParserInfo[],
+): Constructor<HttpBodyParser> {
   for (const bodyParser of bodyParsers) {
     if (isSupportingBodyParser(bodyParser.metadata, contentType)) {
       return bodyParser.constructor
@@ -60,7 +63,6 @@ const SelectedBodyParserProvider: Provider<Constructor<HttpBodyParser>> = {
     bodyParsers: BodyParserInfo[],
     cache: HttpBodyParserCache,
   ) {
-
     const contentType = headers.get(HttpHeader.contentType) || { contentType: MimeType.unknown }
     const cacheKey = `${req.path};${contentType.contentType}`
 
@@ -74,31 +76,17 @@ const SelectedBodyParserProvider: Provider<Constructor<HttpBodyParser>> = {
       cache.set(cacheKey, bodyParser)
       return bodyParser
     }
-
   },
-  deps: [
-    HttpRequest,
-    HttpRequestHeadersAccessor,
-    BodyParserInfo,
-    HttpBodyParserCache,
-  ],
+  deps: [HttpRequest, HttpRequestHeadersAccessor, BodyParserInfo, HttpBodyParserCache],
 }
 
 export const HttpBodyParserProvider: Provider<HttpBodyParser> = {
   provide: HttpBodyParser,
-  async useFactory(
-    injector: Injector,
-    SelectedBodyParser: Constructor<HttpBodyParser>,
-  ): Promise<HttpBodyParser> {
+  async useFactory(injector: Injector, SelectedBodyParser: Constructor<HttpBodyParser>): Promise<HttpBodyParser> {
     const resolveResult = await injector.inject(SelectedBodyParser)
     return resolveResult.singleValue
   },
   async: true,
-  deps: [
-    Injector,
-    SelectedBodyParser,
-  ],
-  providers: [
-    SelectedBodyParserProvider,
-  ],
+  deps: [Injector, SelectedBodyParser],
+  providers: [SelectedBodyParserProvider],
 }

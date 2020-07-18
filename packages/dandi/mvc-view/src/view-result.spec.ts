@@ -4,7 +4,6 @@ import { expect } from 'chai'
 import { SinonStubbedInstance, stub } from 'sinon'
 
 describe('makeViewResult', () => {
-
   let viewEngine: SinonStubbedInstance<ViewEngine>
   let view: ViewMetadata
   let templatePath: string

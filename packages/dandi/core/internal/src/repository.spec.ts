@@ -22,7 +22,6 @@ import { expect } from 'chai'
 import { spy } from 'sinon'
 
 describe('Repository', () => {
-
   class TestClass {}
 
   let source: RegistrationSource
@@ -121,7 +120,6 @@ describe('Repository', () => {
     })
 
     it('includes the path of registration sources when throwing an InvalidRegistrationTargetError', () => {
-
       const source = {
         constructor: function TheTest() {},
         tag: '.theSpec',
@@ -133,11 +131,9 @@ describe('Repository', () => {
         InvalidRegistrationTargetError,
         `Invalid Registration Target 'undefined' specified by RootSource -> TheTest.theSpec`,
       )
-
     })
 
     it('includes ModuleInfo in the path of registration sources if available', () => {
-
       @Injectable()
       class TestService {}
 
@@ -160,7 +156,6 @@ describe('Repository', () => {
         InvalidRegistrationTargetError,
         `Invalid Registration Target 'undefined' specified by RootSource -> (@dandi/core/test#TestModule):TestService.theSpec`,
       )
-
     })
 
     it('overwrites registrations when the multi option is not set', () => {
@@ -184,7 +179,7 @@ describe('Repository', () => {
       }
       repo.register(this, additionalProvider)
 
-      expect([...repo.get(provider.provide) as Set<Provider<any>>]).to.deep.equal([provider, additionalProvider])
+      expect([...(repo.get(provider.provide) as Set<Provider<any>>)]).to.deep.equal([provider, additionalProvider])
     })
 
     it('throws an error when registering a multi provider if a non-multi provider already exists', () => {

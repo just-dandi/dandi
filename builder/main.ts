@@ -11,7 +11,11 @@ import { CommandUtil } from './src/command-util'
 
 program
   .version(VERSION)
-  .option('-c --config <configFile>', 'A path to the builder config file, relative to the working directory', BUILDER_PROJECT_DEFAULTS.configFile)
+  .option(
+    '-c --config <configFile>',
+    'A path to the builder config file, relative to the working directory',
+    BUILDER_PROJECT_DEFAULTS.configFile,
+  )
   .option('--verbose', 'Enables verbose/debug level logging')
 
 program
@@ -31,12 +35,16 @@ program
 
 program
   .command('unpublish [version]')
-  .description('Unpublishes a specific version of all configured project packages. [version] defaults to the current version defined in the root project package.json')
+  .description(
+    'Unpublishes a specific version of all configured project packages. [version] defaults to the current version defined in the root project package.json',
+  )
   .action(CommandUtil.publisherAction('unpublish', start))
 
 program
   .command('deprecate <message> [version]')
-  .description('Deprecates a specific version of all configured project packages. [version] defaults to the current version defined in the root project package.json')
+  .description(
+    'Deprecates a specific version of all configured project packages. [version] defaults to the current version defined in the root project package.json',
+  )
   .action(CommandUtil.publisherAction('deprecate', start))
 
 program

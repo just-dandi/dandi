@@ -8,7 +8,6 @@ export interface MimeTypeInfo {
 }
 
 export class MimeTypeInfo {
-
   public readonly type: string
   public readonly source: string
   public readonly subtype: string

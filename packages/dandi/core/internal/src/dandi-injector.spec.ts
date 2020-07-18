@@ -24,7 +24,6 @@ import { stub, SinonStubbedInstance } from 'sinon'
 import { DandiRootInjector } from './dandi-root-injector'
 
 describe('DandiInjector', () => {
-
   @Injectable()
   class TestInjectable {}
 
@@ -40,7 +39,7 @@ describe('DandiInjector', () => {
   let generator: SinonStubbedInstance<DandiGenerator>
 
   function createInjector(...providers: Registerable[]): DandiInjector {
-    return injector = rootInjector.createChild('DandiInjector Test Instance', providers)
+    return (injector = rootInjector.createChild('DandiInjector Test Instance', providers))
   }
 
   function register(...providers: Registerable[]): void {
@@ -48,23 +47,21 @@ describe('DandiInjector', () => {
   }
 
   beforeEach(() => {
-    generator = {
+    generator = ({
       generateInstance: stub().resolves(undefined),
-    } as unknown as SinonStubbedInstance<DandiGenerator>
-    rootInjector = new DandiRootInjector(() => generator as unknown as DandiGenerator)
+    } as unknown) as SinonStubbedInstance<DandiGenerator>
+    rootInjector = new DandiRootInjector(() => (generator as unknown) as DandiGenerator)
   })
   afterEach(async () => {
     await rootInjector.dispose('test complete')
   })
 
   describe('Resolver', () => {
-
     beforeEach(() => {
       createInjector(TestInjectable)
     })
 
     describe('resolve', () => {
-
       it('throws an error when called without an injection token', () => {
         expect(() => injector.resolve(undefined)).to.throw(MissingTokenError)
       })
@@ -90,7 +87,7 @@ describe('DandiInjector', () => {
 
       it('cannot resolve providers registered in separate injector instances', async () => {
         register(TestInjectable)
-        const otherInjector = new DandiRootInjector(() => generator as unknown as DandiGenerator)
+        const otherInjector = new DandiRootInjector(() => (generator as unknown) as DandiGenerator)
 
         await expect(otherInjector.inject(TestInjectable)).to.be.rejectedWith(MissingProviderError)
       })
@@ -131,13 +128,10 @@ describe('DandiInjector', () => {
         it('throws an error when attempting to resolve a scope restricted token if the injector hierarchy does not have a compatible scope', () => {
           expect(() => childInjector.resolve(scopeRestrictedToken)).to.throw
         })
-
       })
-
     })
 
     describe('canResolve', () => {
-
       it('throws an error when called without an injection token', () => {
         expect(() => injector.canResolve(undefined)).to.throw(MissingTokenError)
       })
@@ -164,31 +158,25 @@ describe('DandiInjector', () => {
       it('returns false when there is not provider for the specified token, including in a perInjector rootInjector scope', () => {
         expect(injector.canResolve(TestWithDependency)).to.be.false
       })
-
     })
-
   })
 
   describe('TokenInjector', () => {
-
     beforeEach(() => {
       createInjector()
     })
 
     describe('inject', () => {
-
       it('returns undefined without invoking the generator if the token resolves to an undefined provider', async () => {
-
         const result = await injector.inject(DoesNotExist, true)
 
         expect(result).to.be.undefined
         expect(generator.generateInstance).not.to.have.been.called
-
       })
 
       it('waits for the generator to be ready before attempting to call generateInstance', async () => {
         let resolve
-        const generatorFactory: Promise<InstanceGenerator> = new Promise<InstanceGenerator>(r => {
+        const generatorFactory: Promise<InstanceGenerator> = new Promise<InstanceGenerator>((r) => {
           resolve = r
         })
         const injector = new DandiRootInjector(generatorFactory)
@@ -201,11 +189,9 @@ describe('DandiInjector', () => {
 
         await resultPromise
         expect(generator.generateInstance).to.have.been.called
-
       })
 
       it('returns an InjectionResult with the value returned by generator.generateInstance', async () => {
-
         const instance = new TestInjectable()
         generator.generateInstance.resolves(instance)
 
@@ -214,17 +200,12 @@ describe('DandiInjector', () => {
 
         expect(result).to.be.instanceof(InjectionResult)
         expect(result.value).to.equal(instance)
-
       })
-
     })
-
   })
 
   describe('Invoker', () => {
-
     describe('invoke', () => {
-
       beforeEach(() => {
         createInjector()
       })
@@ -279,7 +260,7 @@ describe('DandiInjector', () => {
             @Inject(token1) a: any,
             @Optional()
             @Inject(token2)
-              b: any,
+            b: any,
           ): any {
             // trying to spy on this mucks up Reflection, so just do it manually
             return method(a, b)
@@ -312,9 +293,7 @@ describe('DandiInjector', () => {
         await (injector as Invoker).invoke(instance, 'method')
         expect(method).to.have.been.called
         expect(method).to.have.been.calledWithExactly()
-
       })
     })
   })
-
 })

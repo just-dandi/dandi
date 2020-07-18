@@ -24,20 +24,20 @@ export const CORS_SAFELIST_HEADERS: CorsSafelistHeaders = [
   HttpHeader.contentType,
 ]
 
-export type CorsResponseHeaders = Pick<HttpResponseHeaders,
-  HttpHeader.accessControlAllowCredentials |
-  HttpHeader.accessControlAllowHeaders |
-  HttpHeader.accessControlAllowMethods |
-  HttpHeader.accessControlAllowOrigin |
-  HttpHeader.accessControlExposeHeaders |
-  HttpHeader.accessControlMaxAge
+export type CorsResponseHeaders = Pick<
+  HttpResponseHeaders,
+  | HttpHeader.accessControlAllowCredentials
+  | HttpHeader.accessControlAllowHeaders
+  | HttpHeader.accessControlAllowMethods
+  | HttpHeader.accessControlAllowOrigin
+  | HttpHeader.accessControlExposeHeaders
+  | HttpHeader.accessControlMaxAge
 >
 
 export type CorsResponseHeader = keyof HttpResponseHeaders
 
 @Injectable(RestrictScope(HttpRequestScope))
 export class CorsHeaderValues implements Partial<CorsResponseHeaders> {
-
   constructor(
     @Inject(CorsAllowOrigin) @Optional() allowOrigin: string,
     @Inject(CorsAllowMethods) @Optional() allowMethods: HttpMethod[],
@@ -68,5 +68,4 @@ export class CorsHeaderValues implements Partial<CorsResponseHeaders> {
 
     Object.assign(this, values)
   }
-
 }

@@ -25,24 +25,38 @@ export interface HttpPipelineRendererResult {
   renderedBody: string
   contentType: string
 }
-export const HttpPipelineRendererResult = localOpinionatedToken<HttpPipelineRendererResult>('HttpPipelineRendererResult', {
-  multi: false,
-  restrictScope: HttpRequestScope,
-})
+export const HttpPipelineRendererResult = localOpinionatedToken<HttpPipelineRendererResult>(
+  'HttpPipelineRendererResult',
+  {
+    multi: false,
+    restrictScope: HttpRequestScope,
+  },
+)
 
 export interface HttpPipelineRenderer {
   readonly renderableTypes: MimeTypeInfo[]
-  render(acceptTypes: MimeTypeInfo[], pipelineResult: HttpPipelineResult): HttpPipelineRendererResult | Promise<HttpPipelineRendererResult>
+  render(
+    acceptTypes: MimeTypeInfo[],
+    pipelineResult: HttpPipelineResult,
+  ): HttpPipelineRendererResult | Promise<HttpPipelineRendererResult>
 }
 export const HttpPipelineRenderer = localOpinionatedToken<HttpPipelineRenderer>('HttpPipelineRenderer', {
   multi: false,
   restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
 })
-export const DefaultHttpPipelineRenderer = localOpinionatedToken<Constructor<HttpPipelineRenderer>>('DefaultHttpPipelineRenderer', {
-  multi: false,
-})
-export type DefaultHttpPipelineRendererProviders = [Constructor<HttpPipelineRenderer>, Provider<Constructor<HttpPipelineRenderer>>]
-export function defaultHttpPipelineRenderer(rendererType: Constructor<HttpPipelineRenderer>): DefaultHttpPipelineRendererProviders {
+export const DefaultHttpPipelineRenderer = localOpinionatedToken<Constructor<HttpPipelineRenderer>>(
+  'DefaultHttpPipelineRenderer',
+  {
+    multi: false,
+  },
+)
+export type DefaultHttpPipelineRendererProviders = [
+  Constructor<HttpPipelineRenderer>,
+  Provider<Constructor<HttpPipelineRenderer>>,
+]
+export function defaultHttpPipelineRenderer(
+  rendererType: Constructor<HttpPipelineRenderer>,
+): DefaultHttpPipelineRendererProviders {
   return [
     rendererType,
     {
@@ -53,9 +67,12 @@ export function defaultHttpPipelineRenderer(rendererType: Constructor<HttpPipeli
 }
 
 type HttpPipelineRendererCache = Map<string, Constructor<HttpPipelineRenderer>[]>
-const HttpPipelineRendererCache: InjectionToken<HttpPipelineRendererCache> = localOpinionatedToken('HttpPipelineRendererCache', {
-  multi: false,
-})
+const HttpPipelineRendererCache: InjectionToken<HttpPipelineRendererCache> = localOpinionatedToken(
+  'HttpPipelineRendererCache',
+  {
+    multi: false,
+  },
+)
 
 const HttpPipelineRendererCacheProvider: Provider<HttpPipelineRendererCache> = {
   provide: HttpPipelineRendererCache,
@@ -66,12 +83,15 @@ export function isSupportingRenderer(renderer: RendererMetadata, acceptType: Mim
   return !!renderer.acceptTypes.find(mimeTypesAreCompatible.bind(null, acceptType))
 }
 
-export function selectRenderers(acceptTypes: MimeTypeInfo[], renderers: RendererInfo[]): Constructor<HttpPipelineRenderer>[] {
+export function selectRenderers(
+  acceptTypes: MimeTypeInfo[],
+  renderers: RendererInfo[],
+): Constructor<HttpPipelineRenderer>[] {
   const results = new Set<Constructor<HttpPipelineRenderer>>()
   for (const acceptType of acceptTypes) {
     const isIdenticalMimeType = mimeTypesAreIdentical.bind(undefined, acceptType)
     const supported = renderers
-      .filter(renderer => !results.has(renderer.constructor) && isSupportingRenderer(renderer.metadata, acceptType))
+      .filter((renderer) => !results.has(renderer.constructor) && isSupportingRenderer(renderer.metadata, acceptType))
       .sort((a, b): number => {
         // prefer renderers that support a type directly, over those that only work via wildcard accept
         const aHasDirect = a.metadata.acceptTypes.some(isIdenticalMimeType)
@@ -94,10 +114,13 @@ export function selectRenderers(acceptTypes: MimeTypeInfo[], renderers: Renderer
   return [...results]
 }
 
-const CompatibleRenderers: InjectionToken<Constructor<HttpPipelineRenderer>[]> = localOpinionatedToken('SelectedRenderer', {
-  multi: false,
-  restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
-})
+const CompatibleRenderers: InjectionToken<Constructor<HttpPipelineRenderer>[]> = localOpinionatedToken(
+  'SelectedRenderer',
+  {
+    multi: false,
+    restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
+  },
+)
 const CompatibleRenderersProvider: Provider<Constructor<HttpPipelineRenderer>[]> = {
   provide: CompatibleRenderers,
   useFactory(
@@ -108,7 +131,6 @@ const CompatibleRenderersProvider: Provider<Constructor<HttpPipelineRenderer>[]>
     defaultRenderer: Constructor<HttpPipelineRenderer>,
     cache: HttpPipelineRendererCache,
   ) {
-
     const accept = headers.get(HttpHeader.accept)
     const cacheKey = `${req.path}_${accept}`
 
@@ -134,10 +156,7 @@ const CompatibleRenderersProvider: Provider<Constructor<HttpPipelineRenderer>[]>
     DefaultHttpPipelineRenderer,
     HttpPipelineRendererCache,
   ],
-  providers: [
-    RendererInfoProvider,
-    HttpPipelineRendererCacheProvider,
-  ],
+  providers: [RendererInfoProvider, HttpPipelineRendererCacheProvider],
 }
 
 export const HttpPipelineRendererProvider: Provider<HttpPipelineRenderer> = {
@@ -156,16 +175,14 @@ export const HttpPipelineRendererProvider: Provider<HttpPipelineRenderer> = {
       }
     }
     if (errors.length) {
-      throw new HttpPipelineRendererFactoryError('Compatible renderers are configured, but none of them could render without error', errors)
+      throw new HttpPipelineRendererFactoryError(
+        'Compatible renderers are configured, but none of them could render without error',
+        errors,
+      )
     }
     throw new HttpPipelineRendererFactoryError('No compatible renderers are configured')
   },
   async: true,
-  deps: [
-    Injector,
-    CompatibleRenderers,
-  ],
-  providers: [
-    CompatibleRenderersProvider,
-  ],
+  deps: [Injector, CompatibleRenderers],
+  providers: [CompatibleRenderersProvider],
 }

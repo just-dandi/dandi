@@ -49,7 +49,6 @@ type KnownArgs<T> = { [TProp in keyof Args<T>]?: Args<T>[TProp] }
  * @internal
  */
 export class DandiInjector implements Injector, Disposable {
-
   public readonly context: DandiInjectorContext
 
   protected generator: InstanceGenerator
@@ -65,12 +64,13 @@ export class DandiInjector implements Injector, Disposable {
     providers: Registerable[],
   ) {
     if (parent) {
-      this.context = parent.context.createChild(scope,
+      this.context = parent.context.createChild(
+        scope,
         {
           provide: Injector,
           useValue: this,
         },
-        ...providers || [],
+        ...(providers || []),
       )
     }
     this.generatorReady = this.initGeneratorFactory(generatorFactory)
@@ -123,12 +123,14 @@ export class DandiInjector implements Injector, Disposable {
     const [originalReason, ...reasonStack] = reason.split('\n\t')
     reasonStack.unshift(`while ${getInjectionScopeVerb(this.scope)} ${getInjectionScopeName(this.scope)}`)
     const injectorReason = [originalReason, ...reasonStack].join('\n\t')
-    await Promise.all([...this.children].map((child) => {
-      if (Disposable.canDispose(child)) {
-        const prefix = reason.startsWith('Disposing parent Injector ') ? '' : 'Disposing parent Injector '
-        return child.dispose(`${prefix}${injectorReason}`)
-      }
-    }))
+    await Promise.all(
+      [...this.children].map((child) => {
+        if (Disposable.canDispose(child)) {
+          const prefix = reason.startsWith('Disposing parent Injector ') ? '' : 'Disposing parent Injector '
+          return child.dispose(`${prefix}${injectorReason}`)
+        }
+      }),
+    )
     this.children.clear()
     if (this.parent) {
       this.parent.children.delete(this)
@@ -147,16 +149,18 @@ export class DandiInjector implements Injector, Disposable {
     instance: TInstance,
     methodName: InstanceInvokableFn<TInstance, TResult>,
   ): Promise<TResult> {
-    const method: InvokableFn<TResult> = instance[methodName] as unknown as InvokableFn<TResult>
+    const method: InvokableFn<TResult> = (instance[methodName] as unknown) as InvokableFn<TResult>
     const meta = getInjectableMetadata(method)
-    const invokeTargetArgs = (meta.params && meta.params.length)
-      ? await Promise.all(meta.params.map(async param => {
-        const paramScope = new DependencyInjectionScope(instance, methodName as string, param.name)
-        const paramInjector = this.createChild(paramScope, param.providers)
-        return (await paramInjector.inject(param.token, param.optional))?.value
-      },
-      ))
-      : []
+    const invokeTargetArgs =
+      meta.params && meta.params.length
+        ? await Promise.all(
+            meta.params.map(async (param) => {
+              const paramScope = new DependencyInjectionScope(instance, methodName as string, param.name)
+              const paramInjector = this.createChild(paramScope, param.providers)
+              return (await paramInjector.inject(param.token, param.optional))?.value
+            }),
+          )
+        : []
     return await method.apply(instance, invokeTargetArgs)
   }
 
@@ -210,8 +214,7 @@ export class DandiInjector implements Injector, Disposable {
   }
 
   private async generateInstance<T>(resolverContext: ResolverContext<T>): Promise<T | T[]> {
-    this.generator || await this.generatorReady
+    this.generator || (await this.generatorReady)
     return await this.generator.generateInstance(this, resolverContext)
   }
-
 }

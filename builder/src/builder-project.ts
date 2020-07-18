@@ -10,9 +10,7 @@ import { PackageInfo } from './package-info'
 import { TsConfig, TsConfigCompilerOptions } from './ts-config'
 import { Util } from './util'
 
-export const DEFAULT_MANIFEST = [
-  '**/*.md',
-]
+export const DEFAULT_MANIFEST = ['**/*.md']
 
 export type DependencyMap = { [pkg: string]: string }
 
@@ -35,7 +33,6 @@ export const BUILDER_PROJECT_DEFAULTS: BuilderProjectOptions = {
 
 @Injectable()
 export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
-
   private readonly tsConfigPath: string
   private readonly baseTsConfigPath: string
   private readonly packagesPath: string
@@ -67,7 +64,6 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
     @Inject(Util) private util: Util,
     @Inject(Logger) private logger: Logger,
   ) {
-
     this.configFile = options.configFile || BUILDER_PROJECT_DEFAULTS.configFile
 
     this.configFilePath = resolve(process.cwd(), this.configFile)
@@ -87,9 +83,9 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
 
   public async discoverPackages(): Promise<PackageInfo[]> {
     this.logger.debug('discoverPackages')
-    this._packages = this.scopes ?
-      await this.findScopedPackages(this.packagesPath, this.scopes) :
-      await this.findPackages(this.packagesPath)
+    this._packages = this.scopes
+      ? await this.findScopedPackages(this.packagesPath, this.scopes)
+      : await this.findPackages(this.packagesPath)
     return this._packages
   }
 
@@ -105,7 +101,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
       this.updateProjectBuildTsConfig(packages),
       this.updatePackageConfigs(packages),
     ])
-    this.logger.info('Updated configurations for packages\n ', packages.map(info => info.fullName).join('\n  '))
+    this.logger.info('Updated configurations for packages\n ', packages.map((info) => info.fullName).join('\n  '))
   }
 
   public async updateProjectTsConfig(): Promise<void> {
@@ -126,7 +122,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
     const buildTsExtends = relative(this.projectPath, this.baseTsConfigPath)
     const buildTsExtendsPrefix = buildTsExtends.match(/^(?:\.?\/)/) ? '' : './'
     const buildTsConfig: TsConfig = {
-      extends: `${buildTsExtendsPrefix}${buildTsExtends }`,
+      extends: `${buildTsExtendsPrefix}${buildTsExtends}`,
       include: packages.reduce((result, pkg) => {
         result.push(
           relative(this.projectPath, resolve(pkg.path, 'index.ts')),
@@ -141,7 +137,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
         )
         return result
       }, []),
-      references: packages.map(pkg => ({
+      references: packages.map((pkg) => ({
         path: join(this.packagesDir, pkg.scope || '', pkg.name, this.buildTsConfigFileName),
       })),
     }
@@ -162,15 +158,13 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
       }),
     }
     await this.util.writeJson(this.baseTsConfigPath, baseTsConfig)
-
   }
 
   public async updatePackageConfigs(packages: PackageInfo[]): Promise<void> {
     this.logger.debug('updatePackageConfigs', packages)
-    await Promise.all(packages.map(info => Promise.all([
-      this.updatePackageTsConfig(info),
-      this.updatePackageBuildConfig(info),
-    ])))
+    await Promise.all(
+      packages.map((info) => Promise.all([this.updatePackageTsConfig(info), this.updatePackageBuildConfig(info)])),
+    )
   }
 
   public async npmCommand(args: string[], packages?: PackageInfo[]): Promise<void> {
@@ -179,30 +173,36 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
       packages = await this.discoverPackages()
     }
 
-    await this.util.spawnForPackages(packages, 'yarn', args.filter(arg => arg))
+    await this.util.spawnForPackages(
+      packages,
+      'yarn',
+      args.filter((arg) => arg),
+    )
   }
 
   public async yarnOutdated(): Promise<void> {
     this.logger.debug('yarnOutdated')
     const packages = await this.discoverPackages()
-    const outdated = await Promise.all(packages.map(async info => {
-      return {
-        name: info.fullName,
-        data: await (async () => {
-          try {
-            return await this.util.spawnForPackage(info, 'yarn', ['outdated'])
-          } catch (err) {
-            return err.message
-          }
-        })(),
-      }
-    }))
+    const outdated = await Promise.all(
+      packages.map(async (info) => {
+        return {
+          name: info.fullName,
+          data: await (async () => {
+            try {
+              return await this.util.spawnForPackage(info, 'yarn', ['outdated'])
+            } catch (err) {
+              return err.message
+            }
+          })(),
+        }
+      }),
+    )
     if (!outdated.length) {
       this.logger.info('All packages are up to date')
       return
     }
     this.logger.info('')
-    outdated.forEach(info => {
+    outdated.forEach((info) => {
       if (info.data) {
         this.logger.info(`${info.name}\n`, info.data)
       }
@@ -210,62 +210,65 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   }
 
   private async findScopedPackages(packagesPath: string, scopes: string[]): Promise<PackageInfo[]> {
-    return (await Promise.all(scopes.map(scope => this.findPackages(resolve(packagesPath, scope), scope))))
-      .reduce((result, packages) => result.concat(packages), [])
+    return (await Promise.all(scopes.map((scope) => this.findPackages(resolve(packagesPath, scope), scope)))).reduce(
+      (result, packages) => result.concat(packages),
+      [],
+    )
   }
 
   private async findPackages(packagesPath: string, scope?: string): Promise<PackageInfo[]> {
     const packageDirs = await readdir(packagesPath)
-    return Promise.all<PackageInfo>(packageDirs.map(async packageDir => {
+    return Promise.all<PackageInfo>(
+      packageDirs.map(async (packageDir) => {
+        const packagePath = resolve(packagesPath, packageDir)
+        const packageConfigPath = resolve(packagePath, 'package.json')
+        const tsConfigPath = resolve(packagePath, 'tsconfig.json')
+        const buildTsConfigPath = resolve(packagePath, this.buildTsConfigFileName)
+        const buildTsConfig: any = {}
+        const outPath = resolve(this.projectPath, this.tsConfig.compilerOptions.outDir, scope, packageDir)
 
-      const packagePath = resolve(packagesPath, packageDir)
-      const packageConfigPath = resolve(packagePath, 'package.json')
-      const tsConfigPath = resolve(packagePath, 'tsconfig.json')
-      const buildTsConfigPath = resolve(packagePath, this.buildTsConfigFileName)
-      const buildTsConfig: any = {}
-      const outPath = resolve(this.projectPath, this.tsConfig.compilerOptions.outDir, scope, packageDir)
+        const [packageConfig, tsConfig, manifest, subPackages] = await Promise.all([
+          this.util.readJson<Package>(packageConfigPath),
+          this.util.readJson<TsConfig>(tsConfigPath, {}),
+          this.loadPackageManifest(packagePath),
+          this.findSubPackages(packagePath),
+        ])
 
-      const [
-        packageConfig,
-        tsConfig,
-        manifest,
-        subPackages,
-      ] = await Promise.all([
-        this.util.readJson<Package>(packageConfigPath),
-        this.util.readJson<TsConfig>(tsConfigPath, {}),
-        this.loadPackageManifest(packagePath),
-        this.findSubPackages(packagePath),
-      ])
+        const projectDependencies = Object.keys(packageConfig.peerDependencies).filter(
+          (dep) => this.scopes && this.scopes.find((scope) => dep.startsWith(`@${scope}/`)),
+        )
 
-      const projectDependencies = Object.keys(packageConfig.peerDependencies)
-        .filter(dep => this.scopes && this.scopes.find(scope => dep.startsWith(`@${scope}/`)))
+        return {
+          path: resolve(packagesPath, packageDir),
+          name: packageDir,
+          scope,
+          fullName: scope ? `@${scope}/${packageDir}` : packageDir,
 
-      return {
-        path: resolve(packagesPath, packageDir),
-        name: packageDir,
-        scope,
-        fullName: scope ? `@${scope}/${packageDir}` : packageDir,
+          packageConfigPath,
+          packageConfig,
 
-        packageConfigPath,
-        packageConfig,
+          projectDependencies,
 
-        projectDependencies,
+          tsConfigPath,
+          tsConfig,
 
-        tsConfigPath,
-        tsConfig,
+          buildTsConfigPath,
+          buildTsConfig,
 
-        buildTsConfigPath,
-        buildTsConfig,
-
-        outPath,
-        manifest,
-        subPackages,
-      }
-    }))
+          outPath,
+          manifest,
+          subPackages,
+        }
+      }),
+    )
   }
 
   private async findSubPackages(packagePath: string): Promise<string[]> {
-    const configs = await this.util.glob('*/**/+(tsconfig.json|.builderinclude)', { cwd: packagePath, ignore: 'node_modules/**', dot: true })
+    const configs = await this.util.glob('*/**/+(tsconfig.json|.builderinclude)', {
+      cwd: packagePath,
+      ignore: 'node_modules/**',
+      dot: true,
+    })
     if (!configs.length) {
       return undefined
     }
@@ -278,10 +281,14 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
     if (await pathExists(manifestPath)) {
       globs.push(...(await readFile(manifestPath, 'utf-8')).split('\n'))
     }
-    const results = await Promise.all(globs.map(glob => this.util.glob(glob, {
-      cwd: packagePath,
-      ignore: 'node_modules/**',
-    })))
+    const results = await Promise.all(
+      globs.map((glob) =>
+        this.util.glob(glob, {
+          cwd: packagePath,
+          ignore: 'node_modules/**',
+        }),
+      ),
+    )
     return results.reduce((result, globResults) => {
       result.push(...globResults)
       return result
@@ -297,9 +304,8 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   }
 
   private async updatePackageBuildConfig(info: PackageInfo): Promise<PackageInfo> {
-
     if (info.packageConfig.peerDependencies) {
-      info.projectDependencies.forEach(dep => {
+      info.projectDependencies.forEach((dep) => {
         if (!info.buildTsConfig.references) {
           info.buildTsConfig.references = []
         }
@@ -308,26 +314,16 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
       })
     }
     info.buildTsConfig.extends = relative(info.path, this.baseTsConfigPath)
-    info.buildTsConfig.include = [
-      'index.ts',
-      'src/**/*',
-    ]
+    info.buildTsConfig.include = ['index.ts', 'src/**/*']
     if (info.subPackages) {
       info.subPackages.reduce((include, packageDir) => {
-        include.push(
-          join(packageDir, 'index.ts'),
-          join(packageDir, 'src/**/*'),
-        )
+        include.push(join(packageDir, 'index.ts'), join(packageDir, 'src/**/*'))
         return include
       }, info.buildTsConfig.include)
     }
-    info.buildTsConfig.exclude = [
-      'node_modules',
-      '**/*.spec.ts',
-    ]
+    info.buildTsConfig.exclude = ['node_modules', '**/*.spec.ts']
     await this.util.writeJson(info.buildTsConfigPath, info.buildTsConfig)
 
     return info
   }
-
 }

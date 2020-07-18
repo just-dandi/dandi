@@ -19,18 +19,13 @@ export interface MvcViewModule extends Array<any> {
 }
 
 export class MvcViewModuleBuilder extends ModuleBuilder<MvcViewModuleBuilder> {
-
   private rendererRegistered = false
 
   constructor(...entries: Registerable[]) {
     super(MvcViewModuleBuilder, localToken.PKG, ...entries)
   }
 
-  public engine(
-    extension: string,
-    engineInfo: ConfiguredViewEngine,
-    priority?: number,
-  ): this {
+  public engine(extension: string, engineInfo: ConfiguredViewEngine, priority?: number): this {
     const engine = Array.isArray(engineInfo) ? engineInfo[0] : engineInfo
     if (!this.rendererRegistered) {
       this.add(MvcViewRenderer)

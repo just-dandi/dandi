@@ -39,7 +39,7 @@ export class ListController {
   public async getList(
     @PathParam(Uuid)
     @AccessorResourceId()
-      listId: Uuid,
+    listId: Uuid,
   ): Promise<ListResource> {
     return new ListResource(await this.listManager.getList(listId))
   }
@@ -49,7 +49,7 @@ export class ListController {
   public listTasks(
     @PathParam(Uuid)
     @AccessorResourceId(List)
-      listId: Uuid,
+    listId: Uuid,
   ): Promise<Task[]> {
     return this.listManager.getAllTasks(listId)
   }

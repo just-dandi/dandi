@@ -19,8 +19,7 @@ export function getTokenString(token: InjectionToken<any> | Function): string {
   if (typeof token === 'function') {
     return token.name
   }
-  return ((isMappedInjectionToken(token) ? token.provide : token) || 'undefined')
-    .toString()
-    // .replace(/[\W-]+/g, '_')
-    // .replace(/_$/, '')
+  return ((isMappedInjectionToken(token) ? token.provide : token) || 'undefined').toString()
+  // .replace(/[\W-]+/g, '_')
+  // .replace(/_$/, '')
 }

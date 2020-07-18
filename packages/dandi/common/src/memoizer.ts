@@ -1,7 +1,6 @@
 import { Constructor } from '@dandi/common'
 
 export class Memoizer<T = any> {
-
   protected readonly trackedObjs = new Set<T>()
   protected readonly memos = new Map<Constructor, Map<string, Set<T>>>()
 
@@ -30,7 +29,7 @@ export class Memoizer<T = any> {
       return obj
     }
 
-    const existing = [...instances.values()].find(inst => keys.every(key => inst[key] === obj[key]))
+    const existing = [...instances.values()].find((inst) => keys.every((key) => inst[key] === obj[key]))
     if (existing) {
       return existing
     }

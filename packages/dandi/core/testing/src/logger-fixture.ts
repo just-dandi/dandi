@@ -4,7 +4,7 @@ import { MODIFIER_KEYS } from '@dandi/core/internal/util'
 import { stub } from 'sinon'
 
 export function createLoggerMethodChain(logAction: (options: LogCallOptions, ...args: any[]) => void): LoggerMethod {
-  MODIFIER_KEYS.forEach(key => {
+  MODIFIER_KEYS.forEach((key) => {
     const chains = {}
     Object.defineProperty(logAction, key, {
       get: () => {
@@ -19,7 +19,6 @@ export function createLoggerMethodChain(logAction: (options: LogCallOptions, ...
 }
 @Injectable(Logger)
 export class LoggerFixture implements Logger {
-
   private readonly debugStub: LoggerMethod = createLoggerMethodChain(stub())
   public get debug(): LoggerMethod {
     return this.debugStub
@@ -44,5 +43,4 @@ export class LoggerFixture implements Logger {
   public get trace(): LoggerMethod {
     return this.traceStub
   }
-
 }

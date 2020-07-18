@@ -16,7 +16,7 @@ export class TaskController {
   public async getTask(
     @PathParam(Uuid)
     @AccessorResourceId()
-      taskId: Uuid,
+    taskId: Uuid,
   ): Promise<TaskResource> {
     return new TaskResource(await this.taskManager.getTask(taskId))
   }

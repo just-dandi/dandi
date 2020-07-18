@@ -39,8 +39,5 @@ function corsOriginWhitelistFactory(
 export const CorsOriginWhitelistProvider: Provider<CorsAllowOrigin> = {
   provide: CorsAllowOrigin,
   useFactory: corsOriginWhitelistFactory,
-  deps: [
-    CorsOriginWhitelist,
-    HttpRequestHeadersAccessor,
-  ],
+  deps: [CorsOriginWhitelist, HttpRequestHeadersAccessor],
 }

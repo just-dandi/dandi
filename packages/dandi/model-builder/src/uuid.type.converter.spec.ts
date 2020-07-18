@@ -28,9 +28,7 @@ describe('UuidTypeConverter', () => {
     })
 
     it('throws a TypeConversionError if the value is not a valid uuid', () => {
-      const value = Uuid.create()
-        .toString()
-        .substring(10)
+      const value = Uuid.create().toString().substring(10)
       expect(() => validator.convert(value)).to.throw(TypeConversionError)
     })
   })

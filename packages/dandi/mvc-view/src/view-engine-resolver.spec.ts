@@ -8,7 +8,6 @@ import { expect } from 'chai'
 import { createStubInstance, SinonStub, SinonStubbedInstance } from 'sinon'
 
 describe('ViewEngineResolver', () => {
-
   let exists: SinonStub
   let logger: LoggerFixture
   let configA: any
@@ -55,7 +54,7 @@ describe('ViewEngineResolver', () => {
     configs = [configA, configB, configC, configD, configE, configF]
     injector = createStubInstance(DandiInjector)
 
-    viewResolver = new ViewEngineResolver(logger, configs, injector as unknown as Injector)
+    viewResolver = new ViewEngineResolver(logger, configs, (injector as unknown) as Injector)
   })
   afterEach(() => {
     exists.restore()
@@ -78,14 +77,7 @@ describe('ViewEngineResolver', () => {
     })
 
     it('sorts the configurations by ascending priority, then ascending index', () => {
-      expect(configs).to.deep.equal([
-        configD,
-        configF,
-        configE,
-        configA,
-        configB,
-        configC,
-      ])
+      expect(configs).to.deep.equal([configD, configF, configE, configA, configB, configC])
     })
 
     it('it logs a warning when encountering configurations with duplicate extensions, and marks the config as ignored', () => {

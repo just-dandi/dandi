@@ -11,10 +11,12 @@ export interface ViewEngineConfig {
   priority?: number
 }
 
-export const ViewEngineConfig: InjectionToken<ViewEngineConfig> =
-  localToken.opinionated<ViewEngineConfig>('ViewEngineConfig', {
+export const ViewEngineConfig: InjectionToken<ViewEngineConfig> = localToken.opinionated<ViewEngineConfig>(
+  'ViewEngineConfig',
+  {
     multi: true,
-  })
+  },
+)
 
 export type ViewEngineHttpStatusErrorConfig = { [TKey in HttpStatusCode]?: string }
 
@@ -22,27 +24,29 @@ export interface ViewEngineDefaultErrorTemplateConfig {
   default: string
 }
 
-export type ViewEngineErrorTemplateConfig = ViewEngineHttpStatusErrorConfig & Partial<ViewEngineDefaultErrorTemplateConfig>
+export type ViewEngineErrorTemplateConfig = ViewEngineHttpStatusErrorConfig &
+  Partial<ViewEngineDefaultErrorTemplateConfig>
 
 export interface ViewEngineErrorConfig {
   templates?: ViewEngineErrorTemplateConfig
 }
 
-export const DefaultViewEngineErrorConfig: ViewEngineErrorConfig = {
-}
+export const DefaultViewEngineErrorConfig: ViewEngineErrorConfig = {}
 
-export const ViewEngineErrorConfig: InjectionToken<ViewEngineErrorConfig> =
-  localToken.opinionated<ViewEngineErrorConfig>('ViewEngineErrorConfig', {
-    multi: true,
-  })
+export const ViewEngineErrorConfig: InjectionToken<ViewEngineErrorConfig> = localToken.opinionated<
+  ViewEngineErrorConfig
+>('ViewEngineErrorConfig', {
+  multi: true,
+})
 
 /**
  * @internal
  */
-export const ViewEngineMergedErrorConfig: InjectionToken<ViewEngineErrorConfig> =
-  localToken.opinionated<ViewEngineErrorConfig>('ViewEngineMergedErrorConfig', {
-    multi: false,
-  })
+export const ViewEngineMergedErrorConfig: InjectionToken<ViewEngineErrorConfig> = localToken.opinionated<
+  ViewEngineErrorConfig
+>('ViewEngineMergedErrorConfig', {
+  multi: false,
+})
 
 function viewEngineMergedErrorConfigFactory(configs: ViewEngineErrorConfig[]): ViewEngineErrorConfig {
   return configs.reduce((merged, config) => {

@@ -29,7 +29,6 @@ const MUTEXES = new Map<any, AsyncMutex<any>>()
 const DISPOSED_ERROR = 'The lock request was rejected because the underlying mutex was disposed'
 
 export class AsyncMutex<T extends object> implements Disposable {
-
   public static for<T extends object>(obj: T): AsyncMutex<T> {
     let mutex = MUTEXES.get(obj)
     if (!mutex) {
@@ -53,7 +52,7 @@ export class AsyncMutex<T extends object> implements Disposable {
 
   public async getLock(): Promise<LockedObject<T>> {
     let release: Function
-    const released = new Promise<void>(resolve => release = resolve)
+    const released = new Promise<void>((resolve) => (release = resolve))
     const lock = lockedObject<T>(this.lockObject, released, () => {
       if (release) {
         if (this.locks[0] !== lock) {
@@ -93,5 +92,4 @@ export class AsyncMutex<T extends object> implements Disposable {
       Disposable.remapDisposed(this, reason)
     }
   }
-
 }

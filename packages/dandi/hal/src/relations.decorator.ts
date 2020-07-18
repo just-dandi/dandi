@@ -2,8 +2,9 @@ import { Constructor } from '@dandi/common'
 
 import { ResourceMetadata, getResourceMetadata, RESOURCE_META_KEY } from './resource.metadata'
 
-export function Relations(forModel: Constructor): any { // use any return type because Constructor<any> is no assignable to TFunction?
-  return function(target: Constructor): void {
+export function Relations(forModel: Constructor): any {
+  // use any return type because Constructor<any> is no assignable to TFunction?
+  return function (target: Constructor): void {
     // super simple hack: use an object reference to link the target's relation metadata to the decorated class
     const existingMeta = Reflect.get(target, RESOURCE_META_KEY) as ResourceMetadata
     const meta = getResourceMetadata(forModel)

@@ -56,7 +56,6 @@ export function consoleLogListenerConfigProvider(config: ConsoleLogListenerConfi
 }
 
 export class ConsoleLogListenerConfigProvider implements ValueProvider<ConsoleLogListenerConfig> {
-
   private readonly config: ConsoleLogListenerConfig
 
   public readonly provide = ConsoleLogListenerConfig
@@ -77,5 +76,4 @@ export class ConsoleLogListenerConfigProvider implements ValueProvider<ConsoleLo
   public clone(): ConsoleLogListenerConfigProvider {
     return new ConsoleLogListenerConfigProvider(this.config)
   }
-
 }

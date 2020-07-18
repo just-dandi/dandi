@@ -18,10 +18,6 @@ async function httpRequestBodySourceFactory(
 export const HttpRequestBodySourceProvider: Provider<string | object> = {
   provide: HttpRequestBodySource,
   useFactory: httpRequestBodySourceFactory,
-  deps: [
-    HttpBodyParser,
-    HttpRequestRawBody,
-    HttpRequestHeadersAccessor,
-  ],
+  deps: [HttpBodyParser, HttpRequestRawBody, HttpRequestHeadersAccessor],
   async: true,
 }

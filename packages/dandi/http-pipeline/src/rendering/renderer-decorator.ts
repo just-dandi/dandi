@@ -1,11 +1,5 @@
 import { Constructor, getMetadata } from '@dandi/common'
-import {
-  ClassProvider,
-  InjectionToken,
-  Injector,
-  Provider,
-  RegistrationSource,
-} from '@dandi/core'
+import { ClassProvider, InjectionToken, Injector, Provider, RegistrationSource } from '@dandi/core'
 import { Repository } from '@dandi/core/internal'
 import { HttpRequestScope, MimeTypeInfo, parseMimeTypes } from '@dandi/http'
 
@@ -35,8 +29,9 @@ export const RendererInfo: InjectionToken<RendererInfo[]> = localOpinionatedToke
 export const RendererInfoProvider: Provider<RendererInfo[]> = {
   provide: RendererInfo,
   useFactory(injector: Injector) {
-    const rendererEntries = [...Repository.for(Renderer).providers as IterableIterator<ClassProvider<HttpPipelineRenderer>>]
-      .filter(entry => injector.canResolve(entry.useClass))
+    const rendererEntries = [
+      ...(Repository.for(Renderer).providers as IterableIterator<ClassProvider<HttpPipelineRenderer>>),
+    ].filter((entry) => injector.canResolve(entry.useClass))
     return rendererEntries.map((entry: ClassProvider<HttpPipelineRenderer>) => {
       return {
         constructor: entry.useClass,
@@ -44,9 +39,7 @@ export const RendererInfoProvider: Provider<RendererInfo[]> = {
       }
     })
   },
-  deps: [
-    Injector,
-  ],
+  deps: [Injector],
 }
 
 export function getRendererMetadata(target: Constructor<HttpPipelineRenderer>): RendererMetadata {

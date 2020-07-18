@@ -15,7 +15,5 @@ export const HttpRequestRawBodyProvider = {
   useFactory(req: HttpRequest) {
     return req.body
   },
-  deps: [
-    HttpRequest,
-  ],
+  deps: [HttpRequest],
 }

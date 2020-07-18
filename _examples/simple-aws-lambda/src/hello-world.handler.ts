@@ -4,12 +4,10 @@ import { QueryParam } from '@dandi/http-model'
 
 @Injectable()
 export class HelloWorldHandler implements LambdaHandler {
-
   public handleEvent(@QueryParam(Number) foo: string): any {
     return {
       message: 'hello!',
       foo,
     }
   }
-
 }

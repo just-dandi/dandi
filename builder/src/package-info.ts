@@ -21,5 +21,4 @@ export interface PackageInfo {
 
   manifest?: string[]
   subPackages?: string[]
-
 }

@@ -16,7 +16,6 @@ import { LambdaEventTransformer } from './lambda-event-transformer'
 
 @Injectable(LambdaEventTransformer)
 export class HttpEventTransformer implements LambdaEventTransformer<APIGatewayProxyEvent> {
-
   public transform(event: APIGatewayProxyEvent): Provider<any>[] {
     const providers: Provider<any>[] = []
 
@@ -72,14 +71,13 @@ export class HttpEventTransformer implements LambdaEventTransformer<APIGatewayPr
     if (!event.queryStringParameters) {
       return {}
     }
-    return Object.keys(event.queryStringParameters)
-      .reduce((result, key) => {
-        if (event.multiValueQueryStringParameters[key].length > 1) {
-          result[key] = [...event.multiValueQueryStringParameters[key]]
-        } else {
-          result[key] = event.queryStringParameters[key]
-        }
-        return result
-      }, {})
+    return Object.keys(event.queryStringParameters).reduce((result, key) => {
+      if (event.multiValueQueryStringParameters[key].length > 1) {
+        result[key] = [...event.multiValueQueryStringParameters[key]]
+      } else {
+        result[key] = event.queryStringParameters[key]
+      }
+      return result
+    }, {})
   }
 }

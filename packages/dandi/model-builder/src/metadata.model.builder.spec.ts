@@ -459,11 +459,7 @@ describe('MetadataModelBuilder', () => {
 
         spy(builder as any, 'constructMemberInternal')
 
-        primitiveTypeValidator.convert
-          .onFirstCall()
-          .throws(new Error('Not a number'))
-          .onSecondCall()
-          .returnsArg(0)
+        primitiveTypeValidator.convert.onFirstCall().throws(new Error('Not a number')).onSecondCall().returnsArg(0)
 
         expect(builder.constructMember(meta, 'prop', 'foo')).to.equal('foo')
         expect((builder as any).constructMemberInternal).to.have.been.calledThrice

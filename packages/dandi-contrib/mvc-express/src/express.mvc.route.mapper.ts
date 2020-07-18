@@ -38,10 +38,7 @@ export class ExpressMvcRouteMapper implements RouteMapper {
 
     if (route.cors && !this.corsRoutes.has(route.path)) {
       const corsConfig = hasCorsConfig(route.cors) ? route.cors : undefined
-      if (
-        !hasCorsConfig(route.cors) ||
-        (route.httpMethod !== HttpMethod.options)
-      ) {
+      if (!hasCorsConfig(route.cors) || route.httpMethod !== HttpMethod.options) {
         this.logger.debug(
           'mapping route',
           HttpMethod.options.toUpperCase(),

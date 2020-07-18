@@ -19,15 +19,15 @@ function reducer(result: Registerable[], entry: RepositoryEntry<any>): Registera
 
 @Injectable(Scanner)
 export class AmbientInjectableScanner implements Scanner {
-
   constructor(@Inject(Logger) private logger: Logger) {}
 
   public async scan(): Promise<Registerable[]> {
     const globalRepo = Repository.for(GLOBAL_SCOPE)
 
     this.logger.debug('Registering injectables with global repository')
-    INJECTABLE_REGISTRATION_DATA.forEach(({ target, providerOptions}) =>
-      globalRepo.register(INJECTABLE_REGISTRATION_SOURCE, target, providerOptions))
+    INJECTABLE_REGISTRATION_DATA.forEach(({ target, providerOptions }) =>
+      globalRepo.register(INJECTABLE_REGISTRATION_SOURCE, target, providerOptions),
+    )
 
     this.logger.debug('Adding providers from global repository')
     const entries: RepositoryEntry<any>[] = [...globalRepo.providers]

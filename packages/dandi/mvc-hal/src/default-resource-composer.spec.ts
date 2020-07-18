@@ -15,13 +15,7 @@ import { PathParam } from '@dandi/http-model'
 import { HttpRequestInfo } from '@dandi/http-pipeline'
 import { Property } from '@dandi/model'
 import { ModelBuilder } from '@dandi/model-builder'
-import {
-  Controller,
-  DandiRouteInitializer,
-  HttpGet,
-  Route,
-  Routes,
-} from '@dandi/mvc'
+import { Controller, DandiRouteInitializer, HttpGet, Route, Routes } from '@dandi/mvc'
 import {
   AccessorResourceId,
   CompositionContext,
@@ -36,13 +30,11 @@ import { expect } from 'chai'
 import { createStubInstance, stub } from 'sinon'
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
-describe('DefaultResourceComposer', function() {
-
+describe('DefaultResourceComposer', function () {
   const harness = testHarness(DefaultResourceComposer, DandiRouteInitializer)
 
-  describe('compose', function() {
-
-    it('adds the self link on models with no other relations', async function() {
+  describe('compose', function () {
+    it('adds the self link on models with no other relations', async function () {
       class TestModel {
         constructor(id?: number) {
           this.id = id
@@ -59,7 +51,7 @@ describe('DefaultResourceComposer', function() {
         getModel(
           @PathParam(Number)
           @AccessorResourceId()
-            id,
+          id,
         ): Promise<TestModel> {
           return null
         }
@@ -81,16 +73,13 @@ describe('DefaultResourceComposer', function() {
 
       const requestInjector = harness.createChild(HttpRequestScope, TestController, routes)
       const composer = await requestInjector.inject(ResourceComposer)
-      const result = await composer.compose(
-        new TestModel(42),
-        CompositionContext.for('self', '/test/42', []),
-      )
+      const result = await composer.compose(new TestModel(42), CompositionContext.for('self', '/test/42', []))
 
       expect(result.getLink(SELF_RELATION)).to.exist
       expect(result.getLink(SELF_RELATION)).to.include({ href: '/test/42' })
     })
 
-    it('adds self link on models with no relations and no identifier', async function() {
+    it('adds self link on models with no relations and no identifier', async function () {
       class TestModel {
         constructor() {}
       }
@@ -120,16 +109,13 @@ describe('DefaultResourceComposer', function() {
 
       const requestInjector = harness.createChild(HttpRequestScope, TestController, routes)
       const composer = await requestInjector.inject(ResourceComposer)
-      const result = await composer.compose(
-        new TestModel(),
-        CompositionContext.for('self', '/test', []),
-      )
+      const result = await composer.compose(new TestModel(), CompositionContext.for('self', '/test', []))
 
       expect(result.getLink(SELF_RELATION)).to.exist
       expect(result.getLink(SELF_RELATION)).to.include({ href: '/test' })
     })
 
-    it('adds self link on models with relations, but no identifier', async function() {
+    it('adds self link on models with relations, but no identifier', async function () {
       class Resource {
         @ResourceId()
         resourceId: number
@@ -161,7 +147,7 @@ describe('DefaultResourceComposer', function() {
         getResource(
           @PathParam(Number)
           @AccessorResourceId()
-            resourceId,
+          resourceId,
         ): any {}
       }
 
@@ -181,16 +167,13 @@ describe('DefaultResourceComposer', function() {
 
       const requestInjector = harness.createChild(HttpRequestScope, IndexController, routes)
       const composer = await requestInjector.inject(ResourceComposer)
-      const result = await composer.compose(
-        new Index(),
-        CompositionContext.for('self', '/index', []),
-      )
+      const result = await composer.compose(new Index(), CompositionContext.for('self', '/index', []))
 
       expect(result.getLink(SELF_RELATION)).to.exist
       expect(result.getLink(SELF_RELATION)).to.include({ href: '/index' })
     })
 
-    it('adds links for non-array relations specified by the @Relation() decorator', async function() {
+    it('adds links for non-array relations specified by the @Relation() decorator', async function () {
       class TestModelParent {
         constructor(id?: number) {
           this.id = id
@@ -222,7 +205,7 @@ describe('DefaultResourceComposer', function() {
         getModel(
           @PathParam(Number)
           @AccessorResourceId()
-            id,
+          id,
         ): Promise<TestModel> {
           return null
         }
@@ -234,7 +217,7 @@ describe('DefaultResourceComposer', function() {
         getModelParent(
           @PathParam(Number)
           @AccessorResourceId()
-            id,
+          id,
         ): Promise<TestModelParent> {
           return null
         }
@@ -264,18 +247,14 @@ describe('DefaultResourceComposer', function() {
 
       const requestInjector = harness.createChild(HttpRequestScope, TestController, routes)
       const composer = await requestInjector.inject(ResourceComposer)
-      const result = await composer.compose(
-        new TestModel(42, 7),
-        CompositionContext.for('self', '/test/42', []),
-      )
+      const result = await composer.compose(new TestModel(42, 7), CompositionContext.for('self', '/test/42', []))
 
       expect(result.links).to.have.keys('self', 'parent')
       expect(result.getLink('self')).to.include({ href: '/test/42' })
       expect(result.getLink('parent')).to.include({ href: '/parent/7' })
     })
 
-    it('adds links for array relations specified by the @ListRelation() decorator', async function() {
-
+    it('adds links for array relations specified by the @ListRelation() decorator', async function () {
       class TestModelParent {
         constructor(id?: number) {
           this.id = id
@@ -296,7 +275,6 @@ describe('DefaultResourceComposer', function() {
         @ResourceId(TestModelParent, 'parent')
         @Property(Number)
         public parentId: number
-
       }
 
       @Relations(TestModelParent)
@@ -318,7 +296,7 @@ describe('DefaultResourceComposer', function() {
         getModel(
           @PathParam(Number)
           @AccessorResourceId()
-            id,
+          id,
         ): Promise<TestModel> {
           return null
         }
@@ -331,7 +309,7 @@ describe('DefaultResourceComposer', function() {
         getModelParent(
           @PathParam(Number)
           @AccessorResourceId()
-            id,
+          id,
         ): Promise<TestModelParent> {
           return null
         }
@@ -341,7 +319,7 @@ describe('DefaultResourceComposer', function() {
         listChildren(
           @PathParam(Number)
           @AccessorResourceId(TestModelParent)
-            id,
+          id,
         ): Promise<TestModel[]> {
           return null
         }
@@ -379,17 +357,14 @@ describe('DefaultResourceComposer', function() {
 
       const requestInjector = harness.createChild(HttpRequestScope, TestController, routes)
       const composer = await requestInjector.inject(ResourceComposer)
-      const result = await composer.compose(
-        new TestModelParent(42),
-        CompositionContext.for('self', '/parent/42', []),
-      )
+      const result = await composer.compose(new TestModelParent(42), CompositionContext.for('self', '/parent/42', []))
 
       expect(result.links).to.have.keys('self', 'children')
       expect(result.getLink('self')).to.include({ href: '/parent/42' })
       expect(result.getLink('children')).to.include({ href: '/parent/42/test-model' })
     })
 
-    it('embeds links for non-array relations', async function() {
+    it('embeds links for non-array relations', async function () {
       class TestModelParent {
         constructor(id?: number) {
           this.id = id
@@ -422,7 +397,7 @@ describe('DefaultResourceComposer', function() {
         getModel(
           @PathParam(Number)
           @AccessorResourceId()
-            id,
+          id,
         ): Promise<TestModel> {
           return null
         }
@@ -435,7 +410,7 @@ describe('DefaultResourceComposer', function() {
         getModelParent(
           @PathParam(Number)
           @AccessorResourceId()
-            id,
+          id,
         ): Promise<TestModelParent> {
           return Promise.resolve(new TestModelParent(id))
         }
@@ -485,24 +460,15 @@ describe('DefaultResourceComposer', function() {
         },
       }
 
-      const requestInjector = harness.createChild(HttpRequestScope,
-        TestController,
-        routes,
-        request,
-        requestInfo,
-        {
-          provide: ModelBuilder,
-          useValue: {
-            constructModel: stub().returnsArg(1),
-            constructMember: stub().returnsArg(2),
-          },
+      const requestInjector = harness.createChild(HttpRequestScope, TestController, routes, request, requestInfo, {
+        provide: ModelBuilder,
+        useValue: {
+          constructModel: stub().returnsArg(1),
+          constructMember: stub().returnsArg(2),
         },
-      )
+      })
       const composer = await requestInjector.inject(ResourceComposer)
-      const result = await composer.compose(
-        new TestModel(42, 7),
-        CompositionContext.for('self', 'test/42', ['parent']),
-      )
+      const result = await composer.compose(new TestModel(42, 7), CompositionContext.for('self', 'test/42', ['parent']))
 
       expect(result.embedded).to.have.keys('parent')
       const embeddedParent = result.getEmbedded('parent') as ComposedResource<any>
@@ -510,10 +476,9 @@ describe('DefaultResourceComposer', function() {
       expect(embeddedParent).to.be.instanceOf(ComposedResource)
       expect(embeddedParent.entity).to.be.instanceOf(TestModelParent)
       expect(embeddedParent.entity.id).to.equal(7)
-
     })
 
-    it('embeds links for array relations', async function() {
+    it('embeds links for array relations', async function () {
       class TestModel {
         constructor(id?: number) {
           this.id = id
@@ -542,7 +507,7 @@ describe('DefaultResourceComposer', function() {
         getModel(
           @PathParam(Number)
           @AccessorResourceId()
-            id,
+          id,
         ): Promise<TestModel> {
           return null
         }
@@ -555,7 +520,7 @@ describe('DefaultResourceComposer', function() {
         getModelParent(
           @PathParam(Number)
           @AccessorResourceId()
-            id,
+          id,
         ): Promise<TestModelParent> {
           return null
         }
@@ -565,7 +530,7 @@ describe('DefaultResourceComposer', function() {
         listChildren(
           @PathParam(Number)
           @AccessorResourceId(TestModelParent)
-            id,
+          id,
         ): Promise<TestModel[]> {
           return Promise.resolve([
             new TestModel(1),
@@ -629,19 +594,13 @@ describe('DefaultResourceComposer', function() {
         },
       }
 
-      const requestInjector = harness.createChild(HttpRequestScope,
-        TestController,
-        routes,
-        request,
-        requestInfo,
-        {
-          provide: ModelBuilder,
-          useValue: {
-            constructModel: stub().returnsArg(1),
-            constructMember: stub().returnsArg(2),
-          },
+      const requestInjector = harness.createChild(HttpRequestScope, TestController, routes, request, requestInfo, {
+        provide: ModelBuilder,
+        useValue: {
+          constructModel: stub().returnsArg(1),
+          constructMember: stub().returnsArg(2),
         },
-      )
+      })
 
       const composer = await requestInjector.inject(ResourceComposer)
       const result = await composer.compose(
@@ -667,7 +626,7 @@ describe('DefaultResourceComposer', function() {
       ])
     })
 
-    it('embeds nested links for non-array relations', async function() {
+    it('embeds nested links for non-array relations', async function () {
       class LevelOneModel {
         constructor(id?: number) {
           this.id = id
@@ -716,7 +675,7 @@ describe('DefaultResourceComposer', function() {
         async getLevelOneModel(
           @PathParam(Number)
           @AccessorResourceId()
-            id,
+          id,
         ): Promise<LevelOneModel> {
           return new LevelOneModel(id)
         }
@@ -729,7 +688,7 @@ describe('DefaultResourceComposer', function() {
         async getLevelTwoModel(
           @PathParam(Number)
           @AccessorResourceId()
-            id,
+          id,
         ): Promise<LevelTwoModel> {
           return new LevelTwoModel(id, id * 2)
         }
@@ -742,7 +701,7 @@ describe('DefaultResourceComposer', function() {
         async getLevelThreeModel(
           @PathParam(Number)
           @AccessorResourceId()
-            id,
+          id,
         ): Promise<LevelThreeModel> {
           return new LevelThreeModel(id, id * 2)
         }
@@ -800,7 +759,8 @@ describe('DefaultResourceComposer', function() {
         },
       }
 
-      const requestInjector = harness.createChild(HttpRequestScope,
+      const requestInjector = harness.createChild(
+        HttpRequestScope,
         LevelOneController,
         LevelTwoController,
         LevelThreeController,
@@ -835,7 +795,7 @@ describe('DefaultResourceComposer', function() {
       expect(embeddedRoot.entity.id).to.equal(84)
     })
 
-    it('embeds nested links for array relations', async function() {
+    it('embeds nested links for array relations', async function () {
       class OtherModel {
         constructor(id?: number) {
           this.id = id
@@ -894,7 +854,7 @@ describe('DefaultResourceComposer', function() {
         async getOther(
           @PathParam(Number)
           @AccessorResourceId()
-            id,
+          id,
         ): Promise<OtherModel> {
           return new OtherModel(id)
         }
@@ -907,7 +867,7 @@ describe('DefaultResourceComposer', function() {
         async getModel(
           @PathParam(Number)
           @AccessorResourceId()
-            id,
+          id,
         ): Promise<TestModel> {
           return new TestModel(id, id * 2)
         }
@@ -920,7 +880,7 @@ describe('DefaultResourceComposer', function() {
         async getModelParent(
           @PathParam(Number)
           @AccessorResourceId()
-            id,
+          id,
         ): Promise<TestModelParent> {
           return new TestModelParent(id)
         }
@@ -930,7 +890,7 @@ describe('DefaultResourceComposer', function() {
         listChildren(
           @PathParam(Number)
           @AccessorResourceId(TestModelParent)
-            id,
+          id,
         ): Promise<TestModel[]> {
           return Promise.resolve([
             new TestModel(1, 1, 2),
@@ -1002,19 +962,13 @@ describe('DefaultResourceComposer', function() {
         },
       }
 
-      const requestInjector = harness.createChild(HttpRequestScope,
-        TestController,
-        routes,
-        request,
-        requestInfo,
-        {
-          provide: ModelBuilder,
-          useValue: {
-            constructModel: stub().returnsArg(1),
-            constructMember: stub().returnsArg(2),
-          },
+      const requestInjector = harness.createChild(HttpRequestScope, TestController, routes, request, requestInfo, {
+        provide: ModelBuilder,
+        useValue: {
+          constructModel: stub().returnsArg(1),
+          constructMember: stub().returnsArg(2),
         },
-      )
+      })
       const composer = await requestInjector.inject(ResourceComposer)
       const result = await composer.compose(
         new TestModelParent(42),
@@ -1045,8 +999,7 @@ describe('DefaultResourceComposer', function() {
       })
     })
 
-    it('embeds nested links for array relations on an index model', async function() {
-
+    it('embeds nested links for array relations on an index model', async function () {
       class List extends HalModelBase {
         constructor(source?: any) {
           super(source)
@@ -1107,7 +1060,7 @@ describe('DefaultResourceComposer', function() {
         async getList(
           @PathParam(Number)
           @AccessorResourceId()
-            listId,
+          listId,
         ): Promise<List> {
           return new List({ listId })
         }
@@ -1117,7 +1070,7 @@ describe('DefaultResourceComposer', function() {
         async getListItems(
           @PathParam(Number)
           @AccessorResourceId(List)
-            listId,
+          listId,
         ): Promise<Item[]> {
           return [
             new Item({ listId, itemId: Math.random() }),
@@ -1143,7 +1096,7 @@ describe('DefaultResourceComposer', function() {
         async getItem(
           @PathParam(Number)
           @AccessorResourceId()
-            itemId,
+          itemId,
         ): Promise<Item> {
           return new Item({ itemId })
         }
@@ -1216,24 +1169,15 @@ describe('DefaultResourceComposer', function() {
         },
       }
 
-      const requestInjector = harness.createChild(HttpRequestScope,
-        MeController,
-        routes,
-        request,
-        requestInfo,
-        {
-          provide: ModelBuilder,
-          useValue: {
-            constructModel: stub().returnsArg(1),
-            constructMember: stub().returnsArg(2),
-          },
+      const requestInjector = harness.createChild(HttpRequestScope, MeController, routes, request, requestInfo, {
+        provide: ModelBuilder,
+        useValue: {
+          constructModel: stub().returnsArg(1),
+          constructMember: stub().returnsArg(2),
         },
-      )
+      })
       const composer = await requestInjector.inject(ResourceComposer)
-      const result = await composer.compose(
-        new Me(),
-        CompositionContext.for('self', '/me', ['lists.items']),
-      )
+      const result = await composer.compose(new Me(), CompositionContext.for('self', '/me', ['lists.items']))
 
       expect(result.embedded).to.have.keys('lists')
       const embeddedLists = result.getEmbedded('lists') as ComposedResource<List>[]

@@ -19,22 +19,25 @@ export const FileSystemScannerConfig = localToken.opinionated('FileSystemScanner
 @Injectable()
 export class FileSystemScanner implements Scanner {
   public static withConfig(...configs: FileSystemScannerConfig[]): Provider<Scanner> {
-    return scannerProvider(FileSystemScanner, ...configs.map(config => ({
-      provide: FileSystemScannerConfig,
-      useValue: config,
-    })))
+    return scannerProvider(
+      FileSystemScanner,
+      ...configs.map((config) => ({
+        provide: FileSystemScannerConfig,
+        useValue: config,
+      })),
+    )
   }
 
   constructor(@Inject(FileSystemScannerConfig) private configs: FileSystemScannerConfig[]) {}
 
   public async scan(): Promise<Registerable[]> {
-    return (await Promise.all(
-      this.configs.map((config) => this.scanDir(config, process.cwd()),
-      )))
-      .reduce((result, modules) => {
+    return (await Promise.all(this.configs.map((config) => this.scanDir(config, process.cwd())))).reduce(
+      (result, modules) => {
         result.push(...modules)
         return result
-      }, [])
+      },
+      [],
+    )
   }
 
   private async scanDir(config: FileSystemScannerConfig, dirPath: string): Promise<any[]> {

@@ -106,7 +106,7 @@ export class MyModelManager {
       const query1 = await tran.queryModelSingle(MyModel, INSERT_QUERY, model.name)
       const query2 = await tran.query(INSERT_MODEL_PERMISSION)
       return query1
-    });
+    })
   }
 }
 ```

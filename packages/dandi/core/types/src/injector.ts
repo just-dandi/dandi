@@ -11,7 +11,6 @@ import { RegistrationSource } from './registration-source'
 export type ResolvedProvider<T> = Provider<T> | Set<Provider<T>>
 
 export interface Resolver {
-
   /**
    * Performs a shallow check (not checking dependencies or other parameters) to see if a matching provider
    * has been configured for the specified injection token.
@@ -20,7 +19,6 @@ export interface Resolver {
   canResolve(token: InjectionToken<any>): boolean
 
   resolve<T>(token: InjectionToken<T>, optional?: boolean): ResolvedProvider<T>
-
 }
 
 export type InvokableReturnFn<T> = (...args: any[]) => T | Promise<T>
@@ -48,14 +46,12 @@ export interface Invoker {
 }
 
 export interface TokenInjector {
-
   readonly parent: Injector
   readonly context: InjectorContext
 
   inject<T>(token: InjectionToken<T>, optional?: boolean): Promise<InjectionResult<T>>
 
   createChild(scope: InjectionScope, providers?: Registerable[]): Injector
-
 }
 
 export type Injector = Resolver & Invoker & TokenInjector

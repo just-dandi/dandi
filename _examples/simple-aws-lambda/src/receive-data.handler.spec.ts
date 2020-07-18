@@ -10,19 +10,14 @@ import { ReceiveDataHandler } from './receive-data.handler'
 import { ReceiveDataResponse } from './receive-data.model'
 
 describe('ReceiveDataHandler', () => {
-
   let classUnderTest: ReceiveDataHandler
   let body: any
   let request: HttpRequest
 
-  const harness = testHarness(ReceiveDataHandler,
-    DataProcessorService,
-    ModelBuilderModule,
-    {
-      provide: HttpRequest,
-      useFactory: () => request,
-    },
-  )
+  const harness = testHarness(ReceiveDataHandler, DataProcessorService, ModelBuilderModule, {
+    provide: HttpRequest,
+    useFactory: () => request,
+  })
 
   beforeEach(async () => {
     body = {
@@ -45,7 +40,6 @@ describe('ReceiveDataHandler', () => {
 
   describe('handleEvent', () => {
     it('converts the incoming model to the response model', async () => {
-
       const result: ReceiveDataResponse = await harness.invoke(classUnderTest, 'handleEvent')
 
       expect(result).to.haveOwnProperty('model')
@@ -55,8 +49,6 @@ describe('ReceiveDataHandler', () => {
         message: 'hi!',
       })
       expect(result.modelType).to.equal('ReceiveDataModel')
-
     })
   })
-
 })

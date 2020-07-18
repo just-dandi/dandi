@@ -10,36 +10,29 @@ import { ModelBuilderModule } from '@dandi/model-builder'
 import { expect } from 'chai'
 
 describe('AWS Lambda Http Events', () => {
-
   @Injectable()
   class TestGetHandler implements LambdaHandler {
-
     public handleEvent(@QueryParam(Number) foo: string): any {
       return {
         message: 'hello!',
         foo,
       }
     }
-
   }
 
   class TestModel {
-
     @Property(String)
     @Required()
     public message: string
-
   }
 
   @Injectable()
   class TestPostHandler implements LambdaHandler {
-
     public handleEvent(@RequestBody(TestModel) model: TestModel): any {
       return {
         message: model.message,
       }
     }
-
   }
 
   let handler: LambdaHandlerFn
@@ -51,7 +44,13 @@ describe('AWS Lambda Http Events', () => {
 
   describe('GET requests', () => {
     beforeEach(() => {
-      handler = Lambda.handler(TestGetHandler, HttpModule, HttpPipelineModule.defaultRenderer(NativeJsonObjectRenderer), ModelBuilderModule, AwsLambdaHttpModule)
+      handler = Lambda.handler(
+        TestGetHandler,
+        HttpModule,
+        HttpPipelineModule.defaultRenderer(NativeJsonObjectRenderer),
+        ModelBuilderModule,
+        AwsLambdaHttpModule,
+      )
     })
 
     it('can handle a simple GET request', async () => {
@@ -74,13 +73,18 @@ describe('AWS Lambda Http Events', () => {
   })
 
   describe('POST requests', () => {
-
     beforeEach(() => {
-      handler = Lambda.handler(TestPostHandler, HttpModule, HttpPipelineModule.defaultRenderer(NativeJsonObjectRenderer), ModelBuilderModule, AwsLambdaHttpModule)
+      handler = Lambda.handler(
+        TestPostHandler,
+        HttpModule,
+        HttpPipelineModule.defaultRenderer(NativeJsonObjectRenderer),
+        ModelBuilderModule,
+        AwsLambdaHttpModule,
+      )
     })
 
     it('can handle a simple POST request', async () => {
-      const event: APIGatewayProxyEvent = {
+      const event: APIGatewayProxyEvent = ({
         httpMethod: HttpMethod.post,
         headers: {
           [HttpHeader.contentType]: 'application/json',
@@ -90,7 +94,7 @@ describe('AWS Lambda Http Events', () => {
         }),
         queryStringParameters: {},
         multiValueQueryStringParameters: {},
-      } as unknown as APIGatewayProxyEvent
+      } as unknown) as APIGatewayProxyEvent
       const result = await handler(event, {} as any)
 
       expect(result).to.deep.equal({
@@ -102,5 +106,4 @@ describe('AWS Lambda Http Events', () => {
       })
     })
   })
-
 })

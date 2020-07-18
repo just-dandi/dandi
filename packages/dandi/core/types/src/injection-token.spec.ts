@@ -43,7 +43,7 @@ describe('isInjectionToken', () => {
   })
 
   it('returns true for constructable functions', () => {
-    expect(isInjectionToken(function() {})).to.be.true
+    expect(isInjectionToken(function () {})).to.be.true
   })
 
   it('returns true for SymbolToken instances', () => {

@@ -11,7 +11,12 @@ export function isViewResult(obj: any): obj is ViewResult {
   return obj && typeof obj.render === 'function' && isHttpPipelineDataResult(obj)
 }
 
-export function makeViewResult(viewEngine: ViewEngine, view: ViewMetadata, templatePath: string, data: any): ViewResult {
+export function makeViewResult(
+  viewEngine: ViewEngine,
+  view: ViewMetadata,
+  templatePath: string,
+  data: any,
+): ViewResult {
   let value: string | Promise<string>
   return {
     data,

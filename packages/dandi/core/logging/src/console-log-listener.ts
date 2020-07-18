@@ -1,11 +1,4 @@
-import {
-  Inject,
-  Injectable,
-  InjectionScope,
-  LogEntry,
-  LogLevel,
-  Optional,
-} from '@dandi/core'
+import { Inject, Injectable, InjectionScope, LogEntry, LogLevel, Optional } from '@dandi/core'
 import { getInjectionScopeName } from '@dandi/core/internal/util'
 import { DateTime, DateTimeFormatOptions } from 'luxon'
 
@@ -13,7 +6,8 @@ import {
   ConsoleLogListenerConfig,
   ConsoleLogListenerEntryInfo,
   ConsoleLogListenerOptions,
-  LogEntryTagInfo, TagFormatOptions,
+  LogEntryTagInfo,
+  TagFormatOptions,
 } from './console-log-listener-config'
 import {
   DEFAULT_CONTEXT_TAG,
@@ -24,8 +18,10 @@ import {
 import { LogLevelFilter, LogLevelValue } from './log-level-filter'
 import { LogListener } from './log-listener'
 
-const LUXON_TIMESTAMP_FORMATTER = (entry: ConsoleLogListenerEntryInfo, format: string): string => entry.ts ? DateTime.fromMillis(entry.ts).toFormat(format) : undefined
-const LOCALE_TIMESTAMP_FORMATTER = (entry: ConsoleLogListenerEntryInfo, options: DateTimeFormatOptions): string => entry.ts ? DateTime.fromMillis(entry.ts).toLocaleString(options) : undefined
+const LUXON_TIMESTAMP_FORMATTER = (entry: ConsoleLogListenerEntryInfo, format: string): string =>
+  entry.ts ? DateTime.fromMillis(entry.ts).toFormat(format) : undefined
+const LOCALE_TIMESTAMP_FORMATTER = (entry: ConsoleLogListenerEntryInfo, options: DateTimeFormatOptions): string =>
+  entry.ts ? DateTime.fromMillis(entry.ts).toLocaleString(options) : undefined
 
 const DEFAULT_CONFIG = DEFAULT_LOGGING_CONFIG
 const DEFAULT_TAG_FORMAT_OPTIONS: TagFormatOptions = DEFAULT_CONFIG.tag as TagFormatOptions
@@ -36,7 +32,6 @@ function coalesceByDefined<T>(a: T, b: T): T {
 
 @Injectable(LogListener)
 export class ConsoleLogListener implements LogListener {
-
   private tagLengthHighWater = 0
   private readonly longestAllowedLevelTag: number
 
@@ -45,12 +40,12 @@ export class ConsoleLogListener implements LogListener {
   }
 
   public log(entry: LogEntry): void {
-
     if (this.isFiltered(entry.level)) {
       return
     }
 
-    const modifiersDisabled = entry.options &&
+    const modifiersDisabled =
+      entry.options &&
       entry.options.context === false &&
       entry.options.level === false &&
       entry.options.timestamp === false
@@ -58,11 +53,14 @@ export class ConsoleLogListener implements LogListener {
       return console[entry.level](...entry.args)
     }
 
-    const entryInfo: ConsoleLogListenerEntryInfo = Object.assign({
-      contextName: this.getContextName(entry.context),
-      levelTagHighWater: this.longestAllowedLevelTag,
-      tagHighWater: this.tagLengthHighWater,
-    }, entry)
+    const entryInfo: ConsoleLogListenerEntryInfo = Object.assign(
+      {
+        contextName: this.getContextName(entry.context),
+        levelTagHighWater: this.longestAllowedLevelTag,
+        tagHighWater: this.tagLengthHighWater,
+      },
+      entry,
+    )
     if (!entryInfo.options) {
       entryInfo.options = {}
     }
@@ -82,11 +80,10 @@ export class ConsoleLogListener implements LogListener {
   }
 
   private getLongestAllowedLevelTag(): number {
-    const allowedLevels: LogLevel[] =
-      Object.keys(LogLevel)
-        .filter((level: LogLevel) => !this.isFiltered(level))
-        .map(level => LogLevel[level])
-    const tags = allowedLevels.map(level => {
+    const allowedLevels: LogLevel[] = Object.keys(LogLevel)
+      .filter((level: LogLevel) => !this.isFiltered(level))
+      .map((level) => LogLevel[level])
+    const tags = allowedLevels.map((level) => {
       const options: ConsoleLogListenerOptions = Object.assign(
         {},
         this.config,
@@ -94,7 +91,7 @@ export class ConsoleLogListener implements LogListener {
       )
       return this.getLevelTag(options, { level, options: {} } as ConsoleLogListenerEntryInfo)
     })
-    return tags.reduce((result, tag) => tag.length < result ? result : tag.length, 0)
+    return tags.reduce((result, tag) => (tag.length < result ? result : tag.length), 0)
   }
 
   private isFiltered(entryLevel: LogLevel): boolean {
@@ -145,7 +142,7 @@ export class ConsoleLogListener implements LogListener {
     if (this.tagDisabled(this.config.contextTag, entryInfo.options.context)) {
       return undefined
     }
-    const formatter = (typeof options.contextTag === 'function') ? options.contextTag : DEFAULT_CONTEXT_TAG
+    const formatter = typeof options.contextTag === 'function' ? options.contextTag : DEFAULT_CONTEXT_TAG
     return formatter(entryInfo)
   }
 
@@ -158,10 +155,14 @@ export class ConsoleLogListener implements LogListener {
       return undefined
     }
     switch (typeof options.timestampTag) {
-      case 'string': return LUXON_TIMESTAMP_FORMATTER(entryInfo, options.timestampTag)
-      case 'function': return options.timestampTag(entryInfo)
-      case 'object': return LOCALE_TIMESTAMP_FORMATTER(entryInfo, options.timestampTag)
-      default: return DEFAULT_TIMESTAMP_FORMATTER(entryInfo)
+      case 'string':
+        return LUXON_TIMESTAMP_FORMATTER(entryInfo, options.timestampTag)
+      case 'function':
+        return options.timestampTag(entryInfo)
+      case 'object':
+        return LOCALE_TIMESTAMP_FORMATTER(entryInfo, options.timestampTag)
+      default:
+        return DEFAULT_TIMESTAMP_FORMATTER(entryInfo)
     }
   }
 
@@ -169,17 +170,15 @@ export class ConsoleLogListener implements LogListener {
     if (this.tagDisabled(this.config.levelTag, entryInfo.options.level)) {
       return undefined
     }
-    const formatter = (typeof options.levelTag === 'function') ? options.levelTag : DEFAULT_LEVEL_TAG
+    const formatter = typeof options.levelTag === 'function' ? options.levelTag : DEFAULT_LEVEL_TAG
     return formatter(entryInfo)
   }
 
   private getTag(options: ConsoleLogListenerOptions, tagInfo: LogEntryTagInfo): string {
-
     if (typeof options.tag === 'function') {
       return options.tag(tagInfo)
     }
 
     return DEFAULT_TAG_FORMAT_OPTIONS.formatter(tagInfo)
-
   }
 }

@@ -47,7 +47,7 @@ const myApp = new DandiApplication({
     ...
 
     ModelBuilderOptions.provider(PgDbModelBuilderOptions, {
-      keyTransform: camel, // translates snake_case table column names to camelCase 
+      keyTransform: camel, // translates snake_case table column names to camelCase
     }),
 
     ...
@@ -58,7 +58,7 @@ const myApp = new DandiApplication({
 
 ## `SELECT` Expansion for Nested Models
 
-`@dandi/data-pg`'s `DbQueryable` implementation allows you to map columns from `SELECT` statements for models that nest 
+`@dandi/data-pg`'s `DbQueryable` implementation allows you to map columns from `SELECT` statements for models that nest
 other models. To enable this feature, you must construct your query in a specific manner:
 
 - Add aliases to the table identifier that match the name of the property
@@ -70,27 +70,28 @@ For example, given a model structure like so:
 class CarModel {
   @Property(Uuid)
   public carId: Uuid
-  
+
   @Property(String)
   public name: string
 }
 class DriverModel {
   @Property(Uuid)
-  public driverId: Uuid  
-  
+  public driverId: Uuid
+
   @Property(String)
   public name: string
 }
 class DriverAssignmentModel {
   @Property(DriverModel)
   public driver: DriverModel
-  
+
   @Property(CarModel)
-  public car: CarModel  
+  public car: CarModel
 }
-```  
+```
 
 The query might look like:
+
 ```sql
 SELECT
   driver,

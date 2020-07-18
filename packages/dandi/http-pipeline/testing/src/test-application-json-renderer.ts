@@ -5,7 +5,6 @@ import { stub } from 'sinon'
 
 @Renderer(MimeType.applicationJson)
 export class TestApplicationJsonRenderer extends HttpPipelineRendererBase {
-
   protected readonly defaultContentType: string = MimeType.applicationJson
 
   constructor() {
@@ -17,5 +16,4 @@ export class TestApplicationJsonRenderer extends HttpPipelineRendererBase {
   protected renderPipelineResult(): string | Promise<string> {
     return undefined
   }
-
 }

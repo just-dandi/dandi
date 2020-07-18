@@ -6,9 +6,8 @@ const FAKE_LATENCY = 250
 
 @Injectable()
 export class DataProcessorService {
-
   public processData(data: ReceiveDataModel): Promise<ReceiveDataResponse> {
-    return new Promise<ReceiveDataResponse>(resolve => {
+    return new Promise<ReceiveDataResponse>((resolve) => {
       setTimeout(() => resolve(this.convertData(data)), FAKE_LATENCY)
     })
   }
@@ -19,5 +18,4 @@ export class DataProcessorService {
       modelType: data.constructor.name,
     }
   }
-
 }

@@ -5,7 +5,6 @@ import { QueryResult } from 'pg'
 import { stub } from 'sinon'
 
 export class PgDbPoolClientFixture extends PgDbPoolClient {
-
   public static result(result: Partial<QueryResult> | Error): void {
     this.currentResult = result
   }
@@ -36,5 +35,4 @@ export class PgDbPoolClientFixture extends PgDbPoolClient {
     })
     stub(this, 'dispose')
   }
-
 }

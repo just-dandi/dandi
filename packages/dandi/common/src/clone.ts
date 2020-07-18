@@ -4,7 +4,7 @@ export function cloneObject<T>(obj: T): T {
   }
   const type = typeof obj
   if (type === 'object' && Array.isArray(obj)) {
-    return obj.slice(0).map(cloneObject) as unknown as T
+    return (obj.slice(0).map(cloneObject) as unknown) as T
   }
   if (type !== 'object') {
     return obj

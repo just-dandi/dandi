@@ -5,7 +5,6 @@ import { INJECTABLE_REGISTRATION_DATA, InjectableRegistrationData } from '@dandi
 import { expect } from 'chai'
 
 describe('@Injectable', () => {
-
   function findRegistrationData(t: any): InjectableRegistrationData {
     return INJECTABLE_REGISTRATION_DATA.find(({ target }) => target === t)
   }

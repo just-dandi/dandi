@@ -17,7 +17,6 @@ import { HttpRequestScope } from './http-request-scope'
  */
 @Injectable(NotMulti, RestrictScope(HttpRequestScope))
 export class HttpRequestHeadersCache implements Disposable {
-
   private readonly caches = new Map<HttpRequest, Map<HttpRequestHeader, any>>()
 
   public getRequestCache(req: HttpRequest): Map<HttpRequestHeader, any> {
@@ -30,5 +29,4 @@ export class HttpRequestHeadersCache implements Disposable {
   public dispose(): void {
     this.caches.clear()
   }
-
 }

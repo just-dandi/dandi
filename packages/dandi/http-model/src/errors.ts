@@ -12,7 +12,6 @@ export class ParamError extends RequestError {
   }
 }
 
-
 export class InvalidParamError extends ParamError {
   constructor(paramName: string, innerError?: Error) {
     super(paramName, `Invalid param ${paramName}`, innerError)

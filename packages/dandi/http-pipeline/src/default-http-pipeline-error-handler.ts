@@ -18,7 +18,6 @@ function getRequestError(error: Error): RequestError {
 
 @Injectable(HttpPipelineErrorResultHandler)
 export class DefaultHttpPipelineErrorHandler implements HttpPipelineErrorResultHandler {
-
   public async handleError(result: HttpPipelineErrorResult): Promise<HttpPipelineErrorResult> {
     const [error] = result.errors
     const requestError = getRequestError(error)
@@ -31,5 +30,4 @@ export class DefaultHttpPipelineErrorHandler implements HttpPipelineErrorResultH
       data: new HttpPipelineErrorRendererDataFactory(transformedResult),
     })
   }
-
 }

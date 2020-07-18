@@ -40,8 +40,8 @@ import { expect } from 'chai'
 import { createStubInstance, SinonStubbedInstance, stub } from 'sinon'
 
 describe('DandiRouteInitializer', () => {
-
-  const harness = testHarness(DandiRouteInitializer,
+  const harness = testHarness(
+    DandiRouteInitializer,
     {
       provide: AuthProviderFactory,
       useFactory: () => createStubInstance(AuthorizationAuthProviderFactory),
@@ -182,7 +182,7 @@ describe('DandiRouteInitializer', () => {
 
     it('adds request body providers if the method has a parameter that requests HttpRequestBody', async () => {
       const providers = initializer.initRouteRequest(route, req, requestInfo, res)
-      expect(providers.find(p => p.provide === HttpRequestBody)).to.exist
+      expect(providers.find((p) => p.provide === HttpRequestBody)).to.exist
     })
 
     it('registers any authProviders', async () => {
@@ -192,7 +192,7 @@ describe('DandiRouteInitializer', () => {
 
       const providers = initializer.initRouteRequest(route, req, requestInfo, res)
 
-      expect(providers.find(p => p.provide === Foo)).to.exist
+      expect(providers.find((p) => p.provide === Foo)).to.exist
     })
 
     it('does not add any cors providers if there is no cors config', () => {
@@ -205,35 +205,35 @@ describe('DandiRouteInitializer', () => {
         CorsExposeHeaders,
         CorsMaxAge,
       ]
-      expect(providers.some(p => corsTokens.includes(p.provide))).to.be.false
+      expect(providers.some((p) => corsTokens.includes(p.provide))).to.be.false
     })
 
     it('adds a CorsAllowMethods provider if the route cors property is set to true', () => {
       route.cors = true
       const providers = initializer.initRouteRequest(route, req, requestInfo, res)
 
-      expect(providers.map(p => p.provide)).to.include(CorsAllowMethods)
+      expect(providers.map((p) => p.provide)).to.include(CorsAllowMethods)
     })
 
     it('adds a CorsAllowMethods provider if the route cors is set to a configuration object', () => {
       route.cors = {}
       const providers = initializer.initRouteRequest(route, req, requestInfo, res)
 
-      expect(providers.map(p => p.provide)).to.include(CorsAllowMethods)
+      expect(providers.map((p) => p.provide)).to.include(CorsAllowMethods)
     })
 
     it('adds a CorsAllowCredentials provider if the route.cors.allowCredentials property is set to true', () => {
       route.cors = { allowCredentials: true }
       const providers = initializer.initRouteRequest(route, req, requestInfo, res)
 
-      expect(providers.map(p => p.provide)).to.include(CorsAllowCredentials)
+      expect(providers.map((p) => p.provide)).to.include(CorsAllowCredentials)
     })
 
     it('adds a CorsAllowOrigin factory provider if the route.cors.allowOrigin property is a function', () => {
       route.cors = { allowOrigin: () => 'the-origin.com' }
       const providers = initializer.initRouteRequest(route, req, requestInfo, res)
 
-      const allowOriginProvider = providers.find(p => p.provide === CorsAllowOrigin)
+      const allowOriginProvider = providers.find((p) => p.provide === CorsAllowOrigin)
 
       expect(allowOriginProvider).to.exist
       expect(allowOriginProvider).to.include({ provide: CorsAllowOrigin, useFactory: route.cors.allowOrigin })
@@ -243,8 +243,8 @@ describe('DandiRouteInitializer', () => {
       route.cors = { allowOrigin: ['the-origin.com'] }
       const providers = initializer.initRouteRequest(route, req, requestInfo, res)
 
-      const allowOriginProvider = providers.find(p => p.provide === CorsAllowOrigin)
-      const originWhitelistProvider = providers.find(p => p.provide === CorsOriginWhitelist)
+      const allowOriginProvider = providers.find((p) => p.provide === CorsAllowOrigin)
+      const originWhitelistProvider = providers.find((p) => p.provide === CorsOriginWhitelist)
 
       expect(allowOriginProvider).to.exist
       expect(originWhitelistProvider).to.exist
@@ -255,7 +255,7 @@ describe('DandiRouteInitializer', () => {
       route.cors = { exposeHeaders: [HttpHeader.contentType] }
       const providers = initializer.initRouteRequest(route, req, requestInfo, res)
 
-      const exposeHeadersProvider = providers.find(p => p.provide === CorsExposeHeaders)
+      const exposeHeadersProvider = providers.find((p) => p.provide === CorsExposeHeaders)
 
       expect(exposeHeadersProvider).to.exist
       expect(exposeHeadersProvider).to.include({ provide: CorsExposeHeaders, useValue: route.cors.exposeHeaders })
@@ -265,16 +265,14 @@ describe('DandiRouteInitializer', () => {
       route.cors = { maxAge: 0 }
       const providers = initializer.initRouteRequest(route, req, requestInfo, res)
 
-      const maxAgeProvider = providers.find(p => p.provide === CorsMaxAge)
+      const maxAgeProvider = providers.find((p) => p.provide === CorsMaxAge)
 
       expect(maxAgeProvider).to.exist
       expect(maxAgeProvider).to.include({ provide: CorsMaxAge, useValue: route.cors.maxAge })
     })
-
   })
 
   describe('determineAllowedMethods', () => {
-
     let routes: Route[]
 
     beforeEach(() => {
@@ -283,7 +281,7 @@ describe('DandiRouteInitializer', () => {
         cors: {
           allowOrigin: ['some-origin.com'],
         },
-        path : '/string',
+        path: '/string',
         httpMethod: HttpMethod.get,
         controllerCtr: Object,
         controllerMethod: 'toString',
@@ -302,20 +300,15 @@ describe('DandiRouteInitializer', () => {
         siblingMethods: new Set<HttpMethod>([HttpMethod.get, HttpMethod.post]),
       })
 
-      routes = [
-        getRoute,
-        postRoute,
-        putRoute,
-      ]
+      routes = [getRoute, postRoute, putRoute]
 
-      routes.forEach(route => siblingRoutes.set(route.httpMethod, route))
+      routes.forEach((route) => siblingRoutes.set(route.httpMethod, route))
     })
     afterEach(() => {
       routes = undefined
     })
 
     it('returns the array of HttpMethods that are allowed given the request', async () => {
-
       harness.register(CorsHeaderValues, HttpModule)
       req.get.withArgs(HttpHeader.origin).returns('some-origin.com')
       req.get.withArgs(HttpHeader.host).returns('another-origin.com')
@@ -324,8 +317,6 @@ describe('DandiRouteInitializer', () => {
       const allowedMethods = await injector.inject(CorsAllowMethods)
 
       expect(allowedMethods).to.deep.equal([HttpMethod.get, HttpMethod.post])
-
     })
-
   })
 })

@@ -5,7 +5,6 @@ import { HttpBodyParserBase } from './http-body-parser-base'
 
 @BodyParser(MimeType.textPlain)
 export class PlainTextBodyParser extends HttpBodyParserBase {
-
   constructor() {
     super()
   }
@@ -13,5 +12,4 @@ export class PlainTextBodyParser extends HttpBodyParserBase {
   protected parseBodyFromString(body: string): string {
     return body
   }
-
 }

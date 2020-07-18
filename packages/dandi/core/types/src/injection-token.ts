@@ -7,7 +7,7 @@ export interface MappedInjectionToken<TKey, TService> {
   key: TKey
 }
 
-export type MappedInjectionTokenFactory<T> = (<TKey, TService>(key: TKey) => MappedInjectionToken<TKey, TService>)
+export type MappedInjectionTokenFactory<T> = <TKey, TService>(key: TKey) => MappedInjectionToken<TKey, TService>
 
 export type ClassDecoratorToken<T> = (...args: any[]) => ClassDecorator
 
@@ -17,7 +17,6 @@ export type InjectionToken<T> =
   | MappedInjectionToken<any, T>
   | MappedInjectionTokenFactory<T>
   | ClassDecoratorToken<T>
-
 
 export class InjectionTokenTypeError extends AppError {
   constructor(public readonly target: any) {

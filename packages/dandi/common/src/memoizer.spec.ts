@@ -2,7 +2,6 @@ import { Memoizer } from '@dandi/common'
 import { expect } from 'chai'
 
 describe('Memoizer', () => {
-
   let memoizer: Memoizer
 
   beforeEach(() => {
@@ -93,5 +92,4 @@ describe('Memoizer', () => {
     expect(memoizer.add(obj2)).to.equal(obj2)
     expect(memoizer.add(obj2)).not.to.equal(obj1)
   })
-
 })

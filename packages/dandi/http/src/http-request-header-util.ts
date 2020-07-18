@@ -8,21 +8,17 @@ interface HeaderParser<THeaderName extends HttpRequestHeader> {
 
 type HeaderParsers = { [THeaderName in HttpRequestHeader]?: HeaderParser<THeaderName> }
 
-const directiveHeaders: HttpHeader[] = [
-  HttpHeader.contentDisposition,
-  HttpHeader.contentType,
-]
+const directiveHeaders: HttpHeader[] = [HttpHeader.contentDisposition, HttpHeader.contentType]
 
 function commaSeparatedToken<T extends string>(rawValue: string): T[] {
   return rawValue.split(/\s*,\s*/) as T[]
 }
 
 function commaSeparatedTokenToLower<T extends string>(rawValue: string): T[] {
-  return commaSeparatedToken<T>(rawValue).map(token => token.toLocaleLowerCase()) as T[]
+  return commaSeparatedToken<T>(rawValue).map((token) => token.toLocaleLowerCase()) as T[]
 }
 
 const headerParsers: HeaderParsers = {
-
   /*
    * TODO:
    *  - accept-charset: quality weighting directives - https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Accept-Charset
@@ -51,7 +47,6 @@ const headerParsers: HeaderParsers = {
 }
 
 export interface RawHeader<THeaderName extends HttpHeader = any> {
-
   /**
    * The name of the header, forced to lowercase
    */
@@ -117,9 +112,12 @@ export function parseDirectiveHeader<THeaderName extends HttpRequestHeader>(
 ): HttpRequestHeaders[THeaderName] {
   const header = parseDirectiveHeaderValue(rawValue)
   const key = HttpHeaderLookup[headerName]
-  return Object.assign({
-    [key]: header.value,
-  }, header.directives) as any
+  return Object.assign(
+    {
+      [key]: header.value,
+    },
+    header.directives,
+  ) as any
 }
 
 /**
@@ -145,7 +143,8 @@ export function parseHeader<THeaderName extends HttpRequestHeader>(
   rawValue: string,
 ): HttpRequestHeaders[THeaderName] {
   const normalizedName = headerName.toLocaleLowerCase()
-  const parser = headerParsers[normalizedName] ||
+  const parser =
+    headerParsers[normalizedName] ||
     (directiveHeaders.includes(headerName) && parseDirectiveHeader.bind(undefined, normalizedName)) ||
     String
   return parser(rawValue)

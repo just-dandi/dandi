@@ -6,7 +6,6 @@ import { InjectionToken } from './injection-token'
 import { ScopeRestriction } from './scope-restriction'
 
 export interface InjectionOptions {
-
   /**
    * When set to `true`, the injection token is intended to be used as a "multi" token, where multiple providers all
    * provide their values when injecting the token. When set to `false`, disables providers from providing this token

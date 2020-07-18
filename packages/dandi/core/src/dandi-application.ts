@@ -4,8 +4,8 @@ import { DandiApplicationConfig, Injector } from '@dandi/core/types'
 
 import { NativeNow } from './native-now'
 
-export class DandiApplication<TConfig extends DandiApplicationConfig = DandiApplicationInternalConfig> implements Disposable {
-
+export class DandiApplication<TConfig extends DandiApplicationConfig = DandiApplicationInternalConfig>
+  implements Disposable {
   protected readonly config: TConfig
 
   private readonly initHost: DandiApplicationInit<TConfig>

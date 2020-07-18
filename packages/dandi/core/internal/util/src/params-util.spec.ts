@@ -55,10 +55,10 @@ describe('getParamNames', () => {
   const doubleParameterArrowFunction = (param1: any, param2: any): void => {}
   const multiParameterArrowFunction = (param1: any, param2: any, param3: any): void => {}
 
-  const parameterlessAnonFunction = function(): void {}
-  const singleParameterAnonFunction = function(param: any): void {}
-  const doubleParameterAnonFunction = function(param1: any, param2: any): void {}
-  const multiParameterAnonFunction = function(param1: any, param2: any, param3: any): void {}
+  const parameterlessAnonFunction = function (): void {}
+  const singleParameterAnonFunction = function (param: any): void {}
+  const doubleParameterAnonFunction = function (param1: any, param2: any): void {}
+  const multiParameterAnonFunction = function (param1: any, param2: any, param3: any): void {}
 
   it('throws an error if the specified target is not a function', () => {
     expect(() => getParamNames({} as any)).to.throw

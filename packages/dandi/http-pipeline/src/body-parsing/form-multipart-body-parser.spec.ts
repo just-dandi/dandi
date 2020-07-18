@@ -5,7 +5,8 @@ import {
   HttpHeader,
   HttpHeaders,
   HttpRequest,
-  HttpRequestHeader, HttpRequestHeaders,
+  HttpRequestHeader,
+  HttpRequestHeaders,
   HttpRequestHeadersAccessor,
   HttpRequestHeadersHashAccessor,
   MimeType,
@@ -24,7 +25,6 @@ import {
 import { expect } from 'chai'
 
 describe('FormMultipartBodyParser', () => {
-
   const BOUNDARY = '****TEST_BOUNDARY****'
 
   interface Part {
@@ -35,19 +35,21 @@ describe('FormMultipartBodyParser', () => {
 
   function makeBody(...parts: (string | Part)[]): string {
     return parts
-      .map(part => {
+      .map((part) => {
         if (typeof part === 'string') {
           return part
         }
-        const headers = Object.assign({
-          [HttpHeader.contentDisposition]: `${ContentDisposition.formData}; name="${part.name}"`,
-        }, part.headers)
+        const headers = Object.assign(
+          {
+            [HttpHeader.contentDisposition]: `${ContentDisposition.formData}; name="${part.name}"`,
+          },
+          part.headers,
+        )
 
-        const headersContent = Object.keys(headers)
-          .reduce((result, headerName) => {
-            const content = `${headerName}: ${headers[headerName]}`
-            return result ? [result, content].join('\r\n') : content
-          }, '')
+        const headersContent = Object.keys(headers).reduce((result, headerName) => {
+          const content = `${headerName}: ${headers[headerName]}`
+          return result ? [result, content].join('\r\n') : content
+        }, '')
 
         return [headersContent, part.content].join('\r\n\r\n')
       })
@@ -55,7 +57,8 @@ describe('FormMultipartBodyParser', () => {
       .join(`--${BOUNDARY}`)
   }
 
-  const harness = testHarness(FormMultipartBodyParser,
+  const harness = testHarness(
+    FormMultipartBodyParser,
     BodyParserInfoProvider,
     NativeJsonBodyParser,
     PlainTextBodyParser,
@@ -96,7 +99,6 @@ describe('FormMultipartBodyParser', () => {
   })
 
   describe('parseBody', () => {
-
     it('successfully parses a multipart body with a single part', async () => {
       body = makeBody({ name: 'foo', content: 'bar' })
 
@@ -106,10 +108,7 @@ describe('FormMultipartBodyParser', () => {
     })
 
     it('successfully parses a multipart body with two parts', async () => {
-      body = makeBody(
-        { name: 'foo', content: 'bar' },
-        { name: 'bleep', content: 'bloop' },
-      )
+      body = makeBody({ name: 'foo', content: 'bar' }, { name: 'bleep', content: 'bloop' })
 
       const result = await parser.parseBody(body, headers)
 
@@ -117,11 +116,7 @@ describe('FormMultipartBodyParser', () => {
     })
 
     it('ignores empty part with empty content', async () => {
-      body = makeBody(
-        { name: 'foo', content: 'bar' },
-        '',
-        { name: 'bleep', content: 'bloop' },
-      )
+      body = makeBody({ name: 'foo', content: 'bar' }, '', { name: 'bleep', content: 'bloop' })
 
       const result = await parser.parseBody(body, headers)
 
@@ -134,10 +129,7 @@ describe('FormMultipartBodyParser', () => {
         content: JSON.stringify({ bloop: 'blarp' }),
         headers: { [HttpHeader.contentType]: MimeType.applicationJson },
       }
-      body = makeBody(
-        { name: 'foo', content: 'bar' },
-        jsonPart,
-      )
+      body = makeBody({ name: 'foo', content: 'bar' }, jsonPart)
 
       const result = await parser.parseBody(body, headers)
 
@@ -145,14 +137,10 @@ describe('FormMultipartBodyParser', () => {
     })
 
     it('throws a FormMultipartMissingBoundaryError if the content-type header is missing the "boundary" directive', async () => {
-      stub(headers, 'get')
-        .withArgs(HttpHeader.contentType)
-        .returns({ contentType: MimeType.multipartFormData })
+      stub(headers, 'get').withArgs(HttpHeader.contentType).returns({ contentType: MimeType.multipartFormData })
       body = makeBody({ name: 'foo', content: 'bar' })
 
       await expect(parser.parseBody(body, headers)).to.be.rejectedWith(FormMultipartMissingBoundaryError)
     })
-
   })
-
 })

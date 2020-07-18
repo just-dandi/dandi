@@ -11,7 +11,6 @@ import { LambdaHttpResponse } from './lambda-http-response'
 
 @Injectable(HttpPipelineTerminator, RestrictScope(HttpRequestScope))
 export class LambdaTerminator extends HttpResponsePipelineTerminator<APIGatewayProxyResult> {
-
   protected response: LambdaHttpResponse
 
   constructor(

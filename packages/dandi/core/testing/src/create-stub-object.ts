@@ -4,5 +4,5 @@ export function createStubObject<TInstance>(...names: (keyof TInstance)[]): Sino
   return names.reduce((instance: SinonStubbedInstance<TInstance>, propName: keyof TInstance) => {
     instance[propName] = stub() as SinonStubbedMember<TInstance[keyof TInstance]>
     return instance
-  }, {} as SinonStubbedInstance <TInstance>)
+  }, {} as SinonStubbedInstance<TInstance>)
 }

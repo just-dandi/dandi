@@ -13,7 +13,11 @@ import {
   RegistrationSource,
 } from '@dandi/core/types'
 
-import { InvalidRepositoryScopeError, InvalidRegistrationTargetError, ConflictingRegistrationOptionsError } from './repository-errors'
+import {
+  InvalidRepositoryScopeError,
+  InvalidRegistrationTargetError,
+  ConflictingRegistrationOptionsError,
+} from './repository-errors'
 
 const REPOSITORIES = new Map<InjectionScope, Repository>()
 
@@ -40,7 +44,6 @@ function getRepositoryInstanceKey<T>(provider: Provider<T>): RepositoryInstanceK
  * Contains mappings of injection tokens to providers, and stores instances of injectables.
  */
 export class Repository implements Disposable {
-
   public static for(scope: InjectionScope): Repository {
     if (!scope) {
       throw new InvalidRepositoryScopeError(scope)
@@ -67,7 +70,11 @@ export class Repository implements Disposable {
 
   private constructor(private scope: InjectionScope, private readonly _allowInstances: boolean) {}
 
-  public register<T>(source: RegistrationSource, target: Constructor<T> | Provider<T>, options?: RegisterOptions<T>): this {
+  public register<T>(
+    source: RegistrationSource,
+    target: Constructor<T> | Provider<T>,
+    options?: RegisterOptions<T>,
+  ): this {
     if (isProvider(target)) {
       this.registerProvider(target)
       return this
@@ -145,9 +152,14 @@ export class Repository implements Disposable {
     this.registry.clear()
 
     if (this.instances.size) {
-      await Promise.all([...this.instances.values()].map((instance) => {
-        return Disposable.dispose(instance, `Disposing Repository for ${getInjectionScopeName(this.scope)}: ${reason}`)
-      }))
+      await Promise.all(
+        [...this.instances.values()].map((instance) => {
+          return Disposable.dispose(
+            instance,
+            `Disposing Repository for ${getInjectionScopeName(this.scope)}: ${reason}`,
+          )
+        }),
+      )
       this.instances.clear()
     }
     REPOSITORIES.delete(this.scope)
@@ -198,7 +210,7 @@ export class Repository implements Disposable {
         entry = new Set<Provider<T>>()
         this.registry.set(provider.provide, entry)
       }
-      (entry as Set<Provider<T>>).add(provider)
+      ;(entry as Set<Provider<T>>).add(provider)
     } else {
       this.registry.set(provider.provide, provider)
     }

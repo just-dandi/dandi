@@ -3,7 +3,6 @@ import { InjectionResult, InjectionScope, InjectionToken, Provider, ResolverCont
 import { DandiInjectorContext } from './dandi-injector-context'
 
 export class DandiResolverContext<TTarget = unknown> implements ResolverContext<TTarget> {
-
   public get result(): InjectionResult<TTarget> {
     return this._result
   }

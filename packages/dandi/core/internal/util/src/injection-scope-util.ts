@@ -43,8 +43,10 @@ export function getInjectionScopeName(source: ScopeRestriction): string {
     return undefined
   }
   switch (typeof scope) {
-    case 'string': return scope
-    case 'function': return scope.name
+    case 'string':
+      return scope
+    case 'function':
+      return scope.name
   }
   if (isInvokeInjectionScope(scope)) {
     return `${scope.instance.constructor.name}.${scope.methodName}`
@@ -76,10 +78,10 @@ export function isFactoryParamInjectionScope(obj: any): obj is FactoryParamInjec
 }
 
 export function isCustomInjectionScope(obj: any): obj is CustomInjectionScope {
-  return obj && typeof obj.description === 'string' && (
-    typeof obj.type === 'string' ||
-    typeof obj.type === 'symbol' ||
-    isConstructor(obj)
+  return (
+    obj &&
+    typeof obj.description === 'string' &&
+    (typeof obj.type === 'string' || typeof obj.type === 'symbol' || isConstructor(obj))
   )
 }
 
@@ -114,7 +116,7 @@ export function scopesAreCompatible(test: InjectionScope, restriction: Injection
   const aScope = test as DependencyInjectionScope
   const bScope = restriction as DependencyInjectionScope
 
-  return aScope.target === bScope.target &&
-    aScope.methodName === bScope.methodName &&
-    aScope.paramName === bScope.paramName
+  return (
+    aScope.target === bScope.target && aScope.methodName === bScope.methodName && aScope.paramName === bScope.paramName
+  )
 }

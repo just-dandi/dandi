@@ -8,7 +8,8 @@ export const NaB: NaB = globalSymbol('NaB') as NaB
 
 export function parseBoolean(value: any): boolean | NaB {
   switch (typeof value) {
-    case 'boolean': return value
+    case 'boolean':
+      return value
 
     case 'number':
       if (value === 0) {

@@ -7,5 +7,4 @@ export class CustomErrorHandler implements HttpPipelineErrorResultHandler {
     console.log('CustomErrorHandler.handleError')
     return Promise.resolve(result)
   }
-
 }

@@ -1,18 +1,25 @@
 import { Inject, InjectionToken, OpinionatedToken, Provider } from '@dandi/core'
 import { stubHarness, TestInjector } from '@dandi/core/testing'
 import { HttpMethod, HttpRequest, HttpRequestScope } from '@dandi/http'
-import { HttpPipelinePreparer, HttpPipelinePreparerResult, httpPipelinePreparerResultProvider } from '@dandi/http-pipeline'
+import {
+  HttpPipelinePreparer,
+  HttpPipelinePreparerResult,
+  httpPipelinePreparerResultProvider,
+} from '@dandi/http-pipeline'
 
 import { expect } from 'chai'
 
 describe('httpPipelinePreparerResultProvider', () => {
-
   const testPreparerProvides = OpinionatedToken.local('@dandi/http-pipeline/test', 'test-preparer-result', {
     restrictScope: HttpRequestScope,
   })
-  const dependentTestPreparerProvides = OpinionatedToken.local('@dandi/http-pipeline/test', 'dependent-test-preparer-result', {
-    restrictScope: HttpRequestScope,
-  })
+  const dependentTestPreparerProvides = OpinionatedToken.local(
+    '@dandi/http-pipeline/test',
+    'dependent-test-preparer-result',
+    {
+      restrictScope: HttpRequestScope,
+    },
+  )
 
   @HttpPipelinePreparer()
   class TestPreparer implements HttpPipelinePreparer {
@@ -23,23 +30,17 @@ describe('httpPipelinePreparerResultProvider', () => {
 
   @HttpPipelinePreparer(TestPreparer)
   class DependentTestPreparer implements HttpPipelinePreparer {
-
     constructor(@Inject(testPreparerProvides) private testPreparerValue: string) {}
 
     public async prepare(): Promise<HttpPipelinePreparerResult> {
       return dependentTestPreparerResult
     }
-
   }
 
-  const harness = stubHarness(
-    TestPreparer,
-    DependentTestPreparer,
-    {
-      provide: HttpRequest,
-      useFactory: () => httpRequest,
-    },
-  )
+  const harness = stubHarness(TestPreparer, DependentTestPreparer, {
+    provide: HttpRequest,
+    useFactory: () => httpRequest,
+  })
 
   let testPreparerResult: HttpPipelinePreparerResult
   let dependentTestPreparerResult: HttpPipelinePreparerResult
@@ -104,12 +105,11 @@ describe('httpPipelinePreparerResultProvider', () => {
   it('can resolve tokens using prepared providers', async () => {
     harness.register(dependentTestPreparerResultProvider)
     const providers = await requestInjector.inject(dependentTestPreparerResultToken)
-    const preparedInjector = requestInjector.createChild(class PreparedProviders{}, providers)
+    const preparedInjector = requestInjector.createChild(class PreparedProviders {}, providers)
     const result = await preparedInjector.inject(testPreparerProvides)
     const dependentResult = await preparedInjector.inject(dependentTestPreparerProvides)
 
     expect(result).to.equal('bar')
     expect(dependentResult).to.equal('dependent-bar')
   })
-
 })

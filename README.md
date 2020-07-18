@@ -13,6 +13,7 @@ the features they require.
 [Get Started](./packages/dandi/core)
 
 ## Use Cases
+
 - MVC-style Application Servers
 - CLI Applications
 - AWS Lambda functions
@@ -32,7 +33,7 @@ the features they require.
 - Automatic output content negotiation based on request `accept` header
 - Create and configure interdependent middleware handlers (`HttpPipelinePreparer`) and they will automatically be
   invoked in the correct order
-- Add global transformers to control response data structure  
+- Add global transformers to control response data structure
 
 ### MVC
 
@@ -104,7 +105,8 @@ implementation of a very simple REST API using `@dandi`
 ## Dev Setup
 
 To set up this project as a local repository:
+
 - [Install Yarn Classic](https://classic.yarnpkg.com/en/docs/install) if you don't have it installed
 - After cloning the repostory, run `yarn setup` - this will install the dependencies for all the individual packages,
-  as well as the Dandi builder 
+  as well as the Dandi builder
 - You can now run `yarn build` to build all packages, or `yarn test` to run all tests

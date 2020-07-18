@@ -10,20 +10,18 @@ import { Renderer } from './renderer-decorator'
 
 @Renderer(MimeType.applicationJson)
 export class NativeJsonObjectRenderer extends HttpPipelineRendererBase {
-
   protected readonly defaultContentType: string = MimeType.applicationJson
 
-  constructor(
-    @Inject(HttpPipelineConfig) private config: HttpPipelineConfig,
-  ) {
+  constructor(@Inject(HttpPipelineConfig) private config: HttpPipelineConfig) {
     super()
   }
 
   protected renderPipelineResult(contentType: string, pipelineResult: HttpPipelineResult): string | Promise<string> {
     if (isHttpPipelineErrorResult(pipelineResult)) {
-      const dataFactory = pipelineResult.data instanceof HttpPipelineErrorRendererDataFactory ?
-        pipelineResult.data :
-        new HttpPipelineErrorRendererDataFactory(pipelineResult)
+      const dataFactory =
+        pipelineResult.data instanceof HttpPipelineErrorRendererDataFactory
+          ? pipelineResult.data
+          : new HttpPipelineErrorRendererDataFactory(pipelineResult)
       return JSON.stringify(dataFactory.getErrorRendererData(this.config.debugMode))
     }
 
@@ -32,5 +30,4 @@ export class NativeJsonObjectRenderer extends HttpPipelineRendererBase {
     }
     return ''
   }
-
 }

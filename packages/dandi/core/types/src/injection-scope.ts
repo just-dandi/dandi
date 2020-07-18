@@ -18,7 +18,8 @@ export interface InvokeInjectionScope<TInstance = any, TResult = any> {
 /**
  * @internal
  */
-export interface InvokeParamInjectionScope<TInstance = any, TResult = any> extends InvokeInjectionScope<TInstance, TResult> {
+export interface InvokeParamInjectionScope<TInstance = any, TResult = any>
+  extends InvokeInjectionScope<TInstance, TResult> {
   paramName: string
 }
 
@@ -31,7 +32,6 @@ export interface FactoryParamInjectionScope {
 }
 
 export class DependencyInjectionScope {
-
   public readonly value: string
 
   constructor(target: string)
@@ -71,7 +71,6 @@ export class DependencyInjectionScope {
     }
     return value
   }
-
 }
 
 export interface CustomInjectionScope {
@@ -81,19 +80,16 @@ export interface CustomInjectionScope {
 }
 
 export type InjectionScope =
-  Constructor |
-  Function |
-  string |
-  CustomInjectionScope |
-  DependencyInjectionScope |
-  FactoryParamInjectionScope |
-  InvokeInjectionScope |
-  InvokeParamInjectionScope
+  | Constructor
+  | Function
+  | string
+  | CustomInjectionScope
+  | DependencyInjectionScope
+  | FactoryParamInjectionScope
+  | InvokeInjectionScope
+  | InvokeParamInjectionScope
 
-export const InjectionScope: InjectionToken<InjectionScope> = localToken.opinionated<InjectionScope>(
-  'InjectionScope',
-  {
-    multi: false,
-    parentsOnly: true,
-  },
-)
+export const InjectionScope: InjectionToken<InjectionScope> = localToken.opinionated<InjectionScope>('InjectionScope', {
+  multi: false,
+  parentsOnly: true,
+})

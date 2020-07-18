@@ -11,13 +11,11 @@ export interface StubConsoleFn {
   all: ConsoleMethodName[]
 }
 
-function stubConsoleFn(
-  methods: ConsoleMethodName[] = (stubConsoleFn as StubConsoleFn).defaults,
-): void {
+function stubConsoleFn(methods: ConsoleMethodName[] = (stubConsoleFn as StubConsoleFn).defaults): void {
   if (!methods.length) {
     methods = (stubConsoleFn as StubConsoleFn).defaults
   }
-  beforeEach(function() {
+  beforeEach(function () {
     // eslint-disable-next-line no-invalid-this
     const test = this.currentTest
     methods.forEach((method) =>
@@ -34,10 +32,8 @@ function stubConsoleFn(
   })
 }
 
-(stubConsoleFn as StubConsoleFn).defaults = ['debug', 'log', 'info', 'warn'];
-(stubConsoleFn as StubConsoleFn).all = (stubConsoleFn as StubConsoleFn).defaults.concat(
-  ['error'],
-)
+;(stubConsoleFn as StubConsoleFn).defaults = ['debug', 'log', 'info', 'warn']
+;(stubConsoleFn as StubConsoleFn).all = (stubConsoleFn as StubConsoleFn).defaults.concat(['error'])
 
 /**
  * Stubs the native `console` object so that console calls from tested objects don't pollute the test output.

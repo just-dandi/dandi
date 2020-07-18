@@ -1,18 +1,12 @@
 import { stub } from '@dandi/core/testing'
-import {
-  ContentDisposition,
-  HttpHeader, HttpHeaders,
-  MimeType,
-} from '@dandi/http'
+import { ContentDisposition, HttpHeader, HttpHeaders, MimeType } from '@dandi/http'
 import { HttpBodyParserBase } from '@dandi/http-pipeline'
 
 import { expect } from 'chai'
 import { SinonStub } from 'sinon'
 
 describe('HttpBodyParserBase', () => {
-
   class TestHttpBodyParser extends HttpBodyParserBase {
-
     public readonly stub: SinonStub
     public get returnValue(): any {
       return this.stub.lastCall?.returnValue
@@ -49,9 +43,7 @@ describe('HttpBodyParserBase', () => {
   })
 
   describe('parseBody', () => {
-
     describe('when body is a string', () => {
-
       it(`returns the result from the implementation's parseBodyFromString method`, async () => {
         const body = 'Foo'
 
@@ -61,7 +53,6 @@ describe('HttpBodyParserBase', () => {
       })
 
       describe(' when the headers include a named content contentDisposition', () => {
-
         it('constructs an object containing the parsed value', async () => {
           const body = 'Bar'
           headers.get
@@ -85,13 +76,10 @@ describe('HttpBodyParserBase', () => {
 
           expect(result).to.deep.equal({ foo: 'Bar' })
         })
-
       })
-
     })
 
     describe('when body is a buffer', () => {
-
       it(`returns the result from the implementation's parseBodyFromString method`, async () => {
         const body = new Buffer('Foo', 'utf-8')
 
@@ -104,9 +92,7 @@ describe('HttpBodyParserBase', () => {
       it('uses the encoding specified in the content type header', async () => {
         const content = 'Foo𐐷Bar'
         const body = new Buffer(content, 'utf16le')
-        headers.get
-          .withArgs(HttpHeader.contentType)
-          .returns({ contentType: MimeType.textPlain, charset: 'utf16le' })
+        headers.get.withArgs(HttpHeader.contentType).returns({ contentType: MimeType.textPlain, charset: 'utf16le' })
 
         const result = await parser.parseBody(body, headers)
 
@@ -114,7 +100,5 @@ describe('HttpBodyParserBase', () => {
         expect(result).to.equal(content)
       })
     })
-
   })
-
 })

@@ -1,5 +1,4 @@
 export class InjectionResult<T> {
-
   public readonly singleValue: T
   public readonly arrayValue: T[]
 
@@ -7,5 +6,4 @@ export class InjectionResult<T> {
     this.singleValue = value as T
     this.arrayValue = value as T[]
   }
-
 }

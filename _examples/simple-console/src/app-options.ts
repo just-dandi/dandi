@@ -3,12 +3,10 @@ import { InjectionToken, Provider } from '@dandi/core'
 import { localOpinionatedToken } from './local-token'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface AppOptions {
-}
+export interface AppOptions {}
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface AppConfig {
-}
+export interface AppConfig {}
 
 export const AppConfig: InjectionToken<AppConfig> = localOpinionatedToken('AppConfig', {
   multi: false,
@@ -16,8 +14,7 @@ export const AppConfig: InjectionToken<AppConfig> = localOpinionatedToken('AppCo
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function installerConfigFactory(options: AppConfig): AppConfig {
-  return {
-  }
+  return {}
 }
 
 export function appConfigProvider(options: AppOptions): Provider<AppConfig> {

@@ -26,7 +26,11 @@ export class HalResultTransformer implements HttpPipelineResultTransformer {
   ) {}
 
   public async transform(result: HttpPipelineResult): Promise<HttpPipelineResult> {
-    if (isHttpPipelineErrorResult(result) || !isHttpPipelineDataResult(result) || result.data instanceof ComposedResource) {
+    if (
+      isHttpPipelineErrorResult(result) ||
+      !isHttpPipelineDataResult(result) ||
+      result.data instanceof ComposedResource
+    ) {
       return result
     }
     const meta = getAccessorMetadata(this.route.controllerCtr.prototype, this.route.controllerMethod.toString())
@@ -41,10 +45,7 @@ export class HalResultTransformer implements HttpPipelineResultTransformer {
       embeddedRels ? (Array.isArray(embeddedRels) ? embeddedRels : embeddedRels.split(',')) : [],
     )
     return Disposable.useAsync(context, async () => {
-      const resource = await this.composer.compose(
-        result.data,
-        context,
-      )
+      const resource = await this.composer.compose(result.data, context)
       return Object.assign({}, result, {
         data: resource,
         headers: result.headers,

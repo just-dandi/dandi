@@ -29,17 +29,14 @@ export const server = new DandiApplication({
     LoggingModule.use(ConsoleLogListener),
 
     // MVC
-    HttpPipelineModule
-      .cors({
-        allowOrigin: [
-          /localhost:\d{2,5}/,
-          /127\.0\.0\1:\d{2,5}/,
-        ],
-      }),
+    HttpPipelineModule.cors({
+      allowOrigin: [/localhost:\d{2,5}/, /127\.0\.0\1:\d{2,5}/],
+    }),
     MvcExpressModule.config({ port: parseInt(process.env.PORT, 10) || DEFAULT_SERVER_PORT }),
-    MvcViewModule
-      .engine('ejs', EjsViewEngine.config({ cache: false }))
-      .engine('pug', PugViewEngine.config({ cache: false })),
+    MvcViewModule.engine('ejs', EjsViewEngine.config({ cache: false })).engine(
+      'pug',
+      PugViewEngine.config({ cache: false }),
+    ),
     MvcHalModule,
     HyperviewViewRenderer,
     CustomErrorHandler,

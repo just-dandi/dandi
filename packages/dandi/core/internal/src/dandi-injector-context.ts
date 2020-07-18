@@ -40,7 +40,6 @@ let instanceId = 0
  * provider and access instances.
  */
 export class DandiInjectorContext implements InjectorContext, Disposable {
-
   public readonly instanceId: string
 
   protected readonly repository: Repository
@@ -97,20 +96,20 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
   }
 
   public addInstance<T>(provider: Provider<T>, value: T): T {
-    return this.withInstanceContext(provider, instanceContext => {
+    return this.withInstanceContext(provider, (instanceContext) => {
       instanceContext.repository.addInstance(provider.provide, value)
       return value
     })
   }
 
   public getInstance<T>(provider: Provider<T>): T {
-    return this.withInstanceContext(provider, instanceContext => {
+    return this.withInstanceContext(provider, (instanceContext) => {
       return instanceContext?.repository.getInstance(provider)
     })
   }
 
   public getInstanceRequest<T>(provider: Provider<T>): Promise<T> {
-    return this.withInstanceContext(provider, instanceContext => {
+    return this.withInstanceContext(provider, (instanceContext) => {
       const existingInstance = instanceContext.repository.getInstance<T>(provider)
       if (existingInstance) {
         return Promise.resolve(existingInstance)
@@ -120,7 +119,7 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
   }
 
   public async setInstanceRequest<T>(provider: Provider<T>, value: Promise<T>): Promise<T> {
-    return await this.withInstanceContext(provider, async instanceContext => {
+    return await this.withInstanceContext(provider, async (instanceContext) => {
       const existingInstance = instanceContext.repository.getInstance<T>(provider)
       if (existingInstance) {
         return existingInstance
@@ -154,7 +153,6 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
     }
 
     if (scopeRestriction) {
-
       const scopeBehavior = getScopeBehavior(scopeRestriction)
       if (scopeBehavior === ScopeBehavior.perInjector) {
         return this
@@ -164,7 +162,6 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
       if (scopesAreCompatible(this.scope, restrictedToScope)) {
         return this
       }
-
     } else if (matchContext === this) {
       return this
     }
@@ -174,7 +171,11 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
 
   public [CUSTOM_INSPECTOR](): string {
     const parts = [getInjectionScopeName(this.scope)]
-    if (this.parent && !(this.parent.scope instanceof AppInjectionScope) && !(this.parent.scope instanceof RootInjectionScope)) {
+    if (
+      this.parent &&
+      !(this.parent.scope instanceof AppInjectionScope) &&
+      !(this.parent.scope instanceof RootInjectionScope)
+    ) {
       parts.push(this.parent[CUSTOM_INSPECTOR]())
     }
     return parts.join('\nresolving ')
@@ -202,7 +203,7 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
   }
 
   protected registerInternal(registerable: Registerable[], source?: RegistrationSource): this {
-    registerable.forEach(entry => {
+    registerable.forEach((entry) => {
       if (Array.isArray(entry)) {
         this.registerInternal(entry)
         return

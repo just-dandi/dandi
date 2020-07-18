@@ -31,12 +31,10 @@ export interface LambdaHandlerFn<TEvent = any, TResult = any> extends Disposable
 
 @Injectable()
 export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
-
   public static handler<TEvent, TEventData, THandler extends LambdaHandler>(
     handlerServiceType: Constructor<THandler>,
     ...providers: Registerable[]
   ): LambdaHandlerFn<TEvent> {
-
     providers.push({
       provide: LambdaHandler,
       useClass: handlerServiceType,
@@ -74,9 +72,12 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
 
   public async handleEvent(event: TEvent, context: Context): Promise<any> {
     const providers = this.createProviders(event, context)
-    return Disposable.useAsync(this.injector.createChild(createHttpRequestScope(event as any), providers), async (injector) => {
-      return await injector.invoke(this.httpPipeline, 'handleRequest', ...providers)
-    })
+    return Disposable.useAsync(
+      this.injector.createChild(createHttpRequestScope(event as any), providers),
+      async (injector) => {
+        return await injector.invoke(this.httpPipeline, 'handleRequest', ...providers)
+      },
+    )
   }
 
   private createProviders(event: TEvent, context: Context): Provider<any>[] {

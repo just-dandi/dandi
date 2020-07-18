@@ -3,14 +3,12 @@ import { AsyncMutex, AsyncMutexLockAlreadyReleasedError, Disposable } from '@dan
 import { expect } from 'chai'
 import { stub } from 'sinon'
 
-describe('AsyncMutex', function() {
-
+describe('AsyncMutex', function () {
   function waiter(): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, 5))
+    return new Promise((resolve) => setTimeout(resolve, 5))
   }
 
   class TestObject implements Disposable {
-
     public get foo(): string {
       return 'bar'
     }
@@ -22,40 +20,36 @@ describe('AsyncMutex', function() {
     public dispose(): void | Promise<void> {
       return undefined
     }
-
   }
 
-  beforeEach(function() {
+  beforeEach(function () {
     this.lockObject = new TestObject()
     stub(this.lockObject, 'dispose')
     this.mutex = AsyncMutex.for(this.lockObject)
   })
-  afterEach(function() {
+  afterEach(function () {
     this.mutex.dispose()
   })
 
-  describe('for', function() {
-
-    it('returns an AsyncMutex instance', function() {
+  describe('for', function () {
+    it('returns an AsyncMutex instance', function () {
       expect(this.mutex).to.exist
       expect(this.mutex).to.be.instanceof(AsyncMutex)
     })
 
-    it('does not create duplicated instances for the same lock object', function() {
+    it('does not create duplicated instances for the same lock object', function () {
       expect(AsyncMutex.for(this.lockObject)).to.equal(this.mutex)
       expect(AsyncMutex.for(this.lockObject)).to.equal(AsyncMutex.for(this.lockObject))
     })
-
   })
 
-  describe('getLock', function() {
-
-    it('returns a lock object if no other locks are active', async function() {
+  describe('getLock', function () {
+    it('returns a lock object if no other locks are active', async function () {
       const lock = await this.mutex.getLock()
       expect(lock).to.exist
     })
 
-    it('waits for a previous lock to be released if there is at least one active lock', async function() {
+    it('waits for a previous lock to be released if there is at least one active lock', async function () {
       const gotFirstLock = stub().returnsArg(0)
       const gotSecondLock = stub().returnsArg(0)
       const firstLockRequest = this.mutex.getLock().then(gotFirstLock)
@@ -70,10 +64,9 @@ describe('AsyncMutex', function() {
       const secondLock = await secondLockRequest
       expect(gotSecondLock).to.have.been.called
       secondLock.dispose('byeee')
-
     })
 
-    it('waits for the previous lock to be released if there are multiple pending locks', async function() {
+    it('waits for the previous lock to be released if there are multiple pending locks', async function () {
       const gotFirstLock = stub().returnsArg(0)
       const gotSecondLock = stub().returnsArg(0)
       const gotThirdLock = stub().returnsArg(0)
@@ -98,43 +91,38 @@ describe('AsyncMutex', function() {
       thirdLock.dispose('byeee')
     })
 
-    describe('LockedObject', function() {
-
-      beforeEach(async function() {
+    describe('LockedObject', function () {
+      beforeEach(async function () {
         this.lockedObject = await this.mutex.getLock()
       })
 
-      it('allows properties of the original object to be called', function() {
+      it('allows properties of the original object to be called', function () {
         expect(this.lockedObject.foo).to.equal('bar')
       })
 
-      it('allows methods of the original object to be called, maintaing the correct "this" object', function() {
+      it('allows methods of the original object to be called, maintaing the correct "this" object', function () {
         expect(this.lockedObject.getFoo()).to.equal('bar')
       })
 
-      it('overrides the dispose method without calling the dispose method on the original object', async function() {
+      it('overrides the dispose method without calling the dispose method on the original object', async function () {
         await this.lockedObject.dispose()
         expect(this.lockObject.dispose).not.to.have.been.called
       })
 
-      it('no longer allows access to the original object after disposal', async function() {
+      it('no longer allows access to the original object after disposal', async function () {
         await this.lockedObject.dispose()
         expect(() => this.lockedObject.getFoo).to.throw(AsyncMutexLockAlreadyReleasedError)
       })
 
-      it('does not overwrite properties on the underlying lockObject', async function() {
+      it('does not overwrite properties on the underlying lockObject', async function () {
         await this.lockedObject.dispose()
         expect(this.lockObject.getFoo).to.be.a('function')
       })
-
     })
-
   })
 
-  describe('runLocked', function() {
-
-    it('runs tasks in sequence', async function() {
-
+  describe('runLocked', function () {
+    it('runs tasks in sequence', async function () {
       const stubA = stub()
       const stubB = stub()
 
@@ -143,11 +131,9 @@ describe('AsyncMutex', function() {
 
       await b
       expect(stubA).to.have.been.calledBefore(stubB)
-
     })
 
-    it('runs several tasks in sequence', async function() {
-
+    it('runs several tasks in sequence', async function () {
       const stubs: any = {
         a: () => {},
         b: () => {},
@@ -168,11 +154,9 @@ describe('AsyncMutex', function() {
       expect(stubs.a).to.have.been.calledBefore(stubs.b)
       expect(stubs.b).to.have.been.calledBefore(stubs.c)
       expect(stubs.c).to.have.been.calledBefore(stubs.d)
-
     })
 
-    it('runs subsequent tasks if a previous task fails', async function() {
-
+    it('runs subsequent tasks if a previous task fails', async function () {
       const stubA = stub().throws()
       const stubB = stub()
 
@@ -182,9 +166,6 @@ describe('AsyncMutex', function() {
       await expect(a).to.have.been.rejected
       await expect(b).to.have.been.fulfilled
       expect(stubB).to.have.been.called
-
     })
-
   })
-
 })

@@ -13,12 +13,8 @@ import { EjsViewEngine } from '@dandi-contrib/mvc-view-ejs'
 import { PugViewEngine } from '@dandi-contrib/mvc-view-pug'
 
 new DandiApplication({
-  providers: [
-    MvcViewModule
-      .engine('ejs', EjsViewEngine)
-      .engine('pug', PugViewEngine),
-  ],
-});
+  providers: [MvcViewModule.engine('ejs', EjsViewEngine).engine('pug', PugViewEngine)],
+})
 ```
 
 ## Static View Resolution
@@ -36,19 +32,17 @@ import { View } from '@dandi/mvc-view'
 
 @Controller('my')
 class MyController {
-  
   @HttpGet('static')
   @View('static-template-name')
   staticTemplateName() {
     return { some: 'data' }
   }
-  
+
   @HttpGet('static-ext')
   @View('static-template-name.pug')
   staticTemplateNamePug() {
     return { some: 'data' }
   }
-  
 }
 ```
 
@@ -64,17 +58,17 @@ import { View, ViewResultFactory } from '@dandi/mvc-view'
 
 @Controller('my')
 class MyController {
-  
+
   constructor(
     @Inject(ViewResultFactory) private viewResult: ViewResultFactory,
   ) {}
-  
+
   @HttpGet('dynamic')
   @View()
   dynamicTemplateName() {
     const viewName = Math.random() > 0.5 ? 'dynamic-a' : 'dynamic-b'
     return this.viewResult(viewName, { some: 'data' })
   }
-  
+
 }
 ```

@@ -10,11 +10,9 @@ import { expect } from 'chai'
 import { SinonStubbedInstance } from 'sinon'
 
 describe('DandiRouteExecutor', () => {
-
   const fooToken = SymbolToken.for('Foo')
 
   class FakeHttpPipeline {
-
     public readonly handleRequestStub = stub()
 
     public async handleRequest(@Inject(fooToken) foo: string): Promise<any> {
@@ -23,7 +21,8 @@ describe('DandiRouteExecutor', () => {
     }
   }
 
-  const harness = stubHarness(DandiRouteExecutor,
+  const harness = stubHarness(
+    DandiRouteExecutor,
     {
       provide: Route,
       useFactory: () => route,
@@ -75,8 +74,9 @@ describe('DandiRouteExecutor', () => {
       },
     ]
     routeInit = {
-      initRouteRequest: stub<[Route, HttpRequest, HttpRequestInfo, HttpResponse], Provider<any>[]>()
-        .callsFake(() => providers),
+      initRouteRequest: stub<[Route, HttpRequest, HttpRequestInfo, HttpResponse], Provider<any>[]>().callsFake(
+        () => providers,
+      ),
     }
     route = {
       // eslint-disable-next-line brace-style
@@ -112,7 +112,6 @@ describe('DandiRouteExecutor', () => {
   })
 
   describe('execRoute', () => {
-
     it('calls initRouteRequest on the provided RouteInitializer', async () => {
       // FIXME: using calledWith here doesn't work because things still somehow get remapDispose'd and chai can't
       //        stringify objects that have been remapDispose'd, so it fails with "already disposed" errors
@@ -121,7 +120,6 @@ describe('DandiRouteExecutor', () => {
     })
 
     it('uses the providers from initRouteRequest to invoke the HttpPipeline', async () => {
-
       // sanity check - fooToken should not be available for general injection
       expect(await harness.inject(fooToken, true)).not.to.exist
 
@@ -140,12 +138,14 @@ describe('DandiRouteExecutor', () => {
 
       await routeExec.execRoute(route, req, res)
 
-      expect(res.send).to.have.been.calledOnceWithExactly(JSON.stringify({
-        error: {
-          type: 'SomeKindOfError',
-          message: 'oh no',
-        },
-      }))
+      expect(res.send).to.have.been.calledOnceWithExactly(
+        JSON.stringify({
+          error: {
+            type: 'SomeKindOfError',
+            message: 'oh no',
+          },
+        }),
+      )
     })
 
     it('uses the status code from thrown errors if present', async () => {
@@ -162,12 +162,14 @@ describe('DandiRouteExecutor', () => {
       await routeExec.execRoute(route, req, res)
 
       expect(res.status).to.have.been.calledWith(HttpStatusCode.teapot)
-      expect(res.send).to.have.been.calledOnceWithExactly(JSON.stringify({
-        error: {
-          type: 'SomeKindOfError',
-          message: 'oh no, not again!',
-        },
-      }))
+      expect(res.send).to.have.been.calledOnceWithExactly(
+        JSON.stringify({
+          error: {
+            type: 'SomeKindOfError',
+            message: 'oh no, not again!',
+          },
+        }),
+      )
     })
 
     it('defaults to the status code 500 if the error does not specify one', async () => {
@@ -200,6 +202,5 @@ describe('DandiRouteExecutor', () => {
       expect(httpPipeline.handleRequestStub).not.to.have.been.called
       expect(res.status).to.have.been.calledWith(HttpStatusCode.forbidden)
     })
-
   })
 })

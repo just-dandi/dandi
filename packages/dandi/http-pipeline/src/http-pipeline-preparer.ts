@@ -28,15 +28,22 @@ export interface HttpPipelinePreparerMetadata {
   dependencyResultTokens: Set<InjectionToken<HttpPipelinePreparerResult>>
 }
 
-export function getHttpPipelinePreparerMetadata(target: Constructor<HttpPipelinePreparer>): HttpPipelinePreparerMetadata {
+export function getHttpPipelinePreparerMetadata(
+  target: Constructor<HttpPipelinePreparer>,
+): HttpPipelinePreparerMetadata {
   return getMetadata<HttpPipelinePreparerMetadata>(
     HTTP_REQUEST_PREPARER_META_KEY,
-    () => ({ dependencyResultTokens: new Set<InjectionToken<any>>(), deps: new Set<Constructor<HttpPipelinePreparer>>() }),
+    () => ({
+      dependencyResultTokens: new Set<InjectionToken<any>>(),
+      deps: new Set<Constructor<HttpPipelinePreparer>>(),
+    }),
     target,
   )
 }
 
-export function HttpPipelinePreparerResult(preparer: Constructor<HttpPipelinePreparer>): InjectionToken<HttpPipelinePreparerResult> {
+export function HttpPipelinePreparerResult(
+  preparer: Constructor<HttpPipelinePreparer>,
+): InjectionToken<HttpPipelinePreparerResult> {
   let token: InjectionToken<HttpPipelinePreparerResult> = PREPARER_RESULT_TOKENS.get(preparer)
   if (!token) {
     token = localOpinionatedToken<any>(`HttpPipelinePreparerResult:${preparer.name}`, {
@@ -48,19 +55,22 @@ export function HttpPipelinePreparerResult(preparer: Constructor<HttpPipelinePre
   return token
 }
 
-export function httpPipelinePreparerResultProvider(preparer: Constructor<HttpPipelinePreparer>): Provider<HttpPipelinePreparerResult> {
+export function httpPipelinePreparerResultProvider(
+  preparer: Constructor<HttpPipelinePreparer>,
+): Provider<HttpPipelinePreparerResult> {
   const meta = getHttpPipelinePreparerMetadata(preparer)
   const preparerDeps: InjectionToken<any>[] = [...meta.dependencyResultTokens]
   const deps = [Injector, HttpRequest].concat(preparerDeps)
   const depConstructors = [...meta.deps]
   const providers = depConstructors
-    .map(dep => httpPipelinePreparerResultProvider(dep))
+    .map((dep) => httpPipelinePreparerResultProvider(dep))
     .concat(depConstructors.map(httpPipelinePreparerResultProvider))
   const provide = HttpPipelinePreparerResult(preparer)
   async function httpPipelinePreparerResultProviderFactory(
     injector: Injector,
     req: HttpRequest,
-    ...results: Provider<any>[][]): Promise<Provider<any>[]> {
+    ...results: Provider<any>[][]
+  ): Promise<Provider<any>[]> {
     const allDependentResults = results.reduce((result, preparerResults) => {
       result.push(...preparerResults)
       return result
@@ -92,11 +102,11 @@ function httpPipelinePreparerDecorator(
   // from httpPipelinePreparerResultProvider
   Injectable(target, NotMulti, RestrictScope(ScopeBehavior.perInjector(HttpRequestScope)))(target)
   const meta = getHttpPipelinePreparerMetadata(target)
-  deps.forEach(dep => meta.deps.add(dep))
-  depResultTokens.forEach(token => meta.dependencyResultTokens.add(token))
+  deps.forEach((dep) => meta.deps.add(dep))
+  depResultTokens.forEach((token) => meta.dependencyResultTokens.add(token))
 }
 
 export function HttpPipelinePreparer(...deps: Constructor<HttpPipelinePreparer>[]): ClassDecorator {
-  const depResultTokens = deps.map(dep => HttpPipelinePreparerResult(dep))
+  const depResultTokens = deps.map((dep) => HttpPipelinePreparerResult(dep))
   return httpPipelinePreparerDecorator.bind(null, deps, depResultTokens)
 }

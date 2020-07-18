@@ -60,10 +60,13 @@ export class DandiRouteExecutor implements RouteExecutor {
       )
 
       performance.mark('DandiRouteExecutor.execRoute', 'beforeHandleRequest')
-      await Disposable.useAsync(this.injector.createChild(createHttpRequestScope(req), requestProviders), async requestInjector => {
-        await requestInjector.invoke(this as DandiRouteExecutor, 'checkAuthorizationConditions')
-        await requestInjector.invoke(this.pipeline, 'handleRequest')
-      })
+      await Disposable.useAsync(
+        this.injector.createChild(createHttpRequestScope(req), requestProviders),
+        async (requestInjector) => {
+          await requestInjector.invoke(this as DandiRouteExecutor, 'checkAuthorizationConditions')
+          await requestInjector.invoke(this.pipeline, 'handleRequest')
+        },
+      )
       performance.mark('DandiRouteExecutor.execRoute', 'afterHandleRequest')
 
       this.logger.debug(
@@ -83,12 +86,14 @@ export class DandiRouteExecutor implements RouteExecutor {
       res
         .status(err.statusCode || HttpStatusCode.internalServerError)
         .header(HttpHeader.contentType, MimeType.applicationJson)
-        .send(JSON.stringify({
-          error: {
-            type: err.constructor.name,
-            message: err.message,
-          },
-        }))
+        .send(
+          JSON.stringify({
+            error: {
+              type: err.constructor.name,
+              message: err.message,
+            },
+          }),
+        )
     } finally {
       this.logger.debug(
         `end execRoute ${route.controllerCtr.name}.${route.controllerMethod.toString()}:`,

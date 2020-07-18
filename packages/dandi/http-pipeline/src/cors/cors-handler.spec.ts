@@ -1,16 +1,10 @@
 import { testHarness } from '@dandi/core/testing'
 import { HttpHeader, HttpMethod } from '@dandi/http'
-import {
-  CorsHandler,
-  CorsHeaderValues,
-  HttpPipelineResult,
-  isHttpPipelineVoidResult,
-} from '@dandi/http-pipeline'
+import { CorsHandler, CorsHeaderValues, HttpPipelineResult, isHttpPipelineVoidResult } from '@dandi/http-pipeline'
 
 import { expect } from 'chai'
 
 describe('CorsHandler', () => {
-
   const harness = testHarness(CorsHandler, {
     provide: CorsHeaderValues,
     useFactory: () => corsHeaderValues,
@@ -24,7 +18,6 @@ describe('CorsHandler', () => {
   })
 
   it('resolves with a HttpPipelineVoidResult that includes the headers from CorsHeaderValues', async () => {
-
     corsHeaderValues = new CorsHeaderValues(
       'some-origin.com',
       [HttpMethod.get, HttpMethod.post],
@@ -37,7 +30,5 @@ describe('CorsHandler', () => {
 
     expect(isHttpPipelineVoidResult(result)).to.be.true
     expect(result.headers).to.include(corsHeaderValues)
-
   })
-
 })

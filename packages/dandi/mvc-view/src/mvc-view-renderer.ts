@@ -17,7 +17,6 @@ import { ViewResultFactory } from './view-result-factory'
 @Injectable(RestrictScope(HttpRequestScope))
 @Renderer(MimeType.textHtml, MimeType.textHtmlPartial)
 export class MvcViewRenderer extends HttpPipelineRendererBase {
-
   protected readonly defaultContentType: string = MimeType.textHtml
 
   constructor(
@@ -39,17 +38,12 @@ export class MvcViewRenderer extends HttpPipelineRendererBase {
 
     const factoryResult = await this.injector.inject(ViewResultFactory)
     const factory = factoryResult.singleValue
-    const data = isHttpPipelineDataResult(pipelineResult) ?
-      pipelineResult.data instanceof HttpPipelineErrorRendererDataFactory ?
-        pipelineResult.data.getErrorRendererData(this.pipelineConfig.debugMode) :
-        pipelineResult.data :
-      {}
-    const viewResult = await factory(
-      undefined,
-      data,
-      pipelineResult.errors,
-      pipelineResult.statusCode,
-    )
+    const data = isHttpPipelineDataResult(pipelineResult)
+      ? pipelineResult.data instanceof HttpPipelineErrorRendererDataFactory
+        ? pipelineResult.data.getErrorRendererData(this.pipelineConfig.debugMode)
+        : pipelineResult.data
+      : {}
+    const viewResult = await factory(undefined, data, pipelineResult.errors, pipelineResult.statusCode)
     return viewResult.render()
   }
 }

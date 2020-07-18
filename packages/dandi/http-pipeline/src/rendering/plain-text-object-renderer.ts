@@ -11,20 +11,18 @@ import { Renderer } from './renderer-decorator'
 
 @Renderer(MimeType.textPlain, MimeType.any)
 export class PlainTextObjectRenderer extends HttpPipelineRendererBase {
-
   protected readonly defaultContentType: string = MimeType.textPlain
 
-  constructor(
-    @Inject(HttpPipelineConfig) private config: HttpPipelineConfig,
-  ) {
+  constructor(@Inject(HttpPipelineConfig) private config: HttpPipelineConfig) {
     super()
   }
 
   protected renderPipelineResult(contentType: string, pipelineResult: HttpPipelineDataResult): string {
     if (isHttpPipelineErrorResult(pipelineResult)) {
-      const dataFactory = pipelineResult.data instanceof HttpPipelineErrorRendererDataFactory ?
-        pipelineResult.data :
-        new HttpPipelineErrorRendererDataFactory(pipelineResult)
+      const dataFactory =
+        pipelineResult.data instanceof HttpPipelineErrorRendererDataFactory
+          ? pipelineResult.data
+          : new HttpPipelineErrorRendererDataFactory(pipelineResult)
       return this.renderError(dataFactory.getErrorRendererData(this.config.debugMode))
     }
 
@@ -36,28 +34,20 @@ export class PlainTextObjectRenderer extends HttpPipelineRendererBase {
   }
 
   public renderError(data: HttpPipelineErrorData): string {
-    return data.errors.reduce((result, entry) => {
-      result.push(
-        '--------------------------------',
-        '',
-        entry.message,
+    return data.errors
+      .reduce(
+        (result, entry) => {
+          result.push('--------------------------------', '', entry.message)
+          if (entry.innerMessage) {
+            result.push('', entry.innerMessage)
+          }
+          if (entry.stack) {
+            result.push('', entry.stack)
+          }
+          return result
+        },
+        [`Error ${data.statusCode}`],
       )
-      if (entry.innerMessage) {
-        result.push(
-          '',
-          entry.innerMessage,
-        )
-      }
-      if (entry.stack) {
-        result.push(
-          '',
-          entry.stack,
-        )
-      }
-      return result
-    }, [
-      `Error ${data.statusCode}`,
-    ]).join('\n')
+      .join('\n')
   }
-
 }

@@ -1,17 +1,10 @@
-import {
-  AmbientInjectableScanner,
-  Inject,
-  Injectable,
-  NoopLogger,
-  Injector,
-} from '@dandi/core'
+import { AmbientInjectableScanner, Inject, Injectable, NoopLogger, Injector } from '@dandi/core'
 import { GLOBAL_SCOPE, Repository, RootInjectionScope } from '@dandi/core/internal'
 import { testHarness, testHarnessSingle } from '@dandi/core/testing'
 import { expect } from 'chai'
 import { SinonStub, stub } from 'sinon'
 
 describe('AmbientInjectableScanner', () => {
-
   testHarness()
 
   let globalRepo: Repository
@@ -28,7 +21,7 @@ describe('AmbientInjectableScanner', () => {
     globalRepo = Repository.for(GLOBAL_SCOPE)
   })
   afterEach(() => {
-    (Repository.for as SinonStub).restore()
+    ;(Repository.for as SinonStub).restore()
     Repository.for(RootInjectionScope).dispose('end of test')
   })
 
@@ -45,7 +38,7 @@ describe('AmbientInjectableScanner', () => {
 
     const harness = await testHarnessSingle(AmbientInjectableScanner)
 
-    expect((await harness.inject(TestInjectable))).to.be.instanceOf(TestInjectable)
+    expect(await harness.inject(TestInjectable)).to.be.instanceOf(TestInjectable)
   })
 
   it('does not create multiple instances of singletons when required by different dependents', async () => {
@@ -66,7 +59,6 @@ describe('AmbientInjectableScanner', () => {
     const result2 = await harness.inject(TestB)
 
     expect(result1.jon).to.equal(result2.jon)
-
   })
 
   it('does not create multiple instances of injectables when required by nested dependents', async () => {
@@ -89,7 +81,6 @@ describe('AmbientInjectableScanner', () => {
     const result = await harness.inject(TestB)
 
     expect(result.jon).to.equal(result.test.jon)
-
   })
 
   it('does not create multiple instances of singletons when explicitly resolving', async () => {
@@ -113,7 +104,6 @@ describe('AmbientInjectableScanner', () => {
     const factory = await harness.inject(TestFactory)
     const test = await factory.createTest()
     expect(factory.jon).to.equal(test.jon)
-
   })
 
   it('does not create multiple instances of singletons when invoking', async () => {
@@ -138,6 +128,5 @@ describe('AmbientInjectableScanner', () => {
     const factory = await harness.inject(TestFactory)
     const jon = await harness.invoke(factory, 'getJon')
     expect(jon).to.equal(factory.jon)
-
   })
 })

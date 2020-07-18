@@ -6,7 +6,6 @@ import { httpResponseFixture } from '@dandi/http/testing'
 import { expect } from 'chai'
 
 describe('HttpResponsePipelineTerminator', () => {
-
   let request: HttpRequest
   let response: HttpResponse
   let logger: Logger
@@ -62,12 +61,10 @@ describe('HttpResponsePipelineTerminator', () => {
       }
       await classUnderTest.terminateResponse(renderResult)
 
-      expect(response.header).to.have.been
-        .calledThrice
-        .calledWithExactly(HttpHeader.wwwAuthenticate, 'Bearer')
+      expect(response.header)
+        .to.have.been.calledThrice.calledWithExactly(HttpHeader.wwwAuthenticate, 'Bearer')
         .calledWithExactly(HttpHeader.xPoweredBy, 'Joe Llama')
         .calledWithExactly(HttpHeader.contentType, MimeType.textPlain)
     })
   })
-
 })

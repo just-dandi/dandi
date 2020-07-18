@@ -25,10 +25,13 @@ export type ViewResultFactory = (
   statusCode?: HttpStatusCode,
 ) => Promise<ViewResult>
 
-export const ViewResultFactory: InjectionToken<ViewResultFactory> = localToken.opinionated<ViewResultFactory>('ViewResultFactory', {
-  multi: false,
-  restrictScope: HttpRequestScope,
-})
+export const ViewResultFactory: InjectionToken<ViewResultFactory> = localToken.opinionated<ViewResultFactory>(
+  'ViewResultFactory',
+  {
+    multi: false,
+    restrictScope: HttpRequestScope,
+  },
+)
 
 function canUseView(view: ViewMetadata, headers: HttpRequestHeadersAccessor): boolean {
   if (!view.filter?.length) {
@@ -38,7 +41,6 @@ function canUseView(view: ViewMetadata, headers: HttpRequestHeadersAccessor): bo
   const accept = headers.get(HttpHeader.accept)
 
   for (const filter of view.filter) {
-
     if (typeof filter === 'string') {
       const [mimeType] = parseMimeTypes(filter)
       if (mimeTypesAreCompatible(accept, mimeType)) {
@@ -56,11 +58,15 @@ function canUseView(view: ViewMetadata, headers: HttpRequestHeadersAccessor): bo
       if (matcher instanceof RegExp) {
         return matcher.test(headerValue.toString())
       }
-      switch(typeof matcher) {
-        case 'function': return matcher(headerValue)
-        case 'boolean': return matcher === parseBoolean(headerValue)
-        case 'number': return matcher === parseFloat(headerValue.toString())
-        case 'string': return matcher.toLocaleLowerCase() === headerValue.toString().toLocaleLowerCase()
+      switch (typeof matcher) {
+        case 'function':
+          return matcher(headerValue)
+        case 'boolean':
+          return matcher === parseBoolean(headerValue)
+        case 'number':
+          return matcher === parseFloat(headerValue.toString())
+        case 'string':
+          return matcher.toLocaleLowerCase() === headerValue.toString().toLocaleLowerCase()
       }
 
       // Compare use JSON stringifying as a last-ditch effort - it's faster than recursively checking deep objects, but
@@ -71,7 +77,6 @@ function canUseView(view: ViewMetadata, headers: HttpRequestHeadersAccessor): bo
     if (headersMatch) {
       return true
     }
-
   }
 
   return false
@@ -83,12 +88,7 @@ function viewResultFactory(
   route: ViewRoute,
   headers?: HttpRequestHeadersAccessor,
 ): ViewResultFactory {
-  return async (
-    name?: string,
-    data?: any,
-    errors?: Error[],
-    statusCode?: HttpStatusCode,
-  ): Promise<ViewResult> => {
+  return async (name?: string, data?: any, errors?: Error[], statusCode?: HttpStatusCode): Promise<ViewResult> => {
     statusCode = statusCode || (errors?.length ? HttpStatusCode.internalServerError : undefined)
     const [error] = errors || []
     if (error) {

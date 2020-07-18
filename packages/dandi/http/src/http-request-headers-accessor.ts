@@ -12,13 +12,15 @@ export interface HttpRequestHeadersAccessor {
   get<THeaderName extends HttpRequestHeader>(headerName: THeaderName): HttpRequestHeaders[THeaderName]
 }
 
-export const HttpRequestHeadersAccessor = localOpinionatedToken<HttpRequestHeadersAccessor>('HttpRequestHeadersAccessor', {
-  multi: false,
-  restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
-})
+export const HttpRequestHeadersAccessor = localOpinionatedToken<HttpRequestHeadersAccessor>(
+  'HttpRequestHeadersAccessor',
+  {
+    multi: false,
+    restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
+  },
+)
 
 export abstract class HttpRequestHeadersAccessorBase implements HttpRequestHeadersAccessor {
-
   protected constructor(protected readonly headers: Map<HttpRequestHeader, any>) {}
 
   public get<THeaderName extends HttpRequestHeader>(headerName: THeaderName): HttpRequestHeaders[THeaderName] {
@@ -37,7 +39,6 @@ export abstract class HttpRequestHeadersAccessorBase implements HttpRequestHeade
 
 @Injectable(HttpRequestHeadersAccessor)
 export class DandiHttpRequestHeadersAccessor extends HttpRequestHeadersAccessorBase {
-
   constructor(
     @Inject(HttpRequest) private readonly request: HttpRequest,
     @Inject(HttpRequestHeadersCache) headers: HttpRequestHeadersCache,
@@ -48,11 +49,9 @@ export class DandiHttpRequestHeadersAccessor extends HttpRequestHeadersAccessorB
   protected getRawHeaderValue(headerName: HttpHeader): string {
     return this.request.get(headerName)
   }
-
 }
 
 export class HttpRequestHeadersHashAccessor extends HttpRequestHeadersAccessorBase {
-
   public static fromParsed(headers: HttpRequestHeaders): HttpRequestHeadersHashAccessor {
     return new HttpRequestHeadersHashAccessor({}, headers)
   }
@@ -80,5 +79,4 @@ export class HttpRequestHeadersHashAccessor extends HttpRequestHeadersAccessorBa
   protected getRawHeaderValue(headerName: HttpHeader): string {
     return this.rawHeaders[headerName]
   }
-
 }

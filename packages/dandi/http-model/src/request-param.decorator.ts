@@ -60,7 +60,7 @@ export function makeRequestParamDecorator<T>(
   name: string,
   optional: boolean,
 ): RequestParamDecorator<T> {
-  const apply: ParameterDecorator & RequestParamDecorator<T> = function(
+  const apply: ParameterDecorator & RequestParamDecorator<T> = function (
     target: MethodTarget<any>,
     memberName: string,
     paramIndex: number,

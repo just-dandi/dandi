@@ -12,7 +12,6 @@ import { expect } from 'chai'
 import { spy, stub } from 'sinon'
 
 describe('DandiApplication', () => {
-
   let logger: Logger
   let application: DandiApplication
 
@@ -26,7 +25,6 @@ describe('DandiApplication', () => {
   })
 
   describe('preInit', () => {
-
     it('registers any providers specified in the constructor configuration', async () => {
       const token1 = new SymbolToken('test-1')
       const token2 = new SymbolToken('test-2')
@@ -50,7 +48,6 @@ describe('DandiApplication', () => {
     })
 
     describe('init', () => {
-
       it('runs any scanners registered in the constructor configuration and adds the resulting providers to the root injector', async () => {
         const token1 = SymbolToken.for('Foo')
         const provider1 = {
@@ -80,7 +77,9 @@ describe('DandiApplication', () => {
         })
 
         await (application as any).initHost.preInit()
-        await (application as any).initHost.init((application as any).initHost.appInjector, logger, () => new Date().valueOf())
+        await (application as any).initHost.init((application as any).initHost.appInjector, logger, () =>
+          new Date().valueOf(),
+        )
 
         expect(scanner1.scan).to.have.been.calledOnce
         expect(scanner2.scan).to.have.been.calledOnce

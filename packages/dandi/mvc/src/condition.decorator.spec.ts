@@ -22,8 +22,7 @@ import {
 import { expect } from 'chai'
 import { stub } from 'sinon'
 
-xdescribe('ConditionDecorator', function() {
-
+xdescribe('ConditionDecorator', function () {
   const collection = {
     provide: CollectionResource,
     useValue: ['foo', 'bar', 'hey'],
@@ -34,7 +33,7 @@ xdescribe('ConditionDecorator', function() {
     @Authorized()
     @HttpGet('test')
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    public testMethod(@PathParam(String).within(collection) foo: string): void {}
+    public testMethod(@(PathParam(String).within(collection)) foo: string): void {}
   }
 
   it("adds a condition to the method's metadata", () => {
@@ -50,11 +49,9 @@ xdescribe('ConditionDecorator', function() {
     expect(condition.useFactory).to.be.instanceOf(Function)
   })
 
-  it('resolves to an AuthorizationCondition', async function() {
+  it('resolves to an AuthorizationCondition', async function () {
     const req: any = {
-      get: stub()
-        .withArgs('Authorization')
-        .returns('Hey 12345'),
+      get: stub().withArgs('Authorization').returns('Hey 12345'),
       params: { foo: 'bar' },
       query: {},
     }

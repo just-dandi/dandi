@@ -1,7 +1,6 @@
 import { HalLink, HalLinks } from '@dandi/hal'
 
 export class HalModelBase {
-
   private _links: HalLinks
   private _embedded: { [rel: string]: HalModelBase | HalModelBase[] }
 

@@ -5,7 +5,6 @@ import { expect } from 'chai'
 import { createStubInstance, SinonStubbedInstance } from 'sinon'
 
 describe('ResolverContext', () => {
-
   let token: InjectionToken<any>
   let match: Provider<any>
   let matchContext: SinonStubbedInstance<DandiInjectorContext>
@@ -22,11 +21,11 @@ describe('ResolverContext', () => {
       useValue: {},
     }
     matchContext = createStubInstance(DandiInjectorContext)
-    matchContextInst = matchContext as unknown as DandiInjectorContext
+    matchContextInst = (matchContext as unknown) as DandiInjectorContext
     scope = class TestScope {}
     injectorContext = createStubInstance(DandiInjectorContext)
     Object.assign(injectorContext, { scope })
-    injectorContextInst = injectorContext as unknown as DandiInjectorContext
+    injectorContextInst = (injectorContext as unknown) as DandiInjectorContext
     resolverContext = new DandiResolverContext(token, match, matchContextInst, injectorContextInst)
   })
   afterEach(() => {
@@ -93,5 +92,4 @@ describe('ResolverContext', () => {
       expect(injectorContext.addInstance).to.have.been.calledOnceWithExactly(provider, value)
     })
   })
-
 })

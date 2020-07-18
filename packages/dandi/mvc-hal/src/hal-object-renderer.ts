@@ -7,12 +7,9 @@ import { HalMimeTypes } from './hal-mime-types'
 @Injectable(RestrictScope(HttpRequestScope))
 @Renderer(HalMimeTypes.halJson, HalMimeTypes.halXml, HalMimeTypes.halYaml)
 export class HalObjectRenderer extends HttpPipelineRendererBase {
-
   public readonly defaultContentType: string = HalMimeTypes.halJson
 
-  constructor(
-    @Inject(Injector) private injector: Injector,
-  ) {
+  constructor(@Inject(Injector) private injector: Injector) {
     super()
   }
 
@@ -42,5 +39,4 @@ export class HalObjectRenderer extends HttpPipelineRendererBase {
     const result = await renderer.render(subRendererMimeType, pipelineResult)
     return result.renderedBody
   }
-
 }

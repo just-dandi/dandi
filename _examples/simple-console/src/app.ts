@@ -5,7 +5,6 @@ const SIM_FAKE_WORK_TIMEOUT = 50
 
 @Injectable(EntryPoint)
 export class SimpleConsoleApp implements EntryPoint {
-
   constructor(@Inject(Logger) private logger: Logger) {}
 
   public async run(): Promise<void> {
@@ -26,7 +25,6 @@ export class SimpleConsoleApp implements EntryPoint {
   }
 
   private fakeWork(timeout: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, timeout))
+    return new Promise((resolve) => setTimeout(resolve, timeout))
   }
-
 }

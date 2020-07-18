@@ -6,7 +6,6 @@ import { DependencyInjectionScope } from '@dandi/core/types'
  * as the parent of {@link AppInjectionScope}
  */
 export class RootInjectionScope extends DependencyInjectionScope {
-
   private static readonly value = '[RootInjector]'
 
   constructor() {
@@ -22,7 +21,6 @@ export class RootInjectionScope extends DependencyInjectionScope {
  * @internal
  */
 export class AppInjectionScope extends DependencyInjectionScope {
-
   private static readonly value = '[AppInjector]'
 
   constructor() {

@@ -37,8 +37,8 @@ interface InvokeViewResult {
 }
 
 describe('ViewResultFactory', () => {
-
-  const harness = testHarness(VIEW_RESULT_FACTORY,
+  const harness = testHarness(
+    VIEW_RESULT_FACTORY,
     {
       provide: ViewEngineResolver,
       useFactory: () => createStubInstance(ViewEngineResolver),
@@ -75,10 +75,12 @@ describe('ViewResultFactory', () => {
       render: stub(),
     }
 
-    resolver.resolve.callsFake((view: ViewMetadata, name?: string) => Promise.resolve({
-      templatePath: resolve(view?.context || '', name || view?.name),
-      engine,
-    }))
+    resolver.resolve.callsFake((view: ViewMetadata, name?: string) =>
+      Promise.resolve({
+        templatePath: resolve(view?.context || '', name || view?.name),
+        engine,
+      }),
+    )
 
     const viewResult: any = await factory(viewName, data, errors, httpStatus)
     const renderResult = await viewResult.render()
@@ -159,10 +161,7 @@ describe('ViewResultFactory', () => {
 
     headers.get.withArgs(HttpHeader.accept).returns(parseMimeTypes(MimeType.textHtmlPartial))
 
-    const {
-      engine,
-      data,
-    } = await invokeView(viewFull, viewPartial)
+    const { engine, data } = await invokeView(viewFull, viewPartial)
 
     expect(engine.render).to.have.been.calledWithExactly(viewPartial, resolve(viewPartial.name), data)
   })
@@ -171,24 +170,25 @@ describe('ViewResultFactory', () => {
     const viewFullComparer = stub().returns(false)
     const viewFull = {
       name: 'test-full',
-      filter: [{
-        ['X-Custom-Thing']: viewFullComparer,
-      } as HttpRequestHeaderComparers],
+      filter: [
+        {
+          ['X-Custom-Thing']: viewFullComparer,
+        } as HttpRequestHeaderComparers,
+      ],
     } as ViewMetadata
     const viewPartialComparer = stub().returns(true)
     const viewPartial = {
       name: 'test-partial',
-      filter: [{
-        ['X-Custom-Thing']: viewPartialComparer,
-      } as HttpRequestHeaderComparers],
+      filter: [
+        {
+          ['X-Custom-Thing']: viewPartialComparer,
+        } as HttpRequestHeaderComparers,
+      ],
     } as ViewMetadata
 
     headers.get.withArgs('X-Custom-Thing' as any).returns('the-custom-thing-value')
 
-    const {
-      engine,
-      data,
-    } = await invokeView(viewFull, viewPartial)
+    const { engine, data } = await invokeView(viewFull, viewPartial)
 
     expect(viewFullComparer).to.have.been.calledWithExactly('the-custom-thing-value')
     expect(viewPartialComparer).to.have.been.calledWithExactly('the-custom-thing-value')
@@ -198,23 +198,24 @@ describe('ViewResultFactory', () => {
   it('selects a matching view by header using a string value comparer', async () => {
     const viewFull = {
       name: 'test-full',
-      filter: [{
-        ['X-Custom-Thing']: 'not-the-right-value',
-      } as HttpRequestHeaderComparers],
+      filter: [
+        {
+          ['X-Custom-Thing']: 'not-the-right-value',
+        } as HttpRequestHeaderComparers,
+      ],
     } as ViewMetadata
     const viewPartial = {
       name: 'test-partial',
-      filter: [{
-        ['X-Custom-Thing']: 'the-custom-thing-value',
-      } as HttpRequestHeaderComparers],
+      filter: [
+        {
+          ['X-Custom-Thing']: 'the-custom-thing-value',
+        } as HttpRequestHeaderComparers,
+      ],
     } as ViewMetadata
 
     headers.get.withArgs('X-Custom-Thing' as any).returns('the-custom-thing-value')
 
-    const {
-      engine,
-      data,
-    } = await invokeView(viewFull, viewPartial)
+    const { engine, data } = await invokeView(viewFull, viewPartial)
 
     expect(engine.render).to.have.been.calledWithExactly(viewPartial, resolve(viewPartial.name), data)
   })
@@ -222,23 +223,24 @@ describe('ViewResultFactory', () => {
   it('selects a matching view by header using a RegExp value comparer', async () => {
     const viewFull = {
       name: 'test-full',
-      filter: [{
-        ['X-Custom-Thing']: /right-value/,
-      } as HttpRequestHeaderComparers],
+      filter: [
+        {
+          ['X-Custom-Thing']: /right-value/,
+        } as HttpRequestHeaderComparers,
+      ],
     } as ViewMetadata
     const viewPartial = {
       name: 'test-partial',
-      filter: [{
-        ['X-Custom-Thing']: /custom-thing/,
-      } as HttpRequestHeaderComparers],
+      filter: [
+        {
+          ['X-Custom-Thing']: /custom-thing/,
+        } as HttpRequestHeaderComparers,
+      ],
     } as ViewMetadata
 
     headers.get.withArgs('X-Custom-Thing' as any).returns('the-custom-thing-value')
 
-    const {
-      engine,
-      data,
-    } = await invokeView(viewFull, viewPartial)
+    const { engine, data } = await invokeView(viewFull, viewPartial)
 
     expect(engine.render).to.have.been.calledWithExactly(viewPartial, resolve(viewPartial.name), data)
   })
@@ -246,23 +248,24 @@ describe('ViewResultFactory', () => {
   it('selects a matching view by header using a number value comparer', async () => {
     const viewFull = {
       name: 'test-full',
-      filter: [{
-        ['X-Custom-Thing']: 7,
-      } as HttpRequestHeaderComparers],
+      filter: [
+        {
+          ['X-Custom-Thing']: 7,
+        } as HttpRequestHeaderComparers,
+      ],
     } as ViewMetadata
     const viewPartial = {
       name: 'test-partial',
-      filter: [{
-        ['X-Custom-Thing']: 42,
-      } as HttpRequestHeaderComparers],
+      filter: [
+        {
+          ['X-Custom-Thing']: 42,
+        } as HttpRequestHeaderComparers,
+      ],
     } as ViewMetadata
 
     headers.get.withArgs('X-Custom-Thing' as any).returns(42)
 
-    const {
-      engine,
-      data,
-    } = await invokeView(viewFull, viewPartial)
+    const { engine, data } = await invokeView(viewFull, viewPartial)
 
     expect(engine.render).to.have.been.calledWithExactly(viewPartial, resolve(viewPartial.name), data)
   })
@@ -270,23 +273,24 @@ describe('ViewResultFactory', () => {
   it('selects a matching view by header using a boolean value comparer', async () => {
     const viewFull = {
       name: 'test-full',
-      filter: [{
-        ['X-Custom-Thing']: false,
-      } as HttpRequestHeaderComparers],
+      filter: [
+        {
+          ['X-Custom-Thing']: false,
+        } as HttpRequestHeaderComparers,
+      ],
     } as ViewMetadata
     const viewPartial = {
       name: 'test-partial',
-      filter: [{
-        ['X-Custom-Thing']: true,
-      } as HttpRequestHeaderComparers],
+      filter: [
+        {
+          ['X-Custom-Thing']: true,
+        } as HttpRequestHeaderComparers,
+      ],
     } as ViewMetadata
 
     headers.get.withArgs('X-Custom-Thing' as any).returns(true)
 
-    const {
-      engine,
-      data,
-    } = await invokeView(viewFull, viewPartial)
+    const { engine, data } = await invokeView(viewFull, viewPartial)
 
     expect(engine.render).to.have.been.calledWithExactly(viewPartial, resolve(viewPartial.name), data)
   })
@@ -294,23 +298,24 @@ describe('ViewResultFactory', () => {
   it('selects a matching view by header using an object value comparer', async () => {
     const viewFull = {
       name: 'test-full',
-      filter: [{
-        ['X-Custom-Thing']: { isThisIt: 'nope' },
-      } as HttpRequestHeaderComparers],
+      filter: [
+        {
+          ['X-Custom-Thing']: { isThisIt: 'nope' },
+        } as HttpRequestHeaderComparers,
+      ],
     } as ViewMetadata
     const viewPartial = {
       name: 'test-partial',
-      filter: [{
-        ['X-Custom-Thing']: { isThisIt: 'yes' },
-      } as HttpRequestHeaderComparers],
+      filter: [
+        {
+          ['X-Custom-Thing']: { isThisIt: 'yes' },
+        } as HttpRequestHeaderComparers,
+      ],
     } as ViewMetadata
 
     headers.get.withArgs('X-Custom-Thing' as any).returns({ isThisIt: 'yes' } as any)
 
-    const {
-      engine,
-      data,
-    } = await invokeView(viewFull, viewPartial)
+    const { engine, data } = await invokeView(viewFull, viewPartial)
 
     expect(engine.render).to.have.been.calledWithExactly(viewPartial, resolve(viewPartial.name), data)
   })
@@ -331,7 +336,6 @@ describe('ViewResultFactory', () => {
   })
 
   describe('error handling', () => {
-
     let view: ViewMetadata
 
     beforeEach(async () => {
@@ -362,7 +366,5 @@ describe('ViewResultFactory', () => {
 
       expect(engine.render).to.have.been.calledWithExactly(undefined, resolve('test-404-error-template'), data)
     })
-
   })
-
 })

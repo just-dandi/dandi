@@ -20,9 +20,9 @@ const behaviorSymbolPrefix = behaviorSymbolBase.substring(0, behaviorSymbolBase.
  * Returns `true` if {@param obj} is a {@link ScopeBehavior}; otherwise. `false`
  */
 export function isScopeBehavior(obj: any): obj is ScopeBehavior {
-  return typeof obj === 'function' &&
-    typeof obj.value === 'symbol' &&
-    obj.value.toString().startsWith(behaviorSymbolPrefix)
+  return (
+    typeof obj === 'function' && typeof obj.value === 'symbol' && obj.value.toString().startsWith(behaviorSymbolPrefix)
+  )
 }
 
 /**
@@ -30,11 +30,11 @@ export function isScopeBehavior(obj: any): obj is ScopeBehavior {
  * Returns the {@link ScopeBehavior} of the provided {@param restriction} if it has one; otherwise, `undefined`.
  */
 export function getScopeBehavior(restriction: ScopeRestriction): ScopeBehavior {
-  return isScopeBehavior(restriction) ?
-    restriction :
-    (restriction instanceof BehaviorScopeRestriction) ?
-      restriction.behavior :
-      undefined
+  return isScopeBehavior(restriction)
+    ? restriction
+    : restriction instanceof BehaviorScopeRestriction
+    ? restriction.behavior
+    : undefined
 }
 
 /**
@@ -46,7 +46,7 @@ export function getScopeBehavior(restriction: ScopeRestriction): ScopeBehavior {
  */
 export function getScopeRestriction(obj: Provider<any> | InjectionToken<any>): ScopeRestriction {
   if (isInjectionToken(obj)) {
-    return obj instanceof OpinionatedToken && obj.options?.restrictScope || undefined
+    return (obj instanceof OpinionatedToken && obj.options?.restrictScope) || undefined
   }
 
   return getScopeRestriction(obj.provide) || obj.restrictScope || undefined
@@ -58,9 +58,9 @@ export function getScopeRestriction(obj: Provider<any> | InjectionToken<any>): S
  * `undefined`.
  */
 export function getRestrictedScope(restriction: ScopeRestriction): InjectionScope {
-  return restriction instanceof BehaviorScopeRestriction ?
-    restriction.scope :
-    isScopeBehavior(restriction) ?
-      undefined :
-      restriction
+  return restriction instanceof BehaviorScopeRestriction
+    ? restriction.scope
+    : isScopeBehavior(restriction)
+    ? undefined
+    : restriction
 }

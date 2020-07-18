@@ -13,8 +13,9 @@ export interface DeniedAuthorization {
 
 export type AuthorizationCondition = AllowedAuthorization | DeniedAuthorization
 
-export const AuthorizationCondition: InjectionToken<AuthorizationCondition> =
-  localOpinionatedToken<AuthorizationCondition>('AuthorizationCondition', {
-    multi: true,
-    restrictScope: HttpRequestScope,
-  })
+export const AuthorizationCondition: InjectionToken<AuthorizationCondition> = localOpinionatedToken<
+  AuthorizationCondition
+>('AuthorizationCondition', {
+  multi: true,
+  restrictScope: HttpRequestScope,
+})

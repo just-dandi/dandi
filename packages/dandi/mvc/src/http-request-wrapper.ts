@@ -4,7 +4,6 @@ import { HttpMethod, HttpRequest } from '@dandi/http'
  * @internal
  */
 export class HttpRequestWrapper implements HttpRequest {
-
   public readonly body: any
   public readonly method: HttpMethod
   public readonly params: any

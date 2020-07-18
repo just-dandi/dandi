@@ -1,5 +1,5 @@
 export class Url {
-  constructor(url: string);
+  constructor(url: string)
 
   hash: string
   host: string
@@ -14,7 +14,7 @@ export class Url {
   readonly searchParams: URLSearchParams
   username: string
 
-  toString(): string;
+  toString(): string
 }
 
 export interface URLSearchParams {

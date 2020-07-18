@@ -23,6 +23,10 @@ export class InvalidTokenError extends DandiApplicationError {
 
 export class InvalidTokenScopeError extends DandiApplicationError {
   constructor(public readonly token: OpinionatedToken<any>) {
-    super(`Cannot inject ${token} outside of scope restriction - must be child of ${getInjectionScopeName(token.options.restrictScope)}`)
+    super(
+      `Cannot inject ${token} outside of scope restriction - must be child of ${getInjectionScopeName(
+        token.options.restrictScope,
+      )}`,
+    )
   }
 }
