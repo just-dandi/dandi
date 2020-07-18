@@ -3,7 +3,6 @@ import {
   ContentDisposition,
   createHttpRequestScope,
   HttpHeader,
-  HttpHeaders,
   HttpRequest,
   HttpRequestHeader,
   HttpRequestHeaders,

@@ -4,7 +4,7 @@ import { CUSTOM_INSPECTOR } from './custom-inspector'
 export const BASE_SPACER = '    '
 
 export class AppError extends Error {
-  public static stack(err: Error, level: number = 1): string {
+  public static stack(err: Error, level = 1): string {
     return err instanceof AppError ? err.getStack(level) : AppError.indent(err.stack, level)
   }
 
@@ -37,7 +37,7 @@ export class AppError extends Error {
     super(AppError.indent(message, 0))
   }
 
-  public getStack(level: number = 1): string {
+  public getStack(level = 1): string {
     const spacer = AppError.getIndent(level)
     let stack = AppError.indent(this.stack.replace(/^Error:/, `${this.constructor.name}:`), level)
     if (this.innerError) {

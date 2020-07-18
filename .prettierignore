@@ -6,5 +6,5 @@
 *.pug
 *.tf
 node_modules
-out
+out/*
 yarn.lock

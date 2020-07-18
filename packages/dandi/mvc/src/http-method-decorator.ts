@@ -42,7 +42,7 @@ export function methodDecorator<T>(options: HttpMethodOptions, target: MethodTar
   entryMethods.add(options.method)
 }
 
-function methodDecoratorFactory(method: HttpMethod, path: string = ''): MethodDecorator {
+function methodDecoratorFactory(method: HttpMethod, path = ''): MethodDecorator {
   const options = { method, path }
   return methodDecorator.bind(null, options)
 }

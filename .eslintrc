@@ -1,7 +1,7 @@
 {
   "extends": ["plugin:@typescript-eslint/recommended"],
   "parser": "@typescript-eslint/parser",
-  "plugins": ["import", "@typescript-eslint", "mocha", "prettier"],
+  "plugins": ["@typescript-eslint", "import", "mocha", "prettier"],
   "parserOptions": {
     "ecmaVersion": 8
   },
@@ -49,13 +49,19 @@
       "rules": {
         "@typescript-eslint/no-var-requires": "off"
       }
+    },
+    {
+      "files": ["**/*.ts"],
+      "rules": {
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-explicit-any": "off"
+      }
     }
   ],
   "rules": {
     "array-bracket-newline": ["error", "consistent"],
     "block-spacing": ["error", "always"],
     "brace-style": ["error", "1tbs"],
-    "camelcase": ["error", { "properties": "always" }],
     "comma-dangle": [
       "error",
       {
@@ -66,16 +72,16 @@
         "functions": "always-multiline"
       }
     ],
-    "comma-spacing": ["error", { "before": false, "after": true }],
+    "comma-spacing": [
+      "error",
+      {
+        "before": false,
+        "after": true
+      }
+    ],
     "curly": ["error", "all"],
     "eqeqeq": ["error", "always"],
     "eol-last": ["error", "always"],
-    "lines-around-comment": [
-      "error",
-      {
-        "beforeBlockComment": true
-      }
-    ],
     "lines-between-class-members": [
       "error",
       "always",
@@ -83,15 +89,33 @@
         "exceptAfterSingleLine": true
       }
     ],
-    "max-statements-per-line": ["error", { "max": 1 }],
+    "max-statements-per-line": [
+      "error",
+      {
+        "max": 1
+      }
+    ],
     "multiline-ternary": ["error", "always-multiline"],
-    "new-cap": ["error", { "newIsCap": true, "capIsNew": true, "properties": true }],
+    "new-cap": [
+      "error",
+      {
+        "newIsCap": true,
+        "capIsNew": true,
+        "properties": true
+      }
+    ],
     "new-parens": ["error"],
-    "newline-per-chained-call": ["error"],
     "no-array-constructor": ["error"],
     "no-console": ["off"],
-    "no-dupe-args": "off", // doesn't play nice with decorators in constructors
-    "no-else-return": ["error", { "allowElseIf": false }],
+    "no-dupe-args": "off",
+    // doesn't play nice with decorators in constructors
+    "no-else-return": [
+      "error",
+      {
+        "allowElseIf": false
+      }
+    ],
+    "no-inferrable-types": "off",
     "no-invalid-this": ["error"],
     "no-magic-numbers": [
       "error",
@@ -115,21 +139,34 @@
     "no-new-func": ["error"],
     "no-lonely-if": ["error"],
     "no-multi-assign": ["error"],
-    "no-redeclare": "off", // doesn't play nice with decorators in constructors
+    "no-redeclare": "off",
+    // doesn't play nice with decorators in constructors
     "no-unneeded-ternary": ["error"],
     "no-var": ["error"],
     "no-whitespace-before-property": ["error"],
-    "object-curly-newline": ["error", { "multiline": true, "consistent": true }],
+    "object-curly-newline": [
+      "error",
+      {
+        "multiline": true,
+        "consistent": true
+      }
+    ],
     "one-var-declaration-per-line": ["error", "initializations"],
     "prefer-const": "error",
     "prefer-rest-params": "error",
     "prefer-spread": "error",
-    "quotes": ["error", "single", { "avoidEscape": true, "allowTemplateLiterals": true }],
+    "quotes": [
+      "error",
+      "single",
+      {
+        "avoidEscape": true,
+        "allowTemplateLiterals": true
+      }
+    ],
     "rest-spread-spacing": ["error", "never"],
     "semi": ["error", "never"],
     "space-in-parens": ["error", "never"],
     "spaced-comment": ["error", "always"],
-
     "import/order": [
       "error",
       {
@@ -137,23 +174,52 @@
           "order": "asc",
           "caseInsensitive": false
         },
-        "groups": ["builtin", "external", "internal", "parent", "sibling", "index"],
+        "groups": ["builtin", "external", "internal", "parent", "index", "sibling", "object"],
+        "pathGroups": [
+          {
+            "pattern": "@dandi/**",
+            "group": "builtin",
+            "position": "before"
+          },
+          {
+            "pattern": "@dandi-contrib/**",
+            "group": "builtin",
+            "position": "after"
+          }
+        ],
         "newlines-between": "always-and-inside-groups"
       }
     ],
-
     "@typescript-eslint/ban-types": ["off"],
-    "@typescript-eslint/class-name-casing": ["error"],
-    "@typescript-eslint/explicit-function-return-type": ["error", { "allowExpressions": true }],
-    "@typescript-eslint/generic-type-naming": ["error", "^T(?:[A-Z][a-zA-Z]+)*$"],
+    "@typescript-eslint/explicit-function-return-type": [
+      "error",
+      {
+        "allowExpressions": true
+      }
+    ],
     "@typescript-eslint/indent": ["off"],
-    "@typescript-eslint/member-delimiter-style": ["error", { "multiline": { "delimiter": "none" } }],
-    "@typescript-eslint/no-inferrable-types": ["error", { "ignoreParameters": true, "ignoreProperties": true }],
-    "@typescript-eslint/no-explicit-any": ["off"],
+    "@typescript-eslint/member-delimiter-style": [
+      "error",
+      {
+        "multiline": {
+          "delimiter": "none"
+        }
+      }
+    ],
+    "@typescript-eslint/naming-convention": [
+      "error",
+      { "selector": "typeParameter", "format": ["PascalCase"], "prefix": ["T"] }
+    ],
+    "@typescript-eslint/no-extra-semi": ["off"],
     "@typescript-eslint/no-unused-vars": ["error"],
     "@typescript-eslint/no-use-before-define": [
       "error",
-      { "functions": false, "classes": false, "variables": true, "enums": true }
+      {
+        "functions": false,
+        "classes": false,
+        "variables": true,
+        "enums": true
+      }
     ],
     "@typescript-eslint/semi": ["error", "never"]
   }

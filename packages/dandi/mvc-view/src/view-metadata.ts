@@ -12,9 +12,8 @@ export type HttpRequestHeaderComparer<THeaderName extends keyof HttpRequestHeade
   | HttpRequestHeaders[THeaderName]
 
 export type HttpRequestHeaderComparers = {
-  [THeaderName in keyof HttpRequestHeaders]?: HttpRequestHeaders[THeaderName] extends string
-    ? // allow regexps for headers with plain string values
-      RegExp | HttpRequestHeaderComparer<THeaderName>
+  [THeaderName in keyof HttpRequestHeaders]?: HttpRequestHeaders[THeaderName] extends string // allow regexps for headers with plain string values
+    ? RegExp | HttpRequestHeaderComparer<THeaderName>
     : HttpRequestHeaderComparer<THeaderName>
 }
 

@@ -10,7 +10,7 @@ export class SentryClient {
     init(config)
   }
 
-  public configureScope(fn: (scope: Scope) => void) {
+  public configureScope(fn: (scope: Scope) => void): void {
     configureScope(fn)
   }
 

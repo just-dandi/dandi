@@ -23,17 +23,14 @@ export class FirebaseServiceAccount extends ModelBase implements admin.ServiceAc
   // Note: cannot use @dandi/model's source mapping because the snake_case properties
   // need to be accessible to Firebase
 
-  // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
   private get project_id(): string {
     return this.projectId
   }
 
-  // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
   private get client_email(): string {
     return this.clientEmail
   }
 
-  // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
   private get private_key(): string {
     return this.privateKey
   }

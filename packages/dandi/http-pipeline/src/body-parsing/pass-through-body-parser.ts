@@ -1,4 +1,4 @@
-import { HttpRequestHeadersAccessor, MimeType } from '@dandi/http'
+import { MimeType } from '@dandi/http'
 
 import { BodyParser } from './body-parser-decorator'
 import { HttpBodyParserBase } from './http-body-parser-base'
@@ -9,7 +9,7 @@ export class PassThroughBodyParser extends HttpBodyParserBase {
     super()
   }
 
-  protected parseBodyFromString(body: any, headers?: HttpRequestHeadersAccessor): string | object | Promise<object> {
+  protected parseBodyFromString(body: any): string | object | Promise<object> {
     return body
   }
 }

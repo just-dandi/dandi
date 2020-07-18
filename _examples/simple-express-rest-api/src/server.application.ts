@@ -10,14 +10,13 @@ import { ModelBuilderModule } from '@dandi/model-builder'
 import { MvcHalModule } from '@dandi/mvc-hal'
 import { MvcViewModule } from '@dandi/mvc-view'
 
+import { CustomErrorHandler } from './custom-error-handler'
 import { ExampleController } from './example/example.controller'
 import { HyperviewController } from './hyperview/hyperview.controller'
 import { ListController } from './lists/list.controller'
 import { Db } from './shared/db'
 import { TaskController } from './tasks/task.controller'
 import { ViewController } from './view/view.controller'
-
-import { CustomErrorHandler } from './custom-error-handler'
 
 const DEFAULT_SERVER_PORT = 8085
 

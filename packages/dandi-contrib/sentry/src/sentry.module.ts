@@ -2,9 +2,9 @@ import { ConfigClientStatic } from '@dandi/config'
 import { ModuleBuilder, Registerable } from '@dandi/core'
 
 import { localToken } from './local-token'
-import { SentryOnConfig } from './sentry-on-config'
 import { SentryClient } from './sentry-client'
 import { SentryConfig } from './sentry-config'
+import { SentryOnConfig } from './sentry-on-config'
 
 export class SentryModuleBuilder extends ModuleBuilder<SentryModuleBuilder> {
   constructor(...entries: Registerable[]) {

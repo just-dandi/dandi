@@ -20,7 +20,7 @@ export class TestHarness extends TestInjectorBase implements RootTestInjector, D
 
   private rootInjector: RootInjector
 
-  constructor(providers: any[], suite: boolean = true, stubMissing: boolean = false) {
+  constructor(providers: any[], suite = true, stubMissing = false) {
     super(undefined, stubMissing)
     if (stubMissing) {
       providers.push({

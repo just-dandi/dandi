@@ -12,7 +12,7 @@ describe('HttpBodyParserBase', () => {
       return this.stub.lastCall?.returnValue
     }
 
-    constructor(async: boolean = false) {
+    constructor(async = false) {
       super()
       if (async) {
         this.stub = stub(this, 'parseBodyFromString').resolvesArg(0)

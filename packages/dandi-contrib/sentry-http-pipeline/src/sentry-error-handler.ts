@@ -1,6 +1,6 @@
+import { SentryClient } from '@dandi-contrib/sentry'
 import { Inject, Injectable } from '@dandi/core'
 import { HttpPipelineErrorResult, HttpPipelineErrorResultHandler } from '@dandi/http-pipeline'
-import { SentryClient } from '@dandi-contrib/sentry'
 
 @Injectable(HttpPipelineErrorResultHandler)
 export class SentryErrorHandler implements HttpPipelineErrorResultHandler {

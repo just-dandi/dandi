@@ -15,7 +15,7 @@ export const DbTransactionScope: DbTransactionScope = {
   type: Symbol.for(DB_TRANSACTION_SCOPE),
 }
 
-let instanceId: number = 0
+let instanceId = 0
 export function createDbTransactionScope(): DbTransactionScopeInstance {
   return Object.assign({ instanceId: instanceId++ }, DbTransactionScope)
 }

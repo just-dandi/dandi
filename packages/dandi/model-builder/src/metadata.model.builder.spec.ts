@@ -231,7 +231,6 @@ describe('MetadataModelBuilder', () => {
         public heyMan: string
       }
 
-      // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
       const source = { foo_bar: 'yeah', hey_man: 'okay' }
       const options = { keyTransform: camel }
 
@@ -245,7 +244,6 @@ describe('MetadataModelBuilder', () => {
     it('does not use key transformers on members marked as JSON', () => {
       class Blob {
         @Property(String)
-        // eslint-disable-next-line camelcase
         foo_bar: string
       }
       class KeyTransformerTest {
@@ -257,20 +255,13 @@ describe('MetadataModelBuilder', () => {
         public heyMan: string
       }
 
-      // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
       const source = { blob: { foo_bar: 'yeah' }, hey_man: 'okay' }
       const options = { keyTransform: camel }
 
       builder.constructModel(KeyTransformerTest, source, options)
 
       expect((builder as any).constructMemberInternal)
-        .to.have.been.calledThrice.calledWithExactly(
-          { type: Blob, json: true },
-          'blob',
-          // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
-          { foo_bar: 'yeah' },
-          options,
-        )
+        .to.have.been.calledThrice.calledWithExactly({ type: Blob, json: true }, 'blob', { foo_bar: 'yeah' }, options)
         .calledWithExactly({ type: String }, 'blob.foo_bar', 'yeah', {
           validators: undefined,
         })
@@ -286,7 +277,6 @@ describe('MetadataModelBuilder', () => {
         public heyMan: string
       }
 
-      // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
       const source = { map: { foo_bar: 'yeah' }, hey_man: 'okay' }
       const options = { keyTransform: camel }
 
@@ -294,7 +284,6 @@ describe('MetadataModelBuilder', () => {
 
       expect((builder as any).constructMemberInternal)
         .to.have.callCount(4)
-        // eslint-disable-next-line camelcase,@typescript-eslint/camelcase
         .calledWithExactly({ type: Map, keyType: String, valueType: String }, 'map', { foo_bar: 'yeah' }, options)
         .calledWithExactly({ type: String }, "map.(key for 'foo_bar')", 'foo_bar', {})
         .calledWithExactly({ type: String }, 'map.foo_bar', 'yeah', options)

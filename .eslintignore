@@ -1,5 +1,6 @@
-node_modules
+.coverage
+.nyc_output
+.yarn-cache
 dist
+node_modules
 out
-coverage
-update.package.ts

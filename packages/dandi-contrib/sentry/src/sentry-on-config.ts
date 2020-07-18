@@ -1,5 +1,6 @@
-import { Severity } from '@sentry/types'
 import { OnConfig, Provider } from '@dandi/core'
+import { Severity } from '@sentry/types'
+
 import { SentryClient } from './sentry-client'
 
 function sentryOnConfigFactory(client: SentryClient) {
