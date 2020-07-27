@@ -14,6 +14,7 @@ export class HttpRequestWrapper implements HttpRequest {
   constructor(req: HttpRequest) {
     Object.assign(this, req)
     this.method = req.method.toUpperCase() as HttpMethod
+    this.path = req.path // doesn't get assigned from Object.assign for some reason
     this.get = req.get.bind(req)
   }
 }
