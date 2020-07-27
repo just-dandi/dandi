@@ -1,11 +1,11 @@
 import { HttpPipelineResult } from './http-pipeline-result'
-import { localOpinionatedToken } from './local-token'
+import { localToken } from './local-token'
 
 export interface HttpPipelineResultTransformer {
   transform(result: HttpPipelineResult): Promise<HttpPipelineResult>
 }
 
-export const HttpPipelineResultTransformer = localOpinionatedToken<HttpPipelineResultTransformer>(
+export const HttpPipelineResultTransformer = localToken.opinionated<HttpPipelineResultTransformer>(
   'HttpPipelineResultTransformer',
   {
     multi: true,

@@ -1,5 +1,5 @@
-import { localOpinionatedToken } from './local-token'
+import { localToken } from './local-token'
 
-export const HttpPipelineHandlerResult = localOpinionatedToken('HttpPipelineHandlerResult', {
+export const HttpPipelineHandlerResult = localToken.opinionated('HttpPipelineHandlerResult', {
   multi: false,
 })

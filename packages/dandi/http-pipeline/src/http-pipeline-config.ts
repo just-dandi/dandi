@@ -3,7 +3,7 @@ import { LogLevel } from '@dandi/core'
 
 import { HttpPipelinePreparer } from './http-pipeline-preparer'
 import { HttpPipelineResultTransformer } from './http-pipeline-result-transformer'
-import { localOpinionatedToken } from './local-token'
+import { localToken } from './local-token'
 
 // FIXME: define conditions for inclusion
 //        does that belong here or only in MVC? provide an abstraction to allow filtering?
@@ -15,6 +15,6 @@ export interface HttpPipelineConfig {
   logHandledErrors?: boolean | LogLevel
 }
 
-export const HttpPipelineConfig = localOpinionatedToken<HttpPipelineConfig>('HttpPipelineConfig', {
+export const HttpPipelineConfig = localToken.opinionated<HttpPipelineConfig>('HttpPipelineConfig', {
   multi: false,
 })

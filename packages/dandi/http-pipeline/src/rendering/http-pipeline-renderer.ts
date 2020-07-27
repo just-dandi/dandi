@@ -14,7 +14,7 @@ import {
 } from '@dandi/http'
 
 import { HttpPipelineResult } from '../http-pipeline-result'
-import { localOpinionatedToken } from '../local-token'
+import { localToken } from '../local-token'
 
 import { HttpPipelineRendererFactoryError } from './http-pipeline-renderer-factory-error'
 import { RendererInfo, RendererInfoProvider, RendererMetadata } from './renderer-decorator'
@@ -25,13 +25,12 @@ export interface HttpPipelineRendererResult {
   renderedBody: string
   contentType: string
 }
-export const HttpPipelineRendererResult = localOpinionatedToken<HttpPipelineRendererResult>(
-  'HttpPipelineRendererResult',
-  {
-    multi: false,
-    restrictScope: HttpRequestScope,
-  },
-)
+export const HttpPipelineRendererResult: InjectionToken<HttpPipelineRendererResult> = localToken.opinionated<
+  HttpPipelineRendererResult
+>('HttpPipelineRendererResult', {
+  multi: false,
+  restrictScope: HttpRequestScope,
+})
 
 export interface HttpPipelineRenderer {
   readonly renderableTypes: MimeTypeInfo[]
@@ -40,11 +39,11 @@ export interface HttpPipelineRenderer {
     pipelineResult: HttpPipelineResult,
   ): HttpPipelineRendererResult | Promise<HttpPipelineRendererResult>
 }
-export const HttpPipelineRenderer = localOpinionatedToken<HttpPipelineRenderer>('HttpPipelineRenderer', {
+export const HttpPipelineRenderer = localToken.opinionated<HttpPipelineRenderer>('HttpPipelineRenderer', {
   multi: false,
   restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
 })
-export const DefaultHttpPipelineRenderer = localOpinionatedToken<Constructor<HttpPipelineRenderer>>(
+export const DefaultHttpPipelineRenderer = localToken.opinionated<Constructor<HttpPipelineRenderer>>(
   'DefaultHttpPipelineRenderer',
   {
     multi: false,
@@ -67,12 +66,11 @@ export function defaultHttpPipelineRenderer(
 }
 
 type HttpPipelineRendererCache = Map<string, Constructor<HttpPipelineRenderer>[]>
-const HttpPipelineRendererCache: InjectionToken<HttpPipelineRendererCache> = localOpinionatedToken(
-  'HttpPipelineRendererCache',
-  {
-    multi: false,
-  },
-)
+const HttpPipelineRendererCache: InjectionToken<HttpPipelineRendererCache> = localToken.opinionated<
+  HttpPipelineRendererCache
+>('HttpPipelineRendererCache', {
+  multi: false,
+})
 
 const HttpPipelineRendererCacheProvider: Provider<HttpPipelineRendererCache> = {
   provide: HttpPipelineRendererCache,
@@ -114,7 +112,7 @@ export function selectRenderers(
   return [...results]
 }
 
-const CompatibleRenderers: InjectionToken<Constructor<HttpPipelineRenderer>[]> = localOpinionatedToken(
+const CompatibleRenderers: InjectionToken<Constructor<HttpPipelineRenderer>[]> = localToken.opinionated(
   'SelectedRenderer',
   {
     multi: false,

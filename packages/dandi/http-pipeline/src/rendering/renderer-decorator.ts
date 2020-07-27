@@ -4,7 +4,7 @@ import { Repository } from '@dandi/core/internal'
 import { HttpRequestScope, MimeTypeInfo, parseMimeTypes } from '@dandi/http'
 
 import { globalSymbol } from '../global.symbol'
-import { localOpinionatedToken } from '../local-token'
+import { localToken } from '../local-token'
 
 import { HttpPipelineRenderer } from './http-pipeline-renderer'
 
@@ -22,7 +22,7 @@ export interface RendererInfo {
   constructor: Constructor<HttpPipelineRenderer>
   metadata: RendererMetadata
 }
-export const RendererInfo: InjectionToken<RendererInfo[]> = localOpinionatedToken('RendererInfo', {
+export const RendererInfo: InjectionToken<RendererInfo[]> = localToken.opinionated('RendererInfo', {
   multi: false,
 })
 

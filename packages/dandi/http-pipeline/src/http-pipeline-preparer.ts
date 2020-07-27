@@ -12,7 +12,7 @@ import {
 import { HttpRequest, HttpRequestScope } from '@dandi/http'
 
 import { globalSymbol } from './global.symbol'
-import { localOpinionatedToken } from './local-token'
+import { localToken } from './local-token'
 
 const HTTP_REQUEST_PREPARER_META_KEY = globalSymbol('meta:HttpPipelinePreparer')
 const PREPARER_RESULT_TOKENS = new Map<Constructor<HttpPipelinePreparer>, InjectionToken<HttpPipelinePreparerResult>>()
@@ -46,7 +46,7 @@ export function HttpPipelinePreparerResult(
 ): InjectionToken<HttpPipelinePreparerResult> {
   let token: InjectionToken<HttpPipelinePreparerResult> = PREPARER_RESULT_TOKENS.get(preparer)
   if (!token) {
-    token = localOpinionatedToken<any>(`HttpPipelinePreparerResult:${preparer.name}`, {
+    token = localToken.opinionated<any>(`HttpPipelinePreparerResult:${preparer.name}`, {
       multi: false,
       restrictScope: HttpRequestScope,
     })

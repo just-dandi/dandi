@@ -1,12 +1,12 @@
 import { HttpRequestScope } from '@dandi/http'
 
-import { localOpinionatedToken } from './local-token'
+import { localToken } from './local-token'
 
-export const HttpRequestHandler = localOpinionatedToken<any>('HttpRequestHandler', {
+export const HttpRequestHandler = localToken.opinionated<any>('HttpRequestHandler', {
   multi: false,
   restrictScope: HttpRequestScope,
 })
-export const HttpRequestHandlerMethod = localOpinionatedToken<string>('HttpRequestHandlerMethod', {
+export const HttpRequestHandlerMethod = localToken.opinionated<string>('HttpRequestHandlerMethod', {
   multi: false,
   restrictScope: HttpRequestScope,
 })

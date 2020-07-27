@@ -4,11 +4,11 @@ import { Repository } from '@dandi/core/internal'
 import { MimeTypeInfo, MimeType, parseMimeTypes } from '@dandi/http'
 
 import { globalSymbol } from '../global.symbol'
-import { localOpinionatedToken } from '../local-token'
+import { localToken } from '../local-token'
 
 import { HttpBodyParser } from './http-body-parser'
 
-const META_KEY = globalSymbol('meta:http-')
+const META_KEY = globalSymbol('meta:HttpBodyParser')
 
 export const BODY_PARSER_REGISTRATION_SOURCE: RegistrationSource = {
   constructor: BodyParser,
@@ -22,7 +22,7 @@ export interface BodyParserInfo {
   constructor: Constructor<HttpBodyParser>
   metadata: BodyParserMetadata
 }
-export const BodyParserInfo: InjectionToken<BodyParserInfo[]> = localOpinionatedToken('BodyParserInfo', {
+export const BodyParserInfo: InjectionToken<BodyParserInfo[]> = localToken.opinionated('BodyParserInfo', {
   multi: false,
 })
 

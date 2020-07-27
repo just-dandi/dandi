@@ -12,7 +12,7 @@ import {
   parseMimeTypes,
 } from '@dandi/http'
 
-import { localOpinionatedToken } from '../local-token'
+import { localToken } from '../local-token'
 
 import { BodyParserInfo, BodyParserMetadata } from './body-parser-decorator'
 
@@ -20,13 +20,13 @@ export interface HttpBodyParser {
   readonly parseableTypes: MimeTypeInfo[]
   parseBody(body: string | Buffer, headers: HttpRequestHeadersAccessor): string | object | Promise<object>
 }
-export const HttpBodyParser: InjectionToken<HttpBodyParser> = localOpinionatedToken('HttpBodyParser', {
+export const HttpBodyParser: InjectionToken<HttpBodyParser> = localToken.opinionated('HttpBodyParser', {
   multi: false,
   restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
 })
 
 type HttpBodyParserCache = Map<string, Constructor<HttpBodyParser>>
-const HttpBodyParserCache: InjectionToken<HttpBodyParserCache> = localOpinionatedToken('HttpBodyParserCache', {
+const HttpBodyParserCache: InjectionToken<HttpBodyParserCache> = localToken.opinionated('HttpBodyParserCache', {
   multi: false,
 })
 
@@ -51,7 +51,7 @@ export function selectBodyParser(
   }
 }
 
-const SelectedBodyParser: InjectionToken<Constructor<HttpBodyParser>> = localOpinionatedToken('SelectedBodyParser', {
+const SelectedBodyParser: InjectionToken<Constructor<HttpBodyParser>> = localToken.opinionated('SelectedBodyParser', {
   multi: false,
   restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
 })
