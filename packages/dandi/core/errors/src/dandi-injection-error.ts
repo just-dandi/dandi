@@ -14,5 +14,7 @@ export class DandiInjectionError<T> extends AppError {
     innerError?: Error,
   ) {
     super(`${messageStart} ${getTokenString(token)} \nfor ${context[CUSTOM_INSPECTOR]()}`, innerError)
+
+    this.stack = this.getStack()
   }
 }
