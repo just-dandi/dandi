@@ -1,3 +1,4 @@
+export * from './src/config.module'
 export * from './src/config-client'
 export * from './src/config-provider'
 export * from './src/config-resolver'
