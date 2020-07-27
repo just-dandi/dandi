@@ -24,6 +24,7 @@ import {
 } from '@dandi/core/types'
 
 import { DandiResolverContext } from './dandi-resolver-context'
+import { DandiRootInjector } from './dandi-root-injector'
 
 /**
  * @internal
@@ -68,7 +69,7 @@ export class DandiGenerator implements InstanceGenerator {
     throw new ProviderTypeError(provider)
   }
 
-  private async generateForFactoryProvider<T>(injector: Injector, provider: FactoryProvider<T>): Promise<T> {
+  private async generateForFactoryProvider<T>(injector: Injector, provider: FactoryProvider<any[], T>): Promise<T> {
     const args = provider.deps?.length
       ? await Promise.all(
           provider.deps.map(async (paramToken) => {
@@ -147,6 +148,10 @@ export class DandiGenerator implements InstanceGenerator {
       return injector
     }
     if (injector.parent) {
+      if (injector.parent instanceof DandiRootInjector) {
+        // FIXME: should this be happening / prevented somewhere else?
+        return injector
+      }
       return this.findParentInjector(injector.parent, instanceContext, scope)
     }
     return undefined
