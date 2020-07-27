@@ -1,6 +1,6 @@
 import { Provider } from '@dandi/core'
 
-import { ConfigToken } from './config.token'
+import { ConfigToken } from './config-token'
 
 export interface ConfigClient {
   readonly async: boolean

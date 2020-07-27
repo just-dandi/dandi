@@ -1,11 +1,11 @@
 import { InjectionToken, Provider } from '@dandi/core'
 
-import { EnvConfigClient } from './env.config.client'
-import { localOpinionatedToken } from './local.token'
+import { EnvConfigClient } from './env-config-client'
+import { localToken } from './local-token'
 
 export type NodeEnv = string
 
-export const NodeEnv: InjectionToken<string> = localOpinionatedToken('NodeEnv', {
+export const NodeEnv: InjectionToken<string> = localToken.opinionated<string>('NodeEnv', {
   multi: false,
 })
 
