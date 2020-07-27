@@ -4,8 +4,8 @@ import { Route, RouteMapper, Routes } from '@dandi/mvc'
 import * as bodyParser from 'body-parser'
 import { Express } from 'express'
 
-import { ExpressMvcConfig } from './express.mvc.config'
-import { ExpressInstance } from './tokens'
+import { ExpressInstance } from './express-instance'
+import { ExpressMvcConfig } from './express-mvc-config'
 
 @Injectable(EntryPoint)
 export class ExpressMvcApplication implements EntryPoint {

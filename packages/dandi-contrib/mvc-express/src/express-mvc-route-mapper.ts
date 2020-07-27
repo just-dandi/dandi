@@ -5,7 +5,7 @@ import { Route, RouteExecutor, RouteMapper } from '@dandi/mvc'
 import { Express } from 'express'
 import { Request, Response } from 'express-serve-static-core'
 
-import { ExpressInstance } from './tokens'
+import { ExpressInstance } from './express-instance'
 
 function hasCorsConfig(obj: any): obj is CorsConfig {
   return typeof obj === 'object'
