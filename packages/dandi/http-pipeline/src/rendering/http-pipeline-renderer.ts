@@ -1,5 +1,5 @@
 import { Constructor } from '@dandi/common'
-import { InjectionToken, Provider, Injector, ScopeBehavior } from '@dandi/core'
+import { Provider, Injector, ScopeBehavior } from '@dandi/core'
 import {
   mimeTypesAreCompatible,
   MimeTypeInfo,
@@ -25,12 +25,13 @@ export interface HttpPipelineRendererResult {
   renderedBody: string
   contentType: string
 }
-export const HttpPipelineRendererResult: InjectionToken<HttpPipelineRendererResult> = localToken.opinionated<
-  HttpPipelineRendererResult
->('HttpPipelineRendererResult', {
-  multi: false,
-  restrictScope: HttpRequestScope,
-})
+export const HttpPipelineRendererResult = localToken.opinionated<HttpPipelineRendererResult>(
+  'HttpPipelineRendererResult',
+  {
+    multi: false,
+    restrictScope: HttpRequestScope,
+  },
+)
 
 export interface HttpPipelineRenderer {
   readonly renderableTypes: MimeTypeInfo[]
@@ -66,9 +67,7 @@ export function defaultHttpPipelineRenderer(
 }
 
 type HttpPipelineRendererCache = Map<string, Constructor<HttpPipelineRenderer>[]>
-const HttpPipelineRendererCache: InjectionToken<HttpPipelineRendererCache> = localToken.opinionated<
-  HttpPipelineRendererCache
->('HttpPipelineRendererCache', {
+const HttpPipelineRendererCache = localToken.opinionated<HttpPipelineRendererCache>('HttpPipelineRendererCache', {
   multi: false,
 })
 
@@ -89,7 +88,9 @@ export function selectRenderers(
   for (const acceptType of acceptTypes) {
     const isIdenticalMimeType = mimeTypesAreIdentical.bind(undefined, acceptType)
     const supported = renderers
-      .filter((renderer) => !results.has(renderer.constructor) && isSupportingRenderer(renderer.metadata, acceptType))
+      .filter(
+        (renderer) => !results.has(renderer.constructor) && isSupportingRenderer(renderer.metadata, acceptType),
+      )
       .sort((a, b): number => {
         // prefer renderers that support a type directly, over those that only work via wildcard accept
         const aHasDirect = a.metadata.acceptTypes.some(isIdenticalMimeType)
@@ -112,13 +113,10 @@ export function selectRenderers(
   return [...results]
 }
 
-const CompatibleRenderers: InjectionToken<Constructor<HttpPipelineRenderer>[]> = localToken.opinionated(
-  'SelectedRenderer',
-  {
-    multi: false,
-    restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
-  },
-)
+const CompatibleRenderers = localToken.opinionated<Constructor<HttpPipelineRenderer>[]>('SelectedRenderer', {
+  multi: false,
+  restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
+})
 const CompatibleRenderersProvider: Provider<Constructor<HttpPipelineRenderer>[]> = {
   provide: CompatibleRenderers,
   useFactory(
@@ -166,8 +164,7 @@ export const HttpPipelineRendererProvider: Provider<HttpPipelineRenderer> = {
     const errors: Error[] = []
     for (const SelectedRenderer of compatibleRenderers) {
       try {
-        const resolveResult = await injector.inject(SelectedRenderer)
-        return resolveResult.singleValue
+        return (await injector.inject(SelectedRenderer)) as HttpPipelineRenderer
       } catch (err) {
         errors.push(err)
       }

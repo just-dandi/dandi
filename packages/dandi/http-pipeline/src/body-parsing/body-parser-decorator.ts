@@ -1,5 +1,5 @@
 import { Constructor, getMetadata } from '@dandi/common'
-import { ClassProvider, InjectionToken, Injector, Provider, RegistrationSource } from '@dandi/core'
+import { ClassProvider, Injector, Provider, RegistrationSource } from '@dandi/core'
 import { Repository } from '@dandi/core/internal'
 import { MimeTypeInfo, MimeType, parseMimeTypes } from '@dandi/http'
 
@@ -22,7 +22,7 @@ export interface BodyParserInfo {
   constructor: Constructor<HttpBodyParser>
   metadata: BodyParserMetadata
 }
-export const BodyParserInfo: InjectionToken<BodyParserInfo[]> = localToken.opinionated('BodyParserInfo', {
+export const BodyParserInfo = localToken.opinionated<BodyParserInfo[]>('BodyParserInfo', {
   multi: false,
 })
 
@@ -46,7 +46,10 @@ export function getBodyParserMetadata(target: Constructor<HttpBodyParser>): Body
   return getMetadata(META_KEY, () => ({ contentTypes: [] }), target)
 }
 
-export function bodyParserDecorator<T extends HttpBodyParser>(acceptTypes: string[], target: Constructor<T>): void {
+export function bodyParserDecorator<T extends HttpBodyParser>(
+  acceptTypes: string[],
+  target: Constructor<T>,
+): void {
   const meta = getBodyParserMetadata(target)
   meta.contentTypes = parseMimeTypes(...acceptTypes)
   Repository.for(BodyParser).register(BODY_PARSER_REGISTRATION_SOURCE, target)

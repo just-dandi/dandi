@@ -1,5 +1,3 @@
-import { InjectionToken } from '@dandi/core'
-
 import { localToken } from './local-token'
 import { HttpPipelineRendererResult } from './rendering/http-pipeline-renderer'
 
@@ -10,8 +8,6 @@ export interface HttpPipelineTerminator {
   terminateResponse(result: HttpPipelineRendererResult): Promise<any>
 }
 
-export const HttpPipelineTerminator: InjectionToken<HttpPipelineTerminator> = localToken.opinionated<
-  HttpPipelineTerminator
->('HttpPipelineTerminator', {
+export const HttpPipelineTerminator = localToken.opinionated<HttpPipelineTerminator>('HttpPipelineTerminator', {
   multi: false,
 })

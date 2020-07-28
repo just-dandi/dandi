@@ -1,5 +1,4 @@
 import { Uuid } from '@dandi/common'
-import { InjectionToken } from '@dandi/core'
 import { HttpRequestScope } from '@dandi/http'
 
 import { localToken } from './local-token'
@@ -12,10 +11,7 @@ export interface HttpRequestInfo {
   performance: PerformanceLogger
 }
 
-export const HttpRequestInfo: InjectionToken<HttpRequestInfo> = localToken.opinionated<HttpRequestInfo>(
-  'HttpRequestInfo',
-  {
-    multi: false,
-    restrictScope: HttpRequestScope,
-  },
-)
+export const HttpRequestInfo = localToken.opinionated<HttpRequestInfo>('HttpRequestInfo', {
+  multi: false,
+  restrictScope: HttpRequestScope,
+})

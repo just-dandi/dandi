@@ -1,5 +1,5 @@
 import { Constructor } from '@dandi/common'
-import { InjectionToken, Injector, Provider, ScopeBehavior } from '@dandi/core'
+import { Injector, Provider, ScopeBehavior } from '@dandi/core'
 import {
   HttpContentType,
   HttpHeader,
@@ -20,13 +20,13 @@ export interface HttpBodyParser {
   readonly parseableTypes: MimeTypeInfo[]
   parseBody(body: string | Buffer, headers: HttpRequestHeadersAccessor): string | object | Promise<object>
 }
-export const HttpBodyParser: InjectionToken<HttpBodyParser> = localToken.opinionated('HttpBodyParser', {
+export const HttpBodyParser = localToken.opinionated<HttpBodyParser>('HttpBodyParser', {
   multi: false,
   restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
 })
 
 type HttpBodyParserCache = Map<string, Constructor<HttpBodyParser>>
-const HttpBodyParserCache: InjectionToken<HttpBodyParserCache> = localToken.opinionated('HttpBodyParserCache', {
+const HttpBodyParserCache = localToken.opinionated<HttpBodyParserCache>('HttpBodyParserCache', {
   multi: false,
 })
 
@@ -51,7 +51,7 @@ export function selectBodyParser(
   }
 }
 
-const SelectedBodyParser: InjectionToken<Constructor<HttpBodyParser>> = localToken.opinionated('SelectedBodyParser', {
+const SelectedBodyParser = localToken.opinionated<Constructor<HttpBodyParser>>('SelectedBodyParser', {
   multi: false,
   restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
 })
@@ -83,8 +83,7 @@ const SelectedBodyParserProvider: Provider<Constructor<HttpBodyParser>> = {
 export const HttpBodyParserProvider: Provider<HttpBodyParser> = {
   provide: HttpBodyParser,
   async useFactory(injector: Injector, SelectedBodyParser: Constructor<HttpBodyParser>): Promise<HttpBodyParser> {
-    const resolveResult = await injector.inject(SelectedBodyParser)
-    return resolveResult.singleValue
+    return (await injector.inject(SelectedBodyParser)) as HttpBodyParser
   },
   async: true,
   deps: [Injector, SelectedBodyParser],

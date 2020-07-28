@@ -8,6 +8,7 @@ import {
   Provider,
   RestrictScope,
   ScopeBehavior,
+  SingleInjectionToken,
 } from '@dandi/core'
 import { HttpRequest, HttpRequestScope } from '@dandi/http'
 
@@ -15,7 +16,10 @@ import { globalSymbol } from './global.symbol'
 import { localToken } from './local-token'
 
 const HTTP_REQUEST_PREPARER_META_KEY = globalSymbol('meta:HttpPipelinePreparer')
-const PREPARER_RESULT_TOKENS = new Map<Constructor<HttpPipelinePreparer>, InjectionToken<HttpPipelinePreparerResult>>()
+const PREPARER_RESULT_TOKENS = new Map<
+  Constructor<HttpPipelinePreparer>,
+  SingleInjectionToken<HttpPipelinePreparerResult>
+>()
 
 export interface HttpPipelinePreparer {
   prepare(req: HttpRequest): Promise<HttpPipelinePreparerResult>
@@ -43,8 +47,8 @@ export function getHttpPipelinePreparerMetadata(
 
 export function HttpPipelinePreparerResult(
   preparer: Constructor<HttpPipelinePreparer>,
-): InjectionToken<HttpPipelinePreparerResult> {
-  let token: InjectionToken<HttpPipelinePreparerResult> = PREPARER_RESULT_TOKENS.get(preparer)
+): SingleInjectionToken<HttpPipelinePreparerResult> {
+  let token: SingleInjectionToken<HttpPipelinePreparerResult> = PREPARER_RESULT_TOKENS.get(preparer)
   if (!token) {
     token = localToken.opinionated<any>(`HttpPipelinePreparerResult:${preparer.name}`, {
       multi: false,
@@ -60,7 +64,8 @@ export function httpPipelinePreparerResultProvider(
 ): Provider<HttpPipelinePreparerResult> {
   const meta = getHttpPipelinePreparerMetadata(preparer)
   const preparerDeps: InjectionToken<any>[] = [...meta.dependencyResultTokens]
-  const deps = [Injector, HttpRequest].concat(preparerDeps)
+  const defaultDeps: InjectionToken<any>[] = [Injector, HttpRequest]
+  const deps: InjectionToken<any>[] = defaultDeps.concat(preparerDeps)
   const depConstructors = [...meta.deps]
   const providers = depConstructors
     .map((dep) => httpPipelinePreparerResultProvider(dep))
@@ -79,7 +84,7 @@ export function httpPipelinePreparerResultProvider(
     // eslint-disable-next-line @typescript-eslint/no-empty-function
     const preparerScope: InjectionScope = function PreparerScope() {}
     const preparerInjector = injector.createChild(preparerScope, allDependentResults)
-    const preparerInstance = (await preparerInjector.inject(preparer)).singleValue
+    const preparerInstance = (await preparerInjector.inject(preparer)) as HttpPipelinePreparer
     const preparerResults = await preparerInstance.prepare(req)
     return allDependentResults.concat(preparerResults)
   }

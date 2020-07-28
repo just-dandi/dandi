@@ -1,4 +1,3 @@
-import { InjectionToken } from '@dandi/core'
 import { HttpPipelineErrorResult } from '@dandi/http-pipeline'
 
 import { localToken } from './local-token'
@@ -7,7 +6,7 @@ export interface HttpPipelineErrorResultHandler {
   handleError(result: HttpPipelineErrorResult): Promise<HttpPipelineErrorResult>
 }
 
-export const HttpPipelineErrorResultHandler: InjectionToken<HttpPipelineErrorResultHandler> = localToken.opinionated(
+export const HttpPipelineErrorResultHandler = localToken.opinionated<HttpPipelineErrorResultHandler>(
   'HttpPipelineErrorResultHandler',
   {
     multi: true,

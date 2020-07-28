@@ -57,7 +57,7 @@ export class FormMultipartBodyParser extends HttpBodyParserBase {
         ])
 
         // recursively use the parser system to parse the individual parts
-        return (await partInjector.inject(HttpRequestBodySource)).singleValue
+        return await partInjector.inject(HttpRequestBodySource)
       }),
     )
 

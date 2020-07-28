@@ -1,5 +1,5 @@
 import { Constructor, getMetadata } from '@dandi/common'
-import { ClassProvider, InjectionToken, Injector, Provider, RegistrationSource } from '@dandi/core'
+import { ClassProvider, Injector, Provider, RegistrationSource } from '@dandi/core'
 import { Repository } from '@dandi/core/internal'
 import { HttpRequestScope, MimeTypeInfo, parseMimeTypes } from '@dandi/http'
 
@@ -22,7 +22,7 @@ export interface RendererInfo {
   constructor: Constructor<HttpPipelineRenderer>
   metadata: RendererMetadata
 }
-export const RendererInfo: InjectionToken<RendererInfo[]> = localToken.opinionated('RendererInfo', {
+export const RendererInfo = localToken.opinionated<RendererInfo[]>('RendererInfo', {
   multi: false,
 })
 
@@ -46,7 +46,10 @@ export function getRendererMetadata(target: Constructor<HttpPipelineRenderer>): 
   return getMetadata(META_KEY, () => ({ acceptTypes: [] }), target)
 }
 
-export function rendererDecorator<T extends HttpPipelineRenderer>(acceptTypes: string[], target: Constructor<T>): void {
+export function rendererDecorator<T extends HttpPipelineRenderer>(
+  acceptTypes: string[],
+  target: Constructor<T>,
+): void {
   const meta = getRendererMetadata(target)
   meta.acceptTypes = parseMimeTypes(...acceptTypes)
   Repository.for(Renderer).register(RENDERER_REGISTRATION_SOURCE, target, { restrictScope: HttpRequestScope })
