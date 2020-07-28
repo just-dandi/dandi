@@ -23,8 +23,11 @@ export const AuthorizationScheme: InjectionToken<string> = localOpinionatedToken
 
 function authorizationSchemeFactory(headers: HttpRequestHeadersAccessor, route: Route): string {
   const authHeader = headers.get(HttpHeader.authorization)
-  if (!authHeader && route.authorization) {
-    throw new UnauthorizedError()
+  if (!authHeader) {
+    if (route.authorization) {
+      throw new UnauthorizedError()
+    }
+    return undefined
   }
   const authSchemeEndIndex = authHeader.indexOf(' ')
   return authHeader.substring(0, authSchemeEndIndex > 0 ? authSchemeEndIndex : undefined)
@@ -44,7 +47,13 @@ export class AuthorizationAuthProviderFactory implements AuthProviderFactory {
       return []
     }
 
-    async function authServiceResultFactory(authScheme: string, injector: Injector): Promise<AuthorizationService> {
+    async function authServiceResultFactory(
+      authScheme: string,
+      injector: Injector,
+    ): Promise<AuthorizationService> {
+      if (!authScheme) {
+        return undefined
+      }
       return (await injector.inject(AuthorizationService(authScheme), !route.authorization))?.singleValue
     }
     const providers: Provider<any>[] = [

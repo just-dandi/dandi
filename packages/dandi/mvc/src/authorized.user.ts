@@ -10,10 +10,13 @@ export interface AuthorizedUser {
   uid: string
 }
 
-export const AuthorizedUser: InjectionToken<AuthorizedUser> = localOpinionatedToken<AuthorizedUser>('AuthorizedUser', {
-  multi: false,
-  restrictScope: HttpRequestScope,
-})
+export const AuthorizedUser: InjectionToken<AuthorizedUser> = localOpinionatedToken<AuthorizedUser>(
+  'AuthorizedUser',
+  {
+    multi: false,
+    restrictScope: HttpRequestScope,
+  },
+)
 
 export async function authorizedUserFactory(
   authService: AuthorizationService,
@@ -21,6 +24,9 @@ export async function authorizedUserFactory(
   requestInfo: HttpRequestInfo,
 ): Promise<AuthorizedUser> {
   requestInfo.performance.mark('authorizedUserFactory', 'beforeGetAuthorizedUser')
+  if (!authService) {
+    return undefined
+  }
   const result = await authService.getAuthorizedUser(req.get('Authorization'))
   requestInfo.performance.mark('authorizedUserFactory', 'afterGetAuthorizedUser')
 
