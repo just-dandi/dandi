@@ -2,6 +2,14 @@ export interface Constructor<T = any> extends Function {
   new (...args: any[]): T
 }
 
+export interface MultiConstructor<T = any> extends Constructor<T> {
+  multi: true
+}
+
+export interface SingleConstructor<T = any> extends Constructor<T> {
+  multi: false
+}
+
 export type PrimitiveConstructor<T extends boolean | number | string> = T extends boolean
   ? BooleanConstructor
   : T extends number
