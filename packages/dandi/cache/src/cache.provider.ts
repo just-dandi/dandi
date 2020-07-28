@@ -1,7 +1,7 @@
 import { MappedInjectionToken } from '@dandi/core'
 import { Duration } from 'luxon'
 
-import { localOpinionatedToken } from './local.token'
+import { localToken } from './local-token'
 
 export enum CacheProviderType {
   cascading = 'cascading',
@@ -27,7 +27,7 @@ export function CacheProvider(type: CacheProviderType): MappedInjectionToken<Cac
   let token: MappedInjectionToken<CacheProviderType, Cache> = tokens.get(type)
   if (!token) {
     token = {
-      provide: localOpinionatedToken<Cache>(`CacheProvider:${type}`, {
+      provide: localToken.opinionated<Cache>(`CacheProvider:${type}`, {
         multi: false,
       }),
       key: type,
