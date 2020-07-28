@@ -1,7 +1,6 @@
 import {
   Inject,
   Injectable,
-  InjectionResult,
   InjectionToken,
   Injector,
   InstanceGenerator,
@@ -198,8 +197,8 @@ describe('DandiInjector', () => {
         register(TestInjectable)
         const result = await injector.inject(TestInjectable)
 
-        expect(result).to.be.instanceof(InjectionResult)
-        expect(result.value).to.equal(instance)
+        expect(result).to.be.instanceof(TestInjectable)
+        expect(result).to.equal(instance)
       })
     })
   })

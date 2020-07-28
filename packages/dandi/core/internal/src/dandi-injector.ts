@@ -17,7 +17,6 @@ import {
 } from '@dandi/core/internal/util'
 import {
   DependencyInjectionScope,
-  InjectionResult,
   InjectionScope,
   InjectionToken,
   Injector,
@@ -27,10 +26,12 @@ import {
   InstanceInvokableFn,
   InvokableFn,
   InvokeInjectionScope,
+  MultiInjectionToken,
   OpinionatedToken,
   Registerable,
   ResolvedProvider,
   ResolverContext,
+  SingleInjectionToken,
 } from '@dandi/core/types'
 
 import { DandiInjectorContext } from './dandi-injector-context'
@@ -85,7 +86,10 @@ export class DandiInjector implements Injector, Disposable {
     return this.resolveInternal(parsedArgs)?.match
   }
 
-  public async inject<T>(token: InjectionToken<T>, optional?: boolean): Promise<InjectionResult<T>> {
+  public async inject<T>(token: MultiInjectionToken<T>): Promise<T[]>
+  public async inject<T>(token: SingleInjectionToken<T>, optional?: boolean): Promise<T>
+  public async inject<T>(token: InjectionToken<T>, optional?: boolean): Promise<T | T[]>
+  public async inject<T>(token: InjectionToken<T>, optional?: boolean): Promise<T | T[]> {
     try {
       const injectArgs: Args<T> = this.parseAndValidateArgs({ token, optional })
       const resolverContext: ResolverContext<T> = this.resolveInternal(injectArgs)
@@ -157,7 +161,7 @@ export class DandiInjector implements Injector, Disposable {
             meta.params.map(async (param) => {
               const paramScope = new DependencyInjectionScope(instance, methodName as string, param.name)
               const paramInjector = this.createChild(paramScope, param.providers)
-              return (await paramInjector.inject(param.token, param.optional))?.value
+              return await paramInjector.inject(param.token, param.optional)
             }),
           )
         : []

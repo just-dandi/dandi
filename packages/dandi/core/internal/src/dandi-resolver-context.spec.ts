@@ -1,4 +1,4 @@
-import { InjectionResult, InjectionScope, InjectionToken, Provider, SymbolToken } from '@dandi/core'
+import { InjectionScope, InjectionToken, Provider, SymbolToken } from '@dandi/core'
 import { DandiInjectorContext, DandiResolverContext } from '@dandi/core/internal'
 
 import { expect } from 'chai'
@@ -53,15 +53,14 @@ describe('ResolverContext', () => {
       const value = {}
       resolverContext.resolveValue(value)
 
-      expect(resolverContext.result?.value).to.equal(value)
+      expect(resolverContext.result).to.equal(value)
     })
 
     it('returns an InjectionResult instance containing the value', () => {
       const value = {}
       const result = resolverContext.resolveValue(value)
 
-      expect(result).to.be.instanceof(InjectionResult)
-      expect(result.value).to.equal(value)
+      expect(result).to.equal(value)
     })
   })
 

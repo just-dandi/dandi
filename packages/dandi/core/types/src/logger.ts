@@ -1,6 +1,5 @@
 import { localToken } from '../../src/local-token'
 
-import { InjectionToken } from './injection-token'
 import { LoggerMethod } from './logger-method'
 
 export interface Logger {
@@ -11,6 +10,6 @@ export interface Logger {
   trace: LoggerMethod
 }
 
-export const Logger: InjectionToken<Logger> = localToken.opinionated<Logger>('Logger', {
+export const Logger = localToken.opinionated<Logger>('Logger', {
   multi: false,
 })

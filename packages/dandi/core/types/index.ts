@@ -1,7 +1,6 @@
 export * from './src/dandi-application-config'
 export * from './src/entry-point'
 export * from './src/injectable-option'
-export * from './src/injection-result'
 export * from './src/injection-scope'
 export * from './src/injection-token'
 export * from './src/injector'

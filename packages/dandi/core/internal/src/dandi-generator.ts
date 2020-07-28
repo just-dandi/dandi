@@ -30,7 +30,10 @@ import { DandiRootInjector } from './dandi-root-injector'
  * @internal
  */
 export class DandiGenerator implements InstanceGenerator {
-  public async generateInstance<T>(parentInjector: Injector, resolverContext: ResolverContext<T>): Promise<T | T[]> {
+  public async generateInstance<T>(
+    parentInjector: Injector,
+    resolverContext: ResolverContext<T>,
+  ): Promise<T | T[]> {
     const entry = resolverContext.match
 
     // this should not happen in practice due to previous checks
@@ -69,7 +72,10 @@ export class DandiGenerator implements InstanceGenerator {
     throw new ProviderTypeError(provider)
   }
 
-  private async generateForFactoryProvider<T>(injector: Injector, provider: FactoryProvider<any[], T>): Promise<T> {
+  private async generateForFactoryProvider<T>(
+    injector: Injector,
+    provider: FactoryProvider<any[], T>,
+  ): Promise<T> {
     const args = provider.deps?.length
       ? await Promise.all(
           provider.deps.map(async (paramToken) => {
@@ -79,7 +85,7 @@ export class DandiGenerator implements InstanceGenerator {
             }
             const paramInjector = injector.createChild(paramScope, provider.providers)
             // TODO: add way to make a factory dependency optional
-            return (await paramInjector.inject(paramToken, false))?.value
+            return await paramInjector.inject(paramToken, false)
           }),
         )
       : []
@@ -95,7 +101,7 @@ export class DandiGenerator implements InstanceGenerator {
             meta.params.map(async (param) => {
               const paramScope = new DependencyInjectionScope(provider.useClass, undefined, param.name)
               const paramInjector = injector.createChild(paramScope, provider.providers)
-              return (await paramInjector.inject(param.token, param.optional))?.value
+              return await paramInjector.inject(param.token, param.optional)
             }),
           )
         : []
@@ -143,7 +149,11 @@ export class DandiGenerator implements InstanceGenerator {
    * child hierarchy they were actually instantiated from, and that the resulting injector will not be incorrectly
    * disposed due to the instance being created within a `{@link Injector.invoke} call.
    */
-  private findParentInjector<T>(injector: Injector, instanceContext: InjectorContext, scope: InjectionScope): Injector {
+  private findParentInjector<T>(
+    injector: Injector,
+    instanceContext: InjectorContext,
+    scope: InjectionScope,
+  ): Injector {
     if (injector.context === instanceContext) {
       return injector
     }

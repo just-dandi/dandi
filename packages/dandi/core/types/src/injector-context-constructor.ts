@@ -6,6 +6,9 @@ export interface InjectorContextConstructor {
   new (...args: any[]): InjectorContext
 }
 
-export const InjectorContextConstructor = localToken.opinionated('InjectorContextConstructor', {
-  multi: false,
-})
+export const InjectorContextConstructor = localToken.opinionated<InjectorContextConstructor>(
+  'InjectorContextConstructor',
+  {
+    multi: false,
+  },
+)

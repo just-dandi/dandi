@@ -1,8 +1,7 @@
 import { localToken } from '../../src/local-token'
 
-import { InjectionResult } from './injection-result'
 import { InjectionScope } from './injection-scope'
-import { InjectionToken } from './injection-token'
+import { InjectionToken, MultiInjectionToken, SingleInjectionToken } from './injection-token'
 import { InjectorContext } from './injector-context'
 import { Provider } from './provider'
 import { Registerable } from './registerable'
@@ -49,7 +48,9 @@ export interface TokenInjector {
   readonly parent: Injector
   readonly context: InjectorContext
 
-  inject<T>(token: InjectionToken<T>, optional?: boolean): Promise<InjectionResult<T>>
+  inject<T>(token: MultiInjectionToken<T>): Promise<T[]>
+  inject<T>(token: SingleInjectionToken<T>, optional?: boolean): Promise<T>
+  inject<T>(token: InjectionToken<T>, optional?: boolean): Promise<T | T[]>
 
   createChild(scope: InjectionScope, providers?: Registerable[]): Injector
 }

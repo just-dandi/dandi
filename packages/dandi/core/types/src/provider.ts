@@ -31,6 +31,14 @@ export interface InjectionOptions {
   restrictScope?: ScopeRestriction
 }
 
+export interface MultiInjectionOptions extends InjectionOptions {
+  multi: true
+}
+
+export interface SingleInjectionOptions extends InjectionOptions {
+  multi: false
+}
+
 export interface ProviderOptions<T> extends InjectionOptions {
   provide?: InjectionToken<T>
 }

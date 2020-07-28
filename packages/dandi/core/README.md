@@ -62,7 +62,7 @@ import { InjectionToken, SymbolToken } from '@dandi/core'
 
 export interface MyInterface {}
 
-export const MyInterface: InjectionToken<MyInterface> = SymbolToken.for<MyInterface>('MyInterface')
+export const MyInterface = SymbolToken.for<MyInterface>('MyInterface')
 
 // my-service.ts
 import { Injectable } from '@dandi/core'
@@ -85,7 +85,7 @@ A value provider allows mapping an existing value to an injection token.
 ```typescript
 import { InjectionToken, Provider, SymbolToken } from '@dandi/core'
 
-const SomeValue: InjectionToken<string> = SymbolToken.for<string>('SomeValue')
+const SomeValue = SymbolToken.for<string>('SomeValue')
 
 const SomeValueProvider: Provider<string> = {
   provide: SomeValue,
@@ -121,7 +121,7 @@ import { InjectionToken, Provider, SymbolToken } from '@dandi/core'
 
 export interface MyInterface {}
 
-export const MyInterface: InjectionToken<MyInterface> = SymbolToken.for<MyInterface>('MyInterface')
+export const MyInterface = SymbolToken.for<MyInterface>('MyInterface')
 
 export class MyService implements MyInterface {}
 

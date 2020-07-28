@@ -88,6 +88,7 @@ describe('AmbientInjectableScanner', () => {
     class Singlejon {}
     @Injectable()
     class Test {
+      public static readonly multi = false
       constructor(@Inject(Singlejon) public jon: Singlejon) {}
     }
     @Injectable()
@@ -95,7 +96,7 @@ describe('AmbientInjectableScanner', () => {
       constructor(@Inject(Singlejon) public jon: Singlejon, @Inject(Injector) private injector: Injector) {}
 
       public async createTest(): Promise<Test> {
-        return (await this.injector.inject(Test)).singleValue
+        return await this.injector.inject(Test)
       }
     }
 

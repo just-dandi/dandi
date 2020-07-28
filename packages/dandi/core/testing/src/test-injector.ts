@@ -1,7 +1,6 @@
 import { isConstructor } from '@dandi/common'
 import {
   DandiApplication,
-  InjectionResult,
   InjectionScope,
   InjectionToken,
   Injector,
@@ -53,11 +52,11 @@ export class TestInjectorBase implements TestInjector {
 
   public async inject<T>(token: InjectionToken<T>, optional?: boolean): Promise<T> {
     try {
-      const result: InjectionResult<T> = await this.injector.inject.call(this.injector, token, optional)
+      const result: T | T[] = await this.injector.inject.call(this.injector, token, optional)
       if (!result) {
         return undefined
       }
-      return result.singleValue
+      return result as T
     } catch (err) {
       if (err instanceof MissingProviderError && this.stubMissing && isConstructor(token)) {
         return createStubInstance(token)
@@ -68,11 +67,11 @@ export class TestInjectorBase implements TestInjector {
 
   public async injectMulti<T>(token: InjectionToken<T>, optional?: boolean): Promise<T[]> {
     try {
-      const result: InjectionResult<T> = await this.injector.inject.call(this.injector, token, optional)
+      const result: T | T[] = await this.injector.inject.call(this.injector, token, optional)
       if (!result) {
         return undefined
       }
-      return result.arrayValue
+      return result as T[]
     } catch (err) {
       if (err instanceof MissingProviderError && this.stubMissing && isConstructor(token)) {
         return [createStubInstance(token)]
@@ -85,7 +84,10 @@ export class TestInjectorBase implements TestInjector {
     return (await this.inject(token, optional)) as SinonStubbedInstance<T>
   }
 
-  public async injectMultiStub<T>(token: InjectionToken<T>, optional?: boolean): Promise<SinonStubbedInstance<T>[]> {
+  public async injectMultiStub<T>(
+    token: InjectionToken<T>,
+    optional?: boolean,
+  ): Promise<SinonStubbedInstance<T>[]> {
     return ((await this.inject(token, optional)) as unknown) as SinonStubbedInstance<T>[]
   }
 

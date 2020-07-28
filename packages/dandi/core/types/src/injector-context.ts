@@ -7,7 +7,7 @@ import { InjectionToken } from './injection-token'
 import { Provider } from './provider'
 import { Registerable } from './registerable'
 
-export const InjectorContext = localToken.opinionated('InjectorContext', {
+export const InjectorContext = localToken.opinionated<InjectorContext>('InjectorContext', {
   multi: false,
 })
 

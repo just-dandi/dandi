@@ -192,7 +192,7 @@ export class DandiApplicationInit<TConfig extends DandiApplicationInternalConfig
   }
 
   public async bootstrap(): Promise<any> {
-    const bootstrapper = (await this.appInjector.inject(Bootstrapper)).singleValue
+    const bootstrapper = (await this.appInjector.inject(Bootstrapper)) as Bootstrapper
     return await bootstrapper.run(this.startTs)
   }
 

@@ -47,11 +47,16 @@ export interface ConsoleLogListenerConfig extends ConsoleLogListenerOptions {
   filter?: LogLevel
 }
 
-export const ConsoleLogListenerConfig = localToken.opinionated('ConsoleLogListenerConfig', {
-  multi: false,
-})
+export const ConsoleLogListenerConfig = localToken.opinionated<ConsoleLogListenerConfig>(
+  'ConsoleLogListenerConfig',
+  {
+    multi: false,
+  },
+)
 
-export function consoleLogListenerConfigProvider(config: ConsoleLogListenerConfig): ConsoleLogListenerConfigProvider {
+export function consoleLogListenerConfigProvider(
+  config: ConsoleLogListenerConfig,
+): ConsoleLogListenerConfigProvider {
   return new ConsoleLogListenerConfigProvider(config)
 }
 

@@ -89,10 +89,7 @@ export type InjectionScope =
   | InvokeInjectionScope
   | InvokeParamInjectionScope
 
-export const InjectionScope: InjectionToken<InjectionScope> = localToken.opinionated<InjectionScope>(
-  'InjectionScope',
-  {
-    multi: false,
-    parentsOnly: true,
-  },
-)
+export const InjectionScope = localToken.opinionated<InjectionScope>('InjectionScope', {
+  multi: false,
+  parentsOnly: true,
+})

@@ -1,15 +1,15 @@
-import { InjectionResult, InjectionScope, InjectionToken, Provider, ResolverContext } from '@dandi/core/types'
+import { InjectionScope, InjectionToken, Provider, ResolverContext } from '@dandi/core/types'
 
 import { DandiInjectorContext } from './dandi-injector-context'
 
 export class DandiResolverContext<TTarget = unknown> implements ResolverContext<TTarget> {
-  public get result(): InjectionResult<TTarget> {
+  public get result(): TTarget | TTarget[] {
     return this._result
   }
 
   public readonly injectionScope: InjectionScope
 
-  private _result: InjectionResult<TTarget>
+  private _result: TTarget | TTarget[]
 
   constructor(
     public readonly target: InjectionToken<TTarget>,
@@ -20,8 +20,8 @@ export class DandiResolverContext<TTarget = unknown> implements ResolverContext<
     this.injectionScope = injectorContext?.scope
   }
 
-  public resolveValue(result: TTarget | TTarget[]): InjectionResult<TTarget> {
-    this._result = new InjectionResult<TTarget>(result)
+  public resolveValue(result: TTarget | TTarget[]): TTarget | TTarget[] {
+    this._result = result
     return this._result
   }
 

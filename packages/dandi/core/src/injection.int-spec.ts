@@ -212,7 +212,7 @@ describe('DI Integration', function () {
       constructor(@Inject(Singlejon) public jon: Singlejon, @Inject(Injector) private injector: Injector) {}
 
       public async createTest(): Promise<Test> {
-        return (await this.injector.inject(Test)).singleValue
+        return (await this.injector.inject(Test)) as Test
       }
     }
     harness.register(Singlejon, Test, TestFactory)
@@ -425,7 +425,7 @@ describe('DI Integration', function () {
     expect(testB.foo).to.equal('bar')
     expect(Disposable.isDisposed(testB)).to.be.false
 
-    expect((await testB.injector.inject(TestClassA)).singleValue).to.equal(testA)
+    expect(await testB.injector.inject(TestClassA)).to.equal(testA)
   })
 
   it('uses the correct contexts and injectors to instantiate injectable instances when dealing with scoped restrictions', async () => {

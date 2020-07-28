@@ -59,7 +59,7 @@ export class TestHarness extends TestInjectorBase implements RootTestInjector, D
   private async setUpApplication(providers: any[]): Promise<void> {
     this._application = new DandiApplication({ providers })
     this._injector = await this._application.start()
-    this.rootInjector = (await this._injector.inject(DandiRootInjector)).singleValue
+    this.rootInjector = (await this._injector.inject(DandiRootInjector)) as DandiRootInjector
 
     this.bindInjector()
   }
