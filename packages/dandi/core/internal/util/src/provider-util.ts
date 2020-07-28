@@ -38,7 +38,7 @@ function checkIsClassProvider<T>(obj: any, hasInjectionToken?: boolean): obj is 
   return checkAny(obj, hasInjectionToken, () => isConstructor(obj.useClass))
 }
 
-function checkIsFactoryProvider<T>(obj: any, hasInjectionToken?: boolean): obj is FactoryProvider<T> {
+function checkIsFactoryProvider<T>(obj: any, hasInjectionToken?: boolean): obj is FactoryProvider<any[], T> {
   return checkAny(obj, hasInjectionToken, () => typeof obj.useFactory === 'function')
 }
 
@@ -58,11 +58,11 @@ export function isClassProvider<T>(obj: any): obj is ClassProvider<T> {
   return checkIsClassProvider(obj)
 }
 
-export function isFactoryProvider<T>(obj: any): obj is FactoryProvider<T> {
+export function isFactoryProvider<T>(obj: any): obj is FactoryProvider<any[], T> {
   return checkIsFactoryProvider(obj)
 }
 
-export function isAsyncFactoryProvider<T>(obj: any): obj is AsyncFactoryProvider<T> {
+export function isAsyncFactoryProvider<T>(obj: any): obj is AsyncFactoryProvider<any[], T> {
   return checkIsFactoryProvider(obj) && obj.async
 }
 

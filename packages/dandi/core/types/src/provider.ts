@@ -47,24 +47,34 @@ export interface GeneratorProvider<T> extends ProviderOptions<T> {
   providers?: (Provider<any> | Constructor)[]
 }
 
-export interface SyncFactoryProvider<T> extends GeneratorProvider<T> {
-  useFactory: (...args: any[]) => T
+export type FactoryProviderArgs<TDeps extends [...InjectionToken<any>[]]> = {
+  [TDepIndex in keyof TDeps]: TDeps[TDepIndex] extends InjectionToken<infer U> ? U : never
+}
+
+export type FactoryFn<TDeps extends [...InjectionToken<any>[]], TReturn = void> = (
+  ...args: FactoryProviderArgs<TDeps>
+) => TReturn
+
+export interface SyncFactoryProvider<TDeps extends [...InjectionToken<any>[]], T> extends GeneratorProvider<T> {
+  useFactory: FactoryFn<TDeps, T>
   async?: false
-  deps?: InjectionToken<any>[]
+  deps?: TDeps
 }
 
-export interface AsyncFactoryProvider<T> extends GeneratorProvider<T> {
-  useFactory: (...args: any[]) => Promise<T>
+export interface AsyncFactoryProvider<TDeps extends [...InjectionToken<any>[]], T> extends GeneratorProvider<T> {
+  useFactory: FactoryFn<TDeps, Promise<T>>
   async: true
-  deps?: Array<InjectionToken<any>>
+  deps?: TDeps
 }
 
-export type FactoryProvider<T> = SyncFactoryProvider<T> | AsyncFactoryProvider<T>
+export type FactoryProvider<TDeps extends [...InjectionToken<any>[]], T> =
+  | SyncFactoryProvider<TDeps, T>
+  | AsyncFactoryProvider<TDeps, T>
 
 export interface ClassProvider<T> extends GeneratorProvider<T> {
   useClass: Constructor<T>
 }
 
-export type Provider<T> = ClassProvider<T> | FactoryProvider<T> | ValueProvider<T>
-export type GeneratingProvider<T> = ClassProvider<T> | FactoryProvider<T>
+export type Provider<T> = ClassProvider<T> | FactoryProvider<any[], T> | ValueProvider<T>
+export type GeneratingProvider<T> = ClassProvider<T> | FactoryProvider<any[], T>
 export type MultiProvider<T> = Provider<T> & { multi: true }
