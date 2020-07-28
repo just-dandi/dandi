@@ -12,7 +12,7 @@ export interface FileSystemScannerConfig {
   extensions?: string[]
   include?: RegExp | RegExp[]
 }
-export const FileSystemScannerConfig = localToken.opinionated('FileSystemScannerConfig', {
+export const FileSystemScannerConfig = localToken.opinionated<FileSystemScannerConfig>('FileSystemScannerConfig', {
   multi: true,
 })
 
