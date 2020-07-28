@@ -1,5 +1,3 @@
-import { InjectionToken } from '@dandi/core'
-
 import { localToken } from './local-token'
 
 export interface EjsOptions {
@@ -17,4 +15,4 @@ export interface EjsOptions {
   async?: boolean
 }
 
-export const EjsOptions: InjectionToken<EjsOptions> = localToken.opinionated<EjsOptions>('EjsOptions', { multi: false })
+export const EjsOptions = localToken.opinionated<EjsOptions>('EjsOptions', { multi: false })
