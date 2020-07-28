@@ -27,7 +27,10 @@ import { HttpPipelineRenderer, HttpPipelineRendererResult } from './rendering/ht
 
 @Injectable()
 export class HttpPipeline {
-  constructor(@Inject(Logger) private logger: Logger, @Inject(HttpPipelineConfig) private config: HttpPipelineConfig) {}
+  constructor(
+    @Inject(Logger) private logger: Logger,
+    @Inject(HttpPipelineConfig) private config: HttpPipelineConfig,
+  ) {}
 
   public async handleRequest(
     @Inject(Injector) injector: Injector,
@@ -47,7 +50,14 @@ export class HttpPipeline {
 
     const preparedProviders = await this.invokeStep(injector, this.prepare, requestInfo)
 
-    await this.safeInvokeStep(injector, req, this.beforeInvokeHandler, requestInfo, preparedProviders, errorHandlers)
+    await this.safeInvokeStep(
+      injector,
+      req,
+      this.beforeInvokeHandler,
+      requestInfo,
+      preparedProviders,
+      errorHandlers,
+    )
 
     const allowRequest = await this.invokeStep(injector, this.checkCors, requestInfo, preparedProviders)
 
@@ -93,7 +103,12 @@ export class HttpPipeline {
       ),
     )
 
-    const terminatorResult = await this.invokeStep(injector, this.terminateResponse, requestInfo, preparedProviders)
+    const terminatorResult = await this.invokeStep(
+      injector,
+      this.terminateResponse,
+      requestInfo,
+      preparedProviders,
+    )
 
     this.logger.debug(
       `end handleRequest ${handler.constructor.name}.${handlerMethod}:`,
@@ -166,12 +181,15 @@ export class HttpPipeline {
   }
 
   private async beforeInvokeHandler(
+    @Inject(Injector) injector: Injector,
     @Optional() @Inject(BeforeInvokeHandler) beforeInvokeHandlers: BeforeInvokeHandler[],
   ): Promise<void> {
     if (!beforeInvokeHandlers) {
       return
     }
-    await Promise.all(beforeInvokeHandlers.map(async (handler) => await handler.onBeforeInvoke()))
+    await Promise.all(
+      beforeInvokeHandlers.map(async (handler) => await injector.invoke(handler, 'onBeforeInvoke')),
+    )
   }
 
   private checkCors(@Inject(CorsAllowRequest) allowRequest: boolean): true | HttpPipelineVoidResult {

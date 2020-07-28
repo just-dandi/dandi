@@ -3,7 +3,7 @@ import { InjectionToken } from '@dandi/core'
 import { localToken } from './local-token'
 
 export interface BeforeInvokeHandler {
-  onBeforeInvoke(): void | Promise<void>
+  onBeforeInvoke(...args: any[]): void | Promise<void>
 }
 
 export const BeforeInvokeHandler: InjectionToken<BeforeInvokeHandler> = localToken.opinionated<BeforeInvokeHandler>(

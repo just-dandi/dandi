@@ -24,13 +24,13 @@ import { HttpPipeline } from './http-pipeline'
 import { HttpPipelineConfig } from './http-pipeline-config'
 import { HttpRequestBodySourceProvider } from './http-request-body-source-provider'
 import { HttpResponsePipelineTerminator } from './http-response-pipeline-terminator'
-import { PKG } from './local-token'
+import { localToken } from './local-token'
+
 import {
   defaultHttpPipelineRenderer,
   HttpPipelineRenderer,
   HttpPipelineRendererProvider,
 } from './rendering/http-pipeline-renderer'
-
 import { NativeJsonObjectRenderer } from './rendering/native-json-object-renderer'
 import { PlainTextObjectRenderer } from './rendering/plain-text-object-renderer'
 
@@ -44,7 +44,7 @@ export const DEFAULT_CONFIG: HttpPipelineConfig = {
 
 export class HttpPipelineModuleBuilder extends ModuleBuilder<HttpPipelineModuleBuilder> {
   constructor(...entries: Registerable[]) {
-    super(HttpPipelineModuleBuilder, PKG, ...entries)
+    super(HttpPipelineModuleBuilder, localToken.PKG, ...entries)
   }
 
   public defaultRenderer(rendererType: Constructor<HttpPipelineRenderer>): this {

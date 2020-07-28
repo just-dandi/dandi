@@ -26,6 +26,7 @@ export * from './src/rendering/native-json-object-renderer'
 export * from './src/rendering/plain-text-object-renderer'
 export * from './src/rendering/renderer-decorator'
 
+export * from './src/before-invoke-handler'
 export * from './src/default-http-pipeline-error-handler'
 export * from './src/default-http-request-info'
 export * from './src/http-pipeline.module'
