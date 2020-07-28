@@ -1,7 +1,7 @@
 import { Constructor, MethodTarget } from '@dandi/common'
 import { getInjectableParamMetadata } from '@dandi/core/internal/util'
 
-import { getAccessorMetadata } from './resource.accessor.decorator'
+import { getAccessorMetadata } from './resource-accessor-decorator'
 
 export class InheritedResourceType {}
 

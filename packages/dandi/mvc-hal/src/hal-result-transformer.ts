@@ -12,7 +12,7 @@ import { Route } from '@dandi/mvc'
 import { getAccessorMetadata } from '@dandi/mvc-hal'
 
 import { CompositionContext } from './composition-context'
-import { ResourceComposer } from './resource.composer'
+import { ResourceComposer } from './resource-composer'
 
 export const EMBED_RELS_KEY = '_embedded'
 

@@ -1,7 +1,7 @@
 import { Constructor, MethodTarget, getMetadata } from '@dandi/common'
 import { ResourceAccessorMetadata, getResourceMetadata, RESOURCE_META_KEY } from '@dandi/hal'
 
-import { globalSymbol } from './global.symbol'
+import { globalSymbol } from './global-symbol'
 
 export const RESOURCE_ACCESSOR_META_KEY = globalSymbol('meta:ResourceAccessor')
 

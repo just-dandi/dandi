@@ -23,7 +23,7 @@ import {
 
 import { InheritedResourceType } from './accessor-resource-id-decorator'
 import { CompositionContext } from './composition-context'
-import { ResourceComposer } from './resource.composer'
+import { ResourceComposer } from './resource-composer'
 
 function embedResponseAccess(): HttpResponse {
   throw new InvalidAccessError(`Response object may not be used during embedding`)
@@ -164,7 +164,9 @@ export class DefaultResourceComposer implements ResourceComposer {
     // with a list relation that requires an ID from "self", the relation metadata does not get an idProperty
     const result = resource[meta.idProperty]
     if (!result) {
-      throw new Error(`Could not determine @ResourceId property on '${resource.constructor.name}' for param '${param}'`)
+      throw new Error(
+        `Could not determine @ResourceId property on '${resource.constructor.name}' for param '${param}'`,
+      )
     }
     return result
   }
@@ -206,7 +208,7 @@ export class DefaultResourceComposer implements ResourceComposer {
         rt.controllerCtr === accessor.controller &&
         rt.controllerMethod === accessor.method,
     )
-    const ogRequest = (await this.injector.inject(HttpRequest)).singleValue
+    const ogRequest = await this.injector.inject(HttpRequest)
     const requestParams = Object.keys(accessor.paramMap).reduce((params, key) => {
       params[key] = this.getParamValue(resource, meta, relMeta, key, accessor)
       return params
@@ -230,7 +232,7 @@ export class DefaultResourceComposer implements ResourceComposer {
       status: embedResponseAccess,
     }
 
-    const requestInfo = (await this.injector.inject(HttpRequestInfo)).singleValue
+    const requestInfo = await this.injector.inject(HttpRequestInfo)
     const embedProviders = await this.routeInitializer.initRouteRequest(route, req, requestInfo, res)
 
     embedProviders.push({
