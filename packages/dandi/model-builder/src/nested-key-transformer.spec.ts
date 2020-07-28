@@ -1,6 +1,6 @@
 import { expect } from 'chai'
 
-import { NestedKeyTransformer } from './nested.key.transformer'
+import { NestedKeyTransformer } from './nested-key-transformer'
 
 describe('NestedKeyTransformer', () => {
   let transformer: NestedKeyTransformer

@@ -4,16 +4,16 @@ import { expect } from 'chai'
 import { DateTime } from 'luxon'
 import { SinonStubbedInstance, createStubInstance } from 'sinon'
 
-import { DateTimeTypeConverter } from './date.time.type.converter'
+import { DateTimeTypeConverter } from './date-time-type-converter'
 import {
   BooleanTypeConverter,
   NumberTypeConverter,
   PrimitiveTypeConverter,
   StringTypeConverter,
-} from './primitive.type.converter'
-import { TypeConversionError, TypeConverter } from './type.converter'
-import { UrlTypeConverter } from './url.type.converter'
-import { UuidTypeConverter } from './uuid.type.converter'
+} from './primitive-type-converter'
+import { TypeConversionError, TypeConverter } from './type-converter'
+import { UrlTypeConverter } from './url-type-converter'
+import { UuidTypeConverter } from './uuid-type-converter'
 
 describe('StringTypeValidator', () => {
   let validator: TypeConverter<any>

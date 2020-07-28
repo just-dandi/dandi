@@ -261,7 +261,12 @@ describe('MetadataModelBuilder', () => {
       builder.constructModel(KeyTransformerTest, source, options)
 
       expect((builder as any).constructMemberInternal)
-        .to.have.been.calledThrice.calledWithExactly({ type: Blob, json: true }, 'blob', { foo_bar: 'yeah' }, options)
+        .to.have.been.calledThrice.calledWithExactly(
+          { type: Blob, json: true },
+          'blob',
+          { foo_bar: 'yeah' },
+          options,
+        )
         .calledWithExactly({ type: String }, 'blob.foo_bar', 'yeah', {
           validators: undefined,
         })

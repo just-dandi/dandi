@@ -2,11 +2,11 @@ import { Constructor, isPrimitiveType } from '@dandi/common'
 import { Inject, Injectable } from '@dandi/core'
 import { MemberMetadata, OneOf, getAllKeys, getModelMetadata } from '@dandi/model'
 
-import { MemberBuilderOptions, ModelBuilder, ModelBuilderOptions } from './model.builder'
-import { ModelValidationError } from './model.validation.error'
-import { OneOfConversionAttempt, OneOfConversionError } from './one.of.conversion.error'
-import { PrimitiveTypeConverter } from './primitive.type.converter'
-import { TypeConversionError } from './type.converter'
+import { MemberBuilderOptions, ModelBuilder, ModelBuilderOptions } from './model-builder'
+import { ModelValidationError } from './model-validation-error'
+import { OneOfConversionAttempt, OneOfConversionError } from './one-of-conversion-error'
+import { PrimitiveTypeConverter } from './primitive-type-converter'
+import { TypeConversionError } from './type-converter'
 
 @Injectable(ModelBuilder)
 export class MetadataModelBuilder implements ModelBuilder {
@@ -95,7 +95,12 @@ export class MetadataModelBuilder implements ModelBuilder {
     return result
   }
 
-  private constructMemberByType(metadata: MemberMetadata, key: string, value: any, options: MemberBuilderOptions): any {
+  private constructMemberByType(
+    metadata: MemberMetadata,
+    key: string,
+    value: any,
+    options: MemberBuilderOptions,
+  ): any {
     if ((metadata.type as any) === Array) {
       return this.constructArrayMember(metadata, key, value, options)
     }
@@ -192,10 +197,20 @@ export class MetadataModelBuilder implements ModelBuilder {
     return Object.keys(value).reduce((result, mapKey) => {
       const keyMeta: MemberMetadata = { type: metadata.keyType }
       // note: the real options are not passed for the key because map keys must not be transformed
-      const convertedKey = this.constructMemberInternal(keyMeta, this.getKey(key, `(key for '${mapKey}')`), mapKey, {})
+      const convertedKey = this.constructMemberInternal(
+        keyMeta,
+        this.getKey(key, `(key for '${mapKey}')`),
+        mapKey,
+        {},
+      )
 
       const valueMeta: MemberMetadata = { type: metadata.valueType }
-      const convertedValue = this.constructMemberInternal(valueMeta, this.getKey(key, mapKey), value[mapKey], options)
+      const convertedValue = this.constructMemberInternal(
+        valueMeta,
+        this.getKey(key, mapKey),
+        value[mapKey],
+        options,
+      )
 
       result.set(convertedKey, convertedValue)
 
