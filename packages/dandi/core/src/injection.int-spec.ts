@@ -69,7 +69,7 @@ describe('DI Integration', function () {
     async function useFactory(): Promise<TestInjectable> {
       return new TestInjectable()
     }
-    const provider: AsyncFactoryProvider<TestInjectable> = {
+    const provider: AsyncFactoryProvider<any[], TestInjectable> = {
       provide: token,
       useFactory: stub().callsFake(useFactory),
       async: true,
@@ -132,7 +132,10 @@ describe('DI Integration', function () {
     }
 
     class ContextHost {
-      public test(@Inject(ContextTester) tester: any, @Inject(InjectionScope) context: InjectionScope): TestResult {
+      public test(
+        @Inject(ContextTester) tester: any,
+        @Inject(InjectionScope) context: InjectionScope,
+      ): TestResult {
         return {
           tester,
           context,
@@ -309,12 +312,18 @@ describe('DI Integration', function () {
     }
     @Injectable()
     class TestClassB {
-      public async test(@Inject(TestClassA) testA: TestClassA, @Inject(Injector) injector: Injector): Promise<string> {
+      public async test(
+        @Inject(TestClassA) testA: TestClassA,
+        @Inject(Injector) injector: Injector,
+      ): Promise<string> {
         return await injector.invoke(testA, 'test')
       }
     }
     class Tester {
-      public async test(@Inject(TestClassB) testB: TestClassB, @Inject(Injector) injector: Injector): Promise<string> {
+      public async test(
+        @Inject(TestClassB) testB: TestClassB,
+        @Inject(Injector) injector: Injector,
+      ): Promise<string> {
         return await injector.invoke(testB, 'test')
       }
     }
@@ -340,12 +349,18 @@ describe('DI Integration', function () {
     }
     @Injectable()
     class TestClassB {
-      public async test(@Inject(TestClassA) testA: TestClassA, @Inject(Injector) injector: Injector): Promise<string> {
+      public async test(
+        @Inject(TestClassA) testA: TestClassA,
+        @Inject(Injector) injector: Injector,
+      ): Promise<string> {
         return await injector.invoke(testA, 'test', provider)
       }
     }
     class Tester {
-      public async test(@Inject(TestClassB) testB: TestClassB, @Inject(Injector) injector: Injector): Promise<string> {
+      public async test(
+        @Inject(TestClassB) testB: TestClassB,
+        @Inject(Injector) injector: Injector,
+      ): Promise<string> {
         return await injector.invoke(testB, 'test', TestClassA)
       }
     }
@@ -380,12 +395,18 @@ describe('DI Integration', function () {
       constructor(@Inject(Injector) public injector: Injector) {}
 
       // the method invocation-level injector is branched off whichever injector is used to perform the invocation
-      public async test(@Inject(TestClassA) testA: TestClassA, @Inject(Injector) injector: Injector): Promise<string> {
+      public async test(
+        @Inject(TestClassA) testA: TestClassA,
+        @Inject(Injector) injector: Injector,
+      ): Promise<string> {
         return await injector.invoke(testA, 'test', provider)
       }
     }
     class Tester {
-      public async test(@Inject(TestClassB) testB: TestClassB, @Inject(Injector) injector: Injector): Promise<string> {
+      public async test(
+        @Inject(TestClassB) testB: TestClassB,
+        @Inject(Injector) injector: Injector,
+      ): Promise<string> {
         return await injector.invoke(testB, 'test')
       }
     }

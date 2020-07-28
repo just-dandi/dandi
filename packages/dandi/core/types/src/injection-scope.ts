@@ -27,7 +27,7 @@ export interface InvokeParamInjectionScope<TInstance = any, TResult = any>
  * @internal
  */
 export interface FactoryParamInjectionScope {
-  target: FactoryProvider<any>
+  target: FactoryProvider<any, any>
   paramToken: InjectionToken<any>
 }
 
@@ -89,7 +89,10 @@ export type InjectionScope =
   | InvokeInjectionScope
   | InvokeParamInjectionScope
 
-export const InjectionScope: InjectionToken<InjectionScope> = localToken.opinionated<InjectionScope>('InjectionScope', {
-  multi: false,
-  parentsOnly: true,
-})
+export const InjectionScope: InjectionToken<InjectionScope> = localToken.opinionated<InjectionScope>(
+  'InjectionScope',
+  {
+    multi: false,
+    parentsOnly: true,
+  },
+)
