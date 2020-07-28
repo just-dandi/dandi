@@ -1,14 +1,10 @@
 {
   "name": "@dandi-contrib/sentry-http-pipeline",
-  "devDependencies": {
-    "@sentry/node": "^5.19.2"
-  },
   "peerDependencies": {
     "@dandi/common": "*",
     "@dandi/config": "*",
     "@dandi/core": "*",
     "@dandi/http-pipeline": "*",
-    "@dandi-contrib/sentry": "*",
-    "@sentry/node": "^5.19.2"
+    "@dandi-contrib/sentry": "*"
   }
 }
