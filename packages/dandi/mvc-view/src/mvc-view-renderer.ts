@@ -36,8 +36,7 @@ export class MvcViewRenderer extends HttpPipelineRendererBase {
       return pipelineResult.render()
     }
 
-    const factoryResult = await this.injector.inject(ViewResultFactory)
-    const factory = factoryResult.singleValue
+    const factory = await this.injector.inject(ViewResultFactory)
     const data = isHttpPipelineDataResult(pipelineResult)
       ? pipelineResult.data instanceof HttpPipelineErrorRendererDataFactory
         ? pipelineResult.data.getErrorRendererData(this.pipelineConfig.debugMode)

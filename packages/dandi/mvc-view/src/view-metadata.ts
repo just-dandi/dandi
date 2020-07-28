@@ -17,7 +17,7 @@ export type HttpRequestHeaderComparers = {
     : HttpRequestHeaderComparer<THeaderName>
 }
 
-export type ViewFilter = MimeType | HttpRequestHeaderComparers
+export type ViewFilter = MimeType | string | HttpRequestHeaderComparers
 
 export interface ViewMetadata {
   name: string

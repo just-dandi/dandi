@@ -1,5 +1,5 @@
 import { Constructor } from '@dandi/common'
-import { InjectionToken, Provider } from '@dandi/core'
+import { Provider } from '@dandi/core'
 import { HttpStatusCode } from '@dandi/http'
 
 import { localToken } from './local-token'
@@ -11,12 +11,9 @@ export interface ViewEngineConfig {
   priority?: number
 }
 
-export const ViewEngineConfig: InjectionToken<ViewEngineConfig> = localToken.opinionated<ViewEngineConfig>(
-  'ViewEngineConfig',
-  {
-    multi: true,
-  },
-)
+export const ViewEngineConfig = localToken.opinionated<ViewEngineConfig>('ViewEngineConfig', {
+  multi: true,
+})
 
 export type ViewEngineHttpStatusErrorConfig = { [TKey in HttpStatusCode]?: string }
 
@@ -33,20 +30,19 @@ export interface ViewEngineErrorConfig {
 
 export const DefaultViewEngineErrorConfig: ViewEngineErrorConfig = {}
 
-export const ViewEngineErrorConfig: InjectionToken<ViewEngineErrorConfig> = localToken.opinionated<
-  ViewEngineErrorConfig
->('ViewEngineErrorConfig', {
+export const ViewEngineErrorConfig = localToken.opinionated<ViewEngineErrorConfig>('ViewEngineErrorConfig', {
   multi: true,
 })
 
 /**
  * @internal
  */
-export const ViewEngineMergedErrorConfig: InjectionToken<ViewEngineErrorConfig> = localToken.opinionated<
-  ViewEngineErrorConfig
->('ViewEngineMergedErrorConfig', {
-  multi: false,
-})
+export const ViewEngineMergedErrorConfig = localToken.opinionated<ViewEngineErrorConfig>(
+  'ViewEngineMergedErrorConfig',
+  {
+    multi: false,
+  },
+)
 
 function viewEngineMergedErrorConfigFactory(configs: ViewEngineErrorConfig[]): ViewEngineErrorConfig {
   return configs.reduce((merged, config) => {

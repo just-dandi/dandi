@@ -118,7 +118,6 @@ export class ViewEngineResolver {
   }
 
   private async getEngineInstance(engine: Constructor<ViewEngine>): Promise<ViewEngine> {
-    const result = await this.injector.inject(engine)
-    return result.singleValue
+    return (await this.injector.inject(engine)) as ViewEngine
   }
 }

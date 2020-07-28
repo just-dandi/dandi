@@ -1,5 +1,5 @@
 import { parseBoolean } from '@dandi/common'
-import { InjectionToken, Provider } from '@dandi/core'
+import { Provider } from '@dandi/core'
 import {
   HttpHeader,
   HttpRequestHeadersAccessor,
@@ -25,13 +25,10 @@ export type ViewResultFactory = (
   statusCode?: HttpStatusCode,
 ) => Promise<ViewResult>
 
-export const ViewResultFactory: InjectionToken<ViewResultFactory> = localToken.opinionated<ViewResultFactory>(
-  'ViewResultFactory',
-  {
-    multi: false,
-    restrictScope: HttpRequestScope,
-  },
-)
+export const ViewResultFactory = localToken.opinionated<ViewResultFactory>('ViewResultFactory', {
+  multi: false,
+  restrictScope: HttpRequestScope,
+})
 
 function canUseView(view: ViewMetadata, headers: HttpRequestHeadersAccessor): boolean {
   if (!view.filter?.length) {

@@ -103,7 +103,7 @@ describe('ViewEngineResolver', () => {
     it('returns a resolved view for a known extension with an explicitly specified name', async () => {
       const instance = {}
       exists.returns(true)
-      injector.inject.returns({ singleValue: instance } as any)
+      injector.inject.returns(instance as any)
 
       expect(await viewResolver.resolve({ context: __dirname, name: 'whateva' }, 'foo.a')).to.deep.equal({
         engine: instance,
@@ -114,7 +114,7 @@ describe('ViewEngineResolver', () => {
     it('returns a resolved view for a known extension with the name specified by view metadata', async () => {
       const instance = {}
       exists.returns(true)
-      injector.inject.returns({ singleValue: instance } as any)
+      injector.inject.returns(instance as any)
 
       expect(await viewResolver.resolve({ context: __dirname, name: 'foo.a' })).to.deep.equal({
         engine: instance,
@@ -125,7 +125,7 @@ describe('ViewEngineResolver', () => {
     it('returns a cached resolved view when called for the same path multiple times', async () => {
       const instance = {}
       exists.returns(true)
-      injector.inject.returns({ singleValue: instance } as any)
+      injector.inject.returns(instance as any)
 
       const resolved = await viewResolver.resolve({ context: __dirname, name: 'whateva' }, 'foo.a')
       expect(await viewResolver.resolve({ context: __dirname, name: 'whateva' }, 'foo.a')).to.equal(resolved)
@@ -133,7 +133,7 @@ describe('ViewEngineResolver', () => {
 
     it('locates a file by iterating the configurations and checking for files with the configured extension', async () => {
       exists.callsFake((path) => path.endsWith('.e'))
-      injector.inject.callsFake((ctr: Constructor) => ({ singleValue: new ctr() } as any))
+      injector.inject.callsFake((ctr: Constructor) => new ctr() as any)
 
       const resolved = await viewResolver.resolve({ context: __dirname, name: 'whateva' }, 'foo')
       expect(resolved.engine).to.be.instanceof(configF.engine)
@@ -142,7 +142,7 @@ describe('ViewEngineResolver', () => {
     it('skips ignored configurations when searching for files', async () => {
       // use a configuration that comes after the extension with an ignored configuration
       exists.callsFake((path) => path.endsWith('.c'))
-      injector.inject.callsFake((ctr: Constructor) => ({ singleValue: new ctr() } as any))
+      injector.inject.callsFake((ctr: Constructor) => new ctr() as any)
 
       await viewResolver.resolve({ context: __dirname, name: 'whateva' }, 'foo')
       // should only get one call to exists with a path that ends with .c

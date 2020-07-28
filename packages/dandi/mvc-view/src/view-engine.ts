@@ -1,5 +1,5 @@
 import { Constructor } from '@dandi/common'
-import { InjectionToken, Provider } from '@dandi/core'
+import { Provider } from '@dandi/core'
 
 import { localToken } from './local-token'
 import { ViewEngineErrorConfig } from './view-engine-config'
@@ -9,7 +9,7 @@ export interface ViewEngine {
   render(view: ViewMetadata, templatePath: string, data?: any): string | Promise<string>
 }
 
-export const ViewEngine: InjectionToken<ViewEngine[]> = localToken.opinionated<ViewEngine[]>('ViewEngine', {
+export const ViewEngine = localToken.opinionated<ViewEngine[]>('ViewEngine', {
   multi: true,
 })
 
