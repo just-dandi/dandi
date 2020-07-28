@@ -1,5 +1,3 @@
-import { InjectionToken } from '@dandi/core'
-
 import { localToken } from './local-token'
 
 export type PugFilter = (text: string, options?: any) => string
@@ -20,6 +18,6 @@ export interface PugOptions {
   [key: string]: any
 }
 
-export const PugOptions: InjectionToken<PugOptions> = localToken.opinionated<PugOptions>('PugOptions', {
+export const PugOptions = localToken.opinionated<PugOptions>('PugOptions', {
   multi: false,
 })
