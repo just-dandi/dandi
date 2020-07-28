@@ -1,7 +1,7 @@
-import { InjectionToken, Provider } from '@dandi/core'
+import { Provider } from '@dandi/core'
 import { SSM } from 'aws-sdk'
 
-import { localOpinionatedToken } from './local.token'
+import { localToken } from './local-token'
 
 export function ssmClientFactory(): AwsSsmClient {
   return new SSM()
@@ -9,7 +9,7 @@ export function ssmClientFactory(): AwsSsmClient {
 
 export type AwsSsmClient = SSM
 
-export const AwsSsmClient: InjectionToken<AwsSsmClient> = localOpinionatedToken('AwsSsmClient', {
+export const AwsSsmClient = localToken.opinionated<AwsSsmClient>('AwsSsmClient', {
   multi: false,
 })
 

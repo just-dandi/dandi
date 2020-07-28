@@ -1,7 +1,7 @@
 import { AsyncConfigClient, ConfigToken, configProvider } from '@dandi/config'
 import { Inject, Injectable, Provider } from '@dandi/core'
 
-import { SsmClient } from './ssm.client'
+import { SsmClient } from './ssm-client'
 
 @Injectable()
 export class AwsSsmConfigClient implements AsyncConfigClient {

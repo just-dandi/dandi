@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@dandi/core'
 
-import { AwsSsmClient } from './ssm.client.factory'
+import { AwsSsmClient } from './ssm-client-factory'
 
 @Injectable()
 export class SsmClient {
