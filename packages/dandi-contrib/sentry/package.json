@@ -1,7 +1,7 @@
 {
   "name": "@dandi-contrib/sentry",
   "dependencies": {
-    "@sentry/node": "^5.19.2"
+    "@sentry/node": "^5.20.1"
   },
   "peerDependencies": {
     "@dandi/common": "*",
