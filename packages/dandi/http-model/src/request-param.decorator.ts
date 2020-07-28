@@ -1,5 +1,5 @@
 import { MethodTarget, isConstructor } from '@dandi/common'
-import { InjectionToken, Provider, SyncFactoryProvider } from '@dandi/core'
+import { InjectionToken, Provider } from '@dandi/core'
 import { getInjectableParamMetadata, ParamMetadata } from '@dandi/core/internal/util'
 import { ParamMap } from '@dandi/http'
 import { MemberMetadata, getMemberMetadata } from '@dandi/model'
@@ -31,7 +31,7 @@ export const RequestParamModelBuilderOptions: InjectionToken<ModelBuilderOptions
   },
 )
 
-export const RequestParamModelBuilderOptionsProvider: SyncFactoryProvider<ModelBuilderOptions> = {
+export const RequestParamModelBuilderOptionsProvider: Provider<ModelBuilderOptions> = {
   provide: RequestParamModelBuilderOptions,
   useFactory: () => ({
     validators: [new MetadataModelValidator()],
