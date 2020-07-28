@@ -22,7 +22,10 @@ export function Cors(config: CorsConfig | true = true): MethodDecorator & ClassD
   }
 }
 
-export function getCorsConfig(controllerCors: CorsConfig | true, methodCors: CorsConfig | true): CorsConfig | true {
+export function getCorsConfig(
+  controllerCors: CorsConfig | true,
+  methodCors: CorsConfig | true,
+): CorsConfig | true {
   if (!controllerCors) {
     return methodCors
   }

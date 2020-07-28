@@ -1,9 +1,9 @@
 import { InjectionToken } from '@dandi/core'
 
 import { AuthorizationService } from './authorization.service'
-import { localOpinionatedToken } from './local.token'
+import { localToken } from './local-token'
 
-export const RequestAuthorizationService: InjectionToken<AuthorizationService> = localOpinionatedToken<
+export const RequestAuthorizationService: InjectionToken<AuthorizationService> = localToken.opinionated<
   AuthorizationService
 >('RequestAuthorizationService', {
   multi: false,

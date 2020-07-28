@@ -1,6 +1,6 @@
 import { Provider } from '@dandi/core'
 
-import { AuthorizationCondition } from './authorization.condition'
+import { AuthorizationCondition } from './authorization-condition'
 
 export interface AuthorizationMetadata {
   authorization?: Provider<AuthorizationCondition>[]

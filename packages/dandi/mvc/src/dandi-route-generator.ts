@@ -5,7 +5,7 @@ import { HttpMethod } from '@dandi/http'
 import { mergeAuthorization } from './authorization-metadata'
 import { Controller } from './controller-decorator'
 import { getControllerMetadata } from './controller-metadata'
-import { getCorsConfig } from './cors.decorator'
+import { getCorsConfig } from './cors-decorator'
 import { Route } from './route'
 import { RouteGenerator } from './route-generator'
 import { RouteGeneratorError } from './route-generator.error'
@@ -61,7 +61,9 @@ export class DandiRouteGenerator implements RouteGenerator {
               const existing = pathRoutes.get(httpMethod)
               const locA = `${existing.controllerCtr.name}.${existing.controllerMethod.toString()}`
               const locB = `${controllerCtr.name}.${controllerMethod.toString()}`
-              throw new RouteGeneratorError(`The path ${path} has conflicting routes configured in ${locA} and ${locB}`)
+              throw new RouteGeneratorError(
+                `The path ${path} has conflicting routes configured in ${locA} and ${locB}`,
+              )
             }
 
             const route = (this.routeTransformers || []).reduce(

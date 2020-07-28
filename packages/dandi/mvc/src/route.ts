@@ -3,8 +3,8 @@ import { InjectionToken, Provider } from '@dandi/core'
 import { HttpMethod, HttpRequestScope } from '@dandi/http'
 import { CorsConfig } from '@dandi/http-pipeline'
 
-import { AuthorizationCondition } from './authorization.condition'
-import { localOpinionatedToken } from './local.token'
+import { AuthorizationCondition } from './authorization-condition'
+import { localToken } from './local-token'
 
 export interface Route<TController = any> {
   httpMethod: HttpMethod
@@ -27,7 +27,7 @@ export interface Route<TController = any> {
   authorization?: Provider<AuthorizationCondition>[]
 }
 
-export const Route: InjectionToken<Route> = localOpinionatedToken<Route>('Route', {
+export const Route: InjectionToken<Route> = localToken.opinionated<Route>('Route', {
   multi: false,
   restrictScope: HttpRequestScope,
 })

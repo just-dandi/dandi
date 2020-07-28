@@ -1,8 +1,8 @@
 import { Uuid } from '@dandi/common'
 import { InjectionToken } from '@dandi/core'
 
-import { localOpinionatedToken, localSymbolToken } from './local.token'
+import { localToken } from './local-token'
 
-export const HttpRequestId: InjectionToken<Uuid> = localOpinionatedToken<Uuid>('HttpRequestId', { multi: false })
+export const HttpRequestId: InjectionToken<Uuid> = localToken.opinionated<Uuid>('HttpRequestId', { multi: false })
 
-export const RequestController: InjectionToken<any> = localSymbolToken<any>('RequestController')
+export const RequestController: InjectionToken<any> = localToken.symbol<any>('RequestController')

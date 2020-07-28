@@ -3,7 +3,7 @@ import { HttpMethod } from '@dandi/http'
 import { CorsConfig } from '@dandi/http-pipeline'
 
 import { AuthorizationMetadata } from './authorization-metadata'
-import { globalSymbol } from './global.symbol'
+import { globalSymbol } from './global-symbol'
 import { ControllerMethod, RoutePath } from './http-method-decorator'
 import { MvcMetadata } from './mvc-metadata'
 

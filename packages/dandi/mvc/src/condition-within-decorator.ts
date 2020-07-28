@@ -2,9 +2,9 @@ import { MethodTarget } from '@dandi/common'
 import { Provider } from '@dandi/core'
 import { RequestParamDecorator } from '@dandi/http-model'
 
-import { AuthorizationCondition } from './authorization.condition'
-import { initAuthorizationMetadata } from './authorized.decorator'
-import { ConditionFactory, ConditionHelper } from './condition.decorator'
+import { AuthorizationCondition } from './authorization-condition'
+import { initAuthorizationMetadata } from './authorized-decorator'
+import { ConditionFactory, ConditionHelper } from './condition-decorator'
 
 export type SelectorFn<T, TKey> = (obj: T) => TKey
 
@@ -20,7 +20,11 @@ function checkWithinByKey<T>(key: T, ownedResource: T[]): AuthorizationCondition
   }
 }
 
-function checkWithinBySource<T, TKey>(selectorFn: SelectorFn<T, TKey>, source, ownedResource): AuthorizationCondition {
+function checkWithinBySource<T, TKey>(
+  selectorFn: SelectorFn<T, TKey>,
+  source,
+  ownedResource,
+): AuthorizationCondition {
   const key = selectorFn(source)
   return checkWithinByKey(key, ownedResource)
 }
@@ -35,7 +39,9 @@ function conditionDecorator<T>(
 ): void {
   const result = decorator(target, propertyKey, paramIndex)
   const meta = initAuthorizationMetadata(target, propertyKey)
-  meta.methodMetadata.authorization.push(ConditionHelper.useFactory(conditionFactory, [result.meta.token], collection))
+  meta.methodMetadata.authorization.push(
+    ConditionHelper.useFactory(conditionFactory, [result.meta.token], collection),
+  )
 }
 
 export function conditionWithinByKeyDecorator<T>(

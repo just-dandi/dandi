@@ -11,7 +11,7 @@ import {
 } from '@dandi/http'
 import { HttpPipeline } from '@dandi/http-pipeline'
 
-import { AuthorizationCondition, DeniedAuthorization } from './authorization.condition'
+import { AuthorizationCondition, DeniedAuthorization } from './authorization-condition'
 import { PerfRecord } from './perf-record'
 import { Route } from './route'
 import { RouteExecutor } from './route-executor'

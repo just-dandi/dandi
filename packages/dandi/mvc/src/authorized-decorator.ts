@@ -1,8 +1,8 @@
 import { MethodTarget, isConstructor } from '@dandi/common'
 import { Provider } from '@dandi/core'
 
-import { AuthorizationCondition } from './authorization.condition'
-import { AuthorizedUser } from './authorized.user'
+import { AuthorizationCondition } from './authorization-condition'
+import { AuthorizedUser } from './authorized-user'
 import { ControllerMetadata, ControllerMethodMetadata, getControllerMetadata } from './controller-metadata'
 
 export type AuthorizedConditionFactory = <T>(

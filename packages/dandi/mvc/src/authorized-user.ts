@@ -3,14 +3,14 @@ import { HttpRequest, HttpRequestScope } from '@dandi/http'
 import { HttpRequestInfo } from '@dandi/http-pipeline'
 
 import { AuthorizationService } from './authorization.service'
-import { localOpinionatedToken } from './local.token'
+import { localToken } from './local-token'
 import { RequestAuthorizationService } from './request-authorization.service'
 
 export interface AuthorizedUser {
   uid: string
 }
 
-export const AuthorizedUser: InjectionToken<AuthorizedUser> = localOpinionatedToken<AuthorizedUser>(
+export const AuthorizedUser: InjectionToken<AuthorizedUser> = localToken.opinionated<AuthorizedUser>(
   'AuthorizedUser',
   {
     multi: false,

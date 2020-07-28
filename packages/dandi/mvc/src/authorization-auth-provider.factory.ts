@@ -9,14 +9,14 @@ import {
 } from '@dandi/http'
 import { HttpPipelinePreparer } from '@dandi/http-pipeline'
 
-import { AuthProviderFactory } from './auth-provider.factory'
+import { AuthProviderFactory } from './auth-provider-factory'
 import { AuthorizationService } from './authorization.service'
-import { AuthorizedUserProvider } from './authorized.user'
-import { localOpinionatedToken } from './local.token'
+import { AuthorizedUserProvider } from './authorized-user'
+import { localToken } from './local-token'
 import { RequestAuthorizationService } from './request-authorization.service'
 import { Route } from './route'
 
-export const AuthorizationScheme: InjectionToken<string> = localOpinionatedToken<string>('AuthorizationScheme', {
+export const AuthorizationScheme: InjectionToken<string> = localToken.opinionated<string>('AuthorizationScheme', {
   multi: false,
   restrictScope: HttpRequestScope,
 })

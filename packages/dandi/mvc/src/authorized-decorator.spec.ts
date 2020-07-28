@@ -3,7 +3,7 @@ import { AuthorizationCondition, IsAuthorized, getControllerMetadata, Controller
 
 import { expect } from 'chai'
 
-import { Authorized } from './authorized.decorator'
+import { Authorized } from './authorized-decorator'
 
 const TestConditionA: Provider<AuthorizationCondition> = {
   provide: AuthorizationCondition,
@@ -38,11 +38,15 @@ describe('AuthorizedDecorator', () => {
   })
   describe('methods', () => {
     it('it stores the specified conditions in the controller method metadata', () => {
-      expect(getControllerMetadata(TestController).routeMap.get('testMethod').authorization).to.include(TestConditionB)
+      expect(getControllerMetadata(TestController).routeMap.get('testMethod').authorization).to.include(
+        TestConditionB,
+      )
     })
 
     it('automatically includes the IsAuthorized condition', () => {
-      expect(getControllerMetadata(TestController).routeMap.get('testMethod').authorization).to.include(IsAuthorized)
+      expect(getControllerMetadata(TestController).routeMap.get('testMethod').authorization).to.include(
+        IsAuthorized,
+      )
     })
   })
 })

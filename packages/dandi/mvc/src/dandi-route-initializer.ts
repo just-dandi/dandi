@@ -28,7 +28,7 @@ import {
   HttpRequestInfo,
 } from '@dandi/http-pipeline'
 
-import { AuthProviderFactory } from './auth-provider.factory'
+import { AuthProviderFactory } from './auth-provider-factory'
 import { HttpRequestWrapper } from './http-request-wrapper'
 import { Route } from './route'
 import { RouteInitializationError } from './route-initialization.error'
