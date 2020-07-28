@@ -44,6 +44,7 @@
     "chai-as-promised": "^7.1.1",
     "colors": "^1.4.0",
     "coveralls": "^3.0.9",
+    "dotenv": "^8.2.0",
     "eslint": "^7.4.0",
     "eslint-plugin-import": "^2.22.0",
     "eslint-plugin-mocha": "^7.0.1",

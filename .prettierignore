@@ -2,6 +2,7 @@
 .modules
 .nyc_output
 .prettierignore
+.tsconfig.*
 .yarn-cache
 *.pug
 *.tf
