@@ -1,15 +1,13 @@
 {
-  "name": "@dandi-contrib/sentry-mvc",
-  "devDependencies": {
-    "@sentry/node": "^5.19.2"
-  },
+  "name": "@dandi-contrib/sentry-mvc-express",
   "peerDependencies": {
     "@dandi/common": "*",
     "@dandi/config": "*",
     "@dandi/core": "*",
     "@dandi/mvc": "*",
     "@dandi/http-pipeline": "*",
+    "@dandi-contrib/mvc-express": "*",
     "@dandi-contrib/sentry": "*",
-    "@sentry/node": "^5.19.2"
+    "@dandi-contrib/sentry-http-pipeline": "*"
   }
 }
