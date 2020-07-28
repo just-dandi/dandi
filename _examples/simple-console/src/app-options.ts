@@ -1,6 +1,6 @@
-import { InjectionToken, Provider } from '@dandi/core'
+import { Provider } from '@dandi/core'
 
-import { localOpinionatedToken } from './local-token'
+import { localToken } from './local-token'
 
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface AppOptions {}
@@ -8,7 +8,7 @@ export interface AppOptions {}
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface AppConfig {}
 
-export const AppConfig: InjectionToken<AppConfig> = localOpinionatedToken('AppConfig', {
+export const AppConfig = localToken.opinionated<AppConfig>('AppConfig', {
   multi: false,
 })
 
