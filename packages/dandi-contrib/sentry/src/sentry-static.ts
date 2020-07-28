@@ -1,6 +1,6 @@
 import { IncomingMessage, ServerResponse } from 'http'
 
-import { InjectionToken, Provider } from '@dandi/core'
+import { Provider } from '@dandi/core'
 import { Scope } from '@sentry/hub'
 import * as Sentry from '@sentry/node'
 import { NodeOptions } from '@sentry/node/dist/backend'
@@ -37,7 +37,7 @@ export interface SentryStatic {
   captureEvent(event: Event): string
 }
 
-export const SentryStatic: InjectionToken<SentryStatic> = localToken.opinionated<SentryStatic>('SentryStatic', {
+export const SentryStatic = localToken.opinionated<SentryStatic>('SentryStatic', {
   multi: false,
 })
 

@@ -1,4 +1,4 @@
-import { Inject, Injectable, InjectionToken, Optional, Provider, RestrictScope, ScopeBehavior } from '@dandi/core'
+import { Inject, Injectable, Optional, Provider, RestrictScope, ScopeBehavior } from '@dandi/core'
 import { Severity, User } from '@sentry/node'
 import { Span } from '@sentry/types'
 
@@ -15,21 +15,15 @@ export interface SentryScopeData {
   user?: User
 }
 
-export const SentryScopeDataFragment: InjectionToken<SentryScopeData> = localToken.opinionated<SentryScopeData>(
-  'SentryScopeDataFragment',
-  {
-    multi: true,
-    restrictScope: ScopeBehavior.perInjector,
-  },
-)
+export const SentryScopeDataFragment = localToken.opinionated<SentryScopeData>('SentryScopeDataFragment', {
+  multi: true,
+  restrictScope: ScopeBehavior.perInjector,
+})
 
-export const SentryScopeData: InjectionToken<SentryScopeData> = localToken.opinionated<SentryScopeData>(
-  'SentryScopeData',
-  {
-    multi: false,
-    restrictScope: ScopeBehavior.perInjector,
-  },
-)
+export const SentryScopeData = localToken.opinionated<SentryScopeData>('SentryScopeData', {
+  multi: false,
+  restrictScope: ScopeBehavior.perInjector,
+})
 
 @Injectable(RestrictScope(ScopeBehavior.perInjector))
 class SentryScopeDataFragments {
