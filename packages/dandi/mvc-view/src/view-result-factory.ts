@@ -1,5 +1,5 @@
 import { parseBoolean } from '@dandi/common'
-import { FactoryProvider, InjectionToken } from '@dandi/core'
+import { InjectionToken, Provider } from '@dandi/core'
 import {
   HttpHeader,
   HttpRequestHeadersAccessor,
@@ -117,7 +117,7 @@ function viewResultFactory(
   }
 }
 
-export const VIEW_RESULT_FACTORY: FactoryProvider<ViewResultFactory> = {
+export const VIEW_RESULT_FACTORY: Provider<ViewResultFactory> = {
   provide: ViewResultFactory,
   useFactory: viewResultFactory,
   deps: [ViewEngineMergedErrorConfig, ViewEngineResolver, Route, HttpRequestHeadersAccessor],
