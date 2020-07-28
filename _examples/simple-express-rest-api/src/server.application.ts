@@ -2,7 +2,11 @@ import { MvcExpressModule } from '@dandi-contrib/mvc-express'
 import { EjsViewEngine } from '@dandi-contrib/mvc-view-ejs'
 import { HyperviewViewRenderer } from '@dandi-contrib/mvc-view-hyperview'
 import { PugViewEngine } from '@dandi-contrib/mvc-view-pug'
+import { SentryModule } from '@dandi-contrib/sentry'
+import { SentryHttpPipelineModule } from '@dandi-contrib/sentry-http-pipeline'
+import { SentryMvcExpressModule } from '@dandi-contrib/sentry-mvc-express'
 import { CascadingCache, MemoryCache, ServiceContextCacheKeyGenerator } from '@dandi/cache'
+import { ConfigModule, EnvConfigClient } from '@dandi/config'
 import { AmbientInjectableScanner, DandiApplication } from '@dandi/core'
 import { ConsoleLogListener, LoggingModule } from '@dandi/core/logging'
 import { HttpPipelineModule } from '@dandi/http-pipeline'
@@ -56,5 +60,11 @@ export const server = new DandiApplication({
     TaskController,
     ExampleController,
     ViewController,
+
+    // Error handling
+    ConfigModule,
+    SentryModule.config(EnvConfigClient, 'SENTRY_CONFIG', false),
+    SentryHttpPipelineModule,
+    SentryMvcExpressModule,
   ],
 })
