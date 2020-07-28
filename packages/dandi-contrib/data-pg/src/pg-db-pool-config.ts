@@ -1,8 +1,10 @@
-import { Inject, Injectable, InjectionToken, OpinionatedToken } from '@dandi/core'
+import { Inject, Injectable } from '@dandi/core'
 import { DbConnectionInfo, DbUserCredentials } from '@dandi/data'
 import { PoolConfig } from 'pg'
 
-export const PgDbConfig: InjectionToken<PoolConfig> = OpinionatedToken.local<PoolConfig>('pg', 'PoolConfig', {
+import { localToken } from './local-token'
+
+export const PgDbConfig = localToken.opinionated<PoolConfig>('PoolConfig', {
   multi: false,
 })
 
