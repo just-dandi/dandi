@@ -1,3 +1,4 @@
+import { FactoryProvider } from '@dandi/core'
 import { ParamMetadata } from '@dandi/core/internal/util'
 import { testHarnessSingle } from '@dandi/core/testing'
 import { HttpRequestPathParamMap, HttpRequestScope } from '@dandi/http'
@@ -37,7 +38,7 @@ describe('requestParamValidatorFactory', () => {
       memberMetadata,
       paramMap,
       builder,
-      RequestParamModelBuilderOptionsProvider.useFactory(),
+      (RequestParamModelBuilderOptionsProvider as FactoryProvider<[], any>).useFactory(),
     )
 
     expect(builder.constructMember).to.have.been.calledOnce.calledWith(memberMetadata, 'foo', 'bar')

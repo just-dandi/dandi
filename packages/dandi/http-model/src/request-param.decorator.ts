@@ -6,7 +6,7 @@ import { MemberMetadata, getMemberMetadata } from '@dandi/model'
 import { ConvertedType, MetadataModelValidator, ModelBuilder, ModelBuilderOptions } from '@dandi/model-builder'
 
 import { ConditionDecorators } from './condition'
-import { localSymbolTokenFor, localOpinionatedToken } from './local-token'
+import { localToken } from './local-token'
 import { requestParamValidatorFactory } from './request-param-validator'
 
 export interface RequestParamDecorator<T> extends ParameterDecorator, ConditionDecorators {
@@ -21,10 +21,10 @@ export function requestParamToken<T>(
   paramName: string,
   requestParamName: string,
 ): InjectionToken<T> {
-  return localSymbolTokenFor<T>(`${mapToken}:${paramName}:${requestParamName}`)
+  return localToken.symbol<T>(`${mapToken}:${paramName}:${requestParamName}`)
 }
 
-export const RequestParamModelBuilderOptions: InjectionToken<ModelBuilderOptions> = localOpinionatedToken(
+export const RequestParamModelBuilderOptions = localToken.opinionated<ModelBuilderOptions>(
   'RequestParamModelBuilderOptions',
   {
     multi: false,

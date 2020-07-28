@@ -39,7 +39,7 @@ describe('@RequestParam', () => {
     expect(pathMeta.providers).to.exist
     expect(pathMeta.providers).not.to.be.empty
     expect(pathMeta.providers[0].provide).to.equal(pathMeta.token)
-    expect((pathMeta.providers[0] as FactoryProvider<any>).deps).to.include.members([
+    expect((pathMeta.providers[0] as FactoryProvider<any[], any>).deps).to.include.members([
       ModelBuilder,
       HttpRequestPathParamMap,
     ])
@@ -47,7 +47,7 @@ describe('@RequestParam', () => {
     expect(queryMeta.providers).to.exist
     expect(queryMeta.providers).not.to.be.empty
     expect(queryMeta.providers[0].provide).to.equal(queryMeta.token)
-    expect((queryMeta.providers[0] as FactoryProvider<any>).deps).to.include.members([
+    expect((queryMeta.providers[0] as FactoryProvider<any[], any>).deps).to.include.members([
       ModelBuilder,
       HttpRequestQueryParamMap,
     ])

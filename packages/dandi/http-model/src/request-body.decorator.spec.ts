@@ -45,11 +45,11 @@ describe('@RequestBody', () => {
 describe('requestBodyProvider', () => {
   class Foo {}
 
-  let provider: FactoryProvider<any>
+  let provider: FactoryProvider<any[], any>
   let validator: SinonStubbedInstance<ModelBuilder>
 
   beforeEach(() => {
-    provider = requestBodyProvider(Foo) as FactoryProvider<any>
+    provider = requestBodyProvider(Foo) as FactoryProvider<any[], any>
     validator = {
       constructMember: stub(),
       constructModel: stub(),
