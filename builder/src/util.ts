@@ -15,7 +15,7 @@ export class Util {
   constructor(@Inject(Logger) private logger: Logger) {}
 
   public async writeJson(path: string, data: any): Promise<void> {
-    return writeFile(path, JSON.stringify(data, null, JSON_SPACING), 'utf-8')
+    return writeFile(path, JSON.stringify(data, null, JSON_SPACING) + '\n', 'utf-8')
   }
 
   public async readJson<T>(path: string, defaultValue?: any): Promise<T> {
@@ -73,7 +73,12 @@ export class Util {
     })
   }
 
-  public spawnForPackage(info: PackageInfo, command: string, args?: string[], options?: SpawnOptions): Promise<string> {
+  public spawnForPackage(
+    info: PackageInfo,
+    command: string,
+    args?: string[],
+    options?: SpawnOptions,
+  ): Promise<string> {
     return this.spawn(
       command,
       args,

@@ -6,7 +6,8 @@ import { pathExists, readdir, readFile } from 'fs-extra'
 
 import { BUILD_CONFIG_DEFAULTS, BuilderConfig, NpmOptions } from './builder-config'
 import { BuilderProjectOptions } from './builder-project-options'
-import { PackageInfo } from './package-info'
+import { InvalidPackageError } from './invalid-package-error'
+import { PackageInfo, InvalidPackageInfo } from './package-info'
 import { TsConfig, TsConfigCompilerOptions } from './ts-config'
 import { Util } from './util'
 
@@ -86,6 +87,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
     this._packages = this.scopes
       ? await this.findScopedPackages(this.packagesPath, this.scopes)
       : await this.findPackages(this.packagesPath)
+    this.validatePackages(this._packages)
     return this._packages
   }
 
@@ -210,10 +212,9 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   }
 
   private async findScopedPackages(packagesPath: string, scopes: string[]): Promise<PackageInfo[]> {
-    return (await Promise.all(scopes.map((scope) => this.findPackages(resolve(packagesPath, scope), scope)))).reduce(
-      (result, packages) => result.concat(packages),
-      [],
-    )
+    return (
+      await Promise.all(scopes.map((scope) => this.findPackages(resolve(packagesPath, scope), scope)))
+    ).reduce((result, packages) => result.concat(packages), [])
   }
 
   private async findPackages(packagesPath: string, scope?: string): Promise<PackageInfo[]> {
@@ -275,6 +276,21 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
     return configs.map(dirname)
   }
 
+  private validatePackages(packages: PackageInfo[]): void {
+    const invalidPkgs = packages
+      .map(
+        (validatePkg) =>
+          [
+            validatePkg,
+            validatePkg.projectDependencies.filter((dep) => !packages.some((pkg) => pkg.fullName === dep)),
+          ] as InvalidPackageInfo,
+      )
+      .filter(([, invalidDeps]) => invalidDeps.length)
+    if (invalidPkgs.length) {
+      throw new InvalidPackageError(invalidPkgs)
+    }
+  }
+
   private async loadPackageManifest(packagePath: string): Promise<string[]> {
     const manifestPath = resolve(packagePath, '.buildermanifest')
     const globs = DEFAULT_MANIFEST.slice(0)
@@ -310,7 +326,9 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
           info.buildTsConfig.references = []
         }
         const depPath = resolve(this.packagesPath, dep.substring(1))
-        info.buildTsConfig.references.push({ path: join(relative(info.path, depPath), this.buildTsConfigFileName) })
+        info.buildTsConfig.references.push({
+          path: join(relative(info.path, depPath), this.buildTsConfigFileName),
+        })
       })
     }
     info.buildTsConfig.extends = relative(info.path, this.baseTsConfigPath)

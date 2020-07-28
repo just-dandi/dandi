@@ -22,3 +22,5 @@ export interface PackageInfo {
   manifest?: string[]
   subPackages?: string[]
 }
+
+export type InvalidPackageInfo = [PackageInfo, string[]]
