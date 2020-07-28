@@ -2,9 +2,9 @@ import { ScopeBehavior } from '@dandi/core'
 
 import { HttpRequest } from './http-request'
 import { HttpRequestScope } from './http-request-scope'
-import { localOpinionatedToken } from './local-token'
+import { localToken } from './local-token'
 
-export const HttpRequestRawBody = localOpinionatedToken<string | Buffer>('HttpRequestRawBody', {
+export const HttpRequestRawBody = localToken.opinionated<string | Buffer>('HttpRequestRawBody', {
   multi: false,
   restrictScope: ScopeBehavior.perInjector(HttpRequestScope),
 })

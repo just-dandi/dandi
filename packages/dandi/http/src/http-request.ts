@@ -1,8 +1,6 @@
-import { InjectionToken } from '@dandi/core'
-
 import { HttpMethod } from './http-method'
 import { HttpRequestScope } from './http-request-scope'
-import { localOpinionatedToken } from './local-token'
+import { localToken } from './local-token'
 
 export interface HttpRequest {
   body: any
@@ -13,7 +11,7 @@ export interface HttpRequest {
   get(key: string): any
 }
 
-export const HttpRequest: InjectionToken<HttpRequest> = localOpinionatedToken<HttpRequest>('HttpRequest', {
+export const HttpRequest = localToken.opinionated<HttpRequest>('HttpRequest', {
   multi: false,
   restrictScope: HttpRequestScope,
 })

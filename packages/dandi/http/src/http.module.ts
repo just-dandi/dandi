@@ -4,11 +4,11 @@ import { HttpRequestAcceptTypesProvider } from './http-request-accept-types'
 import { DandiHttpRequestHeadersAccessor } from './http-request-headers-accessor'
 import { HttpRequestHeadersCache } from './http-request-headers-cache'
 import { HttpRequestRawBodyProvider } from './http-request-raw-body'
-import { PKG } from './local-token'
+import { localToken } from './local-token'
 
 export class HttpModuleBuilder extends ModuleBuilder<HttpModuleBuilder> {
   constructor(...entries: Registerable[]) {
-    super(HttpModuleBuilder, PKG, ...entries)
+    super(HttpModuleBuilder, localToken.PKG, ...entries)
   }
 }
 

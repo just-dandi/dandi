@@ -6,13 +6,13 @@ import { HttpRequest } from './http-request'
 import { parseHeader } from './http-request-header-util'
 import { HttpRequestHeadersCache } from './http-request-headers-cache'
 import { HttpRequestScope } from './http-request-scope'
-import { localOpinionatedToken } from './local-token'
+import { localToken } from './local-token'
 
 export interface HttpRequestHeadersAccessor {
   get<THeaderName extends HttpRequestHeader>(headerName: THeaderName): HttpRequestHeaders[THeaderName]
 }
 
-export const HttpRequestHeadersAccessor = localOpinionatedToken<HttpRequestHeadersAccessor>(
+export const HttpRequestHeadersAccessor = localToken.opinionated<HttpRequestHeadersAccessor>(
   'HttpRequestHeadersAccessor',
   {
     multi: false,
