@@ -1,4 +1,3 @@
-import { InjectionToken } from '@dandi/core'
 import { HttpRequestScope } from '@dandi/http'
 
 import { localToken } from './local-token'
@@ -13,9 +12,7 @@ export interface DeniedAuthorization {
 
 export type AuthorizationCondition = AllowedAuthorization | DeniedAuthorization
 
-export const AuthorizationCondition: InjectionToken<AuthorizationCondition> = localToken.opinionated<
-  AuthorizationCondition
->('AuthorizationCondition', {
+export const AuthorizationCondition = localToken.opinionated<AuthorizationCondition>('AuthorizationCondition', {
   multi: true,
   restrictScope: HttpRequestScope,
 })

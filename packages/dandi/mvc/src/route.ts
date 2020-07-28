@@ -1,5 +1,5 @@
 import { Constructor } from '@dandi/common'
-import { InjectionToken, Provider } from '@dandi/core'
+import { Provider } from '@dandi/core'
 import { HttpMethod, HttpRequestScope } from '@dandi/http'
 import { CorsConfig } from '@dandi/http-pipeline'
 
@@ -27,7 +27,7 @@ export interface Route<TController = any> {
   authorization?: Provider<AuthorizationCondition>[]
 }
 
-export const Route: InjectionToken<Route> = localToken.opinionated<Route>('Route', {
+export const Route = localToken.opinionated<Route>('Route', {
   multi: false,
   restrictScope: HttpRequestScope,
 })

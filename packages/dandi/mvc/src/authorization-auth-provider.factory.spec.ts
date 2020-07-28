@@ -1,4 +1,4 @@
-import { InjectionResult, Injector } from '@dandi/core'
+import { Injector } from '@dandi/core'
 import { DandiInjector } from '@dandi/core/internal'
 import { HttpMethod } from '@dandi/http'
 import {
@@ -46,7 +46,7 @@ describe('AuthorizationAuthProviderFactory', () => {
     it('adds a provider for a scheme-specific AuthorizationService', async () => {
       const authService = {}
       req.get.returns('Bearer foo')
-      injector.inject.withArgs(AuthorizationService('Bearer'), true).resolves(new InjectionResult(authService))
+      injector.inject.withArgs(AuthorizationService('Bearer'), true).resolves(authService)
 
       const result = await authProviderFactory.generateAuthProviders(route, req)
 

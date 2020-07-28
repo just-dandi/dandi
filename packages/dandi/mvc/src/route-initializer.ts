@@ -1,4 +1,4 @@
-import { InjectionToken, Provider } from '@dandi/core'
+import { Provider } from '@dandi/core'
 import { HttpRequest, HttpResponse } from '@dandi/http'
 import { HttpRequestInfo } from '@dandi/http-pipeline'
 
@@ -14,9 +14,6 @@ export interface RouteInitializer {
   ): Provider<any>[]
 }
 
-export const RouteInitializer: InjectionToken<RouteInitializer> = localToken.opinionated<RouteInitializer>(
-  'RouteInitializer',
-  {
-    multi: false,
-  },
-)
+export const RouteInitializer = localToken.opinionated<RouteInitializer>('RouteInitializer', {
+  multi: false,
+})

@@ -41,7 +41,7 @@ xdescribe('ConditionDecorator', function () {
     const methodMeta = controllerMeta.routeMap.get('testMethod')
 
     expect(methodMeta.authorization).to.exist
-    const condition: FactoryProvider<AuthorizationCondition> = methodMeta.authorization[0] as any
+    const condition: FactoryProvider<any[], AuthorizationCondition> = methodMeta.authorization[0] as any
     expect(condition).to.exist
     expect(condition.provide).to.equal(AuthorizationCondition)
     expect(condition.deps).to.include(requestParamToken(HttpRequestPathParamMap, 'testMethod', 'foo'))

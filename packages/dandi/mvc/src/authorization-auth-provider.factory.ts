@@ -1,4 +1,4 @@
-import { Injectable, InjectionToken, Injector, Provider } from '@dandi/core'
+import { Injectable, Injector, Provider } from '@dandi/core'
 import {
   HttpHeader,
   HttpMethod,
@@ -16,7 +16,7 @@ import { localToken } from './local-token'
 import { RequestAuthorizationService } from './request-authorization.service'
 import { Route } from './route'
 
-export const AuthorizationScheme: InjectionToken<string> = localToken.opinionated<string>('AuthorizationScheme', {
+export const AuthorizationScheme = localToken.opinionated<string>('AuthorizationScheme', {
   multi: false,
   restrictScope: HttpRequestScope,
 })
@@ -54,7 +54,10 @@ export class AuthorizationAuthProviderFactory implements AuthProviderFactory {
       if (!authScheme) {
         return undefined
       }
-      return (await injector.inject(AuthorizationService(authScheme), !route.authorization))?.singleValue
+      return (await injector.inject(
+        AuthorizationService(authScheme),
+        !route.authorization,
+      )) as AuthorizationService
     }
     const providers: Provider<any>[] = [
       {

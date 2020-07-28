@@ -227,7 +227,7 @@ export class DandiRouteInitializer implements RouteInitializer {
           },
         ])
         const childInjector = this.injector.createChild(createHttpRequestScope(siblingRequest), providers)
-        if ((await childInjector.inject(CorsAllowRequest))?.singleValue) {
+        if (await childInjector.inject(CorsAllowRequest)) {
           return siblingRoute.httpMethod
         }
         return undefined

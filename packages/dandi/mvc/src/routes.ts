@@ -1,10 +1,10 @@
-import { InjectionToken, Provider } from '@dandi/core'
+import { Provider } from '@dandi/core'
 
 import { localToken } from './local-token'
 import { Route } from './route'
 import { RouteGenerator } from './route-generator'
 
-export const Routes: InjectionToken<Route[]> = localToken.opinionated('Routes', {
+export const Routes = localToken.opinionated<Route[]>('Routes', {
   multi: false,
 })
 
