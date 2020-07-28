@@ -58,10 +58,7 @@ class SentryScopeDataFragments {
         scopeData.fingerprint = scopeData.fingerprint.concat(fingerprint)
       }
       if (tags) {
-        scopeData.tags = Object.keys(tags).reduce((result, key) => {
-          result[key] = Object.assign(result[key] || {}, tags[key])
-          return result
-        }, scopeData.tags || {})
+        scopeData.tags = Object.assign(scopeData.tags || {}, tags)
       }
       if (user) {
         scopeData.user = Object.assign(scopeData.user || {}, user)
