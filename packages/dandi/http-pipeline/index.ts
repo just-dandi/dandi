@@ -1,3 +1,4 @@
+export * from './src/before-invoke-handler'
 export * from './src/body-parsing/body-parser-decorator'
 export * from './src/body-parsing/form-multipart-body-parser'
 export * from './src/body-parsing/form-multipart-errors'

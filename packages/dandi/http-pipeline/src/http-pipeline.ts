@@ -11,6 +11,7 @@ import {
 } from '@dandi/core'
 import { HttpRequest, HttpRequestAcceptTypes, HttpStatusCode, MimeType } from '@dandi/http'
 
+import { BeforeInvokeHandler } from './before-invoke-handler'
 import { CorsAllowRequest } from './cors/cors-allow-request'
 import { HttpPipelineConfig } from './http-pipeline-config'
 import { HttpPipelineErrorResult } from './http-pipeline-error-result'
@@ -45,6 +46,8 @@ export class HttpPipeline {
     )
 
     const preparedProviders = await this.invokeStep(injector, this.prepare, requestInfo)
+
+    await this.safeInvokeStep(injector, req, this.beforeInvokeHandler, requestInfo, preparedProviders, errorHandlers)
 
     const allowRequest = await this.invokeStep(injector, this.checkCors, requestInfo, preparedProviders)
 
@@ -160,6 +163,15 @@ export class HttpPipeline {
       providers.push(...preparerResult)
     }
     return providers
+  }
+
+  private async beforeInvokeHandler(
+    @Optional() @Inject(BeforeInvokeHandler) beforeInvokeHandlers: BeforeInvokeHandler[],
+  ): Promise<void> {
+    if (!beforeInvokeHandlers) {
+      return
+    }
+    await Promise.all(beforeInvokeHandlers.map(async (handler) => await handler.onBeforeInvoke()))
   }
 
   private checkCors(@Inject(CorsAllowRequest) allowRequest: boolean): true | HttpPipelineVoidResult {
