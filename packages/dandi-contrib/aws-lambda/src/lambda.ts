@@ -1,14 +1,5 @@
 import { Constructor, Disposable } from '@dandi/common'
-import {
-  DandiApplication,
-  Inject,
-  Injectable,
-  InjectionResult,
-  InjectionToken,
-  Injector,
-  Provider,
-  Registerable,
-} from '@dandi/core'
+import { DandiApplication, Inject, Injectable, Injector, Provider, Registerable } from '@dandi/core'
 import { createHttpRequestScope } from '@dandi/http'
 import {
   DefaultHttpRequestInfo,
@@ -21,9 +12,9 @@ import { Context } from 'aws-lambda'
 import { AwsContext, AwsEvent } from './event-providers'
 import { LambdaEventTransformer } from './lambda-event-transformer'
 import { LambdaHandler } from './lambda-handler'
-import { localOpinionatedToken } from './local.token'
+import { localToken } from './local-token'
 
-const LambdaHandler: InjectionToken<LambdaHandler> = localOpinionatedToken('LambdaHandler', { multi: false })
+const LambdaHandler = localToken.opinionated<LambdaHandler>('LambdaHandler', { multi: false })
 
 export interface LambdaHandlerFn<TEvent = any, TResult = any> extends Disposable {
   (event: TEvent, context: Context): void | Promise<TResult>
@@ -31,6 +22,8 @@ export interface LambdaHandlerFn<TEvent = any, TResult = any> extends Disposable
 
 @Injectable()
 export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
+  public static readonly multi = false
+
   public static handler<TEvent, TEventData, THandler extends LambdaHandler>(
     handlerServiceType: Constructor<THandler>,
     ...providers: Registerable[]
@@ -46,7 +39,7 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
     })
     const injectorReady = app.start()
 
-    let lambdaReady: Promise<InjectionResult<Lambda<TEvent, TEventData, THandler>>>
+    let lambdaReady: Promise<Lambda<TEvent, TEventData, THandler>>
     let lambda: Lambda<TEvent, TEventData, THandler>
 
     const handlerFn = async (event: TEvent, context: Context): Promise<any> => {
@@ -55,7 +48,7 @@ export class Lambda<TEvent, TEventData, THandler extends LambdaHandler> {
       if (!lambdaReady) {
         lambdaReady = injector.inject(Lambda)
       }
-      lambda = (await lambdaReady).singleValue
+      lambda = await lambdaReady
 
       return await lambda.handleEvent(event, context)
     }

@@ -1,9 +1,9 @@
-import { localOpinionatedToken } from './local.token'
+import { localToken } from './local-token'
 
 export interface StageVariables {
   [name: string]: string
 }
 
-export const StageVariables = localOpinionatedToken<StageVariables>('StageVariables', {
+export const StageVariables = localToken.opinionated<StageVariables>('StageVariables', {
   multi: false,
 })

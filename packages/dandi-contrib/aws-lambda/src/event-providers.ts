@@ -1,11 +1,11 @@
 import { Context } from 'aws-lambda'
 
-import { localOpinionatedToken } from './local.token'
+import { localToken } from './local-token'
 
-export const AwsContext = localOpinionatedToken<Context>('AwsContext', {
+export const AwsContext = localToken.opinionated<Context>('AwsContext', {
   multi: false,
 })
 
-export const AwsEvent = localOpinionatedToken<any>('AwsEvent', {
+export const AwsEvent = localToken.opinionated<any>('AwsEvent', {
   multi: false,
 })
