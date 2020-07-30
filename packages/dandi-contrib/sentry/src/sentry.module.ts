@@ -34,6 +34,14 @@ export class SentryModuleBuilder extends ModuleBuilder<SentryModuleBuilder> {
       useValue: configOrConfigClient,
     })
   }
+
+  public use(...entries: Registerable[]): this {
+    return this.add(...entries)
+  }
+
+  public useFirst(...entries: Registerable[]): this {
+    return this.insert(...entries)
+  }
 }
 
 export const SentryModule = new SentryModuleBuilder(
