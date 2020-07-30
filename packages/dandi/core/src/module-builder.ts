@@ -7,12 +7,24 @@ export class ModuleBuilder<TBuilder extends ModuleBuilder<TBuilder>> extends Dan
     super(pkg, ...entries)
   }
 
+  protected clone(entries: Registerable[]): this {
+    const cloned = (this.cloneCtr ? new this.cloneCtr(...this) : this) as this
+    const moduleBuilder = cloned as ModuleBuilder<TBuilder>
+    moduleBuilder.cloneCtr = undefined
+    cloned.tag(entries)
+    return cloned
+  }
+
   protected add(...entries: Registerable[]): this {
-    const builder = this.cloneCtr ? new this.cloneCtr(...this) : this
-    ;(builder as ModuleBuilder<TBuilder>).cloneCtr = undefined
-    this.tag(entries)
-    builder.push(...entries)
-    return builder as this
+    const cloned = this.clone(entries)
+    cloned.push(...entries)
+    return cloned
+  }
+
+  protected insert(...entries: Registerable[]): this {
+    const cloned = this.clone(entries)
+    cloned.unshift(...entries)
+    return cloned
   }
 
   protected onConfig<T>(deps: [InjectionToken<T>], fn: (arg: T) => void)
