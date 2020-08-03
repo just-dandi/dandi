@@ -31,13 +31,14 @@ export class HttpResponsePipelineTerminator<TResponse = void> implements HttpPip
         this.response.header(headerName, renderResult.headers[headerName]),
       )
     }
+    const statusCode = renderResult.statusCode || this.defaultStatusCode()
     this.response
       .header(HttpHeader.contentType, renderResult.contentType || MimeType.textPlain)
-      .status(renderResult.statusCode || this.defaultStatusCode())
+      .status(statusCode)
       .send(renderResult.renderedBody || '')
       .end()
 
-    this.logger.debug(this.request.method, this.request.path, renderResult.statusCode || this.defaultStatusCode())
+    this.logger.info(statusCode, this.request.method, this.request.path)
 
     return
   }
