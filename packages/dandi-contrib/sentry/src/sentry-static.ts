@@ -3,6 +3,7 @@ import { IncomingMessage, ServerResponse } from 'http'
 import { Provider } from '@dandi/core'
 import { Scope } from '@sentry/hub'
 import * as Sentry from '@sentry/node'
+import { Hub } from '@sentry/node'
 import { NodeOptions } from '@sentry/node/dist/backend'
 import { CaptureContext, Event, Severity } from '@sentry/types'
 
@@ -35,6 +36,7 @@ export interface SentryStatic {
   captureException(exception: any, captureContext?: CaptureContext): string
   captureMessage(message: string, captureContext?: CaptureContext | Severity): string
   captureEvent(event: Event): string
+  getCurrentHub(): Hub
 }
 
 export const SentryStatic = localToken.opinionated<SentryStatic>('SentryStatic', {

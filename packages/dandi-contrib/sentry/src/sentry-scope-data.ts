@@ -13,6 +13,7 @@ export interface SentryScopeData {
   tags?: { [key: string]: string }
   transactionName?: string
   user?: User
+  clearBreadcrumbs?: boolean
 }
 
 export const SentryScopeDataFragment = localToken.opinionated<SentryScopeData>('SentryScopeDataFragment', {
@@ -41,7 +42,7 @@ class SentryScopeDataFragments {
       return {}
     }
     return this.fragments.reduce((scopeData, fragment) => {
-      const { context, extras, fingerprint, level, span, tags, transactionName, user } = fragment
+      const { clearBreadcrumbs, context, extras, fingerprint, level, span, tags, transactionName, user } = fragment
       if (context) {
         scopeData.context = Object.keys(context).reduce((result, key) => {
           result[key] = Object.assign(result[key] || {}, context[key])
@@ -71,6 +72,9 @@ class SentryScopeDataFragments {
       }
       if (transactionName) {
         scopeData.transactionName = transactionName
+      }
+      if (clearBreadcrumbs !== undefined) {
+        scopeData.clearBreadcrumbs = clearBreadcrumbs
       }
       return scopeData
     }, {})

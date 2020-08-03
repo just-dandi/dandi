@@ -17,7 +17,17 @@ export class SentryClient {
 
   public configureScope(scopeData: SentryScopeData): void {
     this.sentry.configureScope((scope) => {
-      const { context, extras, fingerprint, level, span, tags, transactionName, user } = scopeData
+      const {
+        clearBreadcrumbs,
+        context,
+        extras,
+        fingerprint,
+        level,
+        span,
+        tags,
+        transactionName,
+        user,
+      } = scopeData
       if (context) {
         Object.keys(context).forEach((key) => scope.setContext(key, context[key]))
       }
@@ -41,6 +51,10 @@ export class SentryClient {
       }
       if (user) {
         scope.setUser(user)
+      }
+
+      if (clearBreadcrumbs) {
+        scope.clearBreadcrumbs()
       }
     })
   }
