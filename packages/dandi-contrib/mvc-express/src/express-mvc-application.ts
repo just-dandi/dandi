@@ -24,7 +24,8 @@ export class ExpressMvcApplication implements EntryPoint {
       this.routeMapper.mapRoute(route)
     }
 
-    this.logger.debug('starting on port', this.config.port)
-    this.app.listen(this.config.port, '0.0.0.0')
+    this.logger.debug(`starting on ${this.config.host}:${this.config.port}`)
+    this.app.listen(this.config.port, this.config.host)
+    this.logger.info(`listening on http://${this.config.host}:${this.config.port}`)
   }
 }
