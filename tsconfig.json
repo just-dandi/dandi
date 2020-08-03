@@ -8,6 +8,7 @@
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
+    "skipLibCheck": true,
     "outDir": "out",
     "lib": [
       "ESNext"
