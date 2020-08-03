@@ -35,7 +35,7 @@ export const server = new DandiApplication({
     HttpPipelineModule.cors({
       allowOrigin: [/localhost:\d{2,5}/, /127\.0\.0\1:\d{2,5}/],
     }),
-    MvcExpressModule.config({ port: parseInt(process.env.PORT, 10) || DEFAULT_SERVER_PORT }),
+    MvcExpressModule.config({ port: Number(process.env.PORT) || DEFAULT_SERVER_PORT }),
     MvcViewModule.engine('ejs', EjsViewEngine.config({ cache: false })).engine(
       'pug',
       PugViewEngine.config({ cache: false }),
