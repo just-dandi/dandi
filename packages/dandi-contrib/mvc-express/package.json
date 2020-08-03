@@ -1,10 +1,10 @@
 {
   "name": "@dandi-contrib/mvc-express",
   "dependencies": {
-    "express": "^4.16.4"
+    "express": "^4.17.1"
   },
   "devDependencies": {
-    "@types/express": "^4.16.1"
+    "@types/express": "^4.17.7"
   },
   "peerDependencies": {
     "@dandi/cache": "*",
