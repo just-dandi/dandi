@@ -46,6 +46,7 @@ export class SentryMvcScopePreparer implements HttpPipelinePreparer {
   constructor(@Inject(SentryClient) private readonly sentry: SentryClient) {}
 
   public async prepare(): Promise<HttpPipelinePreparerResult> {
+    this.sentry.configureScope({ clearBreadcrumbs: true })
     return [SentryMvcScopeDataService.provider]
   }
 }
