@@ -1,3 +1,4 @@
+import { IS_DEV_ENV } from '@dandi/common'
 import { LogCallOptions, LogLevel } from '@dandi/core'
 
 import {
@@ -14,8 +15,9 @@ export const DEFAULT_CONTEXT_TAG: ConsoleLogListenerFormatter = (entry: ConsoleL
   entry.contextName
 export const DEFAULT_LEVEL_TAG: ConsoleLogListenerFormatter = (entry: ConsoleLogListenerEntryInfo): string =>
   entry.level.toLocaleUpperCase().padEnd(entry.levelTagHighWater, ' ')
-export const DEFAULT_TIMESTAMP_FORMATTER: ConsoleLogListenerFormatter = (entry: ConsoleLogListenerEntryInfo): string =>
-  entry.ts ? entry.ts.toString() : undefined
+export const DEFAULT_TIMESTAMP_FORMATTER: ConsoleLogListenerFormatter = (
+  entry: ConsoleLogListenerEntryInfo,
+): string => (entry.ts ? entry.ts.toString() : undefined)
 const DEFAULT_TAG_PART_ORDER: (keyof LogCallOptions)[] = ['level', 'timestamp', 'context']
 export const DEFAULT_TAG_FORMATTER = (tagInfo: LogEntryTagInfo): string => {
   if (!tagInfo.partOrder.find((part) => !!tagInfo[part])) {
@@ -59,8 +61,10 @@ export const DEFAULT_LOGGING_CONFIG: ConsoleLogListenerConfig = {
   contextTag: false,
   levelTag: DEFAULT_LEVEL_TAG,
   timestampTag: DEFAULT_TIMESTAMP_FORMATTER,
-  filter: LogLevel.debug,
+  filter: IS_DEV_ENV ? LogLevel.debug : LogLevel.info,
   tag: DEFAULT_TAG_FORMAT_OPTIONS,
 }
 
-export const DefaultLogging: ConsoleLogListenerConfigProvider = consoleLogListenerConfigProvider(DEFAULT_LOGGING_CONFIG)
+export const DefaultLogging: ConsoleLogListenerConfigProvider = consoleLogListenerConfigProvider(
+  DEFAULT_LOGGING_CONFIG,
+)

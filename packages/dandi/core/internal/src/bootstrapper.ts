@@ -18,7 +18,7 @@ export class Bootstrapper {
     } else {
       this.logger.debug('No EntryPoint implementation found.')
     }
-    this.logger.debug(`Application started after ${this.now() - startTs}ms`)
+    this.logger.info(`Application started after ${this.now() - startTs}ms`)
     return result
   }
 }
