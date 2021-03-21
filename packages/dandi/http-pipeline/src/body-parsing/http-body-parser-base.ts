@@ -18,8 +18,8 @@ export abstract class HttpBodyParserBase implements HttpBodyParser {
   }
 
   public parseBody(body: string | Buffer, headers: HttpRequestHeadersAccessor): string | object | Promise<object> {
-    const source =
-      typeof body === 'string' ? body : body.toString(headers.get(HttpHeader.contentType)?.charset || 'utf-8') // TODO: add config for default
+    const encoding: BufferEncoding = (headers.get(HttpHeader.contentType)?.charset as BufferEncoding) || 'utf-8'
+    const source = typeof body === 'string' ? body : body.toString(encoding) // TODO: add config for default
     const parsedBody = this.parseBodyFromString(source, headers)
     const disposition = headers.get(HttpHeader.contentDisposition)
     if (disposition?.contentDisposition !== ContentDisposition.formData || !disposition?.name) {

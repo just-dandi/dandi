@@ -2,6 +2,6 @@
   "name": "@dandi/core",
   "peerDependencies": {
     "@dandi/common": "*",
-    "rxjs": "^6.4.0"
+    "rxjs": "^6.6.6"
   }
 }

@@ -25,6 +25,6 @@ safe_run() {
 
 safe_run yarn "Installing project dependencies..."
 safe_run "cd builder && yarn" "Installing builder dependencies..."
-safe_run "yarn link && cd .. && yarn link @dandi/builder" "Linking builder..."
+safe_run "npm link && cd .. && npm link @dandi/builder" "Linking builder..."
 safe_run "yarn install-packages" "Installing @dandi package dependencies..."
 log Success!

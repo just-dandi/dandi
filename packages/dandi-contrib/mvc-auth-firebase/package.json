@@ -1,7 +1,7 @@
 {
   "name": "@dandi-contrib/mvc-auth-firebase",
   "dependencies": {
-    "firebase-admin": "^8.12.1"
+    "firebase-admin": "^9.5.0"
   },
   "peerDependencies": {
     "@dandi-contrib/mvc-express": "*",

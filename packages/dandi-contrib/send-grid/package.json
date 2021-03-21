@@ -1,7 +1,7 @@
 {
   "name": "@dandi-contrib/send-grid",
   "dependencies": {
-    "@sendgrid/mail": "^7.2.1"
+    "@sendgrid/mail": "^7.4.2"
   },
   "peerDependencies": {
     "@dandi/common": "*",

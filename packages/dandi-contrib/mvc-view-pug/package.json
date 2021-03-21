@@ -1,7 +1,7 @@
 {
   "name": "@dandi-contrib/mvc-view-pug",
   "devDependencies": {
-    "pug": "^2.0.4"
+    "pug": "^3.0.2"
   },
   "peerDependencies": {
     "@dandi/cache": "*",
@@ -9,6 +9,6 @@
     "@dandi/core": "*",
     "@dandi/mvc": "*",
     "@dandi/mvc-view": "*",
-    "pug": "^2.0.4"
+    "pug": "^3.0.2"
   }
 }
