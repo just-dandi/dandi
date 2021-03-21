@@ -24,6 +24,7 @@ export const ActionHost = localToken.opinionated<any>('ActionHost', {
 export interface CommandInfo {
   command: Command
   args: string[]
+  opts: any
 }
 export const CommandInfo = localToken.opinionated<CommandInfo>('CommandInfo', {
   multi: false,

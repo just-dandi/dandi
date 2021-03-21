@@ -169,8 +169,8 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
     )
   }
 
-  public async npmCommand(args: string[], packages?: PackageInfo[]): Promise<void> {
-    this.logger.debug('npmCommand', ...args, packages)
+  public async yarnCommand(args: string[], packages?: PackageInfo[]): Promise<void> {
+    this.logger.debug('yarnCommand', ...args, packages)
     if (!packages) {
       packages = await this.discoverPackages()
     }
@@ -267,7 +267,7 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
   private async findSubPackages(packagePath: string): Promise<string[]> {
     const configs = await this.util.glob('*/**/+(tsconfig.json|.builderinclude)', {
       cwd: packagePath,
-      ignore: 'node_modules/**',
+      ignore: ['node_modules/**', '.yarn-cache/**'],
       dot: true,
     })
     if (!configs.length) {

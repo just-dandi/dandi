@@ -15,7 +15,16 @@ import { CommandRunner } from './command-runner'
 import { Publisher } from './publisher'
 import { Util } from './util'
 
-export type CommanderArgs = (string | Command)[]
+export type CommanderArgs = (string | CommandExt)[]
+
+interface CommandExt extends Command {
+  parent?: CommandExt
+}
+
+interface CommandOpts {
+  config?: string
+  verbose?: boolean
+}
 
 export class CommandUtil {
   public static projectAction(
@@ -44,14 +53,17 @@ export class CommandUtil {
     actionName: CommandAction<THost>,
     start: number,
   ): (...args: CommanderArgs) => Promise<void> {
-    return async (...args: [string | Command]): Promise<void> => {
-      const cmd = args.pop() as Command
+    return async (...args: [string | CommandExt]): Promise<void> => {
+      const cmd = args.pop() as CommandExt
+      const opts = args.pop() as CommandOpts
+      Object.assign(opts, cmd.opts(), cmd.parent.opts())
       const cmdArgs = args as string[]
-      const projectPath = cmd.config ? resolve(process.cwd(), dirname(cmd.config)) : process.cwd()
-      const options = { projectPath, configFile: cmd.config }
+      const projectPath = opts.config ? resolve(process.cwd(), dirname(opts.config)) : process.cwd()
+      const options = { projectPath, configFile: opts.config }
       const info: CommandInfo = {
         command: cmd,
         args: cmdArgs,
+        opts,
       }
 
       const container = new DandiApplication({
@@ -61,7 +73,7 @@ export class CommandUtil {
           CommandRunner,
           LoggingModule.use(
             ConsoleLogListener,
-            PrettyColorsLogging.set({ filter: cmd.parent.verbose ? LogLevel.debug : LogLevel.info }),
+            PrettyColorsLogging.set({ filter: opts.verbose ? LogLevel.debug : LogLevel.info }),
           ),
           Util,
           {

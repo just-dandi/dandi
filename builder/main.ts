@@ -3,11 +3,13 @@ const start = new Date().valueOf()
 
 require('tsconfig-paths/register')
 
-import * as program from 'commander'
+import { Command } from 'commander'
 
 import { BUILDER_PROJECT_DEFAULTS } from './src/builder-project'
 import { VERSION } from './src/builder-version'
 import { CommandUtil } from './src/command-util'
+
+const program = new Command('@dandi/builder')
 
 program
   .version(VERSION)
@@ -48,9 +50,9 @@ program
   .action(CommandUtil.publisherAction('deprecate', start))
 
 program
-  .command('yarn <yarn-command> [yarn-command-args ...]')
+  .command('yarn [yarn-command] [yarn-command-args ...]')
   .description('Run a yarn command on all configured packages')
-  .action(CommandUtil.projectAction('npmCommand', start))
+  .action(CommandUtil.projectAction('yarnCommand', start))
 
 program
   .command('outdated')
