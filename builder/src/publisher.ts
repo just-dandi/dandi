@@ -38,7 +38,9 @@ export class Publisher {
 
     if (state.remaining.length) {
       const remainingNames = state.remaining.map((info) => info.fullName)
-      throw new Error(`Unable to publish packages due to possible circular dependencies: ${remainingNames.join(', ')}`)
+      throw new Error(
+        `Unable to publish packages due to possible circular dependencies: ${remainingNames.join(', ')}`,
+      )
     }
   }
 
@@ -54,7 +56,8 @@ export class Publisher {
         if (registry) {
           unpublishArgs.push('--registry', registry)
         }
-        return this.util.spawn('yarn', unpublishArgs)
+        // yarn does not have an 'unpublish' command
+        return this.util.spawn('npm', unpublishArgs)
       }),
     )
   }
@@ -88,7 +91,8 @@ export class Publisher {
 
   private findClearedPackages(state: PublishState): PackageInfo[] {
     return state.remaining.filter(
-      (info) => !info.projectDependencies.length || info.projectDependencies.every((dep) => state.published.has(dep)),
+      (info) =>
+        !info.projectDependencies.length || info.projectDependencies.every((dep) => state.published.has(dep)),
     )
   }
 

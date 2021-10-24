@@ -340,6 +340,10 @@ export class BuilderProject implements BuilderConfig, BuilderProjectOptions {
       }, info.buildTsConfig.include)
     }
     info.buildTsConfig.exclude = ['node_modules', '**/*.spec.ts']
+    info.buildTsConfig.compilerOptions = {
+      sourceRoot: '../../',
+      declarationDir: relative(info.path, info.outPath),
+    }
     await this.util.writeJson(info.buildTsConfigPath, info.buildTsConfig)
 
     return info

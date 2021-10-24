@@ -64,6 +64,7 @@ export class Builder {
       license: this.project.mainPkg.license,
       module: 'index.js',
       main: 'index.js',
+      types: 'index.d.ts',
     })
 
     // replace versions for configured scopes
@@ -88,7 +89,12 @@ export class Builder {
     await this.copyProjectFile(info, this.project.licenseFile)
   }
 
-  private async copyPackageFile(info: PackageInfo, packageFileName: string, skipIfNotExists = false): Promise<void> {
+  private async copyPackageFile(
+    info: PackageInfo,
+    packageFileName: string,
+    skipIfNotExists = false,
+    relativeTargetPath?: string,
+  ): Promise<void> {
     try {
       const sourcePath = resolve(info.path, packageFileName)
       if (!(await pathExists(sourcePath))) {
@@ -97,7 +103,8 @@ export class Builder {
         }
         throw new Error(`${sourcePath} does not exist`)
       }
-      await copy(sourcePath, resolve(info.outPath, packageFileName))
+      const targetPath = relativeTargetPath ? resolve(info.outPath, relativeTargetPath) : info.outPath
+      await copy(sourcePath, resolve(targetPath, packageFileName))
     } catch (err) {
       this.logger.error('Error copying package file', info.name, packageFileName, err)
       throw err
@@ -118,7 +125,7 @@ export class Builder {
       return
     }
     try {
-      await Promise.all(info.manifest.map(this.copyPackageFile.bind(this, info)))
+      await Promise.all(info.manifest.map((filePath) => this.copyPackageFile(info, filePath, false)))
     } catch (err) {
       this.logger.error('Error copying manifest files', info.name)
       throw err
