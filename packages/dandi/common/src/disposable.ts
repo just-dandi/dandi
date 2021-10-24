@@ -166,8 +166,8 @@ export class Disposable {
       return target
     }
     const thrower = throwAlreadyDisposed.bind(target, target, reason)
-    for (const prop in target) {
-      if (prop === DISPOSED || (options && options.retainProperties && options.retainProperties.includes(prop))) {
+    for (const prop of Object.getOwnPropertyNames(target)) {
+      if (options && options.retainProperties && options.retainProperties.includes(prop)) {
         continue
       }
       if (typeof target[prop] === 'function') {
