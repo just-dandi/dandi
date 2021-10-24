@@ -5,27 +5,20 @@
     "module": "commonjs",
     "moduleResolution": "node",
     "declaration": true,
+    "declarationMap": true,
+    "inlineSources": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "outDir": "out",
-    "lib": [
-      "ESNext"
-    ],
+    "lib": ["ESNext"],
     "baseUrl": ".",
     "paths": {
-      "@dandi/*": [
-        "./packages/dandi/*"
-      ],
-      "@dandi-contrib/*": [
-        "./packages/dandi-contrib/*"
-      ]
-    }
+      "@dandi/*": ["./packages/dandi/*"],
+      "@dandi-contrib/*": ["./packages/dandi-contrib/*"]
+    },
+    "typeRoots": ["./node_modules/@rxjs-stuff/marbles/@types", "./node_modules/@types"]
   },
-  "exclude": [
-    "node_modules",
-    "out",
-    "builder/dist"
-  ]
+  "exclude": ["node_modules", "out", "builder/dist"]
 }
