@@ -1,6 +1,6 @@
 import { AppError } from './app-error'
 import { DISABLE_REMAP } from './disposable-flags'
-import { globalSymbol } from './global.symbol'
+import { globalSymbol } from './global-symbol'
 import { isPromise } from './promise'
 
 export type DisposeFn = (reason: string) => void

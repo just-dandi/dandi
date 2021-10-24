@@ -1,4 +1,4 @@
-import { globalSymbol } from './global.symbol'
+import { globalSymbol } from './global-symbol'
 
 export type NaB = symbol & {
   [Symbol.toStringTag]: () => '@dandi/common#NaB'

@@ -1,12 +1,14 @@
-export interface Constructor<T = any> extends Function {
-  new (...args: any[]): T
+export interface Constructor<T = unknown> extends Function {
+  readonly prototype: T
+
+  new (...args: unknown[]): T
 }
 
-export interface MultiConstructor<T = any> extends Constructor<T> {
+export interface MultiConstructor<T = unknown> extends Constructor<T> {
   multi: true
 }
 
-export interface SingleConstructor<T = any> extends Constructor<T> {
+export interface SingleConstructor<T = unknown> extends Constructor<T> {
   multi: false
 }
 
@@ -18,7 +20,7 @@ export type PrimitiveConstructor<T extends boolean | number | string> = T extend
   ? StringConstructor
   : never
 
-export function isConstructor<T>(obj: any): obj is Constructor<T> {
+export function isConstructor<T>(obj: unknown): obj is Constructor<T> {
   if (typeof obj !== 'function') {
     return false
   }

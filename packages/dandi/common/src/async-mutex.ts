@@ -1,6 +1,6 @@
 import { AsyncMutexLockAlreadyReleasedError } from './async-mutex-lock-already-released-error'
 import { AlreadyDisposedError, Disposable } from './disposable'
-import { globalSymbol } from './global.symbol'
+import { globalSymbol } from './global-symbol'
 
 const RELEASED = globalSymbol('AsyncMutex.RELEASED')
 
