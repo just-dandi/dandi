@@ -6,6 +6,7 @@ import { ExpressMvcApplication } from './express-mvc-application'
 import { ExpressMvcConfig } from './express-mvc-config'
 import { DefaultExpressMvcConfigProvider, expressMvcConfigFactory } from './express-mvc-config-factory'
 import { ExpressMvcRouteMapper } from './express-mvc-route-mapper'
+import { ExpressMvcServerProvider } from './express-mvc-server-provider'
 import { localToken } from './local-token'
 
 export class MvcExpressModuleBuilder extends ModuleBuilder<MvcExpressModuleBuilder> {
@@ -23,5 +24,6 @@ export const MvcExpressModule = new MvcExpressModuleBuilder(
   ExpressInstanceProvider,
   ExpressMvcApplication,
   ExpressMvcRouteMapper,
+  ExpressMvcServerProvider,
   MvcModule,
 )
