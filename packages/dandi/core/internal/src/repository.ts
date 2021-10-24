@@ -81,7 +81,10 @@ export class Repository implements Disposable {
     }
 
     if (typeof target === 'function') {
-      const injectableProviderOptions = Reflect.get(target, ProviderOptions.valueOf() as symbol) as ProviderOptions<T>
+      const injectableProviderOptions = Reflect.get(
+        target,
+        ProviderOptions.valueOf() as symbol,
+      ) as ProviderOptions<T>
       const effectiveOptions = Object.assign({}, injectableProviderOptions, options)
       const provide = effectiveOptions.provide || target
       const noSelf = effectiveOptions.noSelf

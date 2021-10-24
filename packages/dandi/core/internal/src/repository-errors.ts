@@ -23,7 +23,10 @@ export class RegistrationError extends AppError {
 
 export class InvalidRegistrationTargetError extends RegistrationError {
   constructor(public readonly source: RegistrationSource, target: any, public readonly options: any) {
-    super(`Invalid Registration Target '${target}' specified by ${getRegistrationTargetSourceString(source)}`, target)
+    super(
+      `Invalid Registration Target '${target}' specified by ${getRegistrationTargetSourceString(source)}`,
+      target,
+    )
   }
 }
 

@@ -84,7 +84,10 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
   // FIXME: change the exec overload to be named differently so it can be private/protected?
   public find<T>(token: InjectionToken<T>): DandiResolverContext<T>
   public find<T, TResult>(token: InjectionToken<T>, exec: FindExecFn<T, TResult>): TResult
-  public find<T, TResult>(token: InjectionToken<T>, exec?: FindExecFn<T, TResult>): TResult | DandiResolverContext<T> {
+  public find<T, TResult>(
+    token: InjectionToken<T>,
+    exec?: FindExecFn<T, TResult>,
+  ): TResult | DandiResolverContext<T> {
     const result = this.cachedFind(token, this)
     if (!result) {
       return undefined
@@ -144,7 +147,10 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
     return new DandiInjectorContext(this, scope, providers)
   }
 
-  public findInstanceContext(matchContext: InjectorContext, scopeRestriction?: ScopeRestriction): DandiInjectorContext {
+  public findInstanceContext(
+    matchContext: InjectorContext,
+    scopeRestriction?: ScopeRestriction,
+  ): DandiInjectorContext {
     // allowInstances should never be false here in practice - it is only false for the GLOBAL_SCOPE repository, which
     // is only used by the AmbientInjectableScanner to manage its discovered injectables. It is not used as the
     // repository instance for an InjectorContext instance.
@@ -178,6 +184,15 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
     ) {
       parts.push(this.parent[CUSTOM_INSPECTOR]())
     }
+    // TODO:
+    //  - update getInjectionScopeName to return a tuple of a verb and name so that this can show a trace
+    //    like "scope: {scopeName} ... resolving factory param {token} ..." etc
+    //  - reverse order of trace so deepest context is last
+    //  - give additional indent to non-scope lines - example:
+    //       scope: ApplicationInjectionScope
+    //           resolving param 'injector' for constructor MyApplication
+    //       scope: @my-app/foo#CustomScope
+    //           resolving param x for provider y via z
     return parts.join('\nresolving ')
   }
 
@@ -198,6 +213,9 @@ export class DandiInjectorContext implements InjectorContext, Disposable {
     return this.find(provider.provide, (data) => {
       const scope = getScopeRestriction(provider)
       const instanceContext = data.injectorContext.findInstanceContext(data.result.context, scope)
+      if (!instanceContext) {
+        throw new Error(`No instance context`)
+      }
       return exec(instanceContext)
     })
   }

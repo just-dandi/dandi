@@ -3,8 +3,8 @@ import { OpinionatedToken } from './opinionated-token'
 import { InjectionOptions, MultiInjectionOptions, SingleInjectionOptions } from './provider'
 import { SymbolToken } from './symbol-token'
 
-export class LocalTokenFactory {
-  constructor(public readonly PKG: string) {}
+export class LocalTokenFactory<TPkg extends string> {
+  constructor(public readonly PKG: TPkg) {}
 
   public symbol<T>(target: string): InjectionToken<T> {
     return SymbolToken.local<T>(this.PKG, target)
@@ -18,6 +18,6 @@ export class LocalTokenFactory {
   }
 }
 
-export function localTokenFactory(pkg: string): LocalTokenFactory {
+export function localTokenFactory<TPkg extends string>(pkg: TPkg): LocalTokenFactory<TPkg> {
   return new LocalTokenFactory(pkg)
 }

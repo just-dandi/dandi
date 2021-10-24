@@ -3,7 +3,9 @@ import { MODIFIER_KEYS } from '@dandi/core/internal/util'
 
 import { stub } from 'sinon'
 
-export function createLoggerMethodChain(logAction: (options: LogCallOptions, ...args: any[]) => void): LoggerMethod {
+export function createLoggerMethodChain(
+  logAction: (options: LogCallOptions, ...args: any[]) => void,
+): LoggerMethod {
   MODIFIER_KEYS.forEach((key) => {
     const chains = {}
     Object.defineProperty(logAction, key, {

@@ -59,7 +59,7 @@ export class TestInjectorBase implements TestInjector {
       return result as T
     } catch (err) {
       if (err instanceof MissingProviderError && this.stubMissing && isConstructor(token)) {
-        return createStubInstance(token)
+        return createStubInstance(token) as T
       }
       throw err
     }
@@ -74,7 +74,7 @@ export class TestInjectorBase implements TestInjector {
       return result as T[]
     } catch (err) {
       if (err instanceof MissingProviderError && this.stubMissing && isConstructor(token)) {
-        return [createStubInstance(token)]
+        return [createStubInstance(token) as T]
       }
       throw err
     }
@@ -91,7 +91,7 @@ export class TestInjectorBase implements TestInjector {
     return ((await this.inject(token, optional)) as unknown) as SinonStubbedInstance<T>[]
   }
 
-  public invoke<TInstance extends object, TResult>(): Promise<TResult> {
+  public invoke<TResult>(): Promise<TResult> {
     return undefined
   }
 

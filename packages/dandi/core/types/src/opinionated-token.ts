@@ -25,10 +25,10 @@ export class OpinionatedProviderOptionsConflictError<T> extends AppError {
   }
 }
 
-export type OpinionatedSingleToken<T> = OpinionatedToken<T> & {
+export type OpinionatedSingleToken<T = unknown> = OpinionatedToken<T> & {
   options: MultiInjectionOptions
 }
 
-export type OpinionatedMultiToken<T> = OpinionatedToken<T> & {
+export type OpinionatedMultiToken<T = unknown> = OpinionatedToken<T> & {
   options: SingleInjectionOptions
 }

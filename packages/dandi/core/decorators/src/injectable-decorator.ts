@@ -16,7 +16,9 @@ export function Injectable<TInjectable>(
   injectableOrOption: InjectionToken<TInjectable> | InjectableOption = null,
   ...options: InjectableOption[]
 ): ClassDecorator {
-  const injectable: InjectionToken<TInjectable> = isInjectableOption(injectableOrOption) ? null : injectableOrOption
+  const injectable: InjectionToken<TInjectable> = isInjectableOption(injectableOrOption)
+    ? undefined
+    : injectableOrOption
   if (isInjectableOption(injectableOrOption)) {
     options.unshift(injectableOrOption)
   }

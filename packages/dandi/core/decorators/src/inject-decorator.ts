@@ -1,9 +1,9 @@
-import { isConstructor } from '@dandi/common'
-import { getInjectableParamMetadata, isInjectionToken, methodTarget } from '@dandi/core/internal/util'
+import { isConstructor, methodTarget } from '@dandi/common'
+import { getInjectableParamMetadata, isInjectionToken } from '@dandi/core/internal/util'
 import { InjectionToken, InjectionTokenTypeError } from '@dandi/core/types'
 
-export function Inject<T>(token: InjectionToken<T>): ParameterDecorator {
-  return function injectDecorator<T>(target: any, paramName: string, paramIndex: number): void {
+export function Inject(token: InjectionToken): ParameterDecorator {
+  return function injectDecorator(target: any, paramName: string, paramIndex: number): void {
     if (!isInjectionToken(token)) {
       throw new InjectionTokenTypeError(token)
     }

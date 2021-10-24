@@ -55,15 +55,16 @@ export interface GeneratorProvider<T> extends ProviderOptions<T> {
   providers?: (Provider<any> | Constructor)[]
 }
 
-export type FactoryProviderArgs<TDeps extends [...InjectionToken<any>[]]> = {
+export type FactoryProviderArgs<TDeps extends [...InjectionToken<unknown>[]]> = {
   [TDepIndex in keyof TDeps]: TDeps[TDepIndex] extends InjectionToken<infer U> ? U : never
 }
 
-export type FactoryFn<TDeps extends [...InjectionToken<any>[]], TReturn = void> = (
+export type FactoryFn<TDeps extends [...InjectionToken<unknown>[]], TReturn = void> = (
   ...args: FactoryProviderArgs<TDeps>
 ) => TReturn
 
-export interface SyncFactoryProvider<TDeps extends [...InjectionToken<any>[]], T> extends GeneratorProvider<T> {
+export interface SyncFactoryProvider<TDeps extends [...InjectionToken<unknown>[]], T>
+  extends GeneratorProvider<T> {
   useFactory: FactoryFn<TDeps, T>
   async?: false
   deps?: TDeps

@@ -1,4 +1,11 @@
-import { AppError, Constructor, isConstructor, MultiConstructor, SingleConstructor } from '@dandi/common'
+import {
+  AppError,
+  Constructor,
+  hasOwnProperty,
+  isConstructor,
+  MultiConstructor,
+  SingleConstructor,
+} from '@dandi/common'
 
 import { OpinionatedMultiToken, OpinionatedSingleToken } from './opinionated-token'
 import { SymbolTokenBase } from './symbol-token'
@@ -8,30 +15,37 @@ export interface MappedInjectionToken<TKey, TService> {
   key: TKey
 }
 
-export type MappedInjectionTokenFactory<T> = <TKey, TService>(key: TKey) => MappedInjectionToken<TKey, TService>
+export type MappedInjectionTokenFactory = <TKey, TService>(key: TKey) => MappedInjectionToken<TKey, TService>
 
-export type ClassDecoratorToken<T> = (...args: any[]) => ClassDecorator
+export type ClassDecoratorToken = (...args: unknown[]) => ClassDecorator
 
-export type InjectionToken<T> =
+export type InjectionToken<T = unknown> =
   | SymbolTokenBase<T>
   | Constructor<T>
-  | MappedInjectionToken<any, T>
-  | MappedInjectionTokenFactory<T>
-  | ClassDecoratorToken<T>
+  | MappedInjectionToken<unknown, T>
+  | MappedInjectionTokenFactory
+  | ClassDecoratorToken
 
-export type SingleInjectionToken<T> = InjectionToken<T> & (SingleConstructor<T> | OpinionatedSingleToken<T>)
-export type MultiInjectionToken<T> = InjectionToken<T> & (MultiConstructor<T> | OpinionatedMultiToken<T>)
+export type SingleInjectionToken<T = unknown> = InjectionToken<T> &
+  (SingleConstructor<T> | OpinionatedSingleToken<T>)
+export type MultiInjectionToken<T = unknown> = InjectionToken<T> & (MultiConstructor<T> | OpinionatedMultiToken<T>)
 
-export function isMultiToken(obj: any): obj is MultiInjectionToken<any> {
-  return obj?.options?.multi === true || (obj?.multi === true && isConstructor(obj))
+export function isMultiToken(obj: unknown): obj is MultiInjectionToken {
+  if (hasOwnProperty(obj, 'options') && hasOwnProperty(obj.options, 'multi') && obj.options.multi === true) {
+    return true
+  }
+  return hasOwnProperty(obj, 'multi') === true && isConstructor(obj)
 }
 
-export function isSingleToken(obj: any): obj is SingleInjectionToken<any> {
-  return obj?.options?.multi === false || (obj?.multi === false && isConstructor(obj))
+export function isSingleToken(obj: unknown): obj is SingleInjectionToken {
+  if (hasOwnProperty(obj, 'options') && hasOwnProperty(obj.options, 'multi') && obj.options.multi === false) {
+    return true
+  }
+  return hasOwnProperty(obj, 'multi') === false && isConstructor(obj)
 }
 
 export class InjectionTokenTypeError extends AppError {
-  constructor(public readonly target: any) {
+  constructor(public readonly target: unknown) {
     super('The specified target is not a valid Constructor or SymbolToken')
   }
 }
